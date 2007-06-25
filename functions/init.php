@@ -16,7 +16,13 @@
     error_reporting(E_ALL ^ E_NOTICE);
     //error_reporting(E_ALL);
 
-
+    // define baseURL
+    if(!defined('AB_BASE')) define('AB_BASE',getBaseURL());
+    if(!defined('AB_URL'))  define('AB_URL',getBaseURL(true));
+    
+    // define cookie and session id
+    if (!defined('AB_COOKIE')) define('AB_COOKIE', 'AB'.md5(AB_URL));
+    
     //prepare config array()
     global $conf;
     $conf = array();
@@ -28,8 +34,11 @@
     // init session
     if(!empty($conf['session_name'])) session_name($conf['session_name']);
     else session_name('iAddressBook');
-    
-    if (!headers_sent()) session_start();
+
+    if (!headers_sent()) {
+        session_set_cookie_params(0, AB_BASE);
+        session_start();
+    }
     
     // set register_globals to off
     if (ini_get('register_globals')) {
@@ -59,10 +68,6 @@
     require_once(AB_INC.'lang/en/lang.php');
     @include_once(AB_INC.'lang/'.$conf['lang'].'/lang.php');
     $_SESSION['lang'] = $conf['lang'];
-    
-    // define baseURL
-    if(!defined('AB_BASE')) define('AB_BASE',getBaseURL());
-    if(!defined('AB_URL'))  define('AB_URL',getBaseURL(true));
     
     // define main script
     //if(!defined('DOKU_SCRIPT')) define('DOKU_SCRIPT','doku.php');
@@ -182,7 +187,7 @@ function getBaseURL($abs=false){
   if($conf['baseurl']) return $conf['baseurl'].$dir;
 
   //split hostheader into host and port
-  list($host,$port) = explode(':',$_SERVER['HTTP_HOST']);
+  list($host, $port) = explode(':', $_SERVER['HTTP_HOST']);
   if(!$port)  $port = $_SERVER['SERVER_PORT'];
   if(!$port)  $port = 80;
 

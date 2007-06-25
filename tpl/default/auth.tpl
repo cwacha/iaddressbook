@@ -71,9 +71,13 @@
                 <input type="text" name="u" value="<?= $_REQUEST['u'] ?>" class="edit" />
             </label><br />
             <label class="block">
-              <span><?= $lang['password'] ?></span>
-              <input type="password" name="p" class="edit" />
+                <span><?= $lang['password'] ?></span>
+                <input type="password" name="p" class="edit" />
             </label><br />
+            <input type="checkbox" name="r" />
+            <span><?= $lang['sticky'] ?></span>
+            <br /><br />
+                
             <input type="submit" value="<?= $lang['btn_login'] ?>" class="button" />
           </fieldset>
         </form>

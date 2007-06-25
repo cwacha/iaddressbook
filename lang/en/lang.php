@@ -33,6 +33,7 @@ $lang['contacts']             = 'Contacts';
 $lang['login']                = 'Login';
 $lang['username']             = 'Username';
 $lang['password']             = 'Password';
+$lang['sticky']               = 'Remember me';
 $lang['wrong_userpass']       = 'Wrong username or password!';
 $lang['action_not_allowed']   = 'You have no permission to execute the action';
 $lang['logged_in_as']         = 'Logged in as';

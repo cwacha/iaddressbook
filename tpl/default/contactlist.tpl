@@ -10,6 +10,34 @@
             </table>
         </div>
         
+        <!-- Category Section Begin -->
+        <div class="person_smalltext">
+            <?= $lang['category'] ?>
+            <div class="separator100">&nbsp;</div>
+
+            <div style="float: left;">
+            <form method="post" action="<?= $PHP_SELF ?>" >
+                    <input type="hidden" name="do" value="cat_select" />
+                    <select name="cat_id" size="1" onChange="submit()" >
+                        <?php
+                            foreach($categories as $category) {
+                                $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
+                                echo "<option value='".$category->id."' $sel >".$category->name."</option> \n";
+                            }
+                        ?>
+                    </select>
+            </form>
+            </div>
+            
+            <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_add')"><?= "new"//$lang['cat_add'] ?></a> </div>
+            <input type="text" name="cat_name" class="text" style="float: right;" onkeypress="CheckEnter(event);" />
+
+            <div style="float: left;"> <a href="javascript:do_action('cat_del', '<?= $lang['confirm_cat_delete'] ?>')"><?= "delete"//$lang['cat_delete'] ?></a> </div>
+        </div>
+        <!-- Category Section End -->
+        
+        <div style="height: 2.2em;"></div>
+        
         <!-- Letter Filter Begin -->
         <div style="height: 0.5em;"></div>
         

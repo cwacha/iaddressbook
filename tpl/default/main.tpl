@@ -90,6 +90,8 @@
                     <input type="submit" value="<?= $lang['btn_vcardimport'] ?>" class="button" />
                 </form>
                 <!-- End Import VCard -->
+
+                
             
                 <?php tpl_include('search.tpl') ?>
 
