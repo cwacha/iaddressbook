@@ -159,7 +159,7 @@ function auth_verify_action($action, $deny_action = 'show') {
  */
 function auth_cookiesalt(){
     global $conf;
-    $file = AB_INC."_cache/_htcookiesalt";
+    $file = AB_INC."_images/_htcookiesalt";
     $salt = @file($file);
     if(empty($salt)){
         $salt = uniqid(rand(), true);

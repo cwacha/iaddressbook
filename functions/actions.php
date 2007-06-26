@@ -92,7 +92,7 @@ function act_dispatch(){
             break;
         
         case 'import_vcard':
-            set_time_limit(0);
+            @set_time_limit(0);
             act_importvcard();
             act_search();
             act_getcontact();

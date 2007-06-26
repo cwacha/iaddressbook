@@ -142,6 +142,8 @@ function act_importfolder($folder = '') {
     
     if($processed > 0) {
         msg("$processed files processed", 1);
+    } else {
+        msg("No vCards found in import folder (make sure the files have a '.vcf' extension)");
     }
     
     closedir($dh);
