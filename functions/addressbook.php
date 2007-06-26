@@ -47,7 +47,7 @@ class addressbook {
         $contact->company = (int)$row[$prefix . 'COMPANY'];
         
         $contact->birthdate = $contact->unescape($row[$prefix . 'BIRTHDATE']);
-        $contact->image = $row[$prefix . 'IMAGE'];
+        //$contact->image = $row[$prefix . 'IMAGE'];
         $contact->note = $contact->unescape($row[$prefix . 'NOTE']);
         
         $contact->string2addresses($row[$prefix . 'ADDRESSES']);
@@ -141,7 +141,6 @@ class addressbook {
             $sql .= ") ORDER BY lastname ASC LIMIT $limit";
         }
         $result = $db->Execute($sql);
-
         
         if($result) {
             while ($row = $result->FetchRow()) {
@@ -221,6 +220,7 @@ class addressbook {
     function set($contact) {
         global $db;
         global $db_config;
+        global $conf;
         if(!$db) return false;
         
         if(is_object($contact)) {
@@ -242,10 +242,9 @@ class addressbook {
             $organization = $db->Quote($contact->escape($contact->organization));
             $company = $db->Quote( (int)$contact->company);
             $birthdate = $db->Quote($contact->escape($contact->birthdate));
-            $image = $db->Quote($contact->image);
+            //$image = $db->Quote($contact->image);
             $note = $db->Quote($contact->escape($contact->note));
-            
-            
+                        
             $a_line = $db->Quote($contact->addresses_string());
             $e_line = $db->Quote($contact->emails_string());
             $p_line = $db->Quote($contact->phones_string());
@@ -266,7 +265,7 @@ class addressbook {
                 //$sql .= "VALUES (";
                 
                 $sql .= "$title, $firstname, $firstname2, $lastname, $suffix, $nickname, $phoneticfirstname, $phoneticlastname, ";
-                $sql .= "$jobtitle, $department, $organization, $company, $birthdate, $image, $note, ";
+                $sql .= "$jobtitle, $department, $organization, $company, $birthdate, '', $note, ";
                 
                 $sql .= "$a_line, $e_line, $p_line, $c_line, $r_line, $u_line, $mod_date, $mod_date );";
                 
@@ -289,7 +288,7 @@ class addressbook {
                 $sql .= "company=$company, ";
                 
                 $sql .= "birthdate=$birthdate, ";
-                $sql .= "image=$image, ";
+                //$sql .= "image=$image, ";
                 $sql .= "note=$note, ";
 
                 $sql .= "addresses=$a_line, ";
@@ -312,6 +311,16 @@ class addressbook {
             
             if($contact->id == 0) $contact->id = $db->Insert_ID();
             
+            if($contact->id > 0) {
+                if(!empty($contact->image)) {
+                    // convert and create image file
+                    $contact->image = img_convert($contact->image, $conf['photo_format']);
+                    img_create($contact->id, $contact->image);
+                } else {
+                    img_delete($contact->id);
+                }
+            }
+            
             return $contact->id;
         }
     }
@@ -321,6 +330,8 @@ class addressbook {
         global $db_config;
         if(!$db) return;
         
+        img_delete($id);
+
         // quote db specific characters
         $id = $db->Quote((int)$id);
         
@@ -329,7 +340,7 @@ class addressbook {
         if(!$result) {
             msg("DB error on delete: ". $db->ErrorMsg(), -1);
             print_r($result);
-        }
+        }        
     }
     
     function is_duplicate($contact) {

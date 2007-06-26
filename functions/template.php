@@ -124,6 +124,10 @@ function tpl_contactlist() {
         include(template('contactlist_item.tpl'));
         $color = 3 - $color;
     }
+    
+    if(count($contactlist) < 1) {
+        include(template('contactlist_empty.tpl'));
+    }
 }
 
 function tpl_addresses($limit = 0) {
@@ -266,5 +270,55 @@ function tpl_selectedcategory() {
     return $lang['category_all'];
 }
 
+
+function tpl_catselect() {
+?>
+            <form method="post" action="<?= $PHP_SELF ?>" >
+                <input type="hidden" name="do" value="cat_select" />
+                <select name="cat_id" size="1" onChange="submit()" >
+                    <?php
+                        global $categories;
+                        global $CAT_ID;
+                        
+                        foreach($categories as $category) {
+                            $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
+                            echo "<option value='".$category->id."' $sel >".$category->name."</option> \n";
+                        }
+                    ?>
+                </select>
+            </form>
+<?php
+}
+
+function tpl_abc() {
+    $i = 0;
+    $abc = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'A-Z');
+    echo "<a href=\"javascript:select_l('0')\" >#</a> | ";
+    foreach($abc as $l) {
+        $i++;
+        if($i%12 == 0) echo "<br>| ";
+        echo "<a href=\"javascript:select_l('$l')\" >$l</a> | ";
+    }
+}
+
+function tpl_pageselect() {
+    global $contactlist;
+    global $contactlist_limit;
+    global $contactlist_offset;
+    
+    $size = count($contactlist);
+    if($contactlist_limit > 0 and $size > $contactlist_limit) {
+        for($i = 0; $i < $size; $i += $contactlist_limit) {
+            $stop = $i + $contactlist_limit;
+            if($stop > $size) $stop = $size;
+            if($i >= $contactlist_offset and $i < $contactlist_offset + $contactlist_limit) {
+                echo "| ". (string)($i+1) ." - $stop \n";
+            } else {
+                echo "| <a href=\"javascript:select_o('$i')\" >". (string)($i+1) ." - $stop</a> \n";
+            }
+        }
+        echo "|";
+    }
+}
 
 ?>

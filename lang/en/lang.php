@@ -30,6 +30,7 @@ $lang['confirm_cat_delete']   = 'Do you want to delete this category?';
 
 // General Text
 $lang['contacts']             = 'Contacts';
+$lang['no_contacts']          = 'no contacts';
 $lang['login']                = 'Login';
 $lang['username']             = 'Username';
 $lang['password']             = 'Password';
@@ -48,7 +49,8 @@ $lang['cat_changed']          = 'Modified Contacts';
 $lang['delete_contacts']      = 'delete contact(s)';
 $lang['export_vcard']         = 'export as vCard(s)';
 $lang['export_csv']           = 'export CSV file';
-$lang['export_ldif']           = 'export LDIF file';
+$lang['export_ldif']          = 'export LDIF file';
+$lang['import_folder']        = 'import from folder';
 $lang['create_contact']       = 'new contact';
 $lang['map']                  = 'Map';
 

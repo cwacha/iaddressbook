@@ -18,7 +18,7 @@
 
     
 
-function act_importvcard() {
+function act_importvcard($filename = '') {
     global $AB;
     global $conf;
     global $CAT;
@@ -28,11 +28,13 @@ function act_importvcard() {
     $imported = 0;
     $person_id = false;
     
-    if(!is_string($_FILES['vcard_file']['tmp_name'])) {
+    if($filename == '') $filename = $_FILES['vcard_file']['tmp_name'];
+    
+    if(!is_string($filename)) {
         msg("file was not uploaded<br>", -1);
         return;
     }
-    if(!file_exists($_FILES['vcard_file']['tmp_name'])) {
+    if(!file_exists($filename)) {
         msg("file does not exist", -1);
         return;
     }
@@ -41,7 +43,7 @@ function act_importvcard() {
     $parse = new Contact_Vcard_Parse();
     
     // parse it
-    $data = $parse->fromFile($_FILES['vcard_file']['tmp_name'], true, $conf['vcard_fb_enc']);
+    $data = $parse->fromFile($filename, true, $conf['vcard_fb_enc']);
     
     if(!is_array($data)) {
         msg("Error importing vcard!!", -1);
@@ -92,7 +94,11 @@ function act_importvcard() {
         }
     }
     
-    unlink($_FILES['vcard_file']['tmp_name']);
+    if(is_writeable($filename)) {
+        unlink($filename);
+    } else {
+        msg("Cannot remove $filename: read-only file", -1);
+    }
 
     if($imported > 0) msg("$imported vCard(s) succesfully imported!", 1);
     
@@ -113,6 +119,32 @@ function act_importvcard() {
     //echo '<pre style="text-align: left;">';
     //print_r($data);
     //echo '</pre>';
+}
+
+function act_importfolder($folder = '') {
+    if($folder == '') $folder = AB_INC.'_import/';
+
+    $dh = opendir($folder);
+    if(!is_resource($dh)) {
+        msg("Could not open $folder");
+        return;
+    }
+    
+    $processed = 0;
+    
+    while(false !== ($file = readdir($dh))) {
+        if(is_file($folder . $file) and strtolower(substr($file, -4, 4)) == ".vcf") {
+            msg("Processing file: $file", 1);
+            act_importvcard($folder . $file);
+            $processed++;
+        }
+    }
+    
+    if($processed > 0) {
+        msg("$processed files processed", 1);
+    }
+    
+    closedir($dh);
 }
 
 function act_exportvcard() {
@@ -197,7 +229,6 @@ function contact2vcard($contact, $categories) {
     if($contact->birthdate != '0000-00-00') $card->setBirthday($contact->birthdate);
     if(!empty($contact->homepage)) $card->setURL($contact->homepage);
 
-    //var $image;    // picture
     if(!empty($contact->note)) $card->setNote($contact->note);
     
     foreach($contact->addresses as $item) {

@@ -9,98 +9,33 @@
                 </tr>
             </table>
         </div>
-        
-        <!-- Category Section Begin -->
-        <div class="person_smalltext">
-            <?= $lang['category'] ?>
-            <div class="separator100">&nbsp;</div>
-
-            <div style="float: left;">
-            <form method="post" action="<?= $PHP_SELF ?>" >
-                    <input type="hidden" name="do" value="cat_select" />
-                    <select name="cat_id" size="1" onChange="submit()" >
-                        <?php
-                            foreach($categories as $category) {
-                                $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
-                                echo "<option value='".$category->id."' $sel >".$category->name."</option> \n";
-                            }
-                        ?>
-                    </select>
-            </form>
-            </div>
-            
-            <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_add')"><?= "new"//$lang['cat_add'] ?></a> </div>
-            <input type="text" name="cat_name" class="text" style="float: right;" onkeypress="CheckEnter(event);" />
-
-            <div style="float: left;"> <a href="javascript:do_action('cat_del', '<?= $lang['confirm_cat_delete'] ?>')"><?= "delete"//$lang['cat_delete'] ?></a> </div>
-        </div>
-        <!-- Category Section End -->
-        
-        <div style="height: 2.2em;"></div>
-        
+                
         <!-- Letter Filter Begin -->
         <div style="height: 0.5em;"></div>
         
-        <div class="person_smalltext">
-            <div style="text-align: center;" >| 
-            <?php
-            $i = 0;
-            $abc = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'A-Z');
-            echo "<a href=\"javascript:select_l('0')\" >#</a> | ";
-            foreach($abc as $l) {
-                $i++;
-                if($i%12 == 0) echo "<br>| ";
-                echo "<a href=\"javascript:select_l('$l')\" >$l</a> | ";
-            }
-            ?>
-            </div>
+        <div class="person_smalltext" style="text-align: center;" >
+            <?= tpl_abc(); ?>
         </div>
         
         <div style="height: 0.5em;"></div>
-        
         <!-- Letter Filter End -->
         
         <input type='checkbox' name="selectall" onClick="select_all('ct_form', this.checked)" style="float: left; margin-left: 5px; margin-top: 7px;"/>
         <div class="person_smalltext" style="margin-top: 5px;">
-            <form method="post" action="<?= $PHP_SELF ?>" >
-                    <?= $lang['category'] ?>
-                    <input type="hidden" name="do" value="cat_select" />
-                    <select name="cat_id" size="1" onChange="submit()" >
-                        <?php
-                            foreach($categories as $category) {
-                                $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
-                                echo "<option value='".$category->id."' $sel >".$category->name."</option> \n";
-                            }
-                        ?>
-                    </select>
-            </form>
+            <?= tpl_catselect(); ?>
 		</div>
 		<div class="separator100">&nbsp;</div>
         
         <form method="post" action="<?= $PHP_SELF ?>" name='ct_form'>
 
-            <?php tpl_contactlist() ?>
+            <?= tpl_contactlist() ?>
             
             <div class="separator100">&nbsp;</div>
             
             <!-- Navigation Begin -->
             <div class="person_smalltext">
                 <div style="text-align: center;" >
-                <?php
-                    $size = count($contactlist);
-                    if($contactlist_limit > 0 and $size > $contactlist_limit) {
-                        for($i = 0; $i < $size; $i += $contactlist_limit) {
-                            $stop = $i + $contactlist_limit;
-                            if($stop > $size) $stop = $size;
-                            if($i >= $contactlist_offset and $i < $contactlist_offset + $contactlist_limit) {
-                                echo "| ". (string)($i+1) ." - $stop \n";
-                            } else {
-                                echo "| <a href=\"javascript:select_o('$i')\" >". (string)($i+1) ." - $stop</a> \n";
-                            }
-                        }
-                        echo "|";
-                    }
-                ?>
+                    <?= tpl_pageselect(); ?>
                 </div>
             </div>
             
@@ -122,6 +57,8 @@
                 <div style="float: left;"> <a href="javascript:do_action('export_csv_cat')"><?= $lang['export_csv'] ?></a> </div>
                 <div style="height: 1.5em;"></div>
                 <div style="float: left;"> <a href="javascript:do_action('export_ldif_cat')"><?= $lang['export_ldif'] ?></a> </div>
+                <div style="height: 1.5em;"></div>
+                <div style="float: left;"> <a href="javascript:do_action('import_folder')"><?= $lang['import_folder'] ?></a> </div>
                 <div style="height: 3em;"></div>
                 <!-- Contacts Section End -->
 

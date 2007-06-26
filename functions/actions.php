@@ -97,6 +97,11 @@ function act_dispatch(){
             act_search();
             act_getcontact();
             break;
+        case 'import_folder':
+            act_importfolder();
+            act_search();
+            act_getcontact();
+            break;
         case 'export_vcard':
             act_exportvcard();
             break;
@@ -156,10 +161,16 @@ function act_check() {
     msg("PHP iAddressBook Version: ". $VERSION, 1);
     msg("PHP version ". phpversion(), 1);
     
-    if(!is_writable(AB_INC."_cache")) {
-        msg("Cannot use photo cache: No write permission to ".AB_INC."_cache", -1);
+    if(!is_writable(AB_INC."_images")) {
+        msg("Cannot use contact photos: No write permission to ".AB_INC."_images", -1);
     } else {
-        msg("Photo cache is writeable", 1);
+        msg("Photo folder is writeable", 1);
+    }
+
+    if(!is_writable(AB_INC."_import")) {
+        msg("Cannot delete vCards from import folder: No write permission to ".AB_INC."_import", -1);
+    } else {
+        msg("vCard import folder is writeable", 1);
     }
 
     if(!is_readable(AB_INC."conf/config.php")) {
@@ -247,15 +258,16 @@ function act_save() {
     settype($_REQUEST['photo_delete'], "boolean");
     if($_REQUEST['photo_delete'] == true) {
         $contact->image = NULL;
-        img_removecache($contact->id);
     } else if($conf['photo_enable'] && !empty($_FILES['photo_file']['tmp_name']) ) {
         //change or add picture
         if(!empty($conf['photo_resize'])) {
-            $contact->image = img_convert(@file_get_contents($_FILES['photo_file']['tmp_name']), 'png', '-resize ' . $conf['photo_resize']);
+            $contact->image = img_convert(@file_get_contents($_FILES['photo_file']['tmp_name']), $conf['photo_format'], '-resize ' . $conf['photo_resize']);
         } else {
-            $contact->image = img_convert(@file_get_contents($_FILES['photo_file']['tmp_name']));
+            $contact->image = @file_get_contents($_FILES['photo_file']['tmp_name']);
         }
-        img_removecache($contact->id);
+    } else {
+        //preserve image
+        $contact->image = img_load($contact->id);
     }
 
     $contact->addresses = array();
@@ -412,7 +424,6 @@ function act_delete() {
     global $AB;
 
     $AB->delete($ID);
-    img_removecache($ID);
 }
 
 function act_delete_many() {
@@ -421,7 +432,6 @@ function act_delete_many() {
     foreach($_REQUEST as $key => $value) {
         if(strpos($key, 'ct_') === 0) {
             $AB->delete($value);
-            img_removecache($value);
         }
     }
 
