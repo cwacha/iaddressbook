@@ -20,10 +20,18 @@ function collect_birthdays() {
     global $AB;
     if(!$db) return array();
     $upcoming = array();
-        
-    $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE strftime('%m', birthdate) = strftime('%m', 'now')";
-    $sql .= " OR strftime('%m', birthdate) = strftime('%m', 'now', '+1 month')";
-    $sql .= " ORDER BY strftime('%j', birthdate) ASC LIMIT 100";
+    
+    if($db_config['dbtype'] == 'sqlite') {
+        $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE strftime('%m', birthdate) = strftime('%m', 'now')";
+        $sql .= " OR strftime('%m', birthdate) = strftime('%m', 'now', '+1 month')";
+        $sql .= " ORDER BY strftime('%j', birthdate) ASC LIMIT 100";
+    } else {
+        $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE MONTH(birthdate) = MONTH(NOW())";
+        $sql .= " OR MONTH(birthdate) = MONTH(NOW()) + 1";
+        $sql .= " ORDER BY DAYOFYEAR(birthdate) ASC LIMIT 100";
+    }
+    
+    
     $result = $db->Execute($sql);
     
     if($result) {
