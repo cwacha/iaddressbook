@@ -22,6 +22,7 @@
         
         <input type='checkbox' name="selectall" onClick="select_all('ct_form', this.checked)" style="float: left; margin-left: 5px; margin-top: 7px;"/>
         <div class="person_smalltext" style="margin-top: 5px;">
+            <?= $lang['category'] ?>
             <?= tpl_catselect(); ?>
 		</div>
 		<div class="separator100">&nbsp;</div>
@@ -51,14 +52,6 @@
                 <div style="float: left;"> <a href="javascript:do_action('new')"><?= $lang['create_contact'] ?></a> </div>
                 <div style="float: right;"> <a href="javascript:do_action('delete_many', '<?= $lang['confirm_del_contacts'] ?>')"><?= $lang['delete_contacts'] ?></a> </div>
 
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('export_vcard_cat')"><?= $lang['export_vcard'] ?></a> </div>
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('export_csv_cat')"><?= $lang['export_csv'] ?></a> </div>
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('export_ldif_cat')"><?= $lang['export_ldif'] ?></a> </div>
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('import_folder')"><?= $lang['import_folder'] ?></a> </div>
                 <div style="height: 3em;"></div>
                 <!-- Contacts Section End -->
 
@@ -89,6 +82,19 @@
                 <div style="height: 3em;"></div>
                 <!-- Category Section End -->
 
+                <!-- Import Section Begin -->
+                <?= $lang['import_export'] ?>
+                <div class="separator100">&nbsp;</div>
+                <div style="float: left;"> <a href="javascript:do_action('export_vcard_cat')"><?= $lang['export_vcard'] ?></a> </div>
+                <div style="height: 1.5em;"></div>
+                <div style="float: left;"> <a href="javascript:do_action('export_csv_cat')"><?= $lang['export_csv'] ?></a> </div>
+                <div style="height: 1.5em;"></div>
+                <div style="float: left;"> <a href="javascript:do_action('export_ldif_cat')"><?= $lang['export_ldif'] ?></a> </div>
+                <div style="height: 1.5em;"></div>
+                <div style="float: left;"> <a href="javascript:do_action('import_folder')"><?= $lang['import_folder'] ?></a> </div>
+                <div style="height: 3em;"></div>
+                <!-- Import Section End -->
+                
                 
                 <input type="hidden" name="do" value="" />
                 <input type="hidden" name="l" value="" />

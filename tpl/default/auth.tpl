@@ -40,7 +40,7 @@
 <div class="mainview">
 
     <!-- Begin Logo -->
-    <table>
+    <table border="0" width="100%">
         <tr>
             <td>
                 <div class="logo">

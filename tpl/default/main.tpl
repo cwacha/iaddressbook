@@ -45,7 +45,7 @@
 
 <div class="mainview">
     <!-- Begin Logo -->
-    <table>
+    <table border="0" width="100%">
         <tr>
             <td>
                 <div class="logo">
@@ -57,44 +57,37 @@
                     <?= $conf['title'] ?>
                 </div>
             </td>
-        </tr>
-    </table>
-    <!-- End Logo -->
+            <td valign="top" width="250px">
+                <div class="login_box">
+                    <?php if($conf['auth_enabled']) {
+                            if($userinfo['logged_in'] == true) {
+                                echo "<div class='person_smalltext'>" . $lang['logged_in_as'] . " " . $userinfo['fullname'] . "</div>";
+                                echo "<a href='?do=logout'>". $lang['btn_logout'] ."</a>";
+                            } else {
+                                echo "<a href='?do=login'>". $lang['btn_login'] ."</a>";
+                            }
+                        }
+                    ?>
+                </div>
 
-    <!-- Begin Menu --> 
-    <table border="0" width="100%">
-        <tr>
-            <td>
-            </td>
-            <td>
                 <div class="birthday_box">
                     <div class="birthday_title"><?= $lang['birthdays'] ?></div>
                     <div class="birthday_text">
                         <?= tpl_birthday(); ?>
                     </div>
                 </div>
+                
             </td>
         </tr>
-        <tr>
-            <td>
-            </td>
-            <td style='text-align: right; padding-right: 10px; padding-bottom: 10px;'>
-                <?php if($conf['auth_enabled']) {
-                        if($userinfo['logged_in'] == true) {
-                            echo "<div class='person_smalltext'>" . $lang['logged_in_as'] . " " . $userinfo['fullname'] . "</div>";
-                            echo "<a href='?do=logout'>". $lang['btn_logout'] ."</a>";
-                        } else {
-                            echo "<a href='?do=login'>". $lang['btn_login'] ."</a>";
-                        }
-                    }
-                ?>
-            </td>
-        </tr>
+    </table>
+    <!-- End Logo -->
+
+    <div style="height: 30px;" ></div>
+    
+    <!-- Begin Menu --> 
+    <table border="0" width="100%">
         <tr>
             <td align="left">
-            </td>
-            <td align="right" style="padding-right: 10px;" >
-
                 <!-- Begin Import VCard -->
                 <form method="POST" enctype="multipart/form-data" action="<?= $PHP_SELF ?>" style="float: left; padding-left: 10px;">
                     <input type="hidden" name="do" value="import_vcard" />
@@ -102,11 +95,9 @@
                     <input type="submit" value="<?= $lang['btn_vcardimport'] ?>" class="button" />
                 </form>
                 <!-- End Import VCard -->
-
-                
-            
+            </td>
+            <td align="right" style="padding-right: 10px;" >
                 <?php tpl_include('search.tpl') ?>
-
             </td>
         </tr>
     </table>

@@ -47,6 +47,7 @@ $lang['cat_delete']           = 'delete category';
 $lang['cat_lastimport']       = 'Last Import';
 $lang['cat_changed']          = 'Modified Contacts';
 $lang['delete_contacts']      = 'delete contact(s)';
+$lang['import_export']        = 'Import/Export';
 $lang['export_vcard']         = 'export as vCard(s)';
 $lang['export_csv']           = 'export CSV file';
 $lang['export_ldif']          = 'export LDIF file';
