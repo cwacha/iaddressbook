@@ -83,6 +83,10 @@ function tpl_birthday() {
         echo "<a href='?id=$contact->id'>$name</a> ($age) $text<br/>";
     }
     
+    if(count($people) == 0) {
+        echo $lang['bday_none']."<br/>";
+    }
+    
 }
 
 

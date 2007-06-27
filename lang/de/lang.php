@@ -109,6 +109,7 @@ $lang['month']['10']                    = 'Oktober';
 $lang['month']['11']                    = 'November';
 $lang['month']['12']                    = 'Dezember';
 $lang['birthdays']                      = 'Geburtstage';
+$lang['bday_none']                      = 'keine';
 $lang['bday_month']                     = 'in $n Monat';
 $lang['bday_months']                    = 'in $n Monaten';
 $lang['bday_week']                      = 'in $n Woche';
