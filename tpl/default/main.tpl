@@ -66,6 +66,18 @@
         <tr>
             <td>
             </td>
+            <td>
+                <div class="birthday_box">
+                    <div class="birthday_title"><?= $lang['birthdays'] ?></div>
+                    <div class="birthday_text">
+                        <?= tpl_birthday(); ?>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
             <td style='text-align: right; padding-right: 10px; padding-bottom: 10px;'>
                 <?php if($conf['auth_enabled']) {
                         if($userinfo['logged_in'] == true) {

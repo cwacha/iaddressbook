@@ -18,6 +18,7 @@ require_once(AB_INC.'functions/common.php');
 require_once(AB_INC.'functions/module_vcard.php');
 require_once(AB_INC.'functions/module_csv.php');
 require_once(AB_INC.'functions/module_ldif.php');
+require_once(AB_INC.'functions/module_birthday.php');
 
 
 /**

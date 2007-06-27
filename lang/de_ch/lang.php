@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * schwiizerdütsch language file
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
@@ -23,9 +23,11 @@ $lang['confirm_del_contacts']           = "Wotsch die markierte Kontäkt würkli
 $lang['confirm_cat_remove_contacts']    = "Wotsch die markierte Kontäkt us dere Kategorie entferne?";
 $lang['confirm_cat_delete']             = "Wotsch die Kategorie lösche?";
 $lang['contacts']                       = "Kontäkt";
+$lang['no_contacts']                    = "keni Kontäkt";
 $lang['login']                          = "Amälde";
 $lang['username']                       = "Benutzername";
 $lang['password']                       = "Passwort";
+$lang['sticky']                         = "Agmäldet bliibe";
 $lang['wrong_userpass']                 = "Spinnsch?? Falsche Benutzername oder Passwort!";
 $lang['action_not_allowed']             = "Meimei! Das dörfsch aso nöd mache!!";
 $lang['logged_in_as']                   = "Aagmeldet als";
@@ -41,6 +43,7 @@ $lang['delete_contacts']                = "Kontäkt lösche";
 $lang['export_vcard']                   = "Exportiere als vCard(s)";
 $lang['export_csv']                     = "Exportiere als CSV Datei";
 $lang['export_ldif']                    = "Exportiere als LDIF Datei";
+$lang['import_folder']                  = "Ordner importiere";
 $lang['create_contact']                 = "Neue Kontakt";
 $lang['map']                            = "Charte";
 $lang['no_name']                        = "(Kän Name)";

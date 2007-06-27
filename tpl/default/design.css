@@ -467,3 +467,33 @@ input.missing {
   display: inline;
 }
 
+.birthday_box {
+    width: 30%;
+    min-width: 120px;
+	float: right;
+    padding: 0;
+    margin: 10px;
+//	background-color: #000;
+}
+
+.birthday_title {
+    color: #bebebe;
+    font-size: 85%;
+    font-weight: normal;
+    font-style: normal;
+    text-align: right;
+    padding: 0;
+    margin: 0;
+	margin-bottom: 5px;
+	border-bottom: 1px solid #bebebe;
+}
+
+.birthday_text {
+    color: #bebebe;
+    font-size: 85%;
+    font-weight: normal;
+    font-style: normal;
+    text-align: right;
+    padding: 0;
+    margin: 0;  
+}

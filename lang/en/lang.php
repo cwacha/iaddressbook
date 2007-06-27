@@ -125,4 +125,14 @@ $lang['month'][11]            = 'November';
 $lang['month'][12]            = 'December';
 
 
+$lang['birthdays']            = 'Upcoming Birthdays';
+$lang['bday_month']           = 'in $n month';
+$lang['bday_months']          = 'in $n months';
+$lang['bday_week']            = 'in $n week';
+$lang['bday_weeks']           = 'in $n weeks';
+$lang['bday_day']             = 'in $n day';
+$lang['bday_day2']            = 'in $n days';
+$lang['bday_days']            = 'in $n days';
+$lang['bday_today']           = 'today!';
+
 ?>

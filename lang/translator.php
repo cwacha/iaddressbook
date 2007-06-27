@@ -67,13 +67,13 @@ function read_header($language) {
     $header = @file($file);
     
     if(is_array($header)) {
-        unset($header[0]);
+        array_shift($header);
         $ln = '';
         while( trim($ln) != '*/' and count($header) > 1) {
             $ln = array_pop($header);
         }
         while( trim($header[0]) == '' and count($header) > 1) {
-            $ln = array_shift($header);
+            array_shift($header);
         }
         $header[] = " */\n\n\n";
     } else {
@@ -98,7 +98,7 @@ function array_to_text($array, $prefix='') {
         if(gettype($value) == 'string') {
             $line = $prefix .'[\''.$key.'\']';
             $line = str_pad($line, 40);
-            $line .= '= "'.$value.'";';
+            $line .= "= '".$value."';";
             $text .= $line . "\n";
         } else if(gettype($value) == 'array') {
             $text .= "\n";
@@ -150,7 +150,7 @@ function has_new_text($array) {
 
 /* * * * * * * * * * * * * *
  *                         *
- *        M A I N          * 
+ *        M A I N          *
  *                         *
  * * * * * * * * * * * * * */
     echo "<pre>";
