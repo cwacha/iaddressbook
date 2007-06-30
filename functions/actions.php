@@ -226,7 +226,7 @@ function act_save() {
     global $CAT;
     global $contact_categories;
 
-    $contact = $AB->get($ID);
+    $contact = $AB->get($ID, true);
     if($contact == false) $contact = new person;
 
     $contact->title         = real_br2nl($_REQUEST['title']);
@@ -268,7 +268,7 @@ function act_save() {
         }
     } else {
         //preserve image
-        $contact->image = img_load($contact->id);
+        //$contact->image = img_load($contact->id);
     }
 
     $contact->addresses = array();

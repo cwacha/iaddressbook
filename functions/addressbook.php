@@ -193,7 +193,7 @@ class addressbook {
         return $contactlist;
     }
 
-    function get($id) {
+    function get($id, $with_image = false) {
         global $db;
         global $db_config;
         $contact = false;
@@ -207,7 +207,10 @@ class addressbook {
         
         if($result) {
             $row = $result->FetchRow();
-            if($row) $contact = $this->row2contact($row);
+            if($row) {
+                $contact = $this->row2contact($row);
+                if($with_image === true) $contact->image = img_load($contact->id);
+            }
         } else {
             // not found
             msg("DB error on get: ".$db->ErrorMsg(), -1);

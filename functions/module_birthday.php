@@ -65,6 +65,8 @@ function tpl_birthday() {
         
         if($weeks > $conf['bday_advance_week']) continue;
         
+        if($days < 0) continue;
+        
         if($months > 0) {
             $n = $months;
             if($months == 1) $trans_text = $lang['bday_month'];

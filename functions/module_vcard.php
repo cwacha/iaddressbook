@@ -154,7 +154,7 @@ function act_exportvcard() {
     global $ID;
     global $CAT;
     
-    $contact = $AB->get($ID);
+    $contact = $AB->get($ID, true);
     $categories = $CAT->find($ID);
 
     $vcard = contact2vcard($contact, $categories);
@@ -192,6 +192,7 @@ function act_exportvcard_cat() {
     if(count($contacts_selected) == 0) $contacts_selected = $contactlist;
 
     foreach ($contacts_selected as $contact) {
+        $contact->image = img_load($contact->id);
         $categories = $CAT->find($contact->id);
         $vcard = contact2vcard($contact, $categories);
         $vcard_list .= $vcard['vcard'];
