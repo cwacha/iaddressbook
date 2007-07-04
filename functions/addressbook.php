@@ -257,7 +257,7 @@ class addressbook {
             
             $mod_date = $db->Quote($contact->escape(gmdate('Y-m-d H:i:s') . ' GMT'));
             
-            if(empty($contact->birthdate)) $contact->birthdate = '0000-00-00';
+            if(empty($contact->birthdate)) $contact->birthdate = '0001-01-01';
             
             if($contact->id == 0) {
                 // insert
@@ -313,6 +313,7 @@ class addressbook {
             }
             
             if($contact->id == 0) $contact->id = $db->Insert_ID();
+             msg("InsertID: ". $db->Insert_ID());
             
             if($contact->id > 0) {
                 if(!empty($contact->image)) {
