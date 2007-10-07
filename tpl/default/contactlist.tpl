@@ -132,7 +132,7 @@ function do_action(act, confirmation) {
     document.ct_form.submit();
 }
 function CheckEnter(evt) {
-    var keyCode = document.layers?evt.which:evt.keyCode;
+    var keyCode = (evt.charCode)? evt.charCode:((evt.which)? evt.which:evt.keyCode);
     if (keyCode != 13) {
         return true;
     }
