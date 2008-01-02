@@ -92,7 +92,6 @@ function tpl_showperson() {
     global $contact_categories;
     global $lang;
     global $conf;
-    msg("blub");
     
     $categories = $contact_categories;
     

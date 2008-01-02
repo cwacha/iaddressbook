@@ -51,17 +51,20 @@ function collect_birthdays() {
 function tpl_birthday() {
     global $conf;
     global $lang;
-    print "bla";
     
     $people = collect_birthdays();
-    
-    msg("tpl_birthday");
-    
-    foreach($people as $contact) {
-        $birthday = strtotime( date('Y') . nice_date('-$mm-$dd', $contact->birthdate) );
-        //$birthday = strtotime( '20070630' );
         
-        $age    = datediff('yyyy', strtotime(nice_date('$YYYY-01-01', $contact->birthdate)), time(), true);
+    foreach($people as $contact) {
+        // if we are in december and the persons birthday is in january
+        // we have to add 1 to his year
+        if(date('n') == 12 and date('n', $contact->birthdate) == 1) {
+            $bd_year = date('Y') + 1;
+        } else {
+            $bd_year = date('Y');
+        }        
+        $birthday = strtotime( $bd_year . nice_date('-$mm-$dd', $contact->birthdate) );
+        
+        $age    = $bd_year - nice_date('$YYYY', $contact->birthdate);
         
         $days   = datediff('d', time(), $birthday, true) + 1;
         $weeks  = datediff('ww', time(), $birthday, true);
@@ -100,8 +103,6 @@ function tpl_birthday() {
     if(count($people) == 0) {
         echo $lang['bday_none']."<br/>";
     }
-    
-    html_msgarea();
 }
 
 

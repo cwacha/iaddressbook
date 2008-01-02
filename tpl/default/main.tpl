@@ -139,7 +139,7 @@
         <a href='http://wacha.ch/addressbook/'>PHP iAddressbook <?= display_version() ?></a>
     </div>
     <!-- End Footer --> 
-    <?php tpl_birthday() ?>
+
 </div>
 
 

@@ -3,9 +3,6 @@
     if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
     require_once(AB_CONF.'defaults.php');
 
-    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    require_once(AB_INC.'functions/html.php');
-
 
 function display_version() {
     global $VERSION;

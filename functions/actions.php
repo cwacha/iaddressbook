@@ -130,6 +130,10 @@ function act_dispatch(){
             act_search();
             act_getcontact();
             break;
+
+        case 'info':
+            html_phpinfo();
+            break;
         
         case 'check':
             act_check();
