@@ -14,6 +14,7 @@
     require_once(AB_INC.'functions/common.php');
     
 
+// collects all birthdays in the current month and the following month
 function collect_birthdays() {
     global $db;
     global $db_config;

@@ -45,7 +45,7 @@
 
 <div class="mainview">
     <!-- Begin Logo -->
-    <table width="100%" border="1px">
+    <table width="100%">
         <tr>
             <td>
                 <div class="logo"><img src="<?= AB_TPL ?>images/logo.png"></div>

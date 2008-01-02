@@ -313,7 +313,7 @@ class addressbook {
             }
             
             if($contact->id == 0) $contact->id = $db->Insert_ID();
-             msg("InsertID: ". $db->Insert_ID());
+            //msg("InsertID: ". $db->Insert_ID());
             
             if($contact->id > 0) {
                 if(!empty($contact->image)) {
