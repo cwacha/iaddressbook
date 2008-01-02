@@ -27,15 +27,16 @@ function html_debug() {
  * @author Andreas Gohr <andi@splitbrain.org>
  */
 function html_msgarea(){
-  global $MSG;
+    global $MSG;
+    
+    if(!isset($MSG)) return;
 
-  if(!isset($MSG)) return;
-
-  foreach($MSG as $msg){
-    print '<div class="'.$msg['lvl'].'">';
-    print $msg['msg'];
-    print '</div>';
-  }
+    foreach($MSG as $msg){
+        print '<div class="'.$msg['lvl'].'">';
+        print $msg['msg'];
+        print '</div>';
+    }
+//    $MSG = array();
 }
 
 /**

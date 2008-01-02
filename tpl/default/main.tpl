@@ -68,7 +68,7 @@
         
                 <div class="birthday_box">
                     <div class="birthday_title"><?= $lang['birthdays'] ?></div>
-                    <div class="birthday_text"><?= tpl_birthday(); ?></div>
+                    <div class="birthday_text"><?php tpl_birthday() ?></div>
                 </div>                
             </td>
         </tr>
@@ -139,7 +139,7 @@
         <a href='http://wacha.ch/addressbook/'>PHP iAddressbook <?= display_version() ?></a>
     </div>
     <!-- End Footer --> 
-    
+    <?php tpl_birthday() ?>
 </div>
 
 

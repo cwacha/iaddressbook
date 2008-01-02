@@ -51,8 +51,11 @@ function collect_birthdays() {
 function tpl_birthday() {
     global $conf;
     global $lang;
+    print "bla";
     
     $people = collect_birthdays();
+    
+    msg("tpl_birthday");
     
     foreach($people as $contact) {
         $birthday = strtotime( date('Y') . nice_date('-$mm-$dd', $contact->birthdate) );
@@ -98,6 +101,7 @@ function tpl_birthday() {
         echo $lang['bday_none']."<br/>";
     }
     
+    html_msgarea();
 }
 
 

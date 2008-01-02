@@ -3,6 +3,9 @@
     if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
     require_once(AB_CONF.'defaults.php');
 
+    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
+    require_once(AB_INC.'functions/html.php');
+
 
 function display_version() {
     global $VERSION;
@@ -181,32 +184,33 @@ function map_link($address) {
  * @see    html_msgarea
  */
 function msg($message,$lvl=0,$line='',$file=''){
-  global $MSG;
-  $errors[-1] = 'error';
-  $errors[0]  = 'info';
-  $errors[1]  = 'success';
+    global $MSG;
+    $errors[-1] = 'error';
+    $errors[0]  = 'info';
+    $errors[1]  = 'success';
 
-  if($line || $file) $message.=' ['.basename($file).':'.$line.']';
+    if($line || $file) $message.=' ['.basename($file).':'.$line.']';
 
-  if(!headers_sent()){
-    if(!isset($MSG)) $MSG = array();
-    $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
-  }else{
-    $MSG = array();
-    $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
-    if(function_exists('html_msgarea')){
-      html_msgarea();
-    }else{
-      print "ERROR($lvl) $message";
+    if(!headers_sent()) {
+        if(!isset($MSG)) $MSG = array();
+        $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
+    } else {
+        $MSG = array();
+        $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
+        if(function_exists('html_msgarea')) {
+            html_msgarea();
+        } else {
+            print "ERROR($lvl) $message";
+        }
     }
-  }
 }
 
 function msg_text() {
+  global $MSG;
   if(!isset($MSG)) return '';
 
   foreach($MSG as $msg){
-    $ret = $msg['lvl']. ": ".$msg['msg'] . "\n";
+    $ret .= $msg['lvl']. ": ".$msg['msg'] . "\n";
   }
   
   return $ret;
