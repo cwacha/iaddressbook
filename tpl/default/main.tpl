@@ -45,19 +45,15 @@
 
 <div class="mainview">
     <!-- Begin Logo -->
-    <table border="0" width="100%">
+    <table width="100%" border="1px">
         <tr>
             <td>
-                <div class="logo">
-                    <img src="<?= AB_TPL ?>images/logo.png">
-                </div>
+                <div class="logo"><img src="<?= AB_TPL ?>images/logo.png"></div>
             </td>
             <td>
-                <div class="title">
-                    <?= $conf['title'] ?>
-                </div>
+                <div class="title"><?= $conf['title'] ?></div>
             </td>
-            <td valign="top" width="250px">
+            <td align="right" valign="top">
                 <div class="login_box">
                     <?php if($conf['auth_enabled']) {
                             if($userinfo['logged_in'] == true) {
@@ -69,14 +65,11 @@
                         }
                     ?>
                 </div>
-
+        
                 <div class="birthday_box">
                     <div class="birthday_title"><?= $lang['birthdays'] ?></div>
-                    <div class="birthday_text">
-                        <?= tpl_birthday(); ?>
-                    </div>
-                </div>
-                
+                    <div class="birthday_text"><?= tpl_birthday(); ?></div>
+                </div>                
             </td>
         </tr>
     </table>

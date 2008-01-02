@@ -5,7 +5,7 @@
  */
 
 /* reset */
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul {list-style:none;}caption,th {text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;}q:before,q:after{content:'';}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}table{padding:0;margin:0;border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul {list-style:none;}caption,th {text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;}q:before,q:after{content:'';}
 
 /* fonts */
 body {font:13px arial,helvetica,clean,sans-serif;
@@ -69,17 +69,6 @@ body {
   padding: 0;
 }
 
-
-table {
-  font-size: 100%;
-  padding:0;
-  margin:0;
-}
-
-tr,td,th {padding:0; margin:0;}
-
-img {border:0}
-
 p {padding:0; margin: 0 0 1.0em 0;}
 
 hr {
@@ -93,8 +82,6 @@ hr {
 .leftalign {text-align: left;}
 .centeralign {text-align: center;}
 .rightalign {text-align: right;}
-
-
 
 
 .mainview {
@@ -468,9 +455,7 @@ input.missing {
 }
 
 .login_box {
-    width: 30%;
-    min-width: 220px;
-	float: right;
+    width: 220px;
     padding: 0;
     margin: 10px;
     margin-bottom: 40px;
@@ -479,9 +464,7 @@ input.missing {
 }
 
 .birthday_box {
-    width: 25%;
-    min-width: 220px;
-	float: right;
+    width: 220px;
     padding: 0;
     margin: 10px;
 }

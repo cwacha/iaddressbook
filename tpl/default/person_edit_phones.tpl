@@ -4,6 +4,7 @@
         </td>
         <td></td>
     </tr>
+    <div id="phonelabels">
     <?php
         $i = 1;
         foreach($contact->phones as $phone) {
@@ -86,6 +87,9 @@
     </tr>
 	<?php $i++; ?>
     <tr>
+        <td>
+            <div onclick="add_phonelabel(<?= $i?>)">+</div>
+        </td>
         <td class="person_left">
             <div class="person_labels">
                 <input type="text" name="phonelabel<?= $i?>" value="" class="text" />
@@ -97,3 +101,29 @@
             </div>
         </td>
     </tr>
+    </div>
+    
+
+<script type="text/javascript">
+function add_phonelabel(index) {
+    var content = "    <tr> \
+        <td> \
+            <div onclick='add_phonelabel(7)'>+</div> \
+        </td> \
+        <td class='person_left'> \
+            <div class='person_labels'> \
+                <input type='text' name='phonelabel7' value='' class='text' /> \
+            </div> \
+        </td> \
+        <td class='person_right'> \
+            <div class='person_text'> \
+                <input type='text' name='phone7' value='' class='text' /> \
+            </div> \
+        </td> \
+    </tr>";
+    
+    var new_label = document.createTextNode(content);
+    /* var new_label = content; */
+    document.getElementById("phonelabels").innerHTML += content;
+}
+</script>
