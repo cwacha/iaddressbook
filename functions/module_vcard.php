@@ -230,7 +230,6 @@ function contact2vcard($contact, $categories) {
     if($contact->company == true) $card->setValue('X-ABShowas', 0, 0, 'COMPANY');
     
     if($contact->birthdate != '0000-00-00') $card->setBirthday($contact->birthdate);
-    if(!empty($contact->homepage)) $card->setURL($contact->homepage);
 
     if(!empty($contact->note)) $card->setNote($contact->note);
     
@@ -354,10 +353,10 @@ function vcard2contact($card) {
     if(is_array($card['EMAIL'])) {
         foreach($card['EMAIL'] as $email) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($email['param']['TYPE'])) {
                 foreach($email['param']['TYPE'] as $key => $value) $email['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $email['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $email['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -371,10 +370,10 @@ function vcard2contact($card) {
     if(is_array($card['TEL'])) {
         foreach($card['TEL'] as $phone) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($phone['param']['TYPE'])) {
                 foreach($phone['param']['TYPE'] as $key => $value) $phone['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $phone['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $phone['param']['TYPE'])) $tmp['label'] = 'HOME';
                 if(in_array('CELL', $phone['param']['TYPE'])) $tmp['label'] = 'CELL';
@@ -392,10 +391,10 @@ function vcard2contact($card) {
     if(is_array($card['ADR'])) {
         foreach($card['ADR'] as $address) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($address['param']['TYPE'])){
                 foreach($address['param']['TYPE'] as $key => $value) $address['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $address['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $address['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -416,10 +415,10 @@ function vcard2contact($card) {
     if(is_array($card['URL'])) {
         foreach($card['URL'] as $url) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($url['param']['TYPE'])){
                 foreach($url['param']['TYPE'] as $key => $value) $url['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $url['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $url['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -433,10 +432,10 @@ function vcard2contact($card) {
     if(is_array($card['X-ABRELATEDNAMES'])) {
         foreach($card['X-ABRELATEDNAMES'] as $rname) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($rname['param']['TYPE'])){
                 foreach($rname['param']['TYPE'] as $key => $value) $rname['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $rname['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $rname['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -450,10 +449,10 @@ function vcard2contact($card) {
     if(is_array($card['X-AIM'])) {
         foreach($card['X-AIM'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -468,10 +467,10 @@ function vcard2contact($card) {
     if(is_array($card['X-ICQ'])) {
         foreach($card['X-ICQ'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -486,10 +485,10 @@ function vcard2contact($card) {
     if(is_array($card['X-MSN'])) {
         foreach($card['X-MSN'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -504,10 +503,10 @@ function vcard2contact($card) {
     if(is_array($card['X-JABBER'])) {
         foreach($card['X-JABBER'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -522,10 +521,10 @@ function vcard2contact($card) {
     if(is_array($card['X-SKYPE'])) {
         foreach($card['X-SKYPE'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -540,10 +539,10 @@ function vcard2contact($card) {
     if(is_array($card['X-YAHOO'])) {
         foreach($card['X-YAHOO'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -558,10 +557,10 @@ function vcard2contact($card) {
     if(is_array($card['X-IRC'])) {
         foreach($card['X-IRC'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }

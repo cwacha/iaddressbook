@@ -48,7 +48,11 @@
     <table width="100%">
         <tr>
             <td>
-                <div class="logo"><img src="<?= AB_TPL ?>images/logo.png"></div>
+                <div class="logo">
+                    <a href='<?= AB_URL ?>?do=reset'>
+                    <img src="<?= AB_TPL ?>images/logo.png">
+                    </a>
+                </div>
             </td>
             <td>
                 <div class="title"><?= $conf['title'] ?></div>

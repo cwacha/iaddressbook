@@ -86,6 +86,19 @@ if($ACT == 'logout') {
 	auth_logout();
 }
 
+if($ACT == 'reset') {
+    // reset the internal state
+    $_SESSION['id'] = 0;
+    $_SESSION['cat_id'] = 0;
+    $_SESSION['q'] = '';
+    $_SESSION['o'] = 0;
+    $_SESSION['l'] = 0;
+    $ID = 0;
+    $CAT_ID = 0;
+    $QUERY = '';
+    $contactlist_offset = 0;
+    $contactlist_letter = 0;
+}
 
 //close session
 session_write_close();
