@@ -4,44 +4,12 @@
         </td>
         <td></td>
     </tr>
-    <?php
-        $i = 1;
-        foreach($contact->urls as $url) {
-            $s = 0; //selected
-            ?>
-            <tr>
-                <td class="person_left">
-                    <div class="person_labels">
-                        <select name="urllabel<?= $i?>" size="1" class="text" >
-                            <option value='_$!<HomePage>!$_' <?php if($url['label'] == '_$!<HomePage>!$_') { echo "selected"; $s=1;} ?> ><?= tpl_label('_$!<HomePage>!$_') ?></option>
-                            <option value='HOME' <?php if($url['label'] == 'HOME') { echo "selected"; $s=1;} ?> ><?= tpl_label("HOME") ?></option>
-                            <option value='WORK' <?php if($url['label'] == 'WORK') { echo "selected"; $s=1;} ?> ><?= tpl_label("WORK") ?></option>
-                            <option value='_$!<Other>!$_' <?php if($url['label'] == '_$!<Other>!$_') { echo "selected"; $s=1;} ?> ><?= tpl_label('_$!<Other>!$_') ?></option>
-                            
-                            <?php if($s == 0) {
-                                echo "<option value='" . $url['label'] . "' selected>" . $url['label'] . "</option>";
-                                } else {
-                                //echo "<option value='" . $phone['label'] . "' selected>" . $phone['label'] . "</option>";
-                                }
-                            ?>
-                        </select>
-                    </div>
-                </td>
-                <td class="person_right">
-                    <div class="person_text">
-                        <input type="text" name="url<?= $i?>" value="<?= $url['url'] ?>" class="text" />
-                    </div>
-                </td>
-            </tr>
-            <?php
-            $i++;
-        }
-    ?>
-    <tr>
+
+    <tr id="urllabel_template1" style="display: none;">
         <td class="person_left">
             <div class="person_labels">
-                <select name="urllabel<?= $i?>" size="1" class="text" >
-                    <option value='_$!<HomePage>!$_' selected ><?= tpl_label('_$!<HomePage>!$_') ?></option>
+                <select name="urllabel_" size="1" class="text" >
+                    <option value='_$!<HomePage>!$_' ><?= tpl_label('_$!<HomePage>!$_') ?></option>
                     <option value='HOME' selected ><?= tpl_label('HOME') ?></option>
                     <option value='WORK' ><?= tpl_label('WORK') ?></option>
                     <option value='_$!<Other>!$_' ><?= tpl_label('_$!<Other>!$_') ?></option>
@@ -50,22 +18,56 @@
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="url<?= $i?>" value="" class="text" />
+                <input type="text" name="url_" value="" class="text" />
+                <a href="javascript:add_urllabel()"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="javascript:true" onclick="del_urllabel(this);"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
         </td>
     </tr>
 
-    <?php $i++; ?>
-    
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <input type="text" name="urllabel<?= $i?>" value="" class="text" />
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="url<?= $i?>" value="" class="text" />
-            </div>
-        </td>
-    </tr>
+    <tr id="urllabel_position"><td></td><td></td></tr>
+
+
+<script type="text/javascript">
+var urllabel_counter = 0;
+
+function add_urllabel(label,content) {
+    if(!label) label = '';
+    if(!content) content = '';
+    urllabel_counter++;    
+
+    var newBlock = document.getElementById('urllabel_template1').cloneNode(true);
+    newBlock.id = '';
+    newBlock.style.display = 'table-row';
+    var childNode = newBlock.getElementsByTagName("*");
+    for (var i=0;i<childNode.length;i++) {
+        var theName = childNode[i].name;
+        if (theName) {
+            if(theName == 'url_') {
+                childNode[i].value = content;
+            }
+            childNode[i].name = theName + urllabel_counter;
+        }
+        if(childNode[i].tagName == 'OPTION' && childNode[i].value == label) {
+            childNode[i].setAttribute("selected", 1);
+        }
+    }
+    var insertHere = document.getElementById('urllabel_position');
+    insertHere.parentNode.insertBefore(newBlock, insertHere);    
+}
+function del_urllabel(object) {
+    // careful! this code depends on the actual HTML code!    
+    var block = object.parentNode.parentNode.parentNode;
+    block.parentNode.removeChild(block);
+}
+
+<?php
+foreach($contact->urls as $url) {
+    echo "add_urllabel('".$url['label']."', '".$url['url']."');\n";
+}
+?>
+
+if(urllabel_counter == 0) add_urllabel();
+
+</script>
+

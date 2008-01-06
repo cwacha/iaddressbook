@@ -291,13 +291,17 @@ function tpl_catselect() {
 }
 
 function tpl_abc() {
-    $i = 0;
-    $abc = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'A-Z');
-    echo "<a href=\"javascript:select_l('0')\" >#</a> | ";
+    global $contactlist_letter;
+    
+    $cll = 'A-Z';
+    if($contactlist_letter) $cll = $contactlist_letter;
+    
+    $abc = array('#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'A-Z');
     foreach($abc as $l) {
-        $i++;
-        if($i%12 == 0) echo "<br>| ";
-        echo "<a href=\"javascript:select_l('$l')\" >$l</a> | ";
+        if($cll == $l)
+            echo "<u><a href=\"javascript:select_l('$l')\" > $l </a></u>|";
+        else
+            echo "<a href=\"javascript:select_l('$l')\" > $l </a>|";
     }
 }
 

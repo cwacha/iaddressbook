@@ -9,6 +9,8 @@
 
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'ltr';
+$lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
+$lang['sort_rules_to']                  = 'A,a,O,o,U,u,E,e,E,e,A,a';
 $lang['btn_edit']                       = 'Bearbeiten';
 $lang['btn_delete']                     = 'Löschen';
 $lang['btn_search']                     = 'Suche';
@@ -40,6 +42,7 @@ $lang['cat_delete']                     = 'Kategorie löschen';
 $lang['cat_lastimport']                 = 'Letzter Import';
 $lang['cat_changed']                    = 'Geänderte Kontakte';
 $lang['delete_contacts']                = 'Kontakt(e) löschen';
+$lang['import_export']                  = 'Import/Export';
 $lang['export_vcard']                   = 'vCard(s) exportieren';
 $lang['export_csv']                     = 'CSV exportieren';
 $lang['export_ldif']                    = 'LDIF exportieren';
@@ -118,6 +121,5 @@ $lang['bday_day']                       = 'morgen';
 $lang['bday_day2']                      = 'übermorgen';
 $lang['bday_days']                      = 'in $n Tagen';
 $lang['bday_today']                     = 'heute!';
-
 
 ?>

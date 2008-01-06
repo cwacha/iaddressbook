@@ -420,12 +420,21 @@ class addressbook {
     }
     
     function sort($contactlist) {
+        global $lang;
+        
         //$contactlist is an array of persons
         $sorted_names = array();
         $sorted = array();
+
+        // load sort rules
+        $sort_rules_from = split(',', $lang['sort_rules_from']);
+        $sort_rules_to   = split(',', $lang['sort_rules_to']);
         
         if(is_array($contactlist)) {
-            foreach($contactlist as $contact) $sorted_names[$contact->id] = strtoupper($contact->name());
+            foreach($contactlist as $contact) {
+                $sorted_names[$contact->id] = str_replace($sort_rules_from, $sort_rules_to, strtoupper($contact->name()));
+            }
+
             asort($sorted_names);
             
             foreach($sorted_names as $key => $value) $sorted[$key] = $contactlist[$key];

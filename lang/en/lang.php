@@ -9,8 +9,11 @@
 $lang['encoding']             = 'utf-8';
 $lang['direction']            = 'ltr';
 
+// Letter sort rules
+$lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
+$lang['sort_rules_to']                  = 'A,a,O,o,U,u,E,e,E,e,A,a';
+
 // Buttons
-//$lang['btn_new']              = '  +  ';
 $lang['btn_edit']             = 'Edit';
 $lang['btn_delete']           = 'Delete Contact';
 $lang['btn_search']           = 'Search';
@@ -54,6 +57,7 @@ $lang['export_ldif']          = 'export LDIF file';
 $lang['import_folder']        = 'import from folder';
 $lang['create_contact']       = 'new contact';
 $lang['map']                  = 'Map';
+$lang['select_action']        = 'select action...';
 
 // Person Labels
 $lang['no_name']              = '(No Name)';
@@ -111,6 +115,18 @@ $lang['label_city']           = 'City';
 $lang['label_state']          = 'State';
 $lang['label_country']        = 'Country';
 
+// Birthday Reminder
+$lang['birthdays']            = 'Upcoming Birthdays';
+$lang['bday_none']            = 'none';
+$lang['bday_month']           = 'in $n month';
+$lang['bday_months']          = 'in $n months';
+$lang['bday_week']            = 'in $n week';
+$lang['bday_weeks']           = 'in $n weeks';
+$lang['bday_day']             = 'in $n day';
+$lang['bday_day2']            = 'in $n days';
+$lang['bday_days']            = 'in $n days';
+$lang['bday_today']           = 'today!';
+
 // Date Helpers
 $lang['month'][1]             = 'January';
 $lang['month'][2]             = 'February';
@@ -126,15 +142,5 @@ $lang['month'][11]            = 'November';
 $lang['month'][12]            = 'December';
 
 
-$lang['birthdays']            = 'Upcoming Birthdays';
-$lang['bday_none']            = 'none';
-$lang['bday_month']           = 'in $n month';
-$lang['bday_months']          = 'in $n months';
-$lang['bday_week']            = 'in $n week';
-$lang['bday_weeks']           = 'in $n weeks';
-$lang['bday_day']             = 'in $n day';
-$lang['bday_day2']            = 'in $n days';
-$lang['bday_days']            = 'in $n days';
-$lang['bday_today']           = 'today!';
 
 ?>

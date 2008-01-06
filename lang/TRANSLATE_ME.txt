@@ -9,7 +9,8 @@ Make sure you use the ENGLISH version as it is the most up to date language.
 UPDATE AN OLD TRANSLATION
 -------------------------
 
-Translation files are checked automatically against the english version.
+If you execute translator.php (http://youraddressbook.com/lang/translator.php)
+all translation files are checked automatically against the english version.
 All languages that need to be updated can be found in /lang/*.php. I.e. if
 the spanish language file needs to be updated a file called /lang/es.php
 will exist. The strings that are new are prefixed with the string

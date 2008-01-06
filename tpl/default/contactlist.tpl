@@ -13,7 +13,7 @@
         <!-- Letter Filter Begin -->
         <div style="height: 0.5em;"></div>
         
-        <div class="person_smalltext" style="text-align: center;" >
+        <div class="person_smalltext" style="text-align: center; padding-left: 10px; padding-right: 10px;" >
             <?= tpl_abc(); ?>
         </div>
         
@@ -59,16 +59,35 @@
                 <?= $lang['category'] ?>
                 <div class="separator100">&nbsp;</div>
 
-                <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_add_contacts')"><?= $lang['cat_add_to'] ?></a> /</div>
-                <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_del_contacts', '<?= $lang['confirm_cat_remove_contacts'] ?>')"><?= $lang['cat_delete_from'] ?></a> </div>
-
-                <select name="cat_id" size="1" style="float: right;" >
+                <select name="cat_menu" size="1" style="float: right;" onChange="cat_menu_change()">
+                    <option value='' selected><?= $lang['select_action'] ?></option>
                     <?php
                         foreach($categories as $category) {
-                            $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
-                            echo "<option value='".$category->id."' $sel >".$category->name."</option> \n";
+                            if($category->id == $CAT_ID) {
+                                if(substr($category->int_name,0,1) != ' ')
+                                    echo "<option value='catdel_$category->id' >".$lang['cat_delete']." $category->name</option>";
+                            }
                         }
                     ?>
+                    <optgroup label="<?= $lang['cat_add_to'] ?>">
+                    <?php
+                        foreach($categories as $category) {
+                            if(substr($category->int_name,0,1) != ' ')
+                                echo "<option value='addcon_$category->id' $sel >$category->name</option> \n";
+                        }
+                    ?>
+                    </optgroup>
+                    <optgroup label="<?= $lang['cat_delete_from'] ?>">
+                    <?php
+                        foreach($categories as $category) {
+                            $disp = 1;
+                            if($category->int_name == ' __all__') $disp = 0;
+                            if($category->int_name == ' __lastimport__') $disp = 0;
+                            if($CAT_ID != 0 && $category->id != $CAT_ID) $disp = 0;
+                            if($disp) echo "<option value='delcon_$category->id' $sel >$category->name</option> \n";
+                        }
+                    ?>
+                    </optgroup>
                 </select>
                 
                 <div style="height: 2.2em;"></div>
@@ -76,9 +95,6 @@
                 <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_add')"><?= $lang['cat_add'] ?></a> </div>
                 <input type="text" name="cat_name" class="text" style="float: right;" onkeypress="CheckEnter(event);" />
                 
-                <div style="height: 2.2em;"></div>
-
-                <div style="float: left;"> <a href="javascript:do_action('cat_del', '<?= $lang['confirm_cat_delete'] ?>')"><?= $lang['cat_delete'] ?></a> </div>
                 <div style="height: 3em;"></div>
                 <!-- Category Section End -->
 
@@ -97,6 +113,7 @@
                 
                 
                 <input type="hidden" name="do" value="" />
+                <input type="hidden" name="cat_id" value="" />
                 <input type="hidden" name="l" value="" />
                 <input type="hidden" name="o" value="" />
             </div>    
@@ -130,6 +147,21 @@ function do_action(act, confirmation) {
     }
     document.ct_form.elements["do"].value = act;
     document.ct_form.submit();
+}
+function cat_menu_change() {
+    var options = document.ct_form.cat_menu.options;
+    for (var i=0; i < options.length; i++) {
+        if (options[i].selected) {
+            var o = options[i].value.split("_");
+            var action = o[0];
+            var id = o[1];
+            //alert("action: " + action + " id: " + id);
+            document.ct_form.elements["cat_id"].value = id;
+            if(action == "catdel") do_action('cat_del', '<?= $lang['confirm_cat_delete'] ?>');
+            if(action == "addcon") do_action('cat_add_contacts');
+            if(action == "delcon") do_action('cat_del_contacts', '<?= $lang['confirm_cat_remove_contacts'] ?>');
+        }
+    }
 }
 function CheckEnter(evt) {
     var keyCode = (evt.charCode)? evt.charCode:((evt.which)? evt.which:evt.keyCode);
