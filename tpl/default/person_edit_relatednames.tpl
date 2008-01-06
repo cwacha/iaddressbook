@@ -28,8 +28,8 @@
         <td class="person_right">
             <div class="person_text">
                 <input type="text" name="relatedname_" value="" class="text" />
-                <a href="javascript:add_relatedlabel()"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="javascript:true" onclick="del_relatedlabel(this);"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_relatedlabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="del_relatedlabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
         </td>
     </tr>

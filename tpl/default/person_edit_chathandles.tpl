@@ -26,8 +26,8 @@
                     <option value='SKYPE' ><?= tpl_label('SKYPE') ?></option>
                     <option value='YAHOO' ><?= tpl_label('YAHOO') ?></option>
                 </select>
-                <a href="javascript:add_chatlabel()"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="javascript:true" onclick="del_chatlabel(this);"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_chatlabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="del_chatlabel(this);return false"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
         </td>
     </tr>

@@ -19,8 +19,8 @@
         <td class="person_right">
             <div class="person_text">
                 <input type="text" name="url_" value="" class="text" />
-                <a href="javascript:add_urllabel()"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="javascript:true" onclick="del_urllabel(this);"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_urllabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="del_urllabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
         </td>
     </tr>

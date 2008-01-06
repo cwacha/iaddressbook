@@ -27,8 +27,8 @@
             </div>
             <div class="person_text" style="height: 20px;">
                 <input type="text" name="street_" value='' class="text" />
-                <a href="javascript:add_addresslabel()"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="javascript:true" onclick="del_addresslabel(this);"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_addresslabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="del_addresslabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
             <div class="person_text" style="height: 20px;">
                 <input type="text" name="zip_" value='' class="text" size="10" />

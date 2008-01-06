@@ -22,8 +22,8 @@
         <td class="person_right">
             <div class="person_text">
                 <input type="text" name="phone_" value="" class="text" />
-                <a href="javascript:add_phonelabel()"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="javascript:true" onclick="del_phonelabel(this);"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_phonelabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="del_phonelabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
         </td>
     </tr>

@@ -18,8 +18,8 @@
         <td class="person_right">
             <div class="person_text">
                 <input type="text" name="email_" value="" class="text" />
-                <a href="javascript:add_emaillabel()"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="javascript:true" onclick="del_emaillabel(this);"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_emaillabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="del_emaillabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
         </td>
     </tr>
