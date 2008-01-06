@@ -112,9 +112,9 @@ session_write_close();
 $contactlist = array();         // key = contact->id, value = contact
 $contactlist_limit = $conf['contactlist_limit'];
 
-$contact = false;
-$contact_categories = array();
-$categories = array();
+$contact = false;               // the contact
+$contact_categories = array();  // categories the current contact is a member of
+$categories = array();          // all categories
 
 db_init();
 db_open();

@@ -230,6 +230,7 @@ function act_save() {
     global $CAT;
     global $contact_categories;
 
+    // load contact with image
     $contact = $AB->get($ID, true);
     if($contact == false) $contact = new person;
 
@@ -270,11 +271,8 @@ function act_save() {
         } else {
             $contact->image = @file_get_contents($_FILES['photo_file']['tmp_name']);
         }
-    } else {
-        //preserve image
-        //$contact->image = img_load($contact->id);
     }
-
+    
     $contact->addresses = array();
     $contact->emails = array();
     $contact->phones = array();
@@ -422,7 +420,13 @@ function act_new() {
 function act_delete() {
     global $ID;
     global $AB;
+    global $CAT;
+    global $contact_categories;
 
+    $contact_categories = $CAT->find($ID);
+    foreach($contact_categories as $category) {
+        $CAT->delete_contact($ID, $category->id);
+    }
     $AB->delete($ID);
 }
 
