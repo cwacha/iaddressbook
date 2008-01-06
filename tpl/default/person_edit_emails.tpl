@@ -47,8 +47,12 @@ function add_emaillabel(label, content) {
             }
             childNode[i].name = theName + emaillabel_counter;
         }
-        if(childNode[i].tagName == 'OPTION' && childNode[i].value == label) {
-            childNode[i].setAttribute("selected", 1);
+        if(childNode[i].tagName == 'OPTION') {
+            if(childNode[i].value == label) {
+                childNode[i].selected = true;
+            } else {
+                childNode[i].selected = false;
+            }
         }
     }
     var insertHere = document.getElementById('emaillabel_position');

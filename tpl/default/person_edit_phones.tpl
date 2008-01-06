@@ -52,9 +52,13 @@ function add_phonelabel(label,content) {
             }
             childNode[i].name = theName + phonelabel_counter;
         }
-        if(childNode[i].tagName == 'OPTION' && childNode[i].value == label) {
-            childNode[i].setAttribute("selected", 1);
-        }
+        if(childNode[i].tagName == 'OPTION') {
+            if(childNode[i].value == label) {
+                childNode[i].selected = true;
+            } else {
+                childNode[i].selected = false;
+            }
+        } 
     }
     var insertHere = document.getElementById('phonelabel_position');
     insertHere.parentNode.insertBefore(newBlock, insertHere);    

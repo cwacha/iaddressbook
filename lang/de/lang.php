@@ -49,6 +49,7 @@ $lang['export_ldif']                    = 'LDIF exportieren';
 $lang['import_folder']                  = 'Ordner importieren';
 $lang['create_contact']                 = 'neuer Kontakt';
 $lang['map']                            = 'Karte';
+$lang['select_action']                  = 'Weitere Aktionen...';
 $lang['no_name']                        = '(Ohne Namen)';
 $lang['label_work']                     = 'Arbeit';
 $lang['label_home']                     = 'Privat';
@@ -98,6 +99,16 @@ $lang['label_zip']                      = 'PLZ';
 $lang['label_city']                     = 'Stadt';
 $lang['label_state']                    = 'Staat';
 $lang['label_country']                  = 'Land';
+$lang['birthdays']                      = 'Geburtstage';
+$lang['bday_none']                      = 'keine';
+$lang['bday_month']                     = 'in $n Monat';
+$lang['bday_months']                    = 'in $n Monaten';
+$lang['bday_week']                      = 'in $n Woche';
+$lang['bday_weeks']                     = 'in $n Wochen';
+$lang['bday_day']                       = 'morgen';
+$lang['bday_day2']                      = 'übermorgen';
+$lang['bday_days']                      = 'in $n Tagen';
+$lang['bday_today']                     = 'heute!';
 
 $lang['month']['1']                     = 'Januar';
 $lang['month']['2']                     = 'Februar';
@@ -111,15 +122,6 @@ $lang['month']['9']                     = 'September';
 $lang['month']['10']                    = 'Oktober';
 $lang['month']['11']                    = 'November';
 $lang['month']['12']                    = 'Dezember';
-$lang['birthdays']                      = 'Geburtstage';
-$lang['bday_none']                      = 'keine';
-$lang['bday_month']                     = 'in $n Monat';
-$lang['bday_months']                    = 'in $n Monaten';
-$lang['bday_week']                      = 'in $n Woche';
-$lang['bday_weeks']                     = 'in $n Wochen';
-$lang['bday_day']                       = 'morgen';
-$lang['bday_day2']                      = 'übermorgen';
-$lang['bday_days']                      = 'in $n Tagen';
-$lang['bday_today']                     = 'heute!';
+
 
 ?>

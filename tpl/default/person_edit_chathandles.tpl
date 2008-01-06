@@ -62,11 +62,19 @@ function add_chatlabel(label,type,handle) {
             }
             childNode[i].name = theName + chatlabel_counter;
         }
-        if(childNode[i].tagName == 'OPTION' && slist == 'label' && childNode[i].value == label) {
-            childNode[i].setAttribute("selected", 1);
+        if(childNode[i].tagName == 'OPTION' && slist == 'label') {
+            if(childNode[i].value == label) {
+                childNode[i].selected = true;
+            } else {
+                childNode[i].selected = false;
+            }
         }
-        if(childNode[i].tagName == 'OPTION' && slist == 'type' && childNode[i].value == type) {
-            childNode[i].setAttribute("selected", 1);
+        if(childNode[i].tagName == 'OPTION' && slist == 'type') {
+            if(childNode[i].value == type) {
+                childNode[i].selected = true;
+            } else {
+                childNode[i].selected = false;
+            }
         }
     }
     var insertHere = document.getElementById('chatlabel_position');

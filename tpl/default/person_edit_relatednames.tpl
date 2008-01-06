@@ -57,8 +57,12 @@ function add_relatedlabel(label,content) {
             }
             childNode[i].name = theName + relatedlabel_counter;
         }
-        if(childNode[i].tagName == 'OPTION' && childNode[i].value == label) {
-            childNode[i].setAttribute("selected", 1);
+        if(childNode[i].tagName == 'OPTION') {
+            if(childNode[i].value == label) {
+                childNode[i].selected = true;
+            } else {
+                childNode[i].selected = false;
+            }
         }
     }
     var insertHere = document.getElementById('relatedlabel_position');
