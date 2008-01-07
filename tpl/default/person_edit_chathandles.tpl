@@ -46,7 +46,7 @@ function add_chatlabel(label,type,handle) {
 
     var newBlock = document.getElementById('chatlabel_template1').cloneNode(true);
     newBlock.id = '';
-    newBlock.style.display = 'table-row';
+    newBlock.style.display = '';
     var childNode = newBlock.getElementsByTagName("*");
     for (var i=0;i<childNode.length;i++) {
         var theName = childNode[i].name;
