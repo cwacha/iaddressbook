@@ -15,7 +15,7 @@
                     <option value='_$!<Brother>!$_' ><?= tpl_label('_$!<Brother>!$_') ?></option>
                     <option value='_$!<Sister>!$_' ><?= tpl_label('_$!<Sister>!$_') ?></option>
                     <option value='_$!<Child>!$_' ><?= tpl_label('_$!<Child>!$_') ?></option>
-                    <option value='_$!<Friend>!$_' ><?= tpl_label('_$!<Friend>!$_') ?></option>
+                    <option value='_$!<Friend>!$_' selected ><?= tpl_label('_$!<Friend>!$_') ?></option>
                     <option value='_$!<Spouse>!$_' ><?= tpl_label('_$!<Spouse>!$_') ?></option>
                     <option value='_$!<Partner>!$_' ><?= tpl_label('_$!<Partner>!$_') ?></option>
                     <option value='_$!<Assistant>!$_' ><?= tpl_label('_$!<Assistant>!$_') ?></option>

@@ -8,7 +8,7 @@
         <td class="person_left">
             <div class="person_labels">
                 <select name="phonelabel_" size="1" class="text" >
-                    <option value="HOME" ><?= tpl_label("HOME") ?></option>
+                    <option value="HOME" selected ><?= tpl_label("HOME") ?></option>
                     <option value="CELL" ><?= tpl_label("CELL") ?></option>
                     <option value="WORK" ><?= tpl_label("WORK") ?></option>
                     <option value="MAIN" ><?= tpl_label("MAIN") ?></option>
