@@ -1,0 +1,68 @@
+<?php
+/**
+ * This is the AddressBook's authentication file
+ * This is a piece of PHP code so PHP syntax applies!
+ *
+ * add as many usernames and md5 passwords as you like
+ * 
+ * you can create an md5 sum if you enter 'make md5' as username and your password
+ * as password into the login form of iAddressBook!
+ * 
+ */
+
+
+///////////////////////
+//     U S E R S     //
+///////////////////////
+// guest user - if you have activated guest access, these are the permissions
+$auth['guest']['permissions']   = array('show', 'img', 'search', 
+                                        'cat_select', 
+                                        'export_vcard', 'export_vcard_cat',
+                                        'login', 'logout');
+
+
+// This is an example user with
+// username = fred
+// password = banana
+//
+//   Fred has additional permissions ('img', 'show') and is also part of the group '@editor'
+//   since the group @editor also allows the actions 'img' and 'show' (see below) freds
+//   additional permissions are not necessary actually!
+//
+// For an explanation of all actions see the documentation at http://wacha.ch/addressbook:docs#permissions_access_controls
+
+$auth['fred']['password']    = '72b302bf297a228a75730123efef7c41';
+$auth['fred']['permissions'] = array( 'img', 'show' );
+$auth['fred']['groups']      = array('@editor');
+$auth['fred']['fullname']    = 'Fred the Geek';
+$auth['fred']['email']       = 'fred@geeks.com';
+
+
+$auth['your_admin_username']['password']    = '--fill-in-your-password--';
+$auth['your_admin_username']['permissions'] = array();
+$auth['your_admin_username']['groups']      = array('@admin');
+$auth['your_admin_username']['fullname']    = 'Administrator';
+$auth['your_admin_username']['email']       = '';
+
+
+///////////////////////
+//    G R O U P S    //
+///////////////////////
+$auth['@admin']['permissions']  = array('show', 'img', 'search', 'edit', 'new', 'save', 'delete', 'delete_many',
+                                        'cat_select', 'cat_add', 'cat_del', 'cat_del_empty', 'cat_add_contacts', 'cat_del_contacts',
+                                        'import_vcard', 'export_vcard', 'export_vcard_cat', 'export_csv_cat', 'export_ldif_cat', 
+                                        'login', 'logout',
+                                        'debug', 'check');
+
+$auth['@editor']['permissions'] = array('show', 'img', 'search', 'edit', 'new', 'save', 'delete', 'delete_many',
+                                        'cat_select', 'cat_add', 'cat_del', 'cat_del_empty', 'cat_add_contacts', 'cat_del_contacts',
+                                        'import_vcard', 'export_vcard', 'export_vcard_cat', 'export_csv_cat', 'export_ldif_cat',
+                                        'login', 'logout');
+
+$auth['@guest']['permissions']  = array('show', 'img', 'search', 
+                                        'cat_select', 
+                                        'export_vcard', 'export_vcard_cat',
+                                        'login', 'logout');
+
+    
+?>
