@@ -58,10 +58,15 @@ function db_open() {
 
     $db = NewADOConnection($db_config['dbtype']);
     
-    if($conf['debug_db']) $db->debug = true;
+    if($db === false or empty($conf['dbname'])) {
+        msg("Cannot connect to database: Error in database configuration (check config.php).", -1);
+        return;
+    }
     
+    if($conf['debug_db']) $db->debug = true;
+        
     if(!$db->Connect($db_config['dbserver'], $db_config['dbuser'], $db_config['dbpass'], $db_config['dbname'])) {
-      msg("Unable to connect: Connection error to server '".$db_config['dbserver']."' with user '".$db_config['dbuser']."'", -1);
+      msg("Unable to connect to database: Connection error to server '".$db_config['dbserver']."' with user '".$db_config['dbuser']."'", -1);
       return;
     }
     
@@ -70,7 +75,6 @@ function db_open() {
         $result = $db->Execute($sql);
     }
     $db->SetFetchMode(ADODB_FETCH_ASSOC);
-    
 }
 
 function db_close() {
