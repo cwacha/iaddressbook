@@ -13,15 +13,46 @@
     if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
     require_once(AB_INC."functions/html.php");
 
-function img_removecache($id) {
+
+function img_create($id, $image) {
+    global $conf;
+    
+    if(empty($image)) return;
+    
+    $id = (int)$id;
+    $format = strtolower($conf['photo_format']);
+    $image_file = AB_INC."_images/".$id.".".$format;
+    $fd = @fopen($image_file, "wb");
+    if(is_resource($fd)) {
+        fwrite($fd, $image);
+        fclose($fd);
+    } else {
+        msg("Could not write image $image_file", -1);
+    }
+}
+
+function img_delete($id) {
+    global $conf;
     
     $id = (int)$id;
     if($id != 0) {
-        $cached_image = AB_INC."_cache/".$id.".png";
-        if(is_readable($cached_image)) {
-            unlink($cached_image);
+        $format = strtolower($conf['photo_format']);
+        $image_file = AB_INC."_images/".$id.".".$format;
+        if(is_readable($image_file)) {
+            unlink($image_file);
         }
     }
+}
+
+function img_load($id) {
+    global $conf;
+
+    $id = (int)$id;    
+    $format = strtolower($conf['photo_format']);
+    $image_file = AB_INC."_images/".$id.".".$format;
+    $image = @file_get_contents($image_file);
+
+    return $image;
 }
 
 function img_display() {
@@ -33,55 +64,18 @@ function img_display() {
     $image = '';
 
     act_getcontact();
-    
 
-    if(!empty($contact->image)) {
-        // check for cached copy
-        $cached_image = AB_INC."_cache/".$contact->id.".png";
-        if(is_readable($cached_image)) {
-            $fd = fopen($cached_image, "rb");
-            if(is_resource($fd)) {
-                while(!feof($fd)) $image .= fread($fd, 8192);
-                fclose($fd);
-            }
-        } else {
-            // no cache available
-            if(!empty($conf['im_convert'])) {
-                // use ImageMagick
-                $image = img_convert($contact->image);
-                if(!empty($image)) {
-                    // create cached copy
-                    $fd = @fopen($cached_image, "wb");
-                    if(is_resource($fd)) {
-                        fwrite($fd, $image);
-                        fclose($fd);
-                    }
-                }
-            }
-            
-            if(empty($image)) {
-                //try with GD
-                $im = @imagecreatefromstring($contact->image);
-                if($im !== false) {
-                    // create cached copy
-                    imagepng($im, $cached_image);
-                    imagedestroy($im);
-                    
-                    $fd = fopen($cached_image, "rb");
-                    if(is_resource($fd)) {
-                        while(!feof($fd)) $image .= fread($fd, 8192);
-                        fclose($fd);
-                    }
-                }
-            }
-        }
+    $format = strtolower($conf['photo_format']);
+    $image_file = AB_INC."_images/".$contact->id.".".$format;
+    if(is_readable($image_file)) {
+        $image = @file_get_contents($image_file);
     }
 
-    // now we have the image as PNG loaded in $image or no image at all
+    // now we have the image loaded in $image or no image at all
 
     if(!empty($image)) {
         // display loaded image
-        header('Content-Type: image/png');
+        header('Content-Type: image/$format');
         echo $image;
     } else {
         // display unknown image
@@ -91,16 +85,14 @@ function img_display() {
             $im_file = "images/unknown_person.gif";
         }
 
-        $fd = @fopen(template($im_file), "rb");
-        if(is_resource($fd)) {
-            while(!feof($fd)) $image .= fread($fd, 8192);
-            fclose($fd);
-        }
+        $image = @file_get_contents(template($im_file));
         
         header('Content-Type: image/gif');
         echo $image;
     }
 
+	//echo "\n";
+	//html_msgarea();
     exit();
 }
 
@@ -109,36 +101,71 @@ function img_convert($in_image, $type='png', $options='') {
     
     $err = '';
     $out_image = '';
+    $type = strtolower($type);
 
-    $desc_spec = array(
-        0 => array("pipe", "rb"),
-        1 => array("pipe", "w"),
-        2 => array("pipe", "w")
-    );
+    if(!empty($conf['im_convert']) and is_readable($conf['im_convert'])) {
+		
+	    $desc_spec = array(
+	        0 => array("pipe", "rb"),
+	        1 => array("pipe", "w"),
+	        2 => array("pipe", "w")
+	    );
+		
+		$process = proc_open($conf['im_convert']." - $options $type:-", $desc_spec, $pipes);
+		
+		if(is_resource($process)) {
+			fwrite($pipes[0], $in_image);
+			fclose($pipes[0]);
+			
+			while(!feof($pipes[1])) {
+				$out_image .= fread($pipes[1], 8192);
+			}
+			while(!feof($pipes[2])) {
+				$err .= fread($pipes[2], 8192);
+			}
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			
+			//msg("Using ImageMagick");
+			
+		} else {
+			$err = "could not open pipe";
+		}
+	}
 
-    if(!is_readable($conf['im_convert'])) {
-        msg("Cannot convert image: ".$conf['im_convert']." does not exist");
-        return $out_image;
-    }
-    
-    $process = proc_open($conf['im_convert']." - $options $type:-", $desc_spec, $pipes);
-
-    if(is_resource($process)) {
-        fwrite($pipes[0], $in_image);
-        fclose($pipes[0]);
-
-        while(!feof($pipes[1])) {
-            $out_image .= fread($pipes[1], 8192);
-        }
-        while(!feof($pipes[2])) {
-            $err .= fread($pipes[2], 8192);
-        }
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-
-    } else {
-        $err = "could not open pipe";
-    }
+	if(empty($out_image) or !empty($err)) {
+		// ImageMagick did not work, try with GD
+		
+		$tmp_image = AB_INC."_images/tmp.$type";
+		
+		$im = @imagecreatefromstring($in_image);
+		if($im !== false) {
+            // create temporary copy
+            switch($type) {
+                case 'png':
+                    imagepng($im, $tmp_image);
+                    break;
+                case 'gif':
+                    imagegif($im, $tmp_image);
+                    break;
+                case 'jpg':
+                case 'jpeg':
+                    imagejpeg($im, $tmp_image);
+                    break;
+                default:
+                    msg("Cannot convert image: GD only supports gif, jpg and png", -1);
+            }
+			imagedestroy($im);
+			
+			$out_image = @file_get_contents($tmp_image);
+			
+	        if(is_writeable($tmp_image)) {
+	            unlink($tmp_image);
+	        }
+		} else {
+            msg("Cannot convert image with GD: Data is not in a recognized format", -1);
+		}
+	}
 
     if(!empty($err)) {
         msg( "<pre style='text-align: left;' >", -1);

@@ -340,12 +340,20 @@ class categories {
     }
     
     function sort($categories) {
+        global $lang;
+
         //$categories is an array of category
         $sorted_names = array();
         $sorted = array();
         
+        // load sort rules
+        $sort_rules_from = split(',', $lang['sort_rules_from']);
+        $sort_rules_to   = split(',', $lang['sort_rules_to']);
+
         if(is_array($categories)) {
-            foreach($categories as $cat) $sorted_names[$cat->id] = strtoupper($cat->int_name);
+            foreach($categories as $cat) {
+                $sorted_names[$cat->id] = str_replace($sort_rules_from, $sort_rules_to, strtoupper($cat->int_name));
+            }
             asort($sorted_names);
             
             foreach($sorted_names as $key => $value) $sorted[$key] = $categories[$key];
@@ -353,7 +361,6 @@ class categories {
         
         return $sorted;
     }
-    
 }
 
 

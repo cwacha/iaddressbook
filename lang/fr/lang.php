@@ -1,9 +1,6 @@
 <?php
-
-
-
 /**
- * english language file
+ * french language file
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Brice Maron bmaron@gmail.com
@@ -12,6 +9,8 @@
 
 $lang['encoding']                       = "utf-8";
 $lang['direction']                      = "ltr";
+$lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
+$lang['sort_rules_to']                  = 'A,a,O,o,U,u,E,e,E,e,A,a';
 $lang['btn_edit']                       = "Editer";
 $lang['btn_delete']                     = "Supprimer le contact ";
 $lang['btn_search']                     = "Rechercher";

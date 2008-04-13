@@ -18,7 +18,7 @@
 
     
 
-function act_importvcard() {
+function act_importvcard($filename = '') {
     global $AB;
     global $conf;
     global $CAT;
@@ -28,11 +28,13 @@ function act_importvcard() {
     $imported = 0;
     $person_id = false;
     
-    if(!is_string($_FILES['vcard_file']['tmp_name'])) {
+    if($filename == '') $filename = $_FILES['vcard_file']['tmp_name'];
+    
+    if(!is_string($filename)) {
         msg("file was not uploaded<br>", -1);
         return;
     }
-    if(!file_exists($_FILES['vcard_file']['tmp_name'])) {
+    if(!file_exists($filename)) {
         msg("file does not exist", -1);
         return;
     }
@@ -41,7 +43,7 @@ function act_importvcard() {
     $parse = new Contact_Vcard_Parse();
     
     // parse it
-    $data = $parse->fromFile($_FILES['vcard_file']['tmp_name'], true, $conf['vcard_fb_enc']);
+    $data = $parse->fromFile($filename, true, $conf['vcard_fb_enc']);
     
     if(!is_array($data)) {
         msg("Error importing vcard!!", -1);
@@ -92,7 +94,11 @@ function act_importvcard() {
         }
     }
     
-    unlink($_FILES['vcard_file']['tmp_name']);
+    if(is_writeable($filename)) {
+        unlink($filename);
+    } else {
+        msg("Cannot remove $filename: read-only file", -1);
+    }
 
     if($imported > 0) msg("$imported vCard(s) succesfully imported!", 1);
     
@@ -115,12 +121,40 @@ function act_importvcard() {
     //echo '</pre>';
 }
 
+function act_importfolder($folder = '') {
+    if($folder == '') $folder = AB_INC.'_import/';
+
+    $dh = opendir($folder);
+    if(!is_resource($dh)) {
+        msg("Could not open $folder");
+        return;
+    }
+    
+    $processed = 0;
+    
+    while(false !== ($file = readdir($dh))) {
+        if(is_file($folder . $file) and strtolower(substr($file, -4, 4)) == ".vcf") {
+            msg("Processing file: $file", 1);
+            act_importvcard($folder . $file);
+            $processed++;
+        }
+    }
+    
+    if($processed > 0) {
+        msg("$processed files processed", 1);
+    } else {
+        msg("No vCards found in import folder (make sure the files have a '.vcf' extension)");
+    }
+    
+    closedir($dh);
+}
+
 function act_exportvcard() {
     global $AB;
     global $ID;
     global $CAT;
     
-    $contact = $AB->get($ID);
+    $contact = $AB->get($ID, true);
     $categories = $CAT->find($ID);
 
     $vcard = contact2vcard($contact, $categories);
@@ -158,6 +192,7 @@ function act_exportvcard_cat() {
     if(count($contacts_selected) == 0) $contacts_selected = $contactlist;
 
     foreach ($contacts_selected as $contact) {
+        $contact->image = img_load($contact->id);
         $categories = $CAT->find($contact->id);
         $vcard = contact2vcard($contact, $categories);
         $vcard_list .= $vcard['vcard'];
@@ -195,9 +230,7 @@ function contact2vcard($contact, $categories) {
     if($contact->company == true) $card->setValue('X-ABShowas', 0, 0, 'COMPANY');
     
     if($contact->birthdate != '0000-00-00') $card->setBirthday($contact->birthdate);
-    if(!empty($contact->homepage)) $card->setURL($contact->homepage);
 
-    //var $image;    // picture
     if(!empty($contact->note)) $card->setNote($contact->note);
     
     foreach($contact->addresses as $item) {
@@ -266,6 +299,10 @@ function contact2vcard($contact, $categories) {
     
     if(!empty($contact->image) and !empty($conf['photo_format'])) {
         $conf['photo_format'] = strtoupper($conf['photo_format']);
+		$card->setValue('PHOTO', 0, 0, base64_encode(img_convert($contact->image, $conf['photo_format'])));
+		$card->addParam('ENCODING', 'B');
+		$card->addParam('TYPE', strtoupper($conf['photo_format']));        
+/*
         if($conf['photo_format'] == 'PNG') {
             // don't convert native format
             $card->setValue('PHOTO', 0, 0, base64_encode($contact->image));
@@ -276,7 +313,8 @@ function contact2vcard($contact, $categories) {
             $card->addParam('ENCODING', 'B');
             $card->addParam('TYPE', strtoupper($conf['photo_format']));        
         }
-    }
+*/
+	}
     
     if(is_array($categories)) {
         foreach($categories as $category) {
@@ -315,10 +353,10 @@ function vcard2contact($card) {
     if(is_array($card['EMAIL'])) {
         foreach($card['EMAIL'] as $email) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($email['param']['TYPE'])) {
                 foreach($email['param']['TYPE'] as $key => $value) $email['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $email['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $email['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -332,10 +370,10 @@ function vcard2contact($card) {
     if(is_array($card['TEL'])) {
         foreach($card['TEL'] as $phone) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($phone['param']['TYPE'])) {
                 foreach($phone['param']['TYPE'] as $key => $value) $phone['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $phone['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $phone['param']['TYPE'])) $tmp['label'] = 'HOME';
                 if(in_array('CELL', $phone['param']['TYPE'])) $tmp['label'] = 'CELL';
@@ -353,10 +391,10 @@ function vcard2contact($card) {
     if(is_array($card['ADR'])) {
         foreach($card['ADR'] as $address) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($address['param']['TYPE'])){
                 foreach($address['param']['TYPE'] as $key => $value) $address['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $address['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $address['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -377,10 +415,10 @@ function vcard2contact($card) {
     if(is_array($card['URL'])) {
         foreach($card['URL'] as $url) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($url['param']['TYPE'])){
                 foreach($url['param']['TYPE'] as $key => $value) $url['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $url['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $url['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -394,10 +432,10 @@ function vcard2contact($card) {
     if(is_array($card['X-ABRELATEDNAMES'])) {
         foreach($card['X-ABRELATEDNAMES'] as $rname) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($rname['param']['TYPE'])){
                 foreach($rname['param']['TYPE'] as $key => $value) $rname['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $rname['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $rname['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -411,10 +449,10 @@ function vcard2contact($card) {
     if(is_array($card['X-AIM'])) {
         foreach($card['X-AIM'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -429,10 +467,10 @@ function vcard2contact($card) {
     if(is_array($card['X-ICQ'])) {
         foreach($card['X-ICQ'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -447,10 +485,10 @@ function vcard2contact($card) {
     if(is_array($card['X-MSN'])) {
         foreach($card['X-MSN'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -465,10 +503,10 @@ function vcard2contact($card) {
     if(is_array($card['X-JABBER'])) {
         foreach($card['X-JABBER'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -483,10 +521,10 @@ function vcard2contact($card) {
     if(is_array($card['X-SKYPE'])) {
         foreach($card['X-SKYPE'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -501,10 +539,10 @@ function vcard2contact($card) {
     if(is_array($card['X-YAHOO'])) {
         foreach($card['X-YAHOO'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }
@@ -519,10 +557,10 @@ function vcard2contact($card) {
     if(is_array($card['X-IRC'])) {
         foreach($card['X-IRC'] as $chat) {
             $tmp = array();
+            $tmp['label'] = 'WORK';    //default
             if(is_array($chat['param']['TYPE'])){
                 foreach($chat['param']['TYPE'] as $key => $value) $chat['param']['TYPE'][$key] = strtoupper($value);
                 
-                $tmp['label'] = 'WORK';    //default
                 if(in_array('WORK', $chat['param']['TYPE'])) $tmp['label'] = 'WORK';
                 if(in_array('HOME', $chat['param']['TYPE'])) $tmp['label'] = 'HOME';
             }

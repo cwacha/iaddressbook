@@ -12,7 +12,7 @@ require_once(AB_INC.'functions/db.php');
 require_once(AB_INC.'functions/module_auth.php');
 require_once(AB_INC.'functions/actions.php');
 
-$VERSION = "0.98";
+$VERSION = "0.99 DEVEL";
 
 //import variables
 $ACT = trim($_REQUEST['do']);
@@ -36,29 +36,37 @@ $ACT = auth_verify_action($ACT);
 
 
 // contact list offset
-if(isset($_REQUEST['o'])) {
-    $_SESSION['o'] = (int)trim($_REQUEST['o']);
+if($ACT == 'select_offset') {
+    if(isset($_REQUEST['o'])) {
+        $_SESSION['o'] = (int)trim($_REQUEST['o']);
+    }
 }
 
 // letter filter
-if(isset($_REQUEST['l'])) {
-    $_SESSION['l'] = trim($_REQUEST['l']);    
+if($ACT == 'select_letter') {
+    if(isset($_REQUEST['l'])) {
+        $_SESSION['l'] = trim($_REQUEST['l']);
+        $_SESSION['o'] = 0;
+    }
 }
 
 // remember search query
 if($ACT == 'search') {
 	$_SESSION['q'] = $_REQUEST['q'];
     $_SESSION['o'] = 0;
-    unset($_SESSION['l']);
+    $_SESSION['l'] = 0;
 }
-$QUERY = $_SESSION['q'];
-$contactlist_offset = $_SESSION['o'];
-$contactlist_letter = $_SESSION['l'];
 
 // remember selected category
 if($ACT == 'cat_select') {
 	$_SESSION['cat_id'] = (int)trim($_REQUEST['cat_id']);
+	$_SESSION['o'] = 0;
+    $_SESSION['l'] = 0;
 }
+
+$QUERY = $_SESSION['q'];
+$contactlist_offset = $_SESSION['o'];
+$contactlist_letter = $_SESSION['l'];
 
 $CAT_ID = (int)$_SESSION['cat_id'];
 
@@ -78,6 +86,19 @@ if($ACT == 'logout') {
 	auth_logout();
 }
 
+if($ACT == 'reset') {
+    // reset the internal state
+    $_SESSION['id'] = 0;
+    $_SESSION['cat_id'] = 0;
+    $_SESSION['q'] = '';
+    $_SESSION['o'] = 0;
+    $_SESSION['l'] = 0;
+    $ID = 0;
+    $CAT_ID = 0;
+    $QUERY = '';
+    $contactlist_offset = 0;
+    $contactlist_letter = 0;
+}
 
 //close session
 session_write_close();
@@ -91,9 +112,9 @@ session_write_close();
 $contactlist = array();         // key = contact->id, value = contact
 $contactlist_limit = $conf['contactlist_limit'];
 
-$contact = false;
-$contact_categories = array();
-$categories = array();
+$contact = false;               // the contact
+$contact_categories = array();  // categories the current contact is a member of
+$categories = array();          // all categories
 
 db_init();
 db_open();
@@ -108,7 +129,7 @@ act_dispatch();
 db_close();
 
 //restore old umask
-//umask($conf['oldumask']);
+umask($conf['oldumask']);
 
 //  xdebug_dump_function_profile(1);
 ?>

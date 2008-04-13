@@ -43,3 +43,4 @@ Follow these steps and you should be on the safe side:
 The changelog can be found at: http://wacha.ch/addressbook:changelog
 
 August 5 2006
+

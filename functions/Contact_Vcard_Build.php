@@ -1025,7 +1025,10 @@ class Contact_Vcard_Build extends PEAR {
     
     function getPhoto()
     {
-        return $this->getMeta('PHOTO') .
+		// cwacha: Apple AddressBook Hack
+		//return $this->getMeta('PHOTO') .
+        //    $this->getValue('PHOTO', 0, 0);
+		return $this->getMeta('PHOTO') . "\n" .
             $this->getValue('PHOTO', 0, 0);
     }
     
@@ -2390,14 +2393,13 @@ class Contact_Vcard_Build extends PEAR {
         }
         
         
-        // fold lines at 75 characters
-        $regex = "(.{1,76})";
+        // fold lines at 76 characters
+        $regex = "(.{1,76})$newline?";
         foreach ($lines as $key => $val) {
-            if (strlen($val) > 75) {
+            if (strlen($val) > 76) {
                 // we trim to drop the last newline, which will be added
                 // again by the implode function at the end of fetch()
-                $lines[$key] = trim(preg_replace("/$regex/i", "\\1$newline ", substr($val, 1)));
-                $lines[$key] = substr($val, 0, 1) . $lines[$key];
+                $lines[$key] = trim(preg_replace("/$regex/i", "\\1$newline ", $val));
             }
         }
         

@@ -54,6 +54,7 @@ applesearch.clearBtnClick = function ()
 	applesearch.clearFld(this.fldID, this.id);
     var fld = document.getElementById( this.fldID );
     fld.focus();
+    document.search.submit();
     //fld.select();
 }
 

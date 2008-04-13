@@ -54,7 +54,7 @@ class person {
         $this->modificationdate = gmdate('Y-m-d H:i:s') . ' GMT';
     }
     
-    function name() {
+    function name($lastfirst = NULL) {
         global $conf;
         global $lang;
         
@@ -65,7 +65,8 @@ class person {
         }
         
         if(empty($ret)) {
-            if($conf['lastfirst'] == false) {
+            if($lastfirst === NULL) $lastfirst = $conf['lastfirst'];
+            if($lastfirst == false) {
                 $ret = $this->firstname . " " . $this->lastname;
             } else {
                 $ret = $this->lastname . ", " . $this->firstname;

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * esperanta versio
  *

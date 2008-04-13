@@ -1,12 +1,8 @@
 <?php
-
-
-
 /**
  * portuguese language file
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
  * @author     Pedro Vaz <pedrojvaz@sapo.pt>
  */
 

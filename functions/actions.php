@@ -18,6 +18,7 @@ require_once(AB_INC.'functions/common.php');
 require_once(AB_INC.'functions/module_vcard.php');
 require_once(AB_INC.'functions/module_csv.php');
 require_once(AB_INC.'functions/module_ldif.php');
+require_once(AB_INC.'functions/module_birthday.php');
 
 
 /**
@@ -92,8 +93,13 @@ function act_dispatch(){
             break;
         
         case 'import_vcard':
-            set_time_limit(0);
+            @set_time_limit(0);
             act_importvcard();
+            act_search();
+            act_getcontact();
+            break;
+        case 'import_folder':
+            act_importfolder();
             act_search();
             act_getcontact();
             break;
@@ -124,11 +130,17 @@ function act_dispatch(){
             act_search();
             act_getcontact();
             break;
+
+        case 'info':
+            html_phpinfo();
+            break;
         
         case 'check':
             act_check();
         
         case 'edit':
+        case 'select_offset':
+        case 'select_letter':
         case 'show':
         default:
             act_search();
@@ -154,10 +166,16 @@ function act_check() {
     msg("PHP iAddressBook Version: ". $VERSION, 1);
     msg("PHP version ". phpversion(), 1);
     
-    if(!is_writable(AB_INC."_cache")) {
-        msg("Cannot use photo cache: No write permission to ".AB_INC."_cache", -1);
+    if(!is_writable(AB_INC."_images")) {
+        msg("Cannot use contact photos: No write permission to ".AB_INC."_images", -1);
     } else {
-        msg("Photo cache is writeable", 1);
+        msg("Photo folder is writeable", 1);
+    }
+
+    if(!is_writable(AB_INC."_import")) {
+        msg("Cannot delete vCards from import folder: No write permission to ".AB_INC."_import", -1);
+    } else {
+        msg("vCard import folder is writeable", 1);
     }
 
     if(!is_readable(AB_INC."conf/config.php")) {
@@ -212,7 +230,8 @@ function act_save() {
     global $CAT;
     global $contact_categories;
 
-    $contact = $AB->get($ID);
+    // load contact with image
+    $contact = $AB->get($ID, true);
     if($contact == false) $contact = new person;
 
     $contact->title         = real_br2nl($_REQUEST['title']);
@@ -245,81 +264,74 @@ function act_save() {
     settype($_REQUEST['photo_delete'], "boolean");
     if($_REQUEST['photo_delete'] == true) {
         $contact->image = NULL;
-        img_removecache($contact->id);
     } else if($conf['photo_enable'] && !empty($_FILES['photo_file']['tmp_name']) ) {
         //change or add picture
         if(!empty($conf['photo_resize'])) {
-            $contact->image = img_convert(@file_get_contents($_FILES['photo_file']['tmp_name']), 'png', '-resize ' . $conf['photo_resize']);
+            $contact->image = img_convert(@file_get_contents($_FILES['photo_file']['tmp_name']), $conf['photo_format'], '-resize ' . $conf['photo_resize']);
         } else {
-            $contact->image = img_convert(@file_get_contents($_FILES['photo_file']['tmp_name']));
+            $contact->image = @file_get_contents($_FILES['photo_file']['tmp_name']);
         }
-        img_removecache($contact->id);
     }
-
+    
     $contact->addresses = array();
-    $count = 1;
-    while(is_string($_REQUEST['addresslabel'.$count])) {
-        $address = array();
-        $address['label'] = $_REQUEST['addresslabel'.$count];
-        $address['street'] = real_br2nl($_REQUEST['street'.$count]);
-        $address['zip'] = real_br2nl($_REQUEST['zip'.$count]);
-        $address['city'] = real_br2nl($_REQUEST['city'.$count]);
-        $address['state'] = real_br2nl($_REQUEST['state'.$count]);
-        $address['country'] = real_br2nl($_REQUEST['country'.$count]);
-        $address['template'] = real_br2nl($_REQUEST['template'.$count]);
-        $contact->add_address($address);
-        $count++;
-    }
-
     $contact->emails = array();
-    $count = 1;
-    while(is_string($_REQUEST['emaillabel'.$count])) {
-        $email = array();
-        $email['label'] = $_REQUEST['emaillabel'.$count];
-        $email['email'] = real_br2nl($_REQUEST['email'.$count]);
-        $contact->add_email($email);
-        $count++;
-    }
-
     $contact->phones = array();
-    $count = 1;
-    while(is_string($_REQUEST['phonelabel'.$count])) {
-        $phone = array();
-        $phone['label'] = $_REQUEST['phonelabel'.$count];
-        $phone['phone'] = real_br2nl($_REQUEST['phone'.$count]);
-        $contact->add_phone($phone);
-        $count++;
-    }
-
     $contact->chathandles = array();
-    $count = 1;
-    while(is_string($_REQUEST['chathandlelabel'.$count])) {
-        $chat = array();
-        $chat['label'] = $_REQUEST['chathandlelabel'.$count];
-        $chat['type'] = real_br2nl($_REQUEST['chathandletype'.$count]);
-        $chat['handle'] = real_br2nl($_REQUEST['chathandle'.$count]);
-        $contact->add_chathandle($chat);
-        $count++;
-    }
-
     $contact->relatednames = array();
-    $count = 1;
-    while(is_string($_REQUEST['relatednamelabel'.$count])) {
-        $rname = array();
-        $rname['label'] = $_REQUEST['relatednamelabel'.$count];
-        $rname['name'] = real_br2nl($_REQUEST['relatedname'.$count]);
-        $contact->add_relatedname($rname);
-        $count++;
-    }
-
     $contact->urls = array();
-    $count = 1;
-    while(is_string($_REQUEST['urllabel'.$count])) {
-        $url = array();
-        $url['label'] = $_REQUEST['urllabel'.$count];
-        $url['url'] = real_br2nl($_REQUEST['url'.$count]);
-        $contact->add_url($url);
-        $count++;
+
+    foreach($_REQUEST as $key => $web_value) {
+        list($web_param, $web_id) = split("_", $key);
+        
+        //msg("$web_param=$web_value ($web_id)");
+        
+        if($web_param == 'addresslabel') {
+            $address = array();
+            $address['label'] = $_REQUEST['addresslabel_'.$web_id];
+            $address['street'] = real_br2nl($_REQUEST['street_'.$web_id]);
+            $address['zip'] = real_br2nl($_REQUEST['zip_'.$web_id]);
+            $address['city'] = real_br2nl($_REQUEST['city_'.$web_id]);
+            $address['state'] = real_br2nl($_REQUEST['state_'.$web_id]);
+            $address['country'] = real_br2nl($_REQUEST['country_'.$web_id]);
+            $address['template'] = real_br2nl($_REQUEST['template_'.$web_id]);
+            $contact->add_address($address);
+        }
+
+        if($web_param == 'emaillabel') {
+            $email = array();
+            $email['label'] = $_REQUEST['emaillabel_'.$web_id];
+            $email['email'] = real_br2nl($_REQUEST['email_'.$web_id]);
+            $contact->add_email($email);
+        }
+
+        if($web_param == 'phonelabel') {
+            $phone = array();
+            $phone['label'] = $_REQUEST['phonelabel_'.$web_id];
+            $phone['phone'] = real_br2nl($_REQUEST['phone_'.$web_id]);
+            $contact->add_phone($phone);
+        }
+        
+        if($web_param == 'chathandlelabel') {
+            $chat = array();
+            $chat['label'] = $_REQUEST['chathandlelabel_'.$web_id];
+            $chat['type'] = real_br2nl($_REQUEST['chathandletype_'.$web_id]);
+            $chat['handle'] = real_br2nl($_REQUEST['chathandle_'.$web_id]);
+            $contact->add_chathandle($chat);
+        }
+
+        if($web_param == 'relatednamelabel') {
+            $rname = array();
+            $rname['label'] = $_REQUEST['relatednamelabel_'.$web_id];
+            $rname['name'] = real_br2nl($_REQUEST['relatedname_'.$web_id]);
+            $contact->add_relatedname($rname);
+        }
+
+        if($web_param == 'urllabel') {
+            $url = array();
+            $url['label'] = $_REQUEST['urllabel_'.$web_id];
+            $url['url'] = real_br2nl($_REQUEST['url_'.$web_id]);
+            $contact->add_url($url);
+        }
     }
 
     $person_id = $AB->set($contact);
@@ -408,9 +420,14 @@ function act_new() {
 function act_delete() {
     global $ID;
     global $AB;
+    global $CAT;
+    global $contact_categories;
 
+    $contact_categories = $CAT->find($ID);
+    foreach($contact_categories as $category) {
+        $CAT->delete_contact($ID, $category->id);
+    }
     $AB->delete($ID);
-    img_removecache($ID);
 }
 
 function act_delete_many() {
@@ -419,7 +436,6 @@ function act_delete_many() {
     foreach($_REQUEST as $key => $value) {
         if(strpos($key, 'ct_') === 0) {
             $AB->delete($value);
-            img_removecache($value);
         }
     }
 
@@ -441,26 +457,30 @@ function act_search() {
         $contactlist = $AB->find($QUERY);
     }
 
+    // load sort rules
+    $sort_rules_from = split(',', $lang['sort_rules_from']);
+    $sort_rules_to   = split(',', $lang['sort_rules_to']);
+
     if(isset($contactlist_letter) and $contactlist_letter != 'A-Z') {
         $contactlist_letter = strtoupper($contactlist_letter{0});
-        if($contactlist_letter == '0') {
+        if($contactlist_letter == '#') {
             foreach($contactlist as $key => $value) {
-                $name = $value->name();
-                if( strtoupper($name{0}) >= 'A') {
+                $name = str_replace($sort_rules_from, $sort_rules_to, strtoupper(substr($value->name(), 0, 4)));
+                if( substr($name,0,1) >= 'A') {
                     unset($contactlist[$key]);
                 }
             }
         } else if($contactlist_letter == 'Z') {
             foreach($contactlist as $key => $value) {
-                $name = $value->name();
-                if( strtoupper($name{0}) < 'Z') {
+                $name = str_replace($sort_rules_from, $sort_rules_to, strtoupper(substr($value->name(), 0, 4)));
+                if( substr($name,0,1) < 'Z') {
                     unset($contactlist[$key]);
                 }
             }        
         } else {
             foreach($contactlist as $key => $value) {
-                $name = $value->name();
-                if( strtoupper($name{0}) != $contactlist_letter) {
+                $name = str_replace($sort_rules_from, $sort_rules_to, strtoupper(substr($value->name(), 0, 4)));
+                if( substr($name,0,1) != $contactlist_letter) {
                     unset($contactlist[$key]);
                 }
             }
@@ -511,6 +531,8 @@ function act_category_del_empty() {
     
     $categories = $CAT->getall();
     
+	$i = 0;
+	
     foreach($categories as $category) {
         $CAT_ID = $category->id;
         $contacts = $AB->getall();
@@ -519,9 +541,12 @@ function act_category_del_empty() {
             // remove the category
             msg("Deleting empty category: ". $category->name);
             $CAT->delete($CAT_ID);
+			$i++;
         }
     }
     $CAT_ID = 0;
+	
+	msg("$i categories deleted.");
 }
 
 function act_category_addcontacts() {

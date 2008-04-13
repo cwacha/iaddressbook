@@ -16,7 +16,13 @@
     error_reporting(E_ALL ^ E_NOTICE);
     //error_reporting(E_ALL);
 
-
+    // define baseURL
+    if(!defined('AB_BASE')) define('AB_BASE',getBaseURL());
+    if(!defined('AB_URL'))  define('AB_URL',getBaseURL(true));
+    
+    // define cookie and session id
+    if (!defined('AB_COOKIE')) define('AB_COOKIE', 'AB'.md5(AB_URL));
+    
     //prepare config array()
     global $conf;
     $conf = array();
@@ -28,8 +34,11 @@
     // init session
     if(!empty($conf['session_name'])) session_name($conf['session_name']);
     else session_name('iAddressBook');
-    
-    if (!headers_sent()) session_start();
+
+    if (!headers_sent()) {
+        session_set_cookie_params(0, AB_BASE);
+        session_start();
+    }
     
     // set register_globals to off
     if (ini_get('register_globals')) {
@@ -60,10 +69,6 @@
     @include_once(AB_INC.'lang/'.$conf['lang'].'/lang.php');
     $_SESSION['lang'] = $conf['lang'];
     
-    // define baseURL
-    if(!defined('AB_BASE')) define('AB_BASE',getBaseURL());
-    if(!defined('AB_URL'))  define('AB_URL',getBaseURL(true));
-    
     // define main script
     //if(!defined('DOKU_SCRIPT')) define('DOKU_SCRIPT','doku.php');
     
@@ -85,14 +90,15 @@
     @set_magic_quotes_runtime(0);
     @ini_set('magic_quotes_sybase',0);
     
+
+    init_creationmodes();
+    
     /*
     // disable gzip if not available
     if($conf['usegzip'] && !function_exists('gzopen')){
     $conf['usegzip'] = 0;
     }
     
-    // remember original umask
-    $conf['oldumask'] = umask();
     
     // make real paths and check them
     init_paths();
@@ -103,6 +109,30 @@
     scriptify(DOKU_CONF.'acl.auth');
     
 */
+
+/**
+ * Sets the internal config values fperm and dperm which, when set,
+ * will be used to change the permission of a newly created dir or
+ * file with chmod. Considers the influence of the system's umask
+ * setting the values only if needed.
+ */
+function init_creationmodes() {
+  global $conf;
+
+  // get system umask, fallback to 0 if none available
+  $umask = @umask();
+  if(!$umask) $umask = 0000;
+
+  // check what is set automatically by the system on file creation
+  // and set the fperm param if it's not what we want
+  $auto_fmode = 0666 & ~$umask;
+  if($auto_fmode != $conf['fmode']) $conf['fperm'] = $conf['fmode'];
+
+  // check what is set automatically by the system on file creation
+  // and set the dperm param if it's not what we want
+  $auto_dmode = $conf['dmode'] & ~$umask;
+  if($auto_dmode != $conf['dmode']) $conf['dperm'] = $conf['dmode'];
+}
 
 
 /**
@@ -157,7 +187,7 @@ function getBaseURL($abs=false){
   if($conf['baseurl']) return $conf['baseurl'].$dir;
 
   //split hostheader into host and port
-  list($host,$port) = explode(':',$_SERVER['HTTP_HOST']);
+  list($host, $port) = explode(':', $_SERVER['HTTP_HOST']);
   if(!$port)  $port = $_SERVER['SERVER_PORT'];
   if(!$port)  $port = 80;
 

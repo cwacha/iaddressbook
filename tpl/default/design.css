@@ -5,7 +5,7 @@
  */
 
 /* reset */
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul {list-style:none;}caption,th {text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;}q:before,q:after{content:'';}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}table{padding:0;margin:0;border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul {list-style:none;}caption,th {text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;}q:before,q:after{content:'';}
 
 /* fonts */
 body {font:13px arial,helvetica,clean,sans-serif;
@@ -69,17 +69,6 @@ body {
   padding: 0;
 }
 
-
-table {
-  font-size: 100%;
-  padding:0;
-  margin:0;
-}
-
-tr,td,th {padding:0; margin:0;}
-
-img {border:0}
-
 p {padding:0; margin: 0 0 1.0em 0;}
 
 hr {
@@ -93,8 +82,6 @@ hr {
 .leftalign {text-align: left;}
 .centeralign {text-align: center;}
 .rightalign {text-align: right;}
-
-
 
 
 .mainview {
@@ -148,7 +135,7 @@ hr {
     margin-right: 10px;
     margin-bottom: 10px;
     margin-left: 10px;*/
-    
+
 }
 
 .person_left {
@@ -196,7 +183,6 @@ hr {
     font-style: normal;
     text-align: right;
     padding-bottom: 1px;
-
 }
 
 .person_empty {
@@ -285,7 +271,7 @@ PANELS
 		background-color: #222;
 		width: 100%;
 	}
-    
+
 	.header tr {
 		padding: 0;
 		margin:0;
@@ -368,7 +354,7 @@ PANELS
 
 
 input.button, button.button{
-  border: 1px solid #bebebe;  
+  border: 1px solid #bebebe;
   color: Black;
   background-color: white;
   vertical-align: middle;
@@ -384,7 +370,7 @@ input.button, button.button{
 }
 
 input.text {
-  border: 1px solid #bebebe;  
+  border: 1px solid #bebebe;
   color: Black;
   background-color: white;
   vertical-align: middle;
@@ -467,3 +453,39 @@ input.missing {
   display: inline;
 }
 
+.login_box {
+    width: 220px;
+    padding: 0;
+    margin: 10px;
+    margin-bottom: 40px;
+    text-align: right;
+    vertical-align: top;
+}
+
+.birthday_box {
+    width: 220px;
+    padding: 0;
+    margin: 10px;
+}
+
+.birthday_title {
+    color: #bebebe;
+    font-size: 85%;
+    font-weight: normal;
+    font-style: normal;
+    text-align: right;
+    padding: 0;
+    margin: 0;
+	margin-bottom: 5px;
+	border-bottom: 1px solid #bebebe;
+}
+
+.birthday_text {
+    color: #bebebe;
+    font-size: 85%;
+    font-weight: normal;
+    font-style: normal;
+    text-align: right;
+    padding: 0;
+    margin: 0;  
+}

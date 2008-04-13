@@ -9,70 +9,34 @@
                 </tr>
             </table>
         </div>
-        
+                
         <!-- Letter Filter Begin -->
         <div style="height: 0.5em;"></div>
         
-        <div class="person_smalltext">
-            <div style="text-align: center;" >| 
-            <?php
-            $i = 0;
-            $abc = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'A-Z');
-            echo "<a href='?l=0&o=0' >#</a> | ";
-            foreach($abc as $l) {
-                $i++;
-                if($i%12 == 0) echo "<br>| ";
-                echo "<a href='?l=$l&o=0' >$l</a> | ";
-            }
-            ?>
-            </div>
+        <div class="person_smalltext" style="text-align: center; padding-left: 10px; padding-right: 10px;" >
+            <?= tpl_abc(); ?>
         </div>
         
         <div style="height: 0.5em;"></div>
-        
         <!-- Letter Filter End -->
         
         <input type='checkbox' name="selectall" onClick="select_all('ct_form', this.checked)" style="float: left; margin-left: 5px; margin-top: 7px;"/>
         <div class="person_smalltext" style="margin-top: 5px;">
-            <form method="post" action="<?= $PHP_SELF ?>" >
-                    <?= $lang['category'] ?>
-                    <input type="hidden" name="do" value="cat_select" />
-                    <select name="cat_id" size="1" onChange="submit()" >
-                        <?php
-                            foreach($categories as $category) {
-                                $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
-                                echo "<option value='".$category->id."' $sel >".$category->name."</option> \n";
-                            }
-                        ?>
-                    </select>
-            </form>
-        </div>
-        <div class="separator100">&nbsp;</div>
+            <?= $lang['category'] ?>
+            <?= tpl_catselect(); ?>
+		</div>
+		<div class="separator100">&nbsp;</div>
         
         <form method="post" action="<?= $PHP_SELF ?>" name='ct_form'>
 
-            <?php tpl_contactlist() ?>
+            <?= tpl_contactlist() ?>
             
             <div class="separator100">&nbsp;</div>
             
             <!-- Navigation Begin -->
             <div class="person_smalltext">
                 <div style="text-align: center;" >
-                <?php
-                    $size = count($contactlist);
-                    if($contactlist_limit > 0 and $size > $contactlist_limit) {
-                        for($i = 0; $i < $size; $i += $contactlist_limit) {
-                            $stop = $i + $contactlist_limit;
-                            if($stop > $size) $stop = $size;
-                            if($i >= $contactlist_offset and $i < $contactlist_offset + $contactlist_limit) {
-                                echo "| ". (string)($i+1) ." - $stop \n";
-                            } else {
-                                echo "| <a href='?o=$i' >". (string)($i+1) ." - $stop</a> \n";
-                            }
-                        }
-                        echo "|";
-                    }
-                ?>
+                    <?= tpl_pageselect(); ?>
                 </div>
             </div>
             
@@ -88,12 +52,6 @@
                 <div style="float: left;"> <a href="javascript:do_action('new')"><?= $lang['create_contact'] ?></a> </div>
                 <div style="float: right;"> <a href="javascript:do_action('delete_many', '<?= $lang['confirm_del_contacts'] ?>')"><?= $lang['delete_contacts'] ?></a> </div>
 
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('export_vcard_cat')"><?= $lang['export_vcard'] ?></a> </div>
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('export_csv_cat')"><?= $lang['export_csv'] ?></a> </div>
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('export_ldif_cat')"><?= $lang['export_ldif'] ?></a> </div>
                 <div style="height: 3em;"></div>
                 <!-- Contacts Section End -->
 
@@ -101,16 +59,35 @@
                 <?= $lang['category'] ?>
                 <div class="separator100">&nbsp;</div>
 
-                <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_add_contacts')"><?= $lang['cat_add_to'] ?></a> /</div>
-                <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_del_contacts', '<?= $lang['confirm_cat_remove_contacts'] ?>')"><?= $lang['cat_delete_from'] ?></a> </div>
-
-                <select name="cat_id" size="1" style="float: right;" >
+                <select name="cat_menu" size="1" style="float: right;" onChange="cat_menu_change()">
+                    <option value='' selected><?= $lang['select_action'] ?></option>
                     <?php
                         foreach($categories as $category) {
-                            $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
-                            echo "<option value='".$category->id."' $sel >".$category->name."</option> \n";
+                            if($category->id == $CAT_ID) {
+                                if(substr($category->int_name,0,1) != ' ')
+                                    echo "<option value='catdel_$category->id' >".$lang['cat_delete']." $category->name</option>";
+                            }
                         }
                     ?>
+                    <optgroup label="<?= $lang['cat_add_to'] ?>">
+                    <?php
+                        foreach($categories as $category) {
+                            if(substr($category->int_name,0,1) != ' ')
+                                echo "<option value='addcon_$category->id' $sel >$category->name</option> \n";
+                        }
+                    ?>
+                    </optgroup>
+                    <optgroup label="<?= $lang['cat_delete_from'] ?>">
+                    <?php
+                        foreach($categories as $category) {
+                            $disp = 1;
+                            if($category->int_name == ' __all__') $disp = 0;
+                            if($category->int_name == ' __lastimport__') $disp = 0;
+                            if($CAT_ID != 0 && $category->id != $CAT_ID) $disp = 0;
+                            if($disp) echo "<option value='delcon_$category->id' $sel >$category->name</option> \n";
+                        }
+                    ?>
+                    </optgroup>
                 </select>
                 
                 <div style="height: 2.2em;"></div>
@@ -118,14 +95,27 @@
                 <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_add')"><?= $lang['cat_add'] ?></a> </div>
                 <input type="text" name="cat_name" class="text" style="float: right;" onkeypress="CheckEnter(event);" />
                 
-                <div style="height: 2.2em;"></div>
-
-                <div style="float: left;"> <a href="javascript:do_action('cat_del', '<?= $lang['confirm_cat_delete'] ?>')"><?= $lang['cat_delete'] ?></a> </div>
                 <div style="height: 3em;"></div>
                 <!-- Category Section End -->
 
+                <!-- Import Section Begin -->
+                <?= $lang['import_export'] ?>
+                <div class="separator100">&nbsp;</div>
+                <div style="float: left;"> <a href="javascript:do_action('export_vcard_cat')"><?= $lang['export_vcard'] ?></a> </div>
+                <div style="height: 1.5em;"></div>
+                <div style="float: left;"> <a href="javascript:do_action('export_csv_cat')"><?= $lang['export_csv'] ?></a> </div>
+                <div style="height: 1.5em;"></div>
+                <div style="float: left;"> <a href="javascript:do_action('export_ldif_cat')"><?= $lang['export_ldif'] ?></a> </div>
+                <div style="height: 1.5em;"></div>
+                <div style="float: left;"> <a href="javascript:do_action('import_folder')"><?= $lang['import_folder'] ?></a> </div>
+                <div style="height: 3em;"></div>
+                <!-- Import Section End -->
+                
                 
                 <input type="hidden" name="do" value="" />
+                <input type="hidden" name="cat_id" value="" />
+                <input type="hidden" name="l" value="" />
+                <input type="hidden" name="o" value="" />
             </div>    
         </form>
         
@@ -141,6 +131,16 @@ function select_all(formname, checkvalue) {
         }
     }
 }
+function select_l(letter) {
+    document.ct_form.elements["do"].value = 'select_letter';
+    document.ct_form.elements["l"].value = letter;
+    document.ct_form.submit();
+}
+function select_o(offset) {
+	document.ct_form.elements["do"].value = 'select_offset';
+	document.ct_form.elements["o"].value = offset;
+	document.ct_form.submit();
+}
 function do_action(act, confirmation) {
     if(confirmation) {
         if(!confirm(confirmation)) return;
@@ -148,8 +148,23 @@ function do_action(act, confirmation) {
     document.ct_form.elements["do"].value = act;
     document.ct_form.submit();
 }
+function cat_menu_change() {
+    var options = document.ct_form.cat_menu.options;
+    for (var i=0; i < options.length; i++) {
+        if (options[i].selected) {
+            var o = options[i].value.split("_");
+            var action = o[0];
+            var id = o[1];
+            //alert("action: " + action + " id: " + id);
+            document.ct_form.elements["cat_id"].value = id;
+            if(action == "catdel") do_action('cat_del', '<?= $lang['confirm_cat_delete'] ?>');
+            if(action == "addcon") do_action('cat_add_contacts');
+            if(action == "delcon") do_action('cat_del_contacts', '<?= $lang['confirm_cat_remove_contacts'] ?>');
+        }
+    }
+}
 function CheckEnter(evt) {
-    var keyCode = document.layers?evt.which:evt.keyCode;
+    var keyCode = (evt.charCode)? evt.charCode:((evt.which)? evt.which:evt.keyCode);
     if (keyCode != 13) {
         return true;
     }

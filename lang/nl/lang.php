@@ -1,7 +1,4 @@
 <?php
-
-
-
 /**
  * dutch language file 
  *

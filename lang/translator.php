@@ -9,11 +9,16 @@
  */
 
 //disable if not used
-echo "translator disabled"; exit(0);
+//echo "translator disabled"; exit(0);
+
+// define the include path
+if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
+require_once(AB_INC.'functions/init.php');
 
 
 // define languages to be translated
-$all_languages = array('de', 'de_ch', 'eo', 'es', 'fr', 'it', 'ja', 'nl', 'pt');
+global $all_languages;
+$all_languages = array('cs', 'de', 'de_ch', 'eo', 'es', 'fr', 'id', 'it', 'ja', 'nl', 'pt', 'ru', 'se', 'sk');
 
 // define the master language that all others are based upon
 global $base_language;
@@ -22,15 +27,11 @@ $base_language = 'en';
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *  n o   m o d i f i c a t i o n   b e l o w   t h i s   l i n e  *
+ *  N O   M O D I F I C A T I O N   B E L O W   T H I S   L I N E  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 global $header;
 $header = array();
 
-// define the include path
-if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-//require_once(AB_INC.'functions/common.php');
-//require_once(AB_INC.'functions/html.php');
 
 function rewrite($array) {
     foreach($array as $key => $value) {
@@ -66,10 +67,13 @@ function read_header($language) {
     $header = @file($file);
     
     if(is_array($header)) {
-        unset($header[0]);
+        array_shift($header);
         $ln = '';
         while( trim($ln) != '*/' and count($header) > 1) {
             $ln = array_pop($header);
+        }
+        while( trim($header[0]) == '' and count($header) > 1) {
+            array_shift($header);
         }
         $header[] = " */\n\n\n";
     } else {
@@ -94,7 +98,7 @@ function array_to_text($array, $prefix='') {
         if(gettype($value) == 'string') {
             $line = $prefix .'[\''.$key.'\']';
             $line = str_pad($line, 40);
-            $line .= '= "'.$value.'";';
+            $line .= "= '".$value."';";
             $text .= $line . "\n";
         } else if(gettype($value) == 'array') {
             $text .= "\n";
@@ -108,6 +112,7 @@ function array_to_text($array, $prefix='') {
 
 function write_lang_php($array, $lng) {
     global $header;
+    global $conf;
     
     $file = AB_INC.'lang/'.$lng.'.php';
     $fd = fopen($file, "w");
@@ -115,7 +120,7 @@ function write_lang_php($array, $lng) {
         echo "could not write $file<br>";
         return;
     }
-    fwrite($fd, "<?php\n\n");
+    fwrite($fd, "<?php\n");
     
     foreach($header as $line) {
         fwrite($fd, $line);
@@ -127,6 +132,8 @@ function write_lang_php($array, $lng) {
     fwrite($fd, "\n\n?>");
 
     fclose($fd);
+    
+    if($conf['fperm']) chmod($file, $conf['fperm']);
 }
 
 function del_lang_php($lng) {
@@ -143,7 +150,7 @@ function has_new_text($array) {
 
 /* * * * * * * * * * * * * *
  *                         *
- *        M A I N          * 
+ *        M A I N          *
  *                         *
  * * * * * * * * * * * * * */
     echo "<pre>";

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * japanese language file
  *

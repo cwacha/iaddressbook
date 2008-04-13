@@ -10,6 +10,8 @@
 
 // Datastorage
 
+$conf['fmode']          = 0644;                  //set file creation mode
+$conf['dmode']          = 0755;                  //set directory creation mode
 $conf['basedir']        = '';                    //relative dir to serveroot - blank for autodetection
 $conf['baseurl']        = '';                    //URL to server including protocol - blank for autodetect
 
@@ -60,6 +62,7 @@ $conf['map_link']    = 'http://maps.google.com/maps?f=q&hl=en&q=$zip,+$street,+$
                                                  // $pobox - P.O. Box
                                                  // $ext_adr - Extended address
 $conf['contactlist_limit'] = 25;                 // maximum number of contacts to display in contactlist
+$conf['bday_advance_week'] = 2;                  // display upcoming birthdays in the next XX weeks (default 2, max 4)
 
 // Advanced Options
 
