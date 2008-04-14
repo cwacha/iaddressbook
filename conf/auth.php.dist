@@ -27,7 +27,7 @@ $auth['guest']['groups']        = array('@guest');
 //   This means that Fred is able to execute all actions that the @editor group may
 //   execute as well as the action check.
 //
-// For an explanation of all actions see the documentation at http://wacha.ch/addressbook:docs#permissions_access_controls
+// For an explanation of all actions see the documentation at http://iaddressbook.org/docs#permissions_access_controls
 
 // $auth['fred']['password']    = '72b302bf297a228a75730123efef7c41';
 // $auth['fred']['permissions'] = array( 'check' );

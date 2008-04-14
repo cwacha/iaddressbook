@@ -6,7 +6,7 @@
  * You should leave the doctype at the very top - It should
  * always be the very first line of a document.
  *
- * @link   http://wacha.ch/AddressBook
+ * @link   http://iaddressbook.org
  * @author Clemens Wacha (clemens.wacha@gmx.net)
  */
 
@@ -88,7 +88,7 @@
     <!-- Begin Footer --> 
     <div class="separator">&nbsp;</div>
     <div class="footer">
-        <a href='http://wacha.ch/addressbook/'>PHP iAddressbook <?= display_version() ?></a>
+        <a href='http://iaddressbook.org/'>PHP iAddressbook <?= display_version() ?></a>
     </div>
     <!-- End Footer --> 
 
