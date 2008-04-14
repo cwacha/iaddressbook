@@ -1,0 +1,475 @@
+/**
+ * Design elements for default Template
+ *
+ * @author Clemens Wacha <clemens.wacha@gmx.net>
+ */
+
+/* reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul {list-style:none;}caption,th {text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;}q:before,q:after{content:'';}
+
+/* fonts */
+body {font:13px arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}table {font-size:inherit;font:100%;}select, input, textarea {font:99% arial,helvetica,clean,sans-serif;}pre, code {font:115% monospace;*font-size:100%;}body * {line-height:1.22em;}
+
+/* grid */
+body{text-align:center;}#doc{width:57.69em;*width:56.3em;min-width:750px;margin:auto;text-align:left;}#hd,#bd{margin-bottom:1em;text-align:left;}#ft{font-size:77%;font-family:verdana;clear:both;}.yui-t1 #yui-main .yui-b, .yui-t2 #yui-main .yui-b, .yui-t3 #yui-main .yui-b, .yui-t4 .yui-b, .yui-t5 .yui-b, .yui-t6 .yui-b{float:right;}.yui-t1 .yui-b, .yui-t2 .yui-b, .yui-t3 .yui-b, .yui-t4 #yui-main .yui-b, .yui-t5 #yui-main .yui-b, .yui-t6 #yui-main .yui-b{float:left;}.yui-t1 #yui-main .yui-b{width:76%;min-width:570px;}.yui-t1 .yui-b{width:21.33%;min-width:160px;}.yui-t2 #yui-main .yui-b, .yui-t4 #yui-main .yui-b{width:73.4%;min-width:550px;}.yui-t2 .yui-b, .yui-t4 .yui-b{width:24%;min-width:180px;}.yui-t3 #yui-main .yui-b, .yui-t6 #yui-main .yui-b{width:57.6%;min-width:430px;}.yui-t3 .yui-b, .yui-t6 .yui-b{width:40%;min-width:300px;}.yui-t5 #yui-main .yui-b{width:65.4%;min-width:490px;}.yui-t5 .yui-b{width:32%;min-width:240px;}.yui-t7  #main .yui-b{min-width:750px;}.yui-g .yui-u, .yui-g .yui-g, .yui-ge .yui-u, .yui-gf .yui-u{float:right;display:inline;}.yui-g .first, .yui-gd .first, .yui-ge .first, .yui-gf .first{float:left;}.yui-g .yui-u, .yui-g .yui-g{width:49.1%;}.yui-g .yui-g .yui-u{width:48.1%;}.yui-gb .yui-u, .yui-gc .yui-u, .yui-gd .yui-u{float:left;margin-left:2%;*margin-left:1.895%;width:32%;}.yui-gb .first, .yui-gc .first, .yui-gd .first{margin-left:0;}.yui-gc .first, .yui-gd .yui-u{width:66%;}.yui-gd .first{width:32%;}.yui-ge .yui-u{width:24%;}.yui-ge .first, .yui-gf .yui-u{width:74.2%;}.yui-gf .first{width:24%;}.yui-ge .first{width:74.2%;}#bd:after, .yui-g:after, .yui-gb:after, .yui-gc:after, .yui-gd:after, .yui-ge:after, .yui-gf:after{content:".";display:block;height:0;clear:both;visibility:hidden;}#bd, .yui-g, .yui-gb, .yui-gc, .yui-gd, .yui-ge, .yui-gf{zoom:1;}
+
+
+
+/* Debug Colors */
+/*    background-color: #a5a5a5; */
+/*    background-color: #b5b5b5; */
+
+
+
+div.error{
+  background: #fcc url(images/error.png) 0.5em 0px no-repeat;
+  color: #000;
+  border-bottom: 1px solid #faa;
+  font-size: 90%;
+  margin: 0px;
+  padding-left: 3em;
+}
+
+div.info{
+  background: #ccf url(images/info.png) 0.5em 0px no-repeat;
+  color: #000;
+  border-bottom: 1px solid #aaf;
+  font-size: 90%;
+  margin: 0;
+  padding-left: 3em;
+}
+
+div.success{
+  background: #cfc url(images/success.png) 0.5em 0px no-repeat;
+  color: #000;
+  border-bottom: 1px solid #afa;
+  font-size: 90%;
+  margin: 0;
+  padding-left: 3em;
+}
+
+
+/* -------------- general elements --------------- */
+
+
+body {
+  font: 80% "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+  background-color: #969696;
+  color: Black;
+  margin: 0;
+  padding: 0;
+  //height: 100%;
+}
+
+
+table {
+  font-size: 100%;
+  padding:0;
+  margin:0;
+}
+
+tr,td,th {padding:0; margin:0;}
+
+img {border:0}
+
+p {padding:0; margin: 0 0 1.0em 0;}
+
+hr {
+  border: 0px;
+  border-top: 1px solid #8cacbb;
+  text-align:center;
+  height: 0px;
+}
+
+
+.leftalign {text-align: left;}
+.centeralign {text-align: center;}
+.rightalign {text-align: right;}
+
+
+
+
+.mainview {
+    background-color: white;
+    width: 76%;
+    min-width: 570px;
+    margin: 0 auto 0 auto;
+    min-height: 100%;
+}
+
+.logo {
+    padding: 10px;
+}
+
+.title {
+    padding: 10px;
+    font-family: "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+    font-size: 250%;
+    font-weight: bold;
+    text-align: left;
+}
+
+.search {
+    float:right;
+}
+
+.contactlist_td {
+    vertical-align: top;
+    width: 30%;
+    min-width: 120px;
+}
+
+.contactlist {
+    vertical-align: top;
+}
+
+.contactlist_item1 {
+    background-color: #e6f1ff;
+}
+
+.contactlist_item2 {
+}
+
+.contactlist_footer {
+    text-align: right;
+}
+
+.personview {
+    vertical-align: top;
+/*    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;*/
+    
+}
+
+.person_left {
+    padding-left: 30px;
+    padding-right: 10px;
+    padding-top: 0px;
+    padding-bottom: 0em;
+    text-align: right;
+    vertical-align: top;
+    width: 25%;
+    /* min-width: 150px; */
+}
+
+.person_right {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 0px;
+    padding-bottom: 0em;
+    text-align: left;
+    width: 75%;
+    vertical-align: top;
+}
+
+.person_right .person_name {
+    font-size: 130%;
+    font-weight: bold;
+}
+
+.person_right .person_nickname {
+    font-size: 100%;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.person_right .person_text {
+    font-size: 100%;
+    font-weight: normal;
+    font-style: normal;
+    text-align: left;
+}
+
+.person_left .person_labels {
+    font-size: 100%;
+    font-weight: bold;
+    font-style: normal;
+    text-align: right;
+    padding-bottom: 1px;
+
+}
+
+.person_empty {
+    font-size: 100%;
+    font-weight: bold;
+    font-style: normal;
+    text-align: center;
+    padding-top: 6em;
+}
+
+.person_smalltext {
+    color: #bebebe;
+    font-size: 85%;
+    font-weight: normal;
+    font-style: normal;
+    text-align: right;
+    padding: 0;
+    margin: 0;
+}
+
+.footer {
+    height: 40px;
+    text-align: center;
+}
+
+.separator {
+	margin: 0em auto 1em auto;
+	width: 350px;
+	font-weight: normal;
+	padding-bottom: 0em;
+	border-bottom: 1px solid #bebebe;
+}
+
+.separator100 {
+	margin: 0 auto 1em auto;
+	width: 100%;
+	font-weight: normal;
+	padding-bottom: 0;
+    padding-top: 0;
+	border-bottom: 1px solid #bebebe;
+}
+
+
+/* --------------- Links ------------------ */
+
+a {
+  color: #204384;
+  text-decoration:none;
+}
+a:hover {
+  color:#000000;
+  text-decoration:underline;
+}
+
+
+/* general headline setup */
+
+h1, h2, h3, h4, h5 {
+    color: Black;
+    background-color: transparent;
+    font-family: "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+    font-size: 100%;
+    font-weight: normal;
+    margin-left:    0;
+    margin-right:   0;
+    margin-top:     0;
+    margin-bottom:  1em;
+    padding-left:   0;
+    padding-right:  0;
+    padding-top:    0.5em;
+    padding-bottom: 0;
+    border-bottom: 1px solid #8cacbb;
+    clear: left;
+}
+
+/*-------------------------------------------------
+PANELS
+-------------------------------------------------*/
+.panel {
+	margin-top: 1em;
+	position: relative;
+	font-size: 93%;
+}
+	.panel .header {
+		background-color: #222;
+		width: 100%;
+	}
+    
+	.header tr {
+		padding: 0;
+		margin:0;
+	}
+	.header tr td {
+		padding: 0;
+		margin: 0;
+	}
+	.header_tr {
+		margin:0;
+	}
+	.header_tr .middle {
+		padding-left: 0.4em;
+		margin: 0px;
+		background-image: url(images/split1.gif);background-repeat:
+		repeat-x;
+		color:#eee;
+		text-align: left;
+		font-weight: bold;
+	}
+	.header_tr .last {
+		text-align: right;
+		padding-right: 0.4em;
+	}
+	.middle a {
+		color: #ddd;
+		text-decoration: none;
+	}
+
+	.header .endcap {
+		width: 3px;
+	}
+	.endcap img {
+		vertical-align:top;
+	}
+
+	.panel .controls {
+		margin:auto;
+		position:absolute;
+		right:0.1em;
+		white-space: nowrap;
+		padding-right: 0.4em;
+	}
+	.panel .controls a {
+		color: #ddd;
+		text-decoration: none;
+	}
+
+
+.panel th {
+	padding: 0 .6em;
+}
+.panel td {
+	padding: 0 0.6em;
+	text-align:right;
+}
+.panel td.first {
+	text-align: left;
+}
+.panel td.sparkline {
+	height: 20px;
+}
+
+
+.panel th {
+	margin: 0;
+	padding-top: 0;
+	border-left: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	height: 8px;
+	text-align: right;
+	font-size:82%;
+}
+.panel th.first_th {
+	border-left: none;
+	text-align: left;
+}
+
+/* --------- buttons ------------------- */
+
+
+input.button, button.button{
+  border: 1px solid #bebebe;  
+  color: Black;
+  background-color: white;
+  vertical-align: middle;
+  text-decoration:none;
+  font-size: 100%;
+  font-weight: normal;
+  cursor: pointer;
+  height: 22px !important;
+  max-height: 22px !important;
+  min-height: 22px !important;
+  margin: 1px;
+  display: inline;
+}
+
+input.text {
+  border: 1px solid #bebebe;  
+  color: Black;
+  background-color: white;
+  vertical-align: middle;
+  text-decoration:none;
+  font-size: 100%;
+  font-weight: normal;
+  cursor: text;
+  height: 18px !important;
+  max-height: 18px !important;
+  min-height: 18px !important;
+  margin: 1px;
+}
+
+input.search_text {
+  border: 1px solid #bebebe;  
+  color: Black;
+  background-color: white;
+  vertical-align: middle;
+  text-decoration:none;
+  font-size: 100%;
+  font-weight: normal;
+  cursor: text;
+  height: 22px !important;
+  max-height: 22px !important;
+  min-height: 22px !important;
+  margin: 1px;
+}
+
+
+/* ---------------- forms ------------------------ */
+
+form {
+  border: none;
+  margin: 0;
+  display: inline;
+}
+
+label.block {
+  display: block;
+  text-align: right;
+  font-weight: bold;
+}
+
+label.simple {
+  display: block;
+  text-align: left;
+  font-weight: normal;
+}
+
+label.block input.edit {
+  width: 50%;
+}
+
+fieldset {
+  width: 300px;
+  text-align: center;
+  border: 1px solid #bebebe;
+  padding: 0.5em;
+  margin: auto;
+}
+
+textarea.edit {
+  font-family:monospace;
+  border: 1px solid __dark__;
+  color: Black;
+  background-color: __white__;
+  font-size:14px;
+  padding: 3px;
+  width:100%;
+}
+
+input.edit, select.edit {
+  font-size: 100%;
+  border: 1px solid #bebebe;
+  color: Black;
+  background-color: __white__;
+  vertical-align: middle;
+  margin: 1px;
+  padding: 0.20em 0.3em;
+  display: inline;
+}
+
+select.edit {
+  padding: 0.1em 0;
+}
+
+input.missing {
+  font-size: 100%;
+  border: 1px solid __dark__;
+  color: Black;
+  background-color: #ffcccc;
+  vertical-align: middle;
+  margin: 1px;
+  padding: 0.20em 0.3em;
+  display: inline;
+}
+

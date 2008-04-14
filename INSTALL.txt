@@ -1,0 +1,44 @@
+
+                             PHP iAddressbook
+
+---
+http://wacha.ch/addressbook/
+
+==== Installation ====
+
+Installing the address book consists of 3 steps:
+
+  - create a new database called //addressbook//
+  - create a new table inside this database called //addressbook// using
+    the template found in the root directory of the archive (addressbook.sql)
+  - make a copy of conf/config.php.dist or create you own conf/config.php (for a list
+    of all available configuration parameters see conf/defaults.php). The settings
+    in conf/config.php override those in conf/defaults.php.
+  - if you want authorization support make a copy of auth.php.dist into auth.php and
+    add usernames and passwords as needed.
+
+
+==== Upgrade ====
+
+Upgrading is always tricky since you have to make sure that no personal configuration
+data is accidently overridden. I tried to separate the default configuration settings
+from your personal settings to make updating as easy as possible. The data-format
+for you contacts in the database is stable (even for upcoming categories). Your
+contacts will always remain safe in the database and are not affected by an upgrade.
+There is no need to create a new database if you are upgrading.
+
+
+Follow these steps and you should be on the safe side:
+
+  - Read the changelog (check for changed database layout or other incompatibilities).
+  - create a parallel installation of the addressbook and copy your old conf/config.php
+    file to the new installation.
+  - if you have a customized template you will have to migrate it manually. I still
+    have to make minor changes in the default templates. Best bet would be to //diff//
+    the old default template with the new one to see if anything has changed. 
+  - if everything works as expected, remove the old installation and rename/move your
+    new installation to the old place.
+
+
+
+August 5 2006

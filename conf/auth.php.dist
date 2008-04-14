@@ -1,0 +1,16 @@
+<?
+/**
+ * This is the AddressBook's authentication file
+ * This is a piece of PHP code so PHP syntax applies!
+ *
+ * add as many usernames and md5 passwords as you like
+ * 
+ * you can create an md5 sum if you enter 'make md5' as username and your password
+ * as password into the login form of iAddressBook!
+ * 
+ */
+
+
+// $auth['username'] = '5f4dcc3b5aa765d61d8327deb882cf99'; //password = password
+    
+?>
