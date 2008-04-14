@@ -2,45 +2,45 @@
                              PHP iAddressbook
 
 ---
-http://wacha.ch/addressbook/
+http://iaddressbook.org/
 
 ==== Installation ====
 
 Installing the address book consists of four steps:
 
-  - create a new database called //addressbook//
-  - create three new tables inside this database called "addressbook",
-    "addressbook_cat" and "addressbook_catmap" using the template found in the root
-    directory of the archive (addressbook.sql)
+  - create a new database called "addressbook"
+  - run the included SQL script in your database (see conf/*.sql)
   - make a copy of conf/config.php.dist or create you own conf/config.php (for a list
     of all available configuration parameters see conf/defaults.php). The settings
     in conf/config.php override those in conf/defaults.php.
   - if you want authorization support make a copy of auth.php.dist into auth.php and
-    add usernames and passwords as needed.
+    add usernames and passwords as needed. Don't forget to enable authentication in
+    your config.php
 
 
 ==== Upgrade ====
 
-Upgrading is always tricky since you have to make sure that no personal configuration
-data is accidently overridden. I tried to separate the default configuration settings
-from your personal settings to make updating as easy as possible. The data-format
-for your contacts in the database is stable (even for upcoming categories). Your
-contacts will always remain safe in the database and are not affected by an upgrade.
-There is no need to create a new database if you are upgrading.
-
+The easiest way to upgrade is to use the vCard export feature to get all your contacts
+and then import these contacts into a new installation. You won't lose any data as the
+vCard export preserves all fields!
 
 Follow these steps and you should be on the safe side:
 
+  - Export all your contacts using the vCard export.
   - Read the changelog (check for changed database layout or other incompatibilities).
   - create a parallel installation of the addressbook and copy your old conf/config.php
     file to the new installation.
+  - Rename/Drop your database
+  - Create a completely new database using the SQL scripts in the conf folder.
   - if you have a customized template you will have to migrate it manually. I still
-    have to make minor changes in the default templates. Best bet would be to //diff//
+    have to make minor changes in the default templates. Best bet would be to "diff"
     the old default template with the new one to see if anything has changed. 
-  - if everything works as expected, remove the old installation and rename/move your
+  - Import your vCard into the new database. Use the "folder import" feature if you
+    have very big vCards.
+  - If everything works as expected, remove the old installation and rename/move your
     new installation to the old place.
 
-The changelog can be found at: http://wacha.ch/addressbook:changelog
+The changelog can be found at: http://iaddressbook.org/changelog
 
-August 5 2006
+April 14th 2008
 

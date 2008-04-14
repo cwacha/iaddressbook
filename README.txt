@@ -1,10 +1,10 @@
 
                              PHP iAddressbook
 
-                               Version 0.98
+                               Version 0.99
 
 ---
-http://wacha.ch/addressbook/
+http://iaddressbook.org/
 
 An address book for a single user. Personal or Business Cards supporting
 tons of different fields, searchable, supports categories, transparent
@@ -16,4 +16,4 @@ Enjoy!
     Clemens Wacha                   <clemens.wacha@gmx.net>
 
 
-January 5 2007
+April 14 2008

@@ -49,18 +49,18 @@ $auth['guest']['groups']        = array('@guest');
 $auth['@admin']['permissions']  = array('show', 'img', 'search', 'edit', 'new', 'save', 'delete', 'delete_many', 'select_letter', 'select_offset',
                                         'cat_select', 'cat_add', 'cat_del', 'cat_del_empty', 'cat_add_contacts', 'cat_del_contacts',
                                         'import_vcard', 'import_folder', 'export_vcard', 'export_vcard_cat', 'export_csv_cat', 'export_ldif_cat', 
-                                        'login', 'logout',
-                                        'debug', 'check');
+                                        'login', 'logout', 'reset',
+                                        'debug', 'check', 'info');
 
 $auth['@editor']['permissions'] = array('show', 'img', 'search', 'edit', 'new', 'save', 'delete', 'delete_many', 'select_letter', 'select_offset',
                                         'cat_select', 'cat_add', 'cat_del', 'cat_del_empty', 'cat_add_contacts', 'cat_del_contacts',
                                         'import_vcard', 'import_folder', 'export_vcard', 'export_vcard_cat', 'export_csv_cat', 'export_ldif_cat',
-                                        'login', 'logout');
+                                        'login', 'logout', 'reset');
 
 $auth['@guest']['permissions']  = array('show', 'img', 'search', 'select_letter', 'select_offset',
                                         'cat_select', 
                                         'export_vcard', 'export_vcard_cat', 'export_csv_cat', 'export_ldif_cat',
-                                        'login', 'logout');
+                                        'login', 'logout', 'reset');
 
     
 ?>
