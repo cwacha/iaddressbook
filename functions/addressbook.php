@@ -1,0 +1,397 @@
+<?php
+
+	if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
+	require_once(AB_CONF.'defaults.php');
+
+    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
+    require_once(AB_INC."functions/db.php");
+    require_once(AB_INC."functions/person.php");
+    require_once(AB_INC."functions/common.php");
+
+class addressbook {
+	
+	function addressbook() {
+	}
+    
+    function row2contact($row) {
+        global $db_config;
+        $prefix = '';
+        
+        $contact = new person;
+        if(empty($row)) return $contact;
+        
+        if(is_object($row)) $row = get_object_vars($row);
+        
+        $row = array_change_key_case($row, CASE_UPPER);
+        
+        if(!array_key_exists('ID', $row)) {
+            $prefix = strtoupper($db_config['dbtable_ab']) . '.';
+        }
+        
+        $contact->id = (int)$row[$prefix . 'ID'];
+        $contact->creationdate = $contact->unescape($row[$prefix . 'CREATIONDATE'] . " GMT");
+        $contact->modificationdate = $contact->unescape($row[$prefix . 'MODIFICATIONDATE'] . " GMT");
+        
+        $contact->title = $contact->unescape($row[$prefix . 'TITLE']);
+        $contact->firstname = $contact->unescape($row[$prefix . 'FIRSTNAME']);
+        $contact->firstname2 = $contact->unescape($row[$prefix . 'FIRSTNAME2']);
+        $contact->lastname = $contact->unescape($row[$prefix . 'LASTNAME']);
+        $contact->suffix = $contact->unescape($row[$prefix . 'SUFFIX']);
+        $contact->nickname = $contact->unescape($row[$prefix . 'NICKNAME']);
+        
+        $contact->jobtitle = $contact->unescape($row[$prefix . 'JOBTITLE']);
+        $contact->department = $contact->unescape($row[$prefix . 'DEPARTMENT']);
+        $contact->organization = $contact->unescape($row[$prefix . 'ORGANIZATION']);
+        $contact->company = (bool)$row[$prefix . 'COMPANY'];
+        
+        $contact->birthdate = $contact->unescape($row[$prefix . 'BIRTHDATE']);
+        $contact->image = $row[$prefix . 'IMAGE'];
+        $contact->note = $contact->unescape($row[$prefix . 'NOTE']);
+        
+        $contact->string2addresses($row[$prefix . 'ADDRESSES']);
+        $contact->string2emails($row[$prefix . 'EMAILS']);
+        $contact->string2phones($row[$prefix . 'PHONES']);
+        $contact->string2chathandles($row[$prefix . 'CHATHANDLES']);
+        $contact->string2relatednames($row[$prefix . 'RELATEDNAMES']);
+        $contact->string2urls($row[$prefix . 'URLS']);
+        
+		return $contact;
+	}
+   
+	function find($searchstring, $limit = 1000) {
+        global $db;
+        global $db_config;
+        global $CAT;
+        global $CAT_ID;
+
+		$contactlist = array();
+        
+		if(!db) return $contactlist;
+		
+		// quote db specific characters
+        $searchstring = real_addcslashes($searchstring, "%\\");
+        $searchstring = $db->Quote("%".$searchstring."%");
+        $selected = $db->Quote($CAT_ID);
+		
+        if($CAT_ID == 0) {
+            $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE ";
+            $sql .= "(title LIKE $searchstring) OR ";
+            $sql .= "(lastname LIKE $searchstring) OR ";
+            $sql .= "(firstname LIKE $searchstring) OR ";
+            $sql .= "(firstname2 LIKE $searchstring) OR ";
+            $sql .= "(suffix LIKE $searchstring) OR ";
+            $sql .= "(nickname LIKE $searchstring) OR ";
+            $sql .= "(jobtitle LIKE $searchstring) OR ";
+            $sql .= "(department LIKE $searchstring) OR ";
+            $sql .= "(organization LIKE $searchstring) OR ";
+            //$sql .= "(company LIKE $searchstring) OR ";  // this is a boolean!!
+            $sql .= "(birthdate LIKE $searchstring) OR ";
+            $sql .= "(note LIKE $searchstring) OR ";
+            $sql .= "(addresses LIKE $searchstring) OR ";
+            $sql .= "(emails LIKE $searchstring) OR ";
+            $sql .= "(phones LIKE $searchstring) OR ";
+            $sql .= "(chathandles LIKE $searchstring) OR ";
+            $sql .= "(relatednames LIKE $searchstring) OR ";
+            $sql .= "(urls LIKE $searchstring) ";
+            
+            $sql .= " ORDER BY lastname ASC LIMIT $limit";
+        } else {
+            $sql  = "SELECT * FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
+            $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") AND (";
+            $sql .= "(title LIKE $searchstring) OR ";
+            $sql .= "(lastname LIKE $searchstring) OR ";
+            $sql .= "(firstname LIKE $searchstring) OR ";
+            $sql .= "(firstname2 LIKE $searchstring) OR ";
+            $sql .= "(suffix LIKE $searchstring) OR ";
+            $sql .= "(nickname LIKE $searchstring) OR ";
+            $sql .= "(jobtitle LIKE $searchstring) OR ";
+            $sql .= "(department LIKE $searchstring) OR ";
+            $sql .= "(organization LIKE $searchstring) OR ";
+            //$sql .= "(company LIKE $searchstring) OR "; // this is a boolean
+            $sql .= "(birthdate LIKE $searchstring) OR ";
+            $sql .= "(note LIKE $searchstring) OR ";
+            $sql .= "(addresses LIKE $searchstring) OR ";
+            $sql .= "(emails LIKE $searchstring) OR ";
+            $sql .= "(phones LIKE $searchstring) OR ";
+            $sql .= "(chathandles LIKE $searchstring) OR ";
+            $sql .= "(relatednames LIKE $searchstring) OR ";
+            $sql .= "(urls LIKE $searchstring) ";
+            
+            $sql .= ") ORDER BY lastname ASC LIMIT $limit";
+        }
+        $result = $db->Execute($sql);
+
+        
+        if($result) {
+            while ($row = $result->FetchRow()) {
+                $contact = $this->row2contact($row);
+                $contactlist[$contact->id] = $contact;
+            }
+        } else {
+            // no results
+            msg("DB error on find: ".$db->ErrorMsg(), -1);
+        }
+		
+		return $contactlist;
+	}
+    
+    function getall($limit = 1000) {
+        global $db;
+        global $db_config;
+        global $CAT;
+        global $CAT_ID;
+        
+		$contactlist = array();
+        
+		if(!$db) return $contactlist;
+		
+        $selected = $db->Quote($CAT_ID);
+        
+        if($CAT_ID == 0) {
+            $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." ORDER BY lastname ASC LIMIT $limit";
+        } else {
+            $sql_select  = $db_config['dbtable_ab'].".*, ";
+            $sql_select .= $db_config['dbtable_catmap'].".category_id ";
+            
+            $sql  = "SELECT ".$sql_select." FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
+            $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") ";
+            $sql .= " ORDER BY lastname ASC LIMIT $limit";
+        }
+        
+        $result = $db->Execute($sql);
+        
+        if($result) {
+            while ($row = $result->FetchRow()) {
+                $contact = $this->row2contact($row);
+                $contactlist[$contact->id] = $contact;
+            }
+        } else {
+            // no results
+            msg("DB error on getall: ".$db->ErrorMsg(), -1);
+        }        
+		
+		return $contactlist;        
+    }
+
+	function get($id) {
+        global $db;
+        global $db_config;
+		$contact = false;
+		if(!$db or $id == 0) return $contact;
+        
+		// quote db specific characters
+		$id = $db->Quote((int)$id);
+		
+		$sql = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE id=$id LIMIT 1";
+		$result = $db->Execute($sql);
+		
+		if($result) {
+			$row = $result->FetchRow();
+			if($row) $contact = $this->row2contact($row);
+		} else {
+			// not found
+            msg("DB error on get: ".$db->ErrorMsg(), -1);
+		}
+		
+		return $contact;		
+	}
+    
+   
+	function set($contact) {
+        global $db;
+        global $db_config;
+		if(!$db) return false;
+		
+		if(is_object($contact)) {
+            
+            $contact->validate();
+            
+            // Input validation
+			$id = $db->Quote((int)$contact->id);
+			$title = $db->Quote($contact->escape($contact->title));
+			$firstname = $db->Quote($contact->escape($contact->firstname));
+			$firstname2 = $db->Quote($contact->escape($contact->firstname2));
+			$lastname = $db->Quote($contact->escape($contact->lastname));
+			$suffix = $db->Quote($contact->escape($contact->suffix));
+			$nickname = $db->Quote($contact->escape($contact->nickname));
+			$jobtitle = $db->Quote($contact->escape($contact->jobtitle));
+			$department = $db->Quote($contact->escape($contact->department));
+			$organization = $db->Quote($contact->escape($contact->organization));
+			$company = $db->Quote( (int)$contact->company);
+			$birthdate = $db->Quote($contact->escape($contact->birthdate));
+			$image = $db->Quote($contact->image);
+			$note = $db->Quote($contact->escape($contact->note));
+            
+            
+            $a_line = $db->Quote($contact->addresses_string());
+			$e_line = $db->Quote($contact->emails_string());
+			$p_line = $db->Quote($contact->phones_string());
+			$c_line = $db->Quote($contact->chathandles_string());
+            $r_line = $db->Quote($contact->relatednames_string());
+			$u_line = $db->Quote($contact->urls_string());
+			
+			$mod_date = $db->Quote($contact->escape(gmdate('Y-m-d H:i:s') . ' GMT'));
+            
+            if(empty($contact->birthdate)) $contact->birthdate = '0000-00-00';
+            
+			if($contact->id == 0) {
+				// insert
+				$sql = "INSERT INTO ".$db_config['dbtable_ab']."  ";
+				$sql .= "( title, firstname, firstname2, lastname, suffix, nickname, ";
+				$sql .= "jobtitle, department, organization, company, birthdate, image, note, ";
+				$sql .= "addresses, emails, phones, chathandles, relatednames, urls, creationdate, modificationdate ) VALUES ( ";
+				//$sql .= "VALUES (";
+				
+				$sql .= " $title, $firstname, $firstname2, $lastname, $suffix, $nickname, ";
+				$sql .= "$jobtitle, $department, $organization, $company, $birthdate, $image, $note, ";
+				
+				$sql .= "$a_line, $e_line, $p_line, $c_line, $r_line, $u_line, $mod_date, $mod_date );";
+				
+			} else {
+				// update
+				$sql = "UPDATE ".$db_config['dbtable_ab']." SET ";
+					
+				$sql .= "title=$title, ";
+				$sql .= "firstname=$firstname, ";
+				$sql .= "firstname2=$firstname2, ";
+				$sql .= "lastname=$lastname, ";
+				$sql .= "suffix=$suffix, ";
+				$sql .= "nickname=$nickname, ";
+				
+				$sql .= "jobtitle=$jobtitle, ";
+				$sql .= "department=$department, ";
+				$sql .= "organization=$organization, ";
+				$sql .= "company=$company, ";
+				
+				$sql .= "birthdate=$birthdate, ";
+				$sql .= "image=$image, ";
+				$sql .= "note=$note, ";
+				
+				$sql .= "addresses=$a_line, ";
+				$sql .= "emails=$e_line, ";
+				$sql .= "phones=$p_line, ";
+				$sql .= "chathandles=$c_line, ";
+                $sql .= "relatednames=$r_line, ";
+				$sql .= "urls=$u_line, ";
+	
+				$sql .= "modificationdate = $mod_date ";
+	
+				$sql .= "WHERE id=$id";
+			}
+			
+			$result = $db->Execute($sql);
+            if(!$result) {
+                msg("DB error on set: ". $db->ErrorMsg(), -1);
+                return false;
+            }
+			
+            if($contact->id == 0) $contact->id = $db->Insert_ID();
+            
+			return $contact->id;
+		}
+	}
+	
+	function delete($id) {
+        global $db;
+        global $db_config;
+		if(!$db) return;
+        
+		// quote db specific characters
+		$id = $db->Quote((int)$id);
+		
+		$sql = "DELETE FROM ".$db_config['dbtable_ab']." WHERE id=$id";
+		$result = $db->Execute($sql);
+		if(!$result) {
+            msg("DB error on delete: ". $db->ErrorMsg(), -1);
+            print_r($result);
+        }
+	}
+    
+    function is_duplicate($contact) {
+        global $db;
+        global $db_config;
+		if(!$db) return false;
+        
+        //return false;
+
+        $contact->validate();
+        
+        // Input validation
+        $id = (int)$contact->id;
+        $title = $db->Quote($contact->escape($contact->title));
+        $firstname = $db->Quote($contact->escape($contact->firstname));
+        $firstname2 = $db->Quote($contact->escape($contact->firstname2));
+        $lastname = $db->Quote($contact->escape($contact->lastname));
+        $suffix = $db->Quote($contact->escape($contact->suffix));
+        $nickname = $db->Quote($contact->escape($contact->nickname));
+        $jobtitle = $db->Quote($contact->escape($contact->jobtitle));
+        $department = $db->Quote($contact->escape($contact->department));
+        $organization = $db->Quote($contact->escape($contact->organization));
+        $company = $db->Quote((int)$contact->company);
+        $birthdate = $db->Quote($contact->escape($contact->birthdate));
+        $note = $db->Quote($contact->escape($contact->note));
+		// TODO: what to do with the photo??
+        
+        $a_line = $db->Quote($contact->addresses_string());
+        $e_line = $db->Quote($contact->emails_string());
+        $p_line = $db->Quote($contact->phones_string());
+        $c_line = $db->Quote($contact->chathandles_string());
+        $r_line = $db->Quote($contact->relatednames_string());
+        $u_line = $db->Quote($contact->urls_string());
+
+		
+   		$sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE ";
+		
+        $sql .= "(title = $title) AND ";
+		$sql .= "(lastname = $lastname) AND ";
+		$sql .= "(firstname = $firstname) AND ";
+		$sql .= "(firstname2 = $firstname2) AND ";
+		$sql .= "(suffix = $suffix) AND ";
+		$sql .= "(nickname = $nickname) AND ";
+		$sql .= "(jobtitle = $jobtitle) AND ";
+		$sql .= "(department = $department) AND ";
+		$sql .= "(organization = $organization) AND ";
+		$sql .= "(company = $company) AND ";
+		
+        $sql .= "(birthdate = $birthdate) AND ";
+		$sql .= "(note = $note) AND ";
+		
+        $sql .= "(addresses = $a_line) AND ";
+		$sql .= "(emails = $e_line) AND ";
+		$sql .= "(phones = $p_line) AND ";
+		$sql .= "(chathandles = $c_line) AND ";
+		$sql .= "(relatednames = $r_line) AND ";
+		$sql .= "(urls = $u_line) ";
+        //$sql .= "LIMIT 1";
+		
+		$result = $db->Execute($sql);
+        if($result) {
+            $row = $result->FetchRow();
+            if($row) return true;
+        } else {
+            msg("DB error on is_duplicate: ". $db->ErrorMsg(), -1);
+        }
+        
+        return false;
+    }
+    
+    function sort($contactlist) {
+        //$contactlist is an array of persons
+        $sorted_names = array();
+        $sorted = array();
+        
+        if(is_array($contactlist)) {
+            foreach($contactlist as $contact) $sorted_names[$contact->id] = strtoupper($contact->name());
+            asort($sorted_names);
+            
+            foreach($sorted_names as $key => $value) $sorted[$key] = $contactlist[$key];
+        }
+        
+        return $sorted;
+    }
+
+
+}
+
+
+?>
