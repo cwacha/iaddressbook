@@ -1,0 +1,199 @@
+<?php
+
+/**
+ * Initialize some defaults
+ */
+
+  // define the include path
+  if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
+
+  // define config path 
+  if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
+
+  // set up error reporting to sane values
+  error_reporting(E_ALL ^ E_NOTICE);
+
+  //prepare config array()
+  global $conf;
+  $conf = array();
+
+  // load the config file(s)
+  require_once(AB_CONF.'defaults.php');
+  @include_once(AB_CONF.'config.php');
+  
+  //prepare language array
+  global $lang;
+  $lang = array();
+
+  //load the language files
+  require_once(AB_INC.'lang/en/lang.php');
+  require_once(AB_INC.'lang/'.$conf['lang'].'/lang.php');
+
+  // define baseURL
+  if(!defined('AB_BASE')) define('AB_BASE',getBaseURL());
+  if(!defined('AB_URL'))  define('AB_URL',getBaseURL(true));
+
+  // define main script
+  //if(!defined('DOKU_SCRIPT')) define('DOKU_SCRIPT','doku.php');
+
+  // define Template baseURL
+  if(!defined('AB_TPL')) define('AB_TPL', AB_BASE.'tpl/'.$conf['template'].'/');
+
+  // make session rewrites XHTML compliant
+  @ini_set('arg_separator.output', '&amp;');
+
+
+  // init session
+  session_name("AddressBook");
+  if (!headers_sent()) session_start();
+
+
+  // kill magic quotes
+  if (get_magic_quotes_gpc()) {
+    if (!empty($_GET))    remove_magic_quotes($_GET);
+    if (!empty($_POST))   remove_magic_quotes($_POST);
+    if (!empty($_COOKIE)) remove_magic_quotes($_COOKIE);
+    if (!empty($_REQUEST)) remove_magic_quotes($_REQUEST);
+    if (!empty($_SESSION)) remove_magic_quotes($_SESSION);
+    @ini_set('magic_quotes_gpc', 0);
+  }
+  @set_magic_quotes_runtime(0);
+  @ini_set('magic_quotes_sybase',0);
+
+/*
+  // disable gzip if not available
+  if($conf['usegzip'] && !function_exists('gzopen')){
+    $conf['usegzip'] = 0;
+  }
+
+  // remember original umask
+  $conf['oldumask'] = umask();
+
+  // make real paths and check them
+  init_paths();
+  init_files();
+
+  // automatic upgrade to script versions of certain files
+  scriptify(DOKU_CONF.'users.auth');
+  scriptify(DOKU_CONF.'acl.auth');
+
+*/
+
+
+/**
+ * remove magic quotes recursivly
+ *
+ * @author Andreas Gohr <andi@splitbrain.org>
+ */
+function remove_magic_quotes(&$array) {
+  foreach (array_keys($array) as $key) {
+    if (is_array($array[$key])) {
+      remove_magic_quotes($array[$key]);
+    }else {
+      $array[$key] = stripslashes($array[$key]);
+    }
+  }
+}
+
+/**
+ * Returns the full absolute URL to the directory where
+ * DokuWiki is installed in (includes a trailing slash)
+ *
+ * @author Andreas Gohr <andi@splitbrain.org>
+ */
+
+function getBaseURL($abs=false){
+  global $conf;
+  //if canonical url enabled always return absolute
+  if($conf['canonical']) $abs = true;
+
+  if($conf['basedir']){
+    $dir = $conf['basedir'].'/';
+  }elseif($_SERVER['SCRIPT_NAME']){
+    $dir = dirname($_SERVER['SCRIPT_NAME']).'/';
+  }elseif($_SERVER['DOCUMENT_ROOT'] && $_SERVER['SCRIPT_FILENAME']){
+    $dir = preg_replace ('/^'.preg_quote($_SERVER['DOCUMENT_ROOT'],'/').'/','',
+                         $_SERVER['SCRIPT_FILENAME']);
+    $dir = dirname('/'.$dir).'/';
+  }else{
+    $dir = dirname($_SERVER['PHP_SELF']).'/';
+  }
+
+  $dir = str_replace('\\','/',$dir); #bugfix for weird WIN behaviour
+  $dir = preg_replace('#//+#','/',$dir);
+
+  //handle script in lib/exe dir
+  $dir = preg_replace('!lib/exe/$!','',$dir);
+
+  //finish here for relative URLs
+  if(!$abs) return $dir;
+
+  //use config option if available
+  if($conf['baseurl']) return $conf['baseurl'].$dir;
+
+  //split hostheader into host and port
+  list($host,$port) = explode(':',$_SERVER['HTTP_HOST']);
+  if(!$port)  $port = $_SERVER['SERVER_PORT'];
+  if(!$port)  $port = 80;
+
+  // see if HTTPS is enabled - apache leaves this empty when not available,
+  // IIS sets it to 'off', 'false' and 'disabled' are just guessing
+  if (preg_match('/^(|off|false|disabled)$/i',$_SERVER['HTTPS'])){
+    $proto = 'http://';
+    if ($port == '80') {
+      $port='';
+    }
+  }else{
+    $proto = 'https://';
+    if ($port == '443') {
+      $port='';
+    }
+  }
+
+  if($port) $port = ':'.$port;
+
+  return $proto.$host.$port.$dir;
+}
+
+
+/**
+ * Append a PHP extension to a given file and adds an exit call
+ *
+ * This is used to migrate some old configfiles. An added PHP extension
+ * ensures the contents are not shown to webusers even if .htaccess files
+ * do not work
+ *
+ * @author Jan Decaluwe <jan@jandecaluwe.com>
+ */
+function scriptify($file) {
+  // checks
+  if (!is_readable($file)) {
+    return;
+  }
+  $fn = $file.'.php';
+  if (@file_exists($fn)) {
+    return;
+  }
+  $fh = fopen($fn, 'w');
+  if (!$fh) {
+    die($fn.' is not writable!');
+  }
+  // write php exit hack first
+  fwrite($fh, "# $fn\n");
+  fwrite($fh, '# <?php exit()?>'."\n");
+  fwrite($fh, "# Don't modify the lines above\n");
+  fwrite($fh, "#\n");
+  // copy existing lines
+  $lines = file($file);
+  foreach ($lines as $line){
+    fwrite($fh, $line);
+  }
+  fclose($fh);
+  //try to rename the old file
+  @rename($file,"$file.old");
+}
+
+
+
+
+?>
