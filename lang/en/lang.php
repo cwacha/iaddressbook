@@ -85,8 +85,8 @@ $lang['label_spouse']         = 'spouse';
 $lang['label_partner']        = 'partner';
 $lang['label_manager']        = 'manager';
 
-$lang['label_birthday']       = 'birthday';
-$lang['label_notes']          = 'notes';
+$lang['label_birthday']       = 'Birthday';
+$lang['label_notes']          = 'Notes';
 $lang['label_updated']        = 'updated: ';
 $lang['label_nocontact']      = 'No Card Selected';
 

@@ -49,7 +49,10 @@ $lang['export_ldif']                    = 'Exportiere als LDIF Datei';
 $lang['import_folder']                  = 'Ordner importiere';
 $lang['create_contact']                 = 'Neue Kontakt';
 $lang['map']                            = 'Charte';
+$lang['select_action']                  = 'No meh züügs...';
 $lang['no_name']                        = '(Kän Name)';
+$lang['label_custom']                   = 'Eigete...';
+$lang['label_customprompt']             = 'Neus, selber definierts Etigett';
 $lang['label_work']                     = 'Büro';
 $lang['label_home']                     = 'Dihei';
 $lang['label_cell']                     = 'Händi';
@@ -98,6 +101,16 @@ $lang['label_zip']                      = 'Poschtleitzahl';
 $lang['label_city']                     = 'Stadt';
 $lang['label_state']                    = 'Kanton';
 $lang['label_country']                  = 'Land';
+$lang['birthdays']                      = 'Geburtstäg';
+$lang['bday_none']                      = 'keni';
+$lang['bday_month']                     = 'i $n Monet';
+$lang['bday_months']                    = 'i $n Mönet';
+$lang['bday_week']                      = 'i $n Wuche';
+$lang['bday_weeks']                     = 'i $n Wuche';
+$lang['bday_day']                       = 'morn';
+$lang['bday_day2']                      = 'übermorn';
+$lang['bday_days']                      = 'i $n Täg';
+$lang['bday_today']                     = 'hütt!';
 
 $lang['month']['1']                     = 'Januar';
 $lang['month']['2']                     = 'Februar';
@@ -111,16 +124,6 @@ $lang['month']['9']                     = 'Septämber';
 $lang['month']['10']                    = 'Oktober';
 $lang['month']['11']                    = 'Novämber';
 $lang['month']['12']                    = 'Dezämber';
-$lang['birthdays']                      = 'Geburtstäg';
-$lang['bday_none']                      = 'keni';
-$lang['bday_month']                     = 'i $n Monet';
-$lang['bday_months']                    = 'i $n Mönet';
-$lang['bday_week']                      = 'i $n Wuche';
-$lang['bday_weeks']                     = 'i $n Wuche';
-$lang['bday_day']                       = 'morn';
-$lang['bday_day2']                      = 'übermorn';
-$lang['bday_days']                      = 'i $n Täg';
-$lang['bday_today']                     = 'hütt!';
 
 
 ?>

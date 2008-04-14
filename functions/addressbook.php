@@ -47,7 +47,6 @@ class addressbook {
         $contact->company = (int)$row[$prefix . 'COMPANY'];
         
         $contact->birthdate = $contact->unescape($row[$prefix . 'BIRTHDATE']);
-        //$contact->image = $row[$prefix . 'IMAGE'];
         $contact->note = $contact->unescape($row[$prefix . 'NOTE']);
         
         $contact->string2addresses($row[$prefix . 'ADDRESSES']);
@@ -94,7 +93,6 @@ class addressbook {
                 $sql1 .= "(jobtitle            LIKE $value) OR ";
                 $sql1 .= "(department          LIKE $value) OR ";
                 $sql1 .= "(organization        LIKE $value) OR ";
-                //$sql1 .= "(company            LIKE $value) OR ";  // this is a boolean!!
                 $sql1 .= "(birthdate           LIKE $value) OR ";
                 $sql1 .= "(note                LIKE $value) OR ";
                 $sql1 .= "(addresses           LIKE $value) OR ";
@@ -124,7 +122,6 @@ class addressbook {
                 $sql1 .= "(jobtitle            LIKE $value) OR ";
                 $sql1 .= "(department          LIKE $value) OR ";
                 $sql1 .= "(organization        LIKE $value) OR ";
-                //$sql1 .= "(company            LIKE $value) OR ";  // this is a boolean!!
                 $sql1 .= "(birthdate           LIKE $value) OR ";
                 $sql1 .= "(note                LIKE $value) OR ";
                 $sql1 .= "(addresses           LIKE $value) OR ";
@@ -245,7 +242,6 @@ class addressbook {
             $organization = $db->Quote($contact->escape($contact->organization));
             $company = $db->Quote( (int)$contact->company);
             $birthdate = $db->Quote($contact->escape($contact->birthdate));
-            //$image = $db->Quote($contact->image);
             $note = $db->Quote($contact->escape($contact->note));
                         
             $a_line = $db->Quote($contact->addresses_string());
@@ -263,12 +259,12 @@ class addressbook {
                 // insert
                 $sql = "INSERT INTO ".$db_config['dbtable_ab']."  ";
                 $sql .= "( title, firstname, firstname2, lastname, suffix, nickname, phoneticfirstname, phoneticlastname, ";
-                $sql .= "jobtitle, department, organization, company, birthdate, image, note, ";
+                $sql .= "jobtitle, department, organization, company, birthdate, note, ";
                 $sql .= "addresses, emails, phones, chathandles, relatednames, urls, creationdate, modificationdate ) VALUES ( ";
                 //$sql .= "VALUES (";
                 
                 $sql .= "$title, $firstname, $firstname2, $lastname, $suffix, $nickname, $phoneticfirstname, $phoneticlastname, ";
-                $sql .= "$jobtitle, $department, $organization, $company, $birthdate, '', $note, ";
+                $sql .= "$jobtitle, $department, $organization, $company, $birthdate, $note, ";
                 
                 $sql .= "$a_line, $e_line, $p_line, $c_line, $r_line, $u_line, $mod_date, $mod_date );";
                 
@@ -291,7 +287,6 @@ class addressbook {
                 $sql .= "company=$company, ";
                 
                 $sql .= "birthdate=$birthdate, ";
-                //$sql .= "image=$image, ";
                 $sql .= "note=$note, ";
 
                 $sql .= "addresses=$a_line, ";

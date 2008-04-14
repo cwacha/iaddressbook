@@ -12,7 +12,7 @@ require_once(AB_INC.'functions/db.php');
 require_once(AB_INC.'functions/module_auth.php');
 require_once(AB_INC.'functions/actions.php');
 
-$VERSION = "0.99 DEVEL";
+$VERSION = "0.99 DEV";
 
 //import variables
 $ACT = trim($_REQUEST['do']);
