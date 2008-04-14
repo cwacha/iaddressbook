@@ -61,6 +61,8 @@ $lang['select_action']        = 'select action...';
 
 // Person Labels
 $lang['no_name']              = '(No Name)';
+$lang['label_custom']         = 'Custom...';
+$lang['label_customprompt']   = 'Adding new custom label';
 $lang['label_work']           = 'work';
 $lang['label_home']           = 'home';
 $lang['label_cell']           = 'cell';

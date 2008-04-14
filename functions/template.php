@@ -232,6 +232,7 @@ function tpl_label($string) {
     if(strtoupper($string) == 'SKYPE') return 'Skype';
     if(strtoupper($string) == 'YAHOO') return 'Yahoo';
     
+    if(strtoupper($string) == 'CUSTOM') return $lang['label_custom'];
 
     // catch OS X AddressBook specific labels
     preg_match('_\$\!\<(.*)\>\!\$_', $string,  $match);

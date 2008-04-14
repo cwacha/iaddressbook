@@ -115,13 +115,6 @@ function html_debug(){
 }
 
 function html_phpinfo() {
-    global $conf;
-
-    if($conf['debug'] != 1) {
-        msg("Debugging disabled", -1);
-        return;
-    }
-
     phpinfo();    
 }
 
