@@ -8,10 +8,12 @@
     <tr id="addresslabel_template1" style="display: none;">
         <td class="person_left">
             <div class="person_labels" style="height: 20px;">
-                <select name="addresslabel_" size="1" class="text" >
+                <select name="addresslabel_" size="1" class="text" onchange="custom_addresslabel(this);">
                     <option value='HOME' selected ><?= tpl_label('HOME') ?></option>
                     <option value='WORK' ><?= tpl_label('WORK') ?></option>
                     <option value='_$!<Other>!$_' ><?= tpl_label('_$!<Other>!$_') ?></option>
+                    <option disabled>-------</option>
+                    <option value='CUSTOM' ><?= tpl_label("CUSTOM") ?></option>
                 </select>
             </div>
             <div class="person_labels" style="height: 20px;"><?= $lang['label_street'] ?></div>
@@ -27,7 +29,7 @@
             </div>
             <div class="person_text" style="height: 20px;">
                 <input type="text" name="street_" value='' class="text" />
-                <a href="#" onclick="add_addresslabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="add_addresslabel('HOME');return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
                 <a href="#" onclick="del_addresslabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
             <div class="person_text" style="height: 20px;">
@@ -60,7 +62,8 @@ function add_addresslabel(label, street, zip, city, state, country, template) {
     if(!state) state = '';
     if(!country) country = '';
     if(!template) template = '';
-    addresslabel_counter++;    
+    addresslabel_counter++;
+    var custom_label = 1;
 
     var newBlock = document.getElementById('addresslabel_template1').cloneNode(true);
     newBlock.id = '';
@@ -80,11 +83,18 @@ function add_addresslabel(label, street, zip, city, state, country, template) {
         if(childNode[i].tagName == 'OPTION') {
             if(childNode[i].value == label) {
                 childNode[i].selected = true;
+                custom_label = 0;
             } else {
                 childNode[i].selected = false;                
             }
         }
     }
+    if(custom_label) {
+        var object = newBlock.getElementsByTagName("select")[0];
+        object.options[object.length] = new Option(label, label);
+        object.selectedIndex = object.length - 1;
+    }
+
     var insertHere = document.getElementById('addresslabel_position');
     insertHere.parentNode.insertBefore(newBlock, insertHere);    
 }
@@ -92,6 +102,20 @@ function del_addresslabel(object) {
     // careful! this code depends on the actual HTML code!    
     var block = object.parentNode.parentNode.parentNode;
     block.parentNode.removeChild(block);
+}
+function custom_addresslabel(object) {
+    if(object.options[object.selectedIndex].value == 'CUSTOM') {
+        // get custom label
+        var label = prompt("<?= $lang['label_customprompt'] ?>", "");
+        
+        // add custom label to options
+        if(label) {
+            object.options[object.length] = new Option(label, label);
+            object.selectedIndex = object.length - 1;
+        } else {
+            object.selectedIndex = 0;
+        }
+    }
 }
 
 <?php
@@ -106,7 +130,7 @@ foreach($contact->addresses as $address) {
 }
 ?>
 
-if(addresslabel_counter == 0) add_addresslabel();
+if(addresslabel_counter == 0) add_addresslabel('HOME');
 
 </script>
     

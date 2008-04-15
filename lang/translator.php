@@ -98,7 +98,7 @@ function array_to_text($array, $prefix='') {
         if(gettype($value) == 'string') {
             $line = $prefix .'[\''.$key.'\']';
             $line = str_pad($line, 40);
-            $line .= "= '".$value."';";
+            $line .= "= '".addcslashes($value, "'")."';";
             $text .= $line . "\n";
         } else if(gettype($value) == 'array') {
             $text .= "\n";
@@ -142,10 +142,13 @@ function del_lang_php($lng) {
 }
 
 function has_new_text($array) {
+    $count = 0;
+    $total = 0;
     foreach($array as $value) {
-        if(strpos($value, 'TRANSLATE:') === 0) return true;
+        if(strpos($value, 'TRANSLATE:') === 0) $count++;
+        $total++;
     }
-    return false;
+    return  array($count,$total);
 }
 
 /* * * * * * * * * * * * * *
@@ -163,10 +166,13 @@ function has_new_text($array) {
         print_r($lang);
         echo '</pre>';
     */
-        if(has_new_text($lang)) {
-            echo ": updated!";
+        list($count, $total) = has_new_text($lang);
+        $percent = (($total-$count)/$total) * 100;
+        if($count) {
+            echo ": ".number_format($percent,0)."% ($count new strings)";
             write_lang_php($lang, $lng);
         } else {
+            echo ": ".number_format($percent,0)."%";
             // delete old temporary language file if it exists
             del_lang_php($lng);
         }

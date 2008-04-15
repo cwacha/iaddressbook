@@ -8,7 +8,7 @@
     <tr id="relatedlabel_template1" style="display: none;">
         <td class="person_left">
             <div class="person_labels">
-                <select name="relatednamelabel_" size="1" class="text" >
+                <select name="relatednamelabel_" size="1" class="text" onchange="custom_relatedlabel(this);">
                     <option value='_$!<Father>!$_' ><?= tpl_label('_$!<Father>!$_') ?></option>
                     <option value='_$!<Mother>!$_' ><?= tpl_label('_$!<Mother>!$_') ?></option>
                     <option value='_$!<Parent>!$_' ><?= tpl_label('_$!<Parent>!$_') ?></option>
@@ -21,14 +21,15 @@
                     <option value='_$!<Assistant>!$_' ><?= tpl_label('_$!<Assistant>!$_') ?></option>
                     <option value='_$!<Manager>!$_' ><?= tpl_label('_$!<Manager>!$_') ?></option>
                     <option value='_$!<Other>!$_' ><?= tpl_label('_$!<Other>!$_') ?></option>
-
+                    <option disabled>-------</option>
+                    <option value='CUSTOM' ><?= tpl_label("CUSTOM") ?></option>
                 </select>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
                 <input type="text" name="relatedname_" value="" class="text" />
-                <a href="#" onclick="add_relatedlabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="add_relatedlabel('_$!<Friend>!$_');return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
                 <a href="#" onclick="del_relatedlabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
         </td>
@@ -43,7 +44,8 @@ var relatedlabel_counter = 0;
 function add_relatedlabel(label,content) {
     if(!label) label = '';
     if(!content) content = '';
-    relatedlabel_counter++;    
+    relatedlabel_counter++;
+    var custom_label = 1;
 
     var newBlock = document.getElementById('relatedlabel_template1').cloneNode(true);
     newBlock.id = '';
@@ -60,11 +62,18 @@ function add_relatedlabel(label,content) {
         if(childNode[i].tagName == 'OPTION') {
             if(childNode[i].value == label) {
                 childNode[i].selected = true;
+                custom_label = 0;
             } else {
                 childNode[i].selected = false;
             }
         }
     }
+    if(custom_label) {
+        var object = newBlock.getElementsByTagName("select")[0];
+        object.options[object.length] = new Option(label, label);
+        object.selectedIndex = object.length - 1;
+    }
+
     var insertHere = document.getElementById('relatedlabel_position');
     insertHere.parentNode.insertBefore(newBlock, insertHere);    
 }
@@ -73,6 +82,20 @@ function del_relatedlabel(object) {
     var block = object.parentNode.parentNode.parentNode;
     block.parentNode.removeChild(block);
 }
+function custom_relatedlabel(object) {
+    if(object.options[object.selectedIndex].value == 'CUSTOM') {
+        // get custom label
+        var label = prompt("<?= $lang['label_customprompt'] ?>", "");
+        
+        // add custom label to options
+        if(label) {
+            object.options[object.length] = new Option(label, label);
+            object.selectedIndex = object.length - 1;
+        } else {
+            object.selectedIndex = 0;
+        }
+    }
+}
 
 <?php
 foreach($contact->relatednames as $rname) {
@@ -80,7 +103,7 @@ foreach($contact->relatednames as $rname) {
 }
 ?>
 
-if(relatedlabel_counter == 0) add_relatedlabel();
+if(relatedlabel_counter == 0) add_relatedlabel('_$!<Friend>!$_');
 
 </script>
 

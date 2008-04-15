@@ -8,10 +8,12 @@
     <tr id="chatlabel_template1" style="display: none;">
         <td class="person_left">
             <div class="person_labels">
-                <select name="chathandlelabel_" size="1" class="text" >
+                <select name="chathandlelabel_" size="1" class="text" onchange="custom_chatlabel(this);">
                     <option value="HOME" selected ><?= tpl_label("HOME") ?></option>
                     <option value="WORK" ><?= tpl_label("WORK") ?></option>
                     <option value='_$!<Other>!$_' ><?= tpl_label('_$!<Other>!$_') ?></option>
+                    <option disabled>-------</option>
+                    <option value='CUSTOM' ><?= tpl_label("CUSTOM") ?></option>
                 </select>
             </div>
         </td>
@@ -26,7 +28,7 @@
                     <option value='SKYPE' ><?= tpl_label('SKYPE') ?></option>
                     <option value='YAHOO' ><?= tpl_label('YAHOO') ?></option>
                 </select>
-                <a href="#" onclick="add_chatlabel();return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
+                <a href="#" onclick="add_chatlabel('HOME', 'JABBER');return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
                 <a href="#" onclick="del_chatlabel(this);return false"><img src="<?= AB_TPL ?>images/minus.gif"></a>
             </div>
         </td>
@@ -42,7 +44,8 @@ function add_chatlabel(label,type,handle) {
     if(!label) label = '';
     if(!type) type = '';
     if(!handle) handle = '';
-    chatlabel_counter++;    
+    chatlabel_counter++;
+    var custom_label = 1;
 
     var newBlock = document.getElementById('chatlabel_template1').cloneNode(true);
     newBlock.id = '';
@@ -65,6 +68,7 @@ function add_chatlabel(label,type,handle) {
         if(childNode[i].tagName == 'OPTION' && slist == 'label') {
             if(childNode[i].value == label) {
                 childNode[i].selected = true;
+                custom_label = 0;
             } else {
                 childNode[i].selected = false;
             }
@@ -77,6 +81,12 @@ function add_chatlabel(label,type,handle) {
             }
         }
     }
+    if(custom_label) {
+        var object = newBlock.getElementsByTagName("select")[0];
+        object.options[object.length] = new Option(label, label);
+        object.selectedIndex = object.length - 1;
+    }
+
     var insertHere = document.getElementById('chatlabel_position');
     insertHere.parentNode.insertBefore(newBlock, insertHere);    
 }
@@ -85,6 +95,20 @@ function del_chatlabel(object) {
     var block = object.parentNode.parentNode.parentNode;
     block.parentNode.removeChild(block);
 }
+function custom_chatlabel(object) {
+    if(object.options[object.selectedIndex].value == 'CUSTOM') {
+        // get custom label
+        var label = prompt("<?= $lang['label_customprompt'] ?>", "");
+        
+        // add custom label to options
+        if(label) {
+            object.options[object.length] = new Option(label, label);
+            object.selectedIndex = object.length - 1;
+        } else {
+            object.selectedIndex = 0;
+        }
+    }
+}
 
 <?php
 foreach($contact->chathandles as $chathandle) {
@@ -92,6 +116,6 @@ foreach($contact->chathandles as $chathandle) {
 }
 ?>
 
-if(chatlabel_counter == 0) add_chatlabel();
+if(chatlabel_counter == 0) add_chatlabel('HOME', 'JABBER');
 
 </script>

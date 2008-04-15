@@ -13,7 +13,6 @@ CREATE TABLE addressbook (
     organization varchar(255) NOT NULL,
     company tinyint(1) NOT NULL default 0,
     birthdate date NOT NULL default '0000-00-00',
-    image mediumblob NOT NULL,
     note text NOT NULL,
     addresses text NOT NULL,
     emails text NOT NULL,

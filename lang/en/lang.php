@@ -61,6 +61,8 @@ $lang['select_action']        = 'select action...';
 
 // Person Labels
 $lang['no_name']              = '(No Name)';
+$lang['label_custom']         = 'Custom...';
+$lang['label_customprompt']   = 'Adding new custom label';
 $lang['label_work']           = 'work';
 $lang['label_home']           = 'home';
 $lang['label_cell']           = 'cell';
@@ -83,8 +85,8 @@ $lang['label_spouse']         = 'spouse';
 $lang['label_partner']        = 'partner';
 $lang['label_manager']        = 'manager';
 
-$lang['label_birthday']       = 'birthday';
-$lang['label_notes']          = 'notes';
+$lang['label_birthday']       = 'Birthday';
+$lang['label_notes']          = 'Notes';
 $lang['label_updated']        = 'updated: ';
 $lang['label_nocontact']      = 'No Card Selected';
 

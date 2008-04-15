@@ -32,6 +32,7 @@ $conf['template']    = 'default';                // see ./tpl/ folder (the 'defa
 // Advanced Options
 
 $conf['auth_enabled'] = 0;                       // enable authentication - login and password can be set in ./conf/auth.php
+$conf['auth_allow_guest'] = 0;                   // allow guest access (no login required) - the permissions can be conficured in conf/auth.php
 $conf['im_convert']  = '/usr/bin/convert';       // path to ImageMagicks convert
 
 
