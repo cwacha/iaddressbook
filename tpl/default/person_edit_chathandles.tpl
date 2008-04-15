@@ -82,11 +82,8 @@ function add_chatlabel(label,type,handle) {
         }
     }
     if(custom_label) {
-        var newOption = document.createElement("option");
-        newOption.value = label;
-        newOption.text = label;
         var object = newBlock.getElementsByTagName("select")[0];
-        object.appendChild(newOption);
+        object.options[object.length] = new Option(label, label);
         object.selectedIndex = object.length - 1;
     }
 
@@ -105,10 +102,7 @@ function custom_chatlabel(object) {
         
         // add custom label to options
         if(label) {
-            var newOption = document.createElement("option");
-            newOption.value = label;
-            newOption.text = label;
-            object.appendChild(newOption);
+            object.options[object.length] = new Option(label, label);
             object.selectedIndex = object.length - 1;
         } else {
             object.selectedIndex = 0;
