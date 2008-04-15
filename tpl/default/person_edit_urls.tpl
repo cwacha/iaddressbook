@@ -61,11 +61,8 @@ function add_urllabel(label,content) {
         }
     }
     if(custom_label) {
-        var newOption = document.createElement("option");
-        newOption.value = label;
-        newOption.text = label;
         var object = newBlock.getElementsByTagName("select")[0];
-        object.appendChild(newOption);
+        object.options[object.length] = new Option(label, label);
         object.selectedIndex = object.length - 1;
     }
     
@@ -84,10 +81,7 @@ function custom_urllabel(object) {
         
         // add custom label to options
         if(label) {
-            var newOption = document.createElement("option");
-            newOption.value = label;
-            newOption.text = label;
-            object.appendChild(newOption);
+            object.options[object.length] = new Option(label, label);
             object.selectedIndex = object.length - 1;
         } else {
             object.selectedIndex = 0;
