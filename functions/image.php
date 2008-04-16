@@ -99,38 +99,36 @@ function img_display() {
 function img_convert($in_image, $type='png', $options='') {
     global $conf;
     
-    $err = '';
     $out_image = '';
     $type = strtolower($type);
 
     if(!empty($conf['im_convert']) and is_readable($conf['im_convert'])) {
-		
-	    $desc_spec = array(
-	        0 => array("pipe", "rb"),
-	        1 => array("pipe", "w"),
-	        2 => array("pipe", "w")
-	    );
-		
-		$process = proc_open($conf['im_convert']." - $options $type:-", $desc_spec, $pipes);
-		
-		if(is_resource($process)) {
-			fwrite($pipes[0], $in_image);
-			fclose($pipes[0]);
-			
-			while(!feof($pipes[1])) {
-				$out_image .= fread($pipes[1], 8192);
-			}
-			while(!feof($pipes[2])) {
-				$err .= fread($pipes[2], 8192);
-			}
-			fclose($pipes[1]);
-			fclose($pipes[2]);
-			
-			//msg("Using ImageMagick");
-			
-		} else {
-			$err = "could not open pipe";
-		}
+
+        // write in_image into a temp file
+        $tmp_file = AB_INC."_images/tmp.xxx";
+        $fd = fopen($tmp_file, "wb");
+        if(is_resource($fd)) {
+            fwrite($fd, $in_image);
+            fclose($fd);
+
+            // now try to convert the file using ImageMagick
+            $pipe = popen($conf['im_convert']." ".$tmp_file." $options $type:-", "r");
+            if(is_resource($pipe)) {
+                while(!feof($pipe)) {
+                    $out_image .= fread($pipe, 8192);
+                }
+                pclose($pipe);
+            }
+            
+            // remove the temporary file
+            if(is_readable($tmp_file)) {
+                unlink($tmp_file);
+            }
+
+        } else {
+            msg("Could not write temporary image $tmp_file", -1);
+        }
+
 	}
 
 	if(empty($out_image) or !empty($err)) {
@@ -166,16 +164,6 @@ function img_convert($in_image, $type='png', $options='') {
             msg("Cannot convert image with GD: Data is not in a recognized format", -1);
 		}
 	}
-
-    if(!empty($err)) {
-        msg( "<pre style='text-align: left;' >", -1);
-        msg( "ERROR: Could not convert image to $type", -1);
-        msg( "      Message: $err", -1);
-        msg( "      in_image size: ". strlen($in_image), -1);
-        msg( "      out_image size: ". strlen($out), -1);
-        msg( "      out_image: ". $out, -1);
-        msg( "</pre>", -1);
-    }
 
     return $out_image;
 }

@@ -18,7 +18,7 @@ require_once(AB_INC.'functions/init.php');
 
 // define languages to be translated
 global $all_languages;
-$all_languages = array('cs', 'de', 'de_ch', 'eo', 'es', 'fr', 'id', 'it', 'ja', 'nl', 'pt', 'ru', 'se', 'sk');
+$all_languages = array('bg', 'cs', 'de', 'de_ch', 'eo', 'es', 'fr', 'id', 'it', 'ja', 'nl', 'pt', 'ru', 'se', 'sk');
 
 // define the master language that all others are based upon
 global $base_language;
