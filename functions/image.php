@@ -115,7 +115,6 @@ function img_convert($in_image, $type='png', $resize='') {
             // now try to convert the file using ImageMagick
             if(!empty($resize)) $options = '-resize '. $resize;
             
-            msg("calling convert with: ". $conf['im_convert']." ".$tmp_file." $options $type:-");
             $pipe = popen($conf['im_convert']." ".$tmp_file." $options $type:-", "r");
             if(is_resource($pipe)) {
                 while(!feof($pipe)) {
