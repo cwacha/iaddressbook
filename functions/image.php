@@ -75,7 +75,7 @@ function img_display() {
 
     if(!empty($image)) {
         // display loaded image
-        header('Content-Type: image/$format');
+        header("Content-Type: image/$format");
         echo $image;
     } else {
         // display unknown image
