@@ -51,6 +51,7 @@ function collect_birthdays() {
 function tpl_birthday() {
     global $conf;
     global $lang;
+    $num_bdays = 0;
     
     $people = collect_birthdays();
         
@@ -98,9 +99,10 @@ function tpl_birthday() {
         else $name = $contact->name(false);
 
         echo "<a href='?id=$contact->id'>$name</a> ($age) $text<br/>";
+        $num_bdays++;
     }
     
-    if(count($people) == 0) {
+    if($num_bdays == 0) {
         echo $lang['bday_none']."<br/>";
     }
 }
