@@ -313,7 +313,7 @@ class addressbook {
             if($contact->id > 0) {
                 if(!empty($contact->image)) {
                     // convert and create image file
-                    $contact->image = img_convert($contact->image, $conf['photo_format']);
+                    $contact->image = img_convert($contact->image, $conf['photo_format'], $conf['photo_resize']);
                     img_create($contact->id, $contact->image);
                 } else {
                     img_delete($contact->id);

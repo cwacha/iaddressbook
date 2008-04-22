@@ -96,33 +96,32 @@ function img_display() {
     exit();
 }
 
-function img_convert($in_image, $type='png', $options='') {
+function img_convert($in_image, $type='png', $resize='') {
     global $conf;
     
     $out_image = '';
     $type = strtolower($type);
+    $tmp_file = AB_INC."_images/tmp.xxx";
 
     if(!empty($conf['im_convert']) and is_readable($conf['im_convert'])) {
 
+        $options = '';
         // write in_image into a temp file
-        $tmp_file = AB_INC."_images/tmp.xxx";
         $fd = fopen($tmp_file, "wb");
         if(is_resource($fd)) {
             fwrite($fd, $in_image);
             fclose($fd);
 
             // now try to convert the file using ImageMagick
+            if(!empty($resize)) $options = '-resize '. $resize;
+            
+            msg("calling convert with: ". $conf['im_convert']." ".$tmp_file." $options $type:-");
             $pipe = popen($conf['im_convert']." ".$tmp_file." $options $type:-", "r");
             if(is_resource($pipe)) {
                 while(!feof($pipe)) {
                     $out_image .= fread($pipe, 8192);
                 }
                 pclose($pipe);
-            }
-            
-            // remove the temporary file
-            if(is_readable($tmp_file)) {
-                unlink($tmp_file);
             }
 
         } else {
@@ -133,37 +132,59 @@ function img_convert($in_image, $type='png', $options='') {
 
 	if(empty($out_image) or !empty($err)) {
 		// ImageMagick did not work, try with GD
-		
-		$tmp_image = AB_INC."_images/tmp.$type";
-		
+				
 		$im = @imagecreatefromstring($in_image);
 		if($im !== false) {
+            imagepng($im, $tmp_file);
+
+            // Resize if necessary
+            if(!empty($resize)) {
+                $width  = $resize;
+                $height = $resize;
+                list($width_orig, $height_orig) = getimagesize($tmp_file);
+                
+                $ratio_orig = $width_orig/$height_orig;
+                if ($width/$height > $ratio_orig) {
+                    $width = $height*$ratio_orig;
+                } else {
+                    $height = $width/$ratio_orig;
+                }
+            
+                // Resample
+                $im_p = imagecreatetruecolor($width, $height);
+                //$image = @file_get_contents($tmp_image);
+                imagecopyresampled($im_p, $im, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+                imagedestroy($im);
+                $im = $im_p;
+        	}
+
             // create temporary copy
             switch($type) {
                 case 'png':
-                    imagepng($im, $tmp_image);
+                    imagepng($im, $tmp_file);
                     break;
                 case 'gif':
-                    imagegif($im, $tmp_image);
+                    imagegif($im, $tmp_file);
                     break;
                 case 'jpg':
                 case 'jpeg':
-                    imagejpeg($im, $tmp_image);
+                    imagejpeg($im, $tmp_file);
                     break;
                 default:
-                    msg("Cannot convert image: GD only supports gif, jpg and png", -1);
+                    msg("Cannot convert image to $type: GD only supports gif, jpg and png", -1);
             }
 			imagedestroy($im);
-			
-			$out_image = @file_get_contents($tmp_image);
-			
-	        if(is_writeable($tmp_image)) {
-	            unlink($tmp_image);
-	        }
+  
+            $out_image = @file_get_contents($tmp_file);
 		} else {
             msg("Cannot convert image with GD: Data is not in a recognized format", -1);
 		}
 	}
+
+    // remove the temporary file
+    if(is_writeable($tmp_file)) {
+        unlink($tmp_file);
+    }
 
     return $out_image;
 }

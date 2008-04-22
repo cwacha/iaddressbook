@@ -266,11 +266,7 @@ function act_save() {
         $contact->image = NULL;
     } else if($conf['photo_enable'] && !empty($_FILES['photo_file']['tmp_name']) ) {
         //change or add picture
-        if(!empty($conf['photo_resize'])) {
-            $contact->image = img_convert(@file_get_contents($_FILES['photo_file']['tmp_name']), $conf['photo_format'], '-resize ' . $conf['photo_resize']);
-        } else {
-            $contact->image = @file_get_contents($_FILES['photo_file']['tmp_name']);
-        }
+        $contact->image = @file_get_contents($_FILES['photo_file']['tmp_name']);
     }
     
     $contact->addresses = array();
