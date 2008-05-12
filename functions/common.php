@@ -180,13 +180,11 @@ function map_link($address) {
  * @author Andreas Gohr <andi@splitbrain.org>
  * @see    html_msgarea
  */
-function msg($message,$lvl=0,$line='',$file=''){
+function msg($message, $lvl=0){
     global $MSG;
     $errors[-1] = 'error';
     $errors[0]  = 'info';
     $errors[1]  = 'success';
-
-    if($line || $file) $message.=' ['.basename($file).':'.$line.']';
 
     if(!headers_sent()) {
         if(!isset($MSG)) $MSG = array();
@@ -202,6 +200,20 @@ function msg($message,$lvl=0,$line='',$file=''){
     }
 }
 
+function imsg($message, $lvl=0) {
+    $errors[-1] = 'error';
+    $errors[0]  = 'info';
+    $errors[1]  = 'success';
+
+    $msg = array();
+    $msg[]=array('lvl' => $errors[$lvl], 'msg' => $message);
+    if(function_exists('html_msgarea')) {
+        html_msgarea($msg);
+    } else {
+        print "ERROR($lvl) $message";
+    }
+}
+
 function msg_text() {
   global $MSG;
   if(!isset($MSG)) return '';
@@ -213,6 +225,52 @@ function msg_text() {
   return $ret;
 }
 
+
+/*
+ * array_to_text
+ * Returns a string with PHP code representing the array given.
+ *
+ * @param $array    the array to convert
+ * @param $prefix   the name the array should have in PHP
+ * @return          the serialized PHP code 
+ */
+function array_to_text($array, $prefix='') {
+    $text = '';
+    
+    if(empty($prefix)) $prefix = '$lang';
+    
+    foreach($array as $key => $value) {
+        if(gettype($value) == 'string') {
+            $line = $prefix .'[\''.$key.'\']';
+            $line = str_pad($line, 40);
+            $line .= "= '".addcslashes($value, "'")."';";
+            $text .= $line . "\n";
+        } else if(gettype($value) == 'array') {
+            $text .= "\n";
+            $text .= array_to_text($value, $prefix . '[\''.$key.'\']');
+        } else if(gettype($value) == 'integer') {
+            $line = $prefix .'[\''.$key.'\']';
+            $line = str_pad($line, 40);
+            $line .= "= ".(string)$value.";";
+            $text .= $line . "\n";
+        } else {
+            msg("array_to_text: cannot convert: unsupported object ".gettype($value), -1);
+        }
+    }
+    return $text;
+}
+
+
+/*
+ * real_stripcslashes
+ * Returns a string with backslashes stripped off.
+ * Note:    This function behaves identical to stripcslashes
+ *          except that it also works correctly for newlines!
+ *
+ * @param $string   the string to unescape
+ * @param $escapes  the charaters that should be unescaped
+ * @return          the unescaped string 
+ */
 function real_stripcslashes($string, $escapes) {
     $escape_mode = 0;
     $out_string = '';
@@ -254,6 +312,18 @@ function real_stripcslashes($string, $escapes) {
     return $out_string;
 }
 
+/*
+ * real_addcslashes
+ * escapes every character in $string with a backslash \
+ * if the character appears in $escapes and returns
+ * the escaped version.
+ * Note:    This function behaves identical to addcslashes
+ *          except that it also works correctly for newlines!
+ *
+ * @param $string   the string to escape
+ * @param $escapes  the charaters that should be escaped
+ * @return          the escaped string 
+ */
 function real_addcslashes($string, $escapes) {
     $out_string = '';
     

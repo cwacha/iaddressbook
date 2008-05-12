@@ -11,22 +11,53 @@ require_once(AB_INC.'functions/init.php');
 require_once(AB_INC.'functions/db.php');
 require_once(AB_INC.'functions/template.php');
 require_once(AB_INC.'functions/common.php');
-require_once(AB_INC.'functions/actions.php');
+require_once(AB_INC.'functions/db.php');
 
 $VERSION = "1.0 DEV";
 
 // the state of the script
+global $state;
 $state = array();
 
-// initial state
-$state['action'] = 'welcome';
-$state['step_max'] = 4;
-$state['step']   = 1;
+function init_session_defaults() {
+    global $state;
+    global $defaults;
+    global $conf;
+    
+    // initial state
+    $state['action'] = 'welcome';
+    $state['step']   = 1;
+    $state['db_created'] = 0;
+    
+    $conf = $defaults;
+}
 
+function load_session() {
+    global $_SESSION;
+    global $state;
+    global $conf;
+    
+    // restore session
+    if(is_array($_SESSION['state'])) {
+        $state = $_SESSION['state'];
+        $conf = $_SESSION['conf'];
+    }
+}
+
+function save_session() {
+    global $_SESSION;
+    global $state;
+    global $conf;
+
+    // save session
+    $_SESSION['state'] = $state;
+    $_SESSION['conf'] = $conf;
+}
 
 function html_header() {
     global $conf;
     global $lang;
+    global $state;
     
     ?>
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $conf['lang'] ?>"
@@ -40,12 +71,6 @@ function html_header() {
         
         <script type="text/javascript" language="JavaScript">
         <!--
-        window.onload = function () {
-            //applesearch.init('<?= AB_TPL ?>applesearch/');
-            //applesearch.onChange('srch_fld','srch_clear');
-            //document.search.q.focus(); 
-            //document.search.q.select();
-        }
         function do_action($action) {
             if($action != null) {
                 document.actions.elements["do"].value = $action;
@@ -59,15 +84,69 @@ function html_header() {
                 //alert("setting " + $key + " = " + document.actions.elements[$key].value);
             }
         }
+        function do_setbool($key, $value) {
+            if($value != null) {
+                if($value) {
+                    document.actions.elements[$key].value = 1;
+                } else {
+                    document.actions.elements[$key].value = 0;
+                }
+                //alert("setting " + $key + " = " + document.actions.elements[$key].value);
+            }
+        }
         -->
         </script>
     </head>
     <body>
     
     <form name="actions" action="" method="post">
-        <fieldset>
-            <input type="text" name="do" value="show" />
-        </fieldset>
+        <input type="hidden" name="do" value="show" />
+
+        <input type="hidden" name="fmode" value="<?= $conf['fmode'] ?>" />
+        <input type="hidden" name="dmode" value="<?= $conf['dmode'] ?>" />
+        <input type="hidden" name="basedir" value="<?= $conf['basedir'] ?>" />
+        <input type="hidden" name="baseurl" value="<?= $conf['baseurl'] ?>" />
+
+        <input type="hidden" name="dbtype" value="<?= $conf['dbtype'] ?>" />
+        <input type="hidden" name="dbname" value="<?= $conf['dbname'] ?>" />
+        <input type="hidden" name="dbserver" value="<?= $conf['dbserver'] ?>" />
+        <input type="hidden" name="dbuser" value="<?= $conf['dbuser'] ?>" />
+        <input type="hidden" name="dbpass" value="<?= $conf['dbpass'] ?>" />
+        <input type="hidden" name="debug_db" value="<?= $conf['debug_db'] ?>" />
+        <input type="hidden" name="dbtable_ab" value="<?= $conf['dbtable_ab'] ?>" />
+        <input type="hidden" name="dbtable_cat" value="<?= $conf['dbtable_cat'] ?>" />
+        <input type="hidden" name="dbtable_catmap" value="<?= $conf['dbtable_catmap'] ?>" />
+        <input type="hidden" name="dbtable_truth" value="<?= $conf['dbtable_truth'] ?>" />
+        <input type="hidden" name="dbtable_sync" value="<?= $conf['dbtable_sync'] ?>" />
+        <input type="hidden" name="dbtable_action" value="<?= $conf['dbtable_action'] ?>" />
+
+        <input type="hidden" name="lang" value="<?= $conf['lang'] ?>" />
+        <input type="hidden" name="title" value="<?= $conf['title'] ?>" />
+        <input type="hidden" name="template" value="<?= $conf['template'] ?>" />
+        <input type="hidden" name="bdformat" value="<?= $conf['bdformat'] ?>" />
+        <input type="hidden" name="dformat" value="<?= $conf['dformat'] ?>" />
+        <input type="hidden" name="lastfirst" value="<?= $conf['lastfirst'] ?>" />
+        <input type="hidden" name="photo_resize" value="<?= $conf['photo_resize'] ?>" />
+        <input type="hidden" name="photo_size" value="<?= $conf['photo_size'] ?>" />
+        <input type="hidden" name="photo_format" value="<?= $conf['photo_format'] ?>" />
+        <input type="hidden" name="map_link" value="<?= $conf['map_link'] ?>" />
+        <input type="hidden" name="contactlist_limit" value="<?= $conf['contactlist_limit'] ?>" />
+        <input type="hidden" name="bday_advance_week" value="<?= $conf['bday_advance_week'] ?>" />
+
+        <input type="hidden" name="canonical" value="<?= $conf['canonical'] ?>" />
+        <input type="hidden" name="auth_enabled" value="<?= $conf['auth_enabled'] ?>" />
+        <input type="hidden" name="auth_allow_guest" value="<?= $conf['auth_allow_guest'] ?>" />
+        <input type="hidden" name="im_convert" value="<?= $conf['im_convert'] ?>" />
+        <input type="hidden" name="photo_enable" value="<?= $conf['photo_enable'] ?>" />
+        <input type="hidden" name="session_name" value="<?= $conf['session_name'] ?>" />
+        <input type="hidden" name="mark_changed" value="<?= $conf['mark_changed'] ?>" />
+        <input type="hidden" name="debug" value="<?= $conf['debug'] ?>" />
+
+        <input type="hidden" name="vcard_fb_enc" value="<?= $conf['vcard_fb_enc'] ?>" />
+        <input type="hidden" name="ldif_base" value="<?= $conf['ldif_base'] ?>" />
+        <input type="hidden" name="ldif_mozilla" value="<?= $conf['ldif_mozilla'] ?>" />
+        <input type="hidden" name="xmlrpc_enable" value="<?= $conf['xmlrpc_enable'] ?>" />
+ 
     </form>
     
     <div class="mainview">
@@ -93,7 +172,7 @@ function html_header() {
 
 function html_footer() {
     ?>
-        <div style="height: 10px;" ></div>
+        <div style="height: 10px; clear: both;" ></div>
         <!-- Begin Footer --> 
         <div class="separator">&nbsp;</div>
         <div class="footer">
@@ -110,15 +189,17 @@ function html_install_step() {
     global $state;
     
     $step = $state['step'];
+    $step_max = 5;
+    $space = (string)(100 / $step_max);
     
     echo '<div style="width:80%; height:100px; margin: 0 auto; font-size: 500%; font-weight:bold;">';
-    for($t = 1; $t <= $state['step_max']; $t++) {
+    for($t = 1; $t <= $step_max; $t++) {
         if($t == $state['step']) {
-            echo "<div style='float:left; width: 25%; color:#000;'>";
+            echo "<div style='float:left; width: $space%; color:#000;'>";
             echo $t;
             echo "</div>";
         } else {
-            echo "<div style='float:left; width: 25%; color:#bebebe;'>";
+            echo "<div style='float:left; width: $space%; color:#bebebe;'>";
             echo $t;
             echo "</div>";
         }
@@ -129,7 +210,7 @@ function html_install_step() {
 function act_content() {
     global $state;
     
-    echo '<div style="height: 350px; width: 80%; margin: 0 auto; text-align: left; font-size: 120%; ">';
+    echo '<div style="min-height: 350px; width: 80%; margin: 0 auto; text-align: left; font-size: 110%;">';
     switch($state['step']) {
         case 1:
             step_welcome();
@@ -142,6 +223,9 @@ function act_content() {
             break;
         case 4:
             step_configure();
+            break;
+        case 5:
+            step_finish();
             break;
         default:
             step_title("step not defined.");
@@ -174,7 +258,9 @@ function step_welcome() {
         <p><p>
         This project is very special to me as it solved one major issue in keeping all
         my addresses handy and in sync with my other devices. I put hundreds of hours
-        into this project and I am dedicated to make it better every day.
+        into this project and I am dedicated to make it better every day. If you like
+        this program, have suggestions or blame please tell me or
+        <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">donate</a>!
         Enjoy and have Fun!
         <p style="text-align: right;">&#8212; Clemens Wacha</p>
     <?php step_title("Prerequisites"); ?>    
@@ -184,7 +270,7 @@ function step_welcome() {
         You will need:
         <ul>
             <li>PHP version 4.3 or higher.</li>
-            <li>MySQL version 4.0 or higher OR SQLite version 2.x</li>
+            <li>MySQL version 4.0 or higher or SQLite version 2.x</li>
             <li>(optional) iconv (if you want to import vcards that are not UTF-8 encoded)</li>
             <li>(optional) ImageMagick's convert or GD (if you want to import photos)</li>
         </ul>
@@ -195,30 +281,18 @@ function step_welcome() {
     step_next('step_check');
 }
 
-function imsg($message, $lvl=0) {
-    $errors[-1] = 'error';
-    $errors[0]  = 'info';
-    $errors[1]  = 'success';
-
-    print '<div class="'.$errors[$lvl].'" style="text-align: left;">';
-    print $message;
-    print '</div>';
-}
-
-
-
 function step_check() {
     global $VERSION;
     global $conf;
     $errors = 0;
     
     step_title("Checking your installation");
-    
+
     echo '<table border="0"><tr><td width="45%">';
     echo '<div>';
     
     if(!is_writable(AB_INC."_images")) {
-        imsg("Cannot use contact photos: No write permission to ".AB_INC."_images");
+        imsg("Cannot use contact photos: No write permission to ".AB_INC."_images", -1);
     }
     
     if(!is_writable(AB_INC."_import")) {
@@ -246,10 +320,10 @@ function step_check() {
                 imsg("convert available (version ".$output.")", 1);
                 $use_im = 1;
             } else {
-                imsg("Cannot execute ImageMagick's convert at ".$conf['im_convert'].". Using GD to convert photos");
+                imsg("Cannot execute ImageMagick's convert at ".$conf['im_convert'], 0);
             }
         } else {
-            imsg("Cannot find ImageMagick's convert at ". $conf['im_convert']);
+            imsg("Cannot find ImageMagick's convert at ". $conf['im_convert'], 0);
         }
     }
     
@@ -266,13 +340,13 @@ function step_check() {
             imsg("Using GD to convert photos", 1);
         }
     } else {
-        imsg("Contact photos are not supported! Neither ImageMagick's convert nor GD is available");
+        imsg("Contact photos are not supported! Neither ImageMagick's convert nor GD is available", 1);
     }
 
     if(function_exists('iconv')) {
         imsg("iconv available (version ".ICONV_VERSION.")", 1);
     } else {
-        imsg("iconv not available. vCards must be encoded in UTF-8 to be imported properly");
+        imsg("iconv not available. vCards must be encoded in UTF-8 to be imported properly", 1);
     }
 
     if(function_exists('sqlite_open')) {
@@ -297,29 +371,196 @@ function step_check() {
     }
 
     echo '</td></tr></table>';
-
+    
     step_prev('step_welcome');
     if($errors == 0) step_next('step_install');
 }
 
 function step_install() {
+    global $state;
     step_title("Setting up the database");
 
-    echo "Database";
-    html_edit("value", "alert('bla')");
-    echo "<p>";
-    echo "Database";
-    html_edit("value", "alert('bla')");
+    $col = array();
+
+    if($state['action'] == 'create_db') setup_db();
+
+    html_sform_begin();
+    html_sform_line('dbtype');
+    html_sform_line('dbname');
+    html_sform_line('dbserver');
+    html_sform_line('dbuser');
+    html_sform_line('dbpass');
+    html_sform_line('debug_db');
+    html_sform_end();
+        
+    if(!$state['db_created']) {
+        echo "&nbsp;<p>";
+        html_button("Create Database and Tables", "do_action('create_db')");
+    }
 
     step_prev('step_check');
-    step_next('step_configure');
+    if($state['db_created']) step_next('step_configure');
 }
 
 function step_configure() {
+    global $defaults;
+    
     step_title("Configure your PHP iAddressBook");
 
+    html_sform_begin();
+    foreach($defaults as $key => $value) {
+        if(!in_array($key, array('dbtype', 'dbname', 'dbserver', 'dbuser', 'dbpass', 'debug', 'debug_db'))) {
+            html_sform_line($key);
+        }
+    }
+    html_sform_end();
+
     step_prev('step_install');
-    step_next('');
+    step_next('step_finish', 'Finish');
+}
+
+function step_finish() {
+    global $defaults;
+    global $conf;
+    global $state;
+    
+    step_title("Installation Complete!");
+        
+    // save config file (only add vars that are not on default value)
+    $new_config = array();
+    foreach($conf as $key => $value) {
+        if($conf[$key] != $defaults[$key]) {
+            $new_config[$key] = $value;
+        }
+    }
+
+    if(!$state['config_saved']) {
+        $ret = save_config($new_config, 'conf/config.php');
+        if($ret) $state['config_saved'] = 1;
+    }
+    
+    if(!$state['config_saved']) {
+        echo "&nbsp;<p>";
+        html_button("Retry", "do_action('step_finish')");
+        step_prev('step_configure');
+        step_next('');
+    } else {
+        ?>
+            &nbsp;<p>
+            <b>Congratulations!</b>
+            <p><p>
+            You have completed the installation of PHP iAddressBook. You may start using
+            it immediately. Please send me your feedback and comments to
+            <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+            <p>
+            <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">
+            Don't forget to donate if you like this program!</a>
+            <p>
+            Enjoy and have Fun!
+            <p style="text-align: right;">&#8212; Clemens Wacha</p>
+        <?php
+        //step_prev('step_configure');
+        step_next('open_addressbook', 'Open the AddressBook');    
+    }
+    
+}
+
+function save_config($config, $filename = 'conf/config.php', $overwrite = 0) {
+    if(empty($config) || empty($filename)) return false;
+
+    $header = array();
+    $header[] = "/**";
+    $header[] = " * This is the AddressBook's local configuration file";
+    $header[] = " * This is a piece of PHP code so PHP syntax applies!";
+    $header[] = " *";
+    $header[] = " */\n\n";
+
+    $file = AB_INC.$filename;
+    if(!$overwrite && file_exists($filename)) {
+        imsg("Error saving configuration: file $file already exists!", -1);
+        return false;
+    }
+    $fd = fopen($file, "w");
+    if(!$fd) {
+        imsg("Error saving configuration: could not write $file", -1);
+        return false;
+    }
+    fwrite($fd, "<?php\n\n");
+    
+    foreach($header as $line) {
+        fwrite($fd, $line . "\n");
+    }
+
+    $data = array_to_text($config, '$conf');
+    fwrite($fd, $data);
+
+    fwrite($fd, "\n\n?>");
+    fclose($fd);
+    
+    if($config['fperm']) chmod($file, $config['fperm']);
+
+    imsg("Configuration saved successfully!", 1);
+    return true;
+}
+
+function setup_db() {
+    global $state;
+    global $conf;
+
+    db_init($conf);
+    db_open();
+    if(db_createtables()) {
+        imsg("Database setup successfully", 1);
+        $state['db_created'] = 1;
+        $conf['debug_db'] = 0;
+    }
+    db_close();
+    html_msgarea();
+}
+
+function html_sform_begin() {
+    echo "<table style='width: 100%;'>";
+    echo "<colgroup>";
+    echo "<col style='width: 30%;'";
+    echo "<col style=''";
+    echo "<col style=''";
+}
+
+function html_sform_line($col) {
+    global $conf;
+    global $defaults;
+    global $meta;
+    global $lang;
+
+    echo "<tr>";
+
+    echo "<td style='text-align: right; vertical-align: top; padding-right: 2em;'>".$lang[$col]."</td>";
+    echo "<td style='vertical-align: top;'>";
+    switch($meta[$col][0]) {
+        case 'option':
+            break;
+        case 'onoff':
+            html_onoff($conf[$col], "do_setbool('".$col."',this.value)"); 
+            break;
+        case 'string':
+            html_edit($conf[$col], "do_set('".$col."',this.value)");
+            break;
+        case 'textarea':
+        default:
+            html_textarea($conf[$col], "do_set('".$col."',this.value)", '', 5, 30);
+            break;
+    }
+    echo "</td>";
+    echo "<td style='text-align: left; vertical-align: top; padding-left: 2em;'>";
+    echo $lang[$col.'_help'];
+    echo " [".$defaults[$col]."]";
+    echo "</td>";
+
+    echo "</tr>";
+}
+
+function html_sform_end() {
+    echo "</table>";
 }
 
 function html_button($name='no name', $action="alert('clicked!')" ) {
@@ -342,7 +583,17 @@ function html_edit($value='', $onchange='', $id='') {
     if(!empty($value)) $value_val="value=\"".hsc($value)."\"";
     if(!empty($onchange)) $onchange_val="onchange=\"".hsc($onchange)."\"";
     
-    echo "<input type='text' $id_val $value_val $onchange_val />";
+    echo "<input type='text' class='text' size='30' $id_val $value_val $onchange_val />";
+}
+
+function html_onoff($value=false, $onchange='', $id='') {
+    $id_val='';
+    $value_val='';
+    $onchange_val='';
+    if(!empty($id)) $id_val="id=\"".hsc($id)."\"";
+    if($value) $value_val="checked='checked'";
+    if(!empty($onchange)) $onchange_val="onchange=\"".hsc($onchange)."\"";
+    echo "<input type='checkbox' $id_val $value_val $onchange_val />";    
 }
 
 function html_textarea($value='', $onchange='', $id='', $rows='', $cols='') {
@@ -355,7 +606,7 @@ function html_textarea($value='', $onchange='', $id='', $rows='', $cols='') {
     if(!empty($rows)) $rows_val="rows=\"".hsc($rows)."\"";
     if(!empty($cols)) $cols_val="cols=\"".hsc($cols)."\"";
 
-    echo "<textarea $id_val $rows_val $cols_val $onchange_val>";
+    echo "<textarea class='text' $id_val $rows_val $cols_val $onchange_val>";
     echo hsc($value);
     echo "</textarea>";
 }
@@ -364,25 +615,11 @@ function action_dispatch($action = '') {
     global $conf;
     global $state;
     
-    print_r($_REQUEST);
-    
     switch($action) {
-    
-        case 'bla':
-            msg("bla");
-            break;
-        case 'check':
-            act_check();
-            break;
-        case 'next':
-            msg("deprecated: $action");
-            $state['step']++;
-            if($state['step'] > $state['step_max']) $state['step'] = $state['step_max'];
-            break;
-        case 'prev':
-            msg("deprecated: $action");
-            $state['step']--;
-            if($state['step'] < 1) $state['step'] = 1;
+        case 'reset':
+            msg("Session reset!");
+            $state = array();
+            init_session_defaults();
             break;
         case 'step_welcome':
             $state['step'] = 1;
@@ -396,10 +633,22 @@ function action_dispatch($action = '') {
         case 'step_configure':
             $state['step'] = 4;
             break;
+        case 'step_finish':
+            $state['step'] = 5;
+            break;
         case 'phpinfo':
             phpinfo();
             break;
+        case 'open_addressbook':
+            header('Location: '.AB_URL);
+            exit;
+            break;
+        case 'create_db':
+            // db is created from within step_install()
+        case 'show':
+            break;
         default:
+            msg("unknown action: $action", -1);
         
     }
 
@@ -411,22 +660,80 @@ function action_dispatch($action = '') {
     html_footer();
 }
 
-// restore session
-if(is_array($_SESSION['state'])) {
-    foreach($_SESSION['state'] as $key => $value) {
-        $state[$key] = $value;
-    }
+function post_var($value, $default) {
+    if(isset($value)) return $value;
+    return $default;
 }
 
-if(isset($_REQUEST['do'])) {
-    $state['action'] = $_REQUEST['do'];
+
+init_session_defaults();
+load_session();
+
+$state['action'] = post_var($_REQUEST['do'], $state['action']);
+
+// process request variables
+switch($state['step']) {
+    case 3:
+        if(!$state['db_created']) {
+            $conf['dbtype']   = post_var($_REQUEST['dbtype'],   $conf['dbtype']);
+            $conf['dbname']   = post_var($_REQUEST['dbname'],   $conf['dbname']);
+            $conf['dbserver'] = post_var($_REQUEST['dbserver'], $conf['dbserver']);
+            $conf['dbuser']   = post_var($_REQUEST['dbuser'],   $conf['dbuser']);
+            $conf['dbpass']   = post_var($_REQUEST['dbpass'],   $conf['dbpass']);
+            $conf['debug_db'] = (int)post_var($_REQUEST['debug_db'], $conf['debug_db']);
+
+            // TODO: fix db creation!
+            $conf['dbtable_ab']   = post_var($_REQUEST['dbtable_ab'],   $conf['dbtable_ab']);
+            $conf['dbtable_cat']   = post_var($_REQUEST['dbtable_cat'],   $conf['dbtable_cat']);
+            $conf['dbtable_catmap']   = post_var($_REQUEST['dbtable_catmap'],   $conf['dbtable_catmap']);
+            $conf['dbtable_truth']   = post_var($_REQUEST['dbtable_truth'],   $conf['dbtable_truth']);
+            $conf['dbtable_sync']   = post_var($_REQUEST['dbtable_sync'],   $conf['dbtable_sync']);
+            $conf['dbtable_action']   = post_var($_REQUEST['dbtable_action'],   $conf['dbtable_action']);
+        }
+        break;
+    case 4:
+            $conf['fmode']   = (int)post_var($_REQUEST['fmode'],   $conf['fmode']);
+            $conf['dmode']   = (int)post_var($_REQUEST['dmode'],   $conf['dmode']);
+            $conf['basedir']   = post_var($_REQUEST['basedir'],   $conf['basedir']);
+            $conf['baseurl']   = post_var($_REQUEST['baseurl'],   $conf['baseurl']);
+
+            $conf['lang']   = post_var($_REQUEST['lang'],   $conf['lang']);
+            $conf['title']   = post_var($_REQUEST['title'],   $conf['title']);
+            $conf['template']   = post_var($_REQUEST['template'],   $conf['template']);
+            $conf['bdformat']   = post_var($_REQUEST['bdformat'],   $conf['bdformat']);
+            $conf['dformat']   = post_var($_REQUEST['dformat'],   $conf['dformat']);
+            $conf['lastfirst']   = (int)post_var($_REQUEST['lastfirst'],   $conf['lastfirst']);
+            $conf['photo_resize']   = post_var($_REQUEST['photo_resize'],   $conf['photo_resize']);
+            $conf['photo_size']   = post_var($_REQUEST['photo_size'],   $conf['photo_size']);
+            $conf['photo_format']   = post_var($_REQUEST['photo_format'],   $conf['photo_format']);
+            $conf['map_link']   = post_var($_REQUEST['map_link'],   $conf['map_link']);
+            $conf['contactlist_limit']   = (int)post_var($_REQUEST['contactlist_limit'],   $conf['contactlist_limit']);
+            $conf['bday_advance_week']   = (int)post_var($_REQUEST['bday_advance_week'],   $conf['bday_advance_week']);
+
+            $conf['canonical']   = (int)post_var($_REQUEST['canonical'],   $conf['canonical']);
+            $conf['auth_enabled']   = (int)post_var($_REQUEST['auth_enabled'],   $conf['auth_enabled']);
+            $conf['auth_allow_guest']   = (int)post_var($_REQUEST['auth_allow_guest'],   $conf['auth_allow_guest']);
+            $conf['im_convert']   = post_var($_REQUEST['im_convert'],   $conf['im_convert']);
+            $conf['photo_enable']   = (int)post_var($_REQUEST['photo_enable'],   $conf['photo_enable']);
+            $conf['session_name']   = post_var($_REQUEST['session_name'],   $conf['session_name']);
+            $conf['mark_changed']   = (int)post_var($_REQUEST['mark_changed'],   $conf['mark_changed']);
+
+            $conf['debug']   = (int)post_var($_REQUEST['debug'],   $conf['debug']);
+
+            $conf['vcard_fb_enc']   = post_var($_REQUEST['vcard_fb_enc'],   $conf['vcard_fb_enc']);
+            $conf['ldif_base']   = post_var($_REQUEST['ldif_base'],   $conf['ldif_base']);
+            $conf['ldif_mozilla']   = (int)post_var($_REQUEST['ldif_mozilla'],   $conf['ldif_mozilla']);
+            $conf['xmlrpc_enable']   = (int)post_var($_REQUEST['xmlrpc_enable'],   $conf['xmlrpc_enable']);
+        break;
+    default:
+        break;
 }
 
 // start processing
 action_dispatch($state['action']);
 
-$_SESSION['state'] = $state;
 //close session
+save_session();
 session_write_close();
 
 //restore old umask

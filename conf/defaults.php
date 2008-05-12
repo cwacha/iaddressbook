@@ -75,7 +75,7 @@ $conf['session_name'] = '';                      // override session name if you
                                                  // only use alphanumeric characters (0-9, a-z, A-Z). No dots, does not consist of numbers only!
 $conf['mark_changed'] = true;                    // every contact that is added or modified will be automatically added to a new category called "modified contacts"
 $conf['debug'] = 0;                              // enable debug mode: use ?do=debug to show debug information
-$conf['debug_db']  = 0;							 // enable database debugging 
+$conf['debug_db']       = 0;					 // enable database debugging 
 
 // Import / Export
 

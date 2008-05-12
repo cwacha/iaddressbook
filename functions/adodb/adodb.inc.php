@@ -3717,6 +3717,7 @@
 	function &ADONewConnection($db='')
 	{
 	GLOBAL $ADODB_NEWCONNECTION, $ADODB_LASTDB;
+		$db_handle = $db;
 		
 		if (!defined('ADODB_ASSOC_CASE')) define('ADODB_ASSOC_CASE',2);
 		$errorfn = (defined('ADODB_ERROR_HANDLER')) ? ADODB_ERROR_HANDLER : false;
@@ -3789,7 +3790,7 @@
 							 "could not load the database driver for '$db'",
 							 $db,false,$ignore);
 				} else
-					 ADOConnection::outp( "<p>ADONewConnection: Unable to load database driver '$db'</p>",false);
+					 ADOConnection::outp( "<p>ADONewConnection: Unable to load database driver '$db_handle'</p>",false);
 					
 				return $false;
 			}

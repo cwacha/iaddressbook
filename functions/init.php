@@ -26,9 +26,14 @@
     //prepare config array()
     global $conf;
     $conf = array();
+    
+    // remember defaults
+    global $defaults;
+    $defaults = array();
 
     // load the config file(s)
     require_once(AB_CONF.'defaults.php');
+    $defaults = $conf;
     @include_once(AB_CONF.'config.php');
     
     // init session
@@ -55,7 +60,13 @@
 
     // EVIL HACK: we have to re-read the configuration... register_globals sucks
     @include(AB_CONF.'defaults.php');
+    $defaults = $conf;
     @include(AB_CONF.'config.php');
+    
+    // load meta information
+    global $meta;
+    $meta = array();
+    require_once(AB_INC.'functions/meta.php');
     
     //prepare language array
     global $lang;
@@ -122,7 +133,8 @@ function init_creationmodes() {
   // get system umask, fallback to 0 if none available
   $umask = @umask();
   if(!$umask) $umask = 0000;
-
+  $conf['oldumask'] = $umask;
+  
   // check what is set automatically by the system on file creation
   // and set the fperm param if it's not what we want
   $auto_fmode = 0666 & ~$umask;

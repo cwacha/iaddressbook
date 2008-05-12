@@ -37,7 +37,7 @@ CREATE TABLE addressbook_catmap (
     person_id int unsigned NOT NULL
 );
 
-/*
+
 CREATE TABLE addressbook_truth (
     id INTEGER PRIMARY KEY,
     syncpartner_id int unsigned NOT NULL,
@@ -63,4 +63,4 @@ CREATE TABLE addressbook_syncactions (
     local_id int unsigned NOT NULL,
     vcard_data text NOT NULL
 );
-*/
+
