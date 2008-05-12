@@ -29,8 +29,8 @@ class addressbook {
         }
         
         $contact->id = (int)$row[$prefix . 'ID'];
-        $contact->creationdate = $contact->unescape($row[$prefix . 'CREATIONDATE'] . " GMT");
-        $contact->modificationdate = $contact->unescape($row[$prefix . 'MODIFICATIONDATE'] . " GMT");
+        $contact->creationdate = $contact->unescape($row[$prefix . 'CREATIONDATE']);
+        $contact->modificationdate = $contact->unescape($row[$prefix . 'MODIFICATIONDATE']);
         
         $contact->title = $contact->unescape($row[$prefix . 'TITLE']);
         $contact->firstname = $contact->unescape($row[$prefix . 'FIRSTNAME']);
