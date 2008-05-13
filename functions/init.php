@@ -53,7 +53,7 @@
             }
         }
         unset($GLOBALS['s_variable_name']);
-        unset($GLOBLAS['m_variable_value']);
+        unset($GLOBALS['m_variable_value']);
         
         @ini_set('register_globals', 'Off');
     }    

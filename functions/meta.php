@@ -50,4 +50,3 @@ $meta['xmlrpc_enable'] = array('onoff');
 
 
 ?>
-

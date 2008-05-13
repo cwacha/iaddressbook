@@ -6,12 +6,12 @@
 * @author     Clemens Wacha <clemens.wacha@gmx.net>
 */
 
+
 if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__)).'/');
 require_once(AB_INC.'functions/init.php');
 require_once(AB_INC.'functions/db.php');
 require_once(AB_INC.'functions/template.php');
 require_once(AB_INC.'functions/common.php');
-require_once(AB_INC.'functions/db.php');
 
 $VERSION = "1.0 DEV";
 
@@ -25,7 +25,8 @@ function init_session_defaults() {
     global $conf;
     
     // initial state
-    $state['action'] = 'welcome';
+    $state = array();
+    $state['action'] = 'step_welcome';
     $state['step']   = 1;
     $state['db_created'] = 0;
     
@@ -33,25 +34,21 @@ function init_session_defaults() {
 }
 
 function load_session() {
-    global $_SESSION;
     global $state;
     global $conf;
     
     // restore session
-    if(is_array($_SESSION['state'])) {
-        $state = $_SESSION['state'];
-        $conf = $_SESSION['conf'];
-    }
+    if(is_array($_SESSION['state'])) $state = $_SESSION['state'];
+    if(is_array($_SESSION['config']))  $conf = $_SESSION['config'];
 }
 
 function save_session() {
-    global $_SESSION;
     global $state;
     global $conf;
 
     // save session
     $_SESSION['state'] = $state;
-    $_SESSION['conf'] = $conf;
+    $_SESSION['config'] = $conf;
 }
 
 function html_header() {
@@ -171,6 +168,8 @@ function html_header() {
 }
 
 function html_footer() {
+    global $_SESSION;
+    global $conf;
     ?>
         <div style="height: 10px; clear: both;" ></div>
         <!-- Begin Footer --> 
@@ -433,10 +432,12 @@ function step_finish() {
             $new_config[$key] = $value;
         }
     }
-
+    
     if(!$state['config_saved']) {
         $ret = save_config($new_config, 'conf/config.php');
-        if($ret) $state['config_saved'] = 1;
+        if($ret) {
+            $state['config_saved'] = 1;
+        }
     }
     
     if(!$state['config_saved']) {
@@ -466,7 +467,10 @@ function step_finish() {
 }
 
 function save_config($config, $filename = 'conf/config.php', $overwrite = 0) {
-    if(empty($config) || empty($filename)) return false;
+    if(!is_array($config) || empty($filename)) {
+        imsg("Internal error while saving configuration: no array given or filename empty ($filename)", -1);
+        return false;
+    }
 
     $header = array();
     $header[] = "/**";
@@ -614,11 +618,12 @@ function html_textarea($value='', $onchange='', $id='', $rows='', $cols='') {
 function action_dispatch($action = '') {
     global $conf;
     global $state;
+    global $_SESSION;
     
     switch($action) {
         case 'reset':
             msg("Session reset!");
-            $state = array();
+            $_SESSION = array();
             init_session_defaults();
             break;
         case 'step_welcome':
