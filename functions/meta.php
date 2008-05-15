@@ -7,11 +7,21 @@
  *
  */
 
+// read lang and template directory
+function list_dirs($dir, $base=AB_INC) {
+    return (is_dir($base.'/'.$dir) && (substr($dir, 0, 1) != '.'));
+}
+function is_lang_dir($dir) { return list_dirs($dir, AB_INC.'lang'); }
+function is_tpl_dir($dir) { return list_dirs($dir, AB_INC.'tpl'); }
+$lang_dirs = array_filter(scandir(AB_INC.'lang'), is_lang_dir);
+$tpl_dirs = array_filter(scandir(AB_INC.'tpl'), is_tpl_dir);
+
+
 $meta['fmode'] = array('string');
 $meta['dmode'] = array('string');
 $meta['basedir'] = array('string');
 $meta['baseurl'] = array('string');
-$meta['dbtype'] = array('string');
+$meta['dbtype'] = array('multichoice', '_choices' => array('mysql', 'sqlite'));
 $meta['dbname'] = array('string');
 $meta['dbserver'] = array('string');
 $meta['dbuser'] = array('string');
@@ -22,9 +32,9 @@ $meta['dbtable_catmap'] = array('string');
 $meta['dbtable_truth'] = array('string');
 $meta['dbtable_sync'] = array('string');
 $meta['dbtable_action'] = array('string');
-$meta['lang'] = array('string');
+$meta['lang'] = array('multichoice', '_choices' => $lang_dirs);
 $meta['title'] = array('string');
-$meta['template'] = array('string');
+$meta['template'] = array('multichoice', '_choices' => $tpl_dirs);
 $meta['bdformat'] = array('string');
 $meta['dformat'] = array('string');
 $meta['lastfirst'] = array('onoff');

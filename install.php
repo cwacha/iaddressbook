@@ -13,11 +13,20 @@ require_once(AB_INC.'functions/db.php');
 require_once(AB_INC.'functions/template.php');
 require_once(AB_INC.'functions/common.php');
 
-$VERSION = "1.0 DEV";
-
 // the state of the script
 global $state;
 $state = array();
+
+function stop_if_installed() {
+    if(file_exists(AB_INC.'conf/config.php')) {
+        html_header();
+        echo '<div style="min-height: 350px; width: 80%; margin: 0 auto; text-align: left; font-size: 110%;">';
+        step_disabled();
+        echo '</div>';
+        html_footer();
+        exit;
+    }
+}
 
 function init_session_defaults() {
     global $state;
@@ -408,7 +417,9 @@ function step_configure() {
 
     html_sform_begin();
     foreach($defaults as $key => $value) {
-        if(!in_array($key, array('dbtype', 'dbname', 'dbserver', 'dbuser', 'dbpass', 'debug', 'debug_db'))) {
+        if(!in_array($key, array('dbtype', 'dbname', 'dbserver', 'dbuser', 'dbpass',
+            'dbtable_ab', 'dbtable_cat', 'dbtable_catmap', 'dbtable_truth', 'dbtable_sync',
+            'dbtable_action', 'debug', 'debug_db'))) {
             html_sform_line($key);
         }
     }
@@ -464,6 +475,22 @@ function step_finish() {
         step_next('open_addressbook', 'Open the AddressBook');    
     }
     
+}
+
+function step_disabled() {
+    step_title("PHP iAddressBook is already installed!");
+
+    ?>
+        You have already completed the installation of PHP iAddressBook.
+        <p>
+        If you want to re-install make sure to remove the configuration file
+        conf/config.php and the database.
+        <p>
+        Enjoy and have Fun!
+        <p style="text-align: right;">&#8212; Clemens Wacha</p>
+    <?php
+    
+    step_next('open_addressbook', 'Open the AddressBook');        
 }
 
 function save_config($config, $filename = 'conf/config.php', $overwrite = 0) {
@@ -541,7 +568,8 @@ function html_sform_line($col) {
     echo "<td style='text-align: right; vertical-align: top; padding-right: 2em;'>".$lang[$col]."</td>";
     echo "<td style='vertical-align: top;'>";
     switch($meta[$col][0]) {
-        case 'option':
+        case 'multichoice':
+            html_select($conf[$col], $meta[$col]['_choices'], "do_set('".$col."',this.value)");
             break;
         case 'onoff':
             html_onoff($conf[$col], "do_setbool('".$col."',this.value)"); 
@@ -615,6 +643,25 @@ function html_textarea($value='', $onchange='', $id='', $rows='', $cols='') {
     echo "</textarea>";
 }
 
+function html_select($value = '', $options = null, $onchange='', $id='') {
+    $id_val='';
+    $onchange_val='';
+    if(!empty($id)) $id_val="id=\"".hsc($id)."\"";
+    if(!empty($onchange)) $onchange_val="onchange=\"".hsc($onchange)."\"";
+
+    echo "<select size='1' $id_val $onchange_val>";
+    if(is_array($options)) {
+        foreach($options as $opt) {
+            if($value == $opt) {
+                echo "<option selected='selected' >$opt</option>";
+            } else {
+                echo "<option>$opt</option>";
+            }
+        }
+    }
+    echo "</select>";
+}
+
 function action_dispatch($action = '') {
     global $conf;
     global $state;
@@ -625,6 +672,9 @@ function action_dispatch($action = '') {
             msg("Session reset!");
             $_SESSION = array();
             init_session_defaults();
+            $target = rtrim(AB_URL, '/') . '/install.php';
+            header('Location: '.$target);
+            exit;
             break;
         case 'step_welcome':
             $state['step'] = 1;
@@ -656,6 +706,9 @@ function action_dispatch($action = '') {
             msg("unknown action: $action", -1);
         
     }
+    
+    // check if already installed
+    stop_if_installed();
 
     header('Content-Type: text/html; charset=utf-8');
     

@@ -4,6 +4,9 @@
     * Initialize some defaults
     */
     
+    global $VERSION;
+    $VERSION = "1.0 DEV";
+    
     // define the include path
     if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
     require_once(AB_INC.'functions/common.php');
