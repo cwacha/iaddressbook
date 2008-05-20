@@ -107,22 +107,6 @@
 
     init_creationmodes();
     
-    /*
-    // disable gzip if not available
-    if($conf['usegzip'] && !function_exists('gzopen')){
-    $conf['usegzip'] = 0;
-    }
-    
-    
-    // make real paths and check them
-    init_paths();
-    init_files();
-    
-    // automatic upgrade to script versions of certain files
-    scriptify(DOKU_CONF.'users.auth');
-    scriptify(DOKU_CONF.'acl.auth');
-    
-*/
 
 /**
  * Sets the internal config values fperm and dperm which, when set,
@@ -131,22 +115,25 @@
  * setting the values only if needed.
  */
 function init_creationmodes() {
-  global $conf;
-
-  // get system umask, fallback to 0 if none available
-  $umask = @umask();
-  if(!$umask) $umask = 0000;
-  $conf['oldumask'] = $umask;
-  
-  // check what is set automatically by the system on file creation
-  // and set the fperm param if it's not what we want
-  $auto_fmode = 0666 & ~$umask;
-  if($auto_fmode != $conf['fmode']) $conf['fperm'] = $conf['fmode'];
-
-  // check what is set automatically by the system on file creation
-  // and set the dperm param if it's not what we want
-  $auto_dmode = $conf['dmode'] & ~$umask;
-  if($auto_dmode != $conf['dmode']) $conf['dperm'] = $conf['dmode'];
+    global $conf;
+    
+    // make sure we have fmode/dmode as integers
+    $conf['fmode'] = octdec($conf['fmode']);
+    $conf['dmode'] = octdec($conf['dmode']);
+    
+    // get system umask, fallback to 0 if none available
+    $umask = @umask();
+    if(!$umask) $umask = 0000;
+    
+    // check what is set automatically by the system on file creation
+    // and set the fperm param if it's not what we want
+    $auto_fmode = 0666 & ~$umask;
+    if($auto_fmode != $conf['fmode']) $conf['fperm'] = $conf['fmode'];
+    
+    // check what is set automatically by the system on file creation
+    // and set the dperm param if it's not what we want
+    $auto_dmode = $conf['dmode'] & ~$umask;
+    if($auto_dmode != $conf['dmode']) $conf['dperm'] = $conf['dmode'];
 }
 
 
@@ -224,46 +211,6 @@ function getBaseURL($abs=false){
 
   return $proto.$host.$port.$dir;
 }
-
-
-/**
- * Append a PHP extension to a given file and adds an exit call
- *
- * This is used to migrate some old configfiles. An added PHP extension
- * ensures the contents are not shown to webusers even if .htaccess files
- * do not work
- *
- * @author Jan Decaluwe <jan@jandecaluwe.com>
- */
-function scriptify($file) {
-  // checks
-  if (!is_readable($file)) {
-    return;
-  }
-  $fn = $file.'.php';
-  if (@file_exists($fn)) {
-    return;
-  }
-  $fh = fopen($fn, 'w');
-  if (!$fh) {
-    die($fn.' is not writable!');
-  }
-  // write php exit hack first
-  fwrite($fh, "# $fn\n");
-  fwrite($fh, '# <?php exit()?>'."\n");
-  fwrite($fh, "# Don't modify the lines above\n");
-  fwrite($fh, "#\n");
-  // copy existing lines
-  $lines = file($file);
-  foreach ($lines as $line){
-    fwrite($fh, $line);
-  }
-  fclose($fh);
-  //try to rename the old file
-  @rename($file,"$file.old");
-}
-
-
 
 
 ?>

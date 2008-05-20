@@ -359,4 +359,27 @@ function real_br2nl($string) {
     return preg_replace("/\<\s*br\s*\/*\>/", "\n", $string);
 }
 
+if(!function_exists('scandir')) {
+    function scandir($dir, $sort_order=0) {
+        $files = array();
+        $dh  = opendir($dir);
+        while (false !== ($filename = readdir($dh))) {
+            $files[] = $filename;
+        }
+        return $files;
+    }
+}
+
+function fix_fmode($file) {
+    global $conf;
+    
+    if($conf['fperm']) chmod($file, $conf['fperm']);
+}
+
+function fix_dmode($dir) {
+    global $conf;
+    
+    if($conf['dperm']) chmod($dir, $conf['dperm']);
+}
+
 ?>
