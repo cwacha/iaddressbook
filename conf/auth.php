@@ -10,6 +10,10 @@
  * 
  */
 
+// Idee User: username:fullname:email:password:group1,group2:perm1,perm2
+// Idee Gruppe: gruppe:::::perm1,perm2
+
+
 
 ///////////////////////
 //     U S E R S     //
@@ -27,7 +31,7 @@ $auth['guest']['groups']        = array('@guest');
 //   This means that Fred is able to execute all actions that the @editor group may
 //   execute as well as the action check.
 //
-// For an explanation of all actions see the documentation at http://iaddressbook.org/docs#permissions_access_controls
+// For an explanation of all actions see the documentation at http://wacha.ch/addressbook:docs#permissions_access_controls
 
 // $auth['fred']['password']    = '72b302bf297a228a75730123efef7c41';
 // $auth['fred']['permissions'] = array( 'check' );
@@ -41,6 +45,18 @@ $auth['guest']['groups']        = array('@guest');
 // $auth['your_admin_username']['groups']      = array('@admin');
 // $auth['your_admin_username']['fullname']    = 'Administrator';
 // $auth['your_admin_username']['email']       = '';
+
+$auth['hermann']['password']    = 'a08f6dcee64691d6907b0e3560046565';
+$auth['hermann']['permissions'] = array();
+$auth['hermann']['groups']      = array('@admin');
+$auth['hermann']['fullname']    = 'Hermann Giesser';
+$auth['hermann']['email']       = '';
+
+$auth['ingrid']['password']    = '0c5e8dc20d5f7778d3da083ceb16e841';
+$auth['ingrid']['permissions'] = array();
+$auth['ingrid']['groups']      = array('@admin');
+$auth['ingrid']['fullname']    = 'Ingrid Giesser';
+$auth['ingrid']['email']       = '';
 
 
 ///////////////////////

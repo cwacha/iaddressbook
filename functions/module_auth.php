@@ -18,8 +18,28 @@
     global $auth;
     $auth = array();
     
+    // load users and permissions
     @include_once(AB_CONF.'auth.php');
 
+    // userinfo array, contains information about logged in user (or guest)
+    // logged_in is just informative (for template code). $_SESSION['authorized'] contains
+    // the real information if the user is logged in or not!
+    global $userinfo;
+    $userinfo = array();
+    $userinfo = auth_get_userinfo('guest');
+    $userinfo['logged_in']   = 0;
+
+/**
+ * Checks if a user is authenticated (and has a valid session cookie)
+ *
+ * This function checks if the users is already logged in (i.e. has
+ * a valid session cookie) and returns. If the user is not logged in
+ * the user is redirected to the login page and the PHP processing stops.
+ *
+ * @author  Clemens Wacha <clemens.wacha@gmx.net>
+ *
+ * @return  if user is logged in or guest access is granted. does not return otherwise.
+ */
 function auth_check($force_login = false) {
     global $conf;
     global $lang;
@@ -32,12 +52,8 @@ function auth_check($force_login = false) {
 
     if($_SESSION['authorized']) {
         // the user is already logged in
-        $userinfo['username']    = $_SESSION['username'];
-        $userinfo['fullname']    = $auth[ $_SESSION['username'] ]['fullname'];
-        $userinfo['email']       = $auth[ $_SESSION['username'] ]['email'];
-        $userinfo['permissions'] = $auth[ $_SESSION['username'] ]['permissions'];
-        $userinfo['logged_in']   = 1;
-        
+        $userinfo = auth_get_userinfo($_SESSION['username']);
+        $userinfo['logged_in']   = 1;        
         return;
     }
 
@@ -53,15 +69,12 @@ function auth_check($force_login = false) {
         $auth_pass = PMA_blowfish_decrypt($auth_pass, auth_cookiesalt());
     }
 
-    if(array_key_exists($auth_login, $auth) && $auth[$auth_login]['password'] == md5($auth_pass)) {
+    if(!empty($auth_login) && auth_login($auth_login, $auth_pass)) {
         // the user is logging in now
         $_SESSION['authorized'] = 1;
         $_SESSION['username'] = $auth_login;
         
-        $userinfo['username']    = $auth_login;
-        $userinfo['fullname']    = $auth[$auth_login]['fullname'];
-        $userinfo['email']       = $auth[$auth_login]['email'];
-        $userinfo['permissions'] = $auth[$auth_login]['permissions'];
+        $userinfo = auth_get_userinfo($auth_login);
         $userinfo['logged_in']   = 1;
         
         if($sticky) {
@@ -84,10 +97,7 @@ function auth_check($force_login = false) {
     // no login, or login invalid --> map to guest
     
     // only for informative purpose!!!
-    $userinfo['username']    = 'guest';
-    $userinfo['fullname']    = $auth['guest']['fullname'];
-    $userinfo['email']       = $auth['guest']['email'];
-    $userinfo['permissions'] = $auth['guest']['permissions'];
+    $userinfo = auth_get_userinfo('guest');
     $userinfo['logged_in']   = 0;
     
     if($conf['auth_allow_guest'] and $force_login == false) {
@@ -95,11 +105,76 @@ function auth_check($force_login = false) {
         return;
     }
     
-    // no access
+    // no access or login forced
     tpl_include('auth.tpl');
     exit();
 }
 
+/**
+ * Checks username and password
+ *
+ * This function returns true if username and password are correct.
+ * Returns false otherwise.
+ *
+ * @author  Clemens Wacha <clemens.wacha@gmx.net>
+ *
+ * @return  boolean
+ */
+function auth_login($username, $password) {
+    global $auth;
+    
+    if(array_key_exists($username, $auth) && $auth[$username]['password'] == md5($password)) {
+        return true;
+    }
+    return false;
+}
+
+
+// currently unused 
+function auth_login_db($username, $password) {
+    global $db;
+    global $db_config;
+    
+    if(empty($username)) return false;
+    
+    if(!$db) {
+        msg("DB not available. Login failed.", -1);
+        return false;
+    }
+    
+    // quote db specific characters
+    $u = $db->Quote($username);
+        
+    $sql = "SELECT * FROM ".$db_config['dbtable_users']." WHERE username=$u";
+    $result = $db->Execute($sql);
+    if(!$result) {
+        msg("DB error on login. Login failed: ". $db->ErrorMsg(), -1);
+        return false;
+    }
+    
+    $row = $result->FetchRow();
+    if($row) {
+        // user found. now check password
+        if(is_object($row)) $row = get_object_vars($row);        
+        $row = array_change_key_case($row, CASE_UPPER);
+        if(!array_key_exists('ID', $row)) {
+            $prefix = strtoupper($db_config['dbtable_users']) . '.';
+        }
+        $db_pw = $row[$prefix . 'PASSWORD'];
+        if(md5($password) == $db_pw) return true;
+    }
+    return false;
+}
+
+
+/**
+ * Log Out
+ *
+ * This function destroys the session cookie and logs the user out.
+ *
+ * @author  Clemens Wacha <clemens.wacha@gmx.net>
+ *
+ */
 function auth_logout() {
 
     $_SESSION = array();
@@ -112,11 +187,22 @@ function auth_logout() {
     session_destroy();
     
     header("Location: ". AB_URL);
-    //include(template('auth.tpl'));
     exit();
 }
 
-function auth_verify_action($action, $deny_action = 'show') {
+
+/**
+ * Checks permissions
+ * This function returns true if @username may execute @action.
+ * Returns false otherwise. Does not check if user is logged in or not!
+ *
+ * @author  Clemens Wacha <clemens.wacha@gmx.net>
+ *
+ * @param   username
+ * @param   action
+ * @return  boolean
+ */
+function auth_verify_action($username, $action, $deny_action = 'show') {
     global $conf;
     global $lang;
     global $auth;
@@ -124,13 +210,14 @@ function auth_verify_action($action, $deny_action = 'show') {
     // accept everything if authentication is disabled
     if($conf['auth_enabled'] == false) return $action;
     
-    $username = 'guest';
-    
-    if($_SESSION['authorized']) {
-        $username = $_SESSION['username'];
+    if(!is_array($auth)) {
+        msg("No authentication array found! Access granted. Does conf/auth.php exist?", -1);
+        return $action;
     }
     
-    if( in_array($action, $auth[$username]['permissions']) ) return $action;
+    if(array_key_exists($username, $auth)) {
+        if( in_array($action, $auth[$username]['permissions']) ) return $action;
+    }
     
     if(is_array($auth[$username]['groups'])) {
         foreach($auth[$username]['groups'] as $group) {
@@ -143,6 +230,19 @@ function auth_verify_action($action, $deny_action = 'show') {
     }
     
     return $deny_action;
+}
+
+function auth_get_userinfo($username) {
+    global $auth;
+    $ui = array();
+    
+    if(array_key_exists($username, $auth)) {
+        $ui['username'] = $username;
+        $ui['fullname'] = $auth[$username]['fullname'];
+        $ui['email']    = $auth[$username]['email'];
+    }
+
+    return $ui;
 }
 
 /**
@@ -167,6 +267,7 @@ function auth_cookiesalt(){
         if(!$fd) return $salt;
         fwrite($fd, $salt);
         fclose($fd);
+        fix_fmode($file);
     }
     return $salt;
 }
