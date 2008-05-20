@@ -64,6 +64,7 @@ function html_header() {
     global $conf;
     global $lang;
     global $state;
+    global $meta;
     
     ?>
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $conf['lang'] ?>"
@@ -169,6 +170,10 @@ function html_header() {
                 <td>
                     <div class="title"><?= $lang['installation'] ?></div>
                 </td>
+                <td>
+                    <?= $lang['lang'] ?>:<br>
+                    <? html_select($conf['lang'], $meta['lang']['_choices'], "do_set('lang',this.value);do_action('show');"); ?>
+                </td>
             </tr>
         </table>
         <!-- End Logo -->
@@ -242,14 +247,20 @@ function act_content() {
 }
 
 function step_prev($target='prev', $title='Back') {
+    global $lang;
+
     if(empty($title) || empty($target)) return;
+    if($title == 'Back') $title = $lang['back'];
     echo '<div style="height: 50px; margin: 0 auto; font-size: 250%; padding-top: 50px; float:left;">';
     html_link($title, "do_action('".hsc($target)."')");
     echo '</div>';    
 }
 
 function step_next($target='next', $title='Next') {
+    global $lang;
+    
     if(empty($title) || empty($target)) return;
+    if($title == 'Next') $title = $lang['next'];
     echo '<div style="height: 50px; margin: 0 auto; font-size: 250%; padding-top: 50px; float:right;">';
     html_link($title, "do_action('".hsc($target)."')");
     echo '</div>';
@@ -260,30 +271,14 @@ function step_title($title) {
 }
 
 function step_welcome() {
-    step_title("Welcome!");
-    ?>
-        Welcome to PHP iAddressBook!
-        <p><p>
-        This project is very special to me as it solved one major issue in keeping all
-        my addresses handy and in sync with my other devices. I put hundreds of hours
-        into this project and I am dedicated to make it better every day. If you like
-        this program, have suggestions or blame please tell me or
-        <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">donate</a>!
-        Enjoy and have Fun!
-        <p style="text-align: right;">&#8212; Clemens Wacha</p>
-    <?php step_title("Prerequisites"); ?>    
-        <p><p>
-        This installer helps you with the first time installation and configuration
-        of <a href="http://iaddressbook.org/">PHP iAddressBook</a>.
-        You will need:
-        <ul>
-            <li>PHP version 4.3 or higher.</li>
-            <li>MySQL version 4.0 or higher or SQLite version 2.x</li>
-            <li>(optional) iconv (if you want to import vcards that are not UTF-8 encoded)</li>
-            <li>(optional) ImageMagick's convert or GD (if you want to import photos)</li>
-        </ul>
-        <p>
-    <?php
+    global $lang;
+    
+    step_title($lang['step_welcome']);
+
+    echo $lang['welcome_message'];
+    
+    step_title($lang['step_prerequisites']);
+    echo $lang['welcome_prerequisites'];
 
     step_prev('');
     step_next('step_check');
@@ -292,23 +287,28 @@ function step_welcome() {
 function step_check() {
     global $VERSION;
     global $conf;
+    global $lang;
+    global $state;
     $errors = 0;
     
-    step_title("Checking your installation");
+    step_title($lang['step_check']);
 
     echo '<table border="0"><tr><td width="45%">';
+    step_title($lang['step_tests']);
     echo '<div>';
     
+    $bla = AB_INC;
     if(!is_writable(AB_INC."_images")) {
-        imsg("Cannot use contact photos: No write permission to ".AB_INC."_images", -1);
+        imsg(str_replace('$1', AB_INC, $lang['error_imagefolder']), -1);
+        $errors++;
     }
     
     if(!is_writable(AB_INC."_import")) {
-        imsg("Cannot delete vCards from import folder: No write permission to ".AB_INC."_import", 0);
+        imsg(str_replace('$1', AB_INC, $lang['error_importfolder']), 0);
     }
     
     if(!is_writeable(AB_INC."conf")) {
-        imsg("Cannot create configuration/authorizations: No write permission to ". AB_INC."conf", -1);
+        imsg(str_replace('$1', AB_INC, $lang['error_conffolder']), -1);
         $errors++;
     }
     
@@ -324,58 +324,65 @@ function step_check() {
             if(is_resource($pipe)) {
                 while(!feof($pipe)) $output .= fread($pipe, 8192);
                 pclose($pipe);
-                imsg("ImageMagick's convert found at: ".$conf['im_convert'], 1);
-                imsg("convert available (version ".$output.")", 1);
+                imsg(str_replace('$1', $conf['im_convert'], $lang['info_im']), 1);
+                imsg(str_replace('$1', $output, $lang['info_im_version']), 1);
                 $use_im = 1;
             } else {
-                imsg("Cannot execute ImageMagick's convert at ".$conf['im_convert'], 0);
+                imsg(str_replace('$1', $conf['im_convert'], $lang['error_im']), 0);
             }
         } else {
-            imsg("Cannot find ImageMagick's convert at ". $conf['im_convert'], 0);
+            imsg(str_replace('$1', $conf['im_convert'], $lang['error_im2']), 0);
         }
     }
     
     if(function_exists('gd_info')) {
         $gd = gd_info();
-        imsg("GD available (version ".$gd['GD Version'].")", 1);
+        imsg(str_replace('$1', $gd['GD Version'], $lang['info_gd']), 1);
         $use_gd = 1;
     }
     
     if($use_im == 1 || $use_gd == 1) {
         if($use_im == 1) {
-            imsg("Using ImageMagick to convert photos.", 1);
+            imsg($lang['info_usingim'], 1);
         } else {
-            imsg("Using GD to convert photos", 1);
+            imsg($lang['info_usinggd'], 1);
         }
     } else {
-        imsg("Contact photos are not supported! Neither ImageMagick's convert nor GD is available", 1);
+        imsg($lang['error_usingimgd'], 1);
     }
 
     if(function_exists('iconv')) {
-        imsg("iconv available (version ".ICONV_VERSION.")", 1);
+        imsg(str_replace('$1', ICONV_VERSION, $lang['info_iconv']), 1);
     } else {
-        imsg("iconv not available. vCards must be encoded in UTF-8 to be imported properly", 1);
+        imsg($lang['error_iconv']);
     }
 
     if(function_exists('sqlite_open')) {
-        imsg("SQLite available (version ".sqlite_libversion().")", 1);
+        // pre-select sqlite if it is available
+        $conf['dbtype'] = 'sqlite';
+        $conf['dbserver'] = 'conf/localhost';
+        imsg(str_replace('$1', sqlite_libversion(), $lang['info_sqlite']), 1);
+    } else {
+        imsg($lang['error_sqlite']);
     }
     
     echo "&nbsp;<p>";
-    html_button("Retry", "do_action('show')");
+    html_button($lang['retry'], "do_action('show')");
             
     echo '</div>';
     echo '</td><td width="10%"></td><td style="vertical-align: top;">';
 
+    step_title($lang['step_results']);
+
     if($errors > 0) {
         if($errors > 1) {
-            imsg("$errors problems found!", -1);
+            imsg(str_replace('$1', $errors, $lang['errors_total']), -1);
         } else {
-            imsg("$errors problem found!", -1);
+            imsg(str_replace('$1', $errors, $lang['error_total']), -1);
         }
-        imsg("You cannot continue with the installation until you have fixed all problems.", -1);
+        imsg($lang['configure_errors'], -1);
     } else {
-        imsg("Everything is ok.<p>You may continue with the installation.", 1);
+        imsg($lang['configure_ok'], 1);
     }
 
     echo '</td></tr></table>';
@@ -386,7 +393,10 @@ function step_check() {
 
 function step_install() {
     global $state;
-    step_title("Setting up the database");
+    global $lang;
+    global $conf;
+    
+    step_title($lang['step_install']);
 
     $col = array();
 
@@ -403,7 +413,7 @@ function step_install() {
         
     if(!$state['db_created']) {
         echo "&nbsp;<p>";
-        html_button("Create Database and Tables", "do_action('create_db')");
+        html_button($lang['install_createdb'], "do_action('create_db')");
     }
 
     step_prev('step_check');
@@ -412,29 +422,31 @@ function step_install() {
 
 function step_configure() {
     global $defaults;
+    global $lang;
     
-    step_title("Configure your PHP iAddressBook");
+    step_title($lang['step_configure']);
 
     html_sform_begin();
     foreach($defaults as $key => $value) {
         if(!in_array($key, array('dbtype', 'dbname', 'dbserver', 'dbuser', 'dbpass',
             'dbtable_ab', 'dbtable_cat', 'dbtable_catmap', 'dbtable_truth', 'dbtable_sync',
-            'dbtable_action', 'debug', 'debug_db'))) {
+            'dbtable_action', 'dbtable_users', 'debug', 'debug_db'))) {
             html_sform_line($key);
         }
     }
     html_sform_end();
 
     step_prev('step_install');
-    step_next('step_finish', 'Finish');
+    step_next('step_finish', $lang['finish']);
 }
 
 function step_finish() {
     global $defaults;
     global $conf;
     global $state;
+    global $lang;
     
-    step_title("Installation Complete!");
+    step_title($lang['step_finish']);
         
     // save config file (only add vars that are not on default value)
     $new_config = array();
@@ -445,55 +457,45 @@ function step_finish() {
     }
     
     if(!$state['config_saved']) {
+        // make sure we have creation modes setup correctly
+        init_creationmodes();
         $ret = save_config($new_config, 'conf/config.php');
         if($ret) {
             $state['config_saved'] = 1;
+        }
+        
+        // fix fmode if using sqlite!
+        if($conf['dbtype'] == 'sqlite') {
+            fix_fmode(AB_INC.$conf['dbserver']);
         }
     }
     
     if(!$state['config_saved']) {
         echo "&nbsp;<p>";
-        html_button("Retry", "do_action('step_finish')");
+        html_button($lang['retry'], "do_action('step_finish')");
         step_prev('step_configure');
         step_next('');
     } else {
-        ?>
-            &nbsp;<p>
-            <b>Congratulations!</b>
-            <p><p>
-            You have completed the installation of PHP iAddressBook. You may start using
-            it immediately. Please send me your feedback and comments to
-            <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
-            <p>
-            <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">
-            Don't forget to donate if you like this program!</a>
-            <p>
-            Enjoy and have Fun!
-            <p style="text-align: right;">&#8212; Clemens Wacha</p>
-        <?php
+        echo $lang['finish_message'];
         //step_prev('step_configure');
-        step_next('open_addressbook', 'Open the AddressBook');    
+        step_next('open_addressbook', $lang['step_open_ab']);    
     }
     
 }
 
 function step_disabled() {
-    step_title("PHP iAddressBook is already installed!");
-
-    ?>
-        You have already completed the installation of PHP iAddressBook.
-        <p>
-        If you want to re-install make sure to remove the configuration file
-        conf/config.php and the database.
-        <p>
-        Enjoy and have Fun!
-        <p style="text-align: right;">&#8212; Clemens Wacha</p>
-    <?php
+    global $lang;
     
-    step_next('open_addressbook', 'Open the AddressBook');        
+    step_title($lang['step_disabled']);
+
+    echo $lang['disabled_message'];
+    
+    step_next('open_addressbook', $lang['step_open_ab']);        
 }
 
 function save_config($config, $filename = 'conf/config.php', $overwrite = 0) {
+    global $lang;
+    
     if(!is_array($config) || empty($filename)) {
         imsg("Internal error while saving configuration: no array given or filename empty ($filename)", -1);
         return false;
@@ -508,12 +510,12 @@ function save_config($config, $filename = 'conf/config.php', $overwrite = 0) {
 
     $file = AB_INC.$filename;
     if(!$overwrite && file_exists($filename)) {
-        imsg("Error saving configuration: file $file already exists!", -1);
+        imsg(str_replace('$1', $file, $lang['error_saveconfig2']), -1);
         return false;
     }
     $fd = fopen($file, "w");
     if(!$fd) {
-        imsg("Error saving configuration: could not write $file", -1);
+        imsg(str_replace('$1', $file, $lang['error_saveconfig']), -1);
         return false;
     }
     fwrite($fd, "<?php\n\n");
@@ -527,26 +529,26 @@ function save_config($config, $filename = 'conf/config.php', $overwrite = 0) {
 
     fwrite($fd, "\n\n?>");
     fclose($fd);
-    
-    if($config['fperm']) chmod($file, $config['fperm']);
+    fix_fmode($file);
 
-    imsg("Configuration saved successfully!", 1);
+    imsg($lang['info_saveconfig'], 1);
     return true;
 }
 
 function setup_db() {
     global $state;
     global $conf;
+    global $lang;
 
     db_init($conf);
     db_open();
     if(db_createtables()) {
-        imsg("Database setup successfully", 1);
+        imsg($lang['info_db1'], 1);
+        imsg($lang['info_db2'], 1); 
         $state['db_created'] = 1;
         $conf['debug_db'] = 0;
     }
     db_close();
-    html_msgarea();
 }
 
 function html_sform_begin() {
@@ -583,7 +585,7 @@ function html_sform_line($col) {
             break;
     }
     echo "</td>";
-    echo "<td style='text-align: left; vertical-align: top; padding-left: 2em;'>";
+    echo "<td style='text-align: left; vertical-align: top; padding-left: 2em; padding-bottom:8px;'>";
     echo $lang[$col.'_help'];
     echo " [".$defaults[$col]."]";
     echo "</td>";
@@ -750,42 +752,46 @@ switch($state['step']) {
         }
         break;
     case 4:
-            $conf['fmode']   = (int)post_var($_REQUEST['fmode'],   $conf['fmode']);
-            $conf['dmode']   = (int)post_var($_REQUEST['dmode'],   $conf['dmode']);
-            $conf['basedir']   = post_var($_REQUEST['basedir'],   $conf['basedir']);
-            $conf['baseurl']   = post_var($_REQUEST['baseurl'],   $conf['baseurl']);
+        $conf['fmode']   = (int)post_var($_REQUEST['fmode'],   $conf['fmode']);
+        $conf['dmode']   = (int)post_var($_REQUEST['dmode'],   $conf['dmode']);
+        $conf['basedir']   = post_var($_REQUEST['basedir'],   $conf['basedir']);
+        $conf['baseurl']   = post_var($_REQUEST['baseurl'],   $conf['baseurl']);
 
-            $conf['lang']   = post_var($_REQUEST['lang'],   $conf['lang']);
-            $conf['title']   = post_var($_REQUEST['title'],   $conf['title']);
-            $conf['template']   = post_var($_REQUEST['template'],   $conf['template']);
-            $conf['bdformat']   = post_var($_REQUEST['bdformat'],   $conf['bdformat']);
-            $conf['dformat']   = post_var($_REQUEST['dformat'],   $conf['dformat']);
-            $conf['lastfirst']   = (int)post_var($_REQUEST['lastfirst'],   $conf['lastfirst']);
-            $conf['photo_resize']   = post_var($_REQUEST['photo_resize'],   $conf['photo_resize']);
-            $conf['photo_size']   = post_var($_REQUEST['photo_size'],   $conf['photo_size']);
-            $conf['photo_format']   = post_var($_REQUEST['photo_format'],   $conf['photo_format']);
-            $conf['map_link']   = post_var($_REQUEST['map_link'],   $conf['map_link']);
-            $conf['contactlist_limit']   = (int)post_var($_REQUEST['contactlist_limit'],   $conf['contactlist_limit']);
-            $conf['bday_advance_week']   = (int)post_var($_REQUEST['bday_advance_week'],   $conf['bday_advance_week']);
+        $conf['lang']   = post_var($_REQUEST['lang'],   $conf['lang']);
+        $conf['title']   = post_var($_REQUEST['title'],   $conf['title']);
+        $conf['template']   = post_var($_REQUEST['template'],   $conf['template']);
+        $conf['bdformat']   = post_var($_REQUEST['bdformat'],   $conf['bdformat']);
+        $conf['dformat']   = post_var($_REQUEST['dformat'],   $conf['dformat']);
+        $conf['lastfirst']   = (int)post_var($_REQUEST['lastfirst'],   $conf['lastfirst']);
+        $conf['photo_resize']   = post_var($_REQUEST['photo_resize'],   $conf['photo_resize']);
+        $conf['photo_size']   = post_var($_REQUEST['photo_size'],   $conf['photo_size']);
+        $conf['photo_format']   = post_var($_REQUEST['photo_format'],   $conf['photo_format']);
+        $conf['map_link']   = post_var($_REQUEST['map_link'],   $conf['map_link']);
+        $conf['contactlist_limit']   = (int)post_var($_REQUEST['contactlist_limit'],   $conf['contactlist_limit']);
+        $conf['bday_advance_week']   = (int)post_var($_REQUEST['bday_advance_week'],   $conf['bday_advance_week']);
 
-            $conf['canonical']   = (int)post_var($_REQUEST['canonical'],   $conf['canonical']);
-            $conf['auth_enabled']   = (int)post_var($_REQUEST['auth_enabled'],   $conf['auth_enabled']);
-            $conf['auth_allow_guest']   = (int)post_var($_REQUEST['auth_allow_guest'],   $conf['auth_allow_guest']);
-            $conf['im_convert']   = post_var($_REQUEST['im_convert'],   $conf['im_convert']);
-            $conf['photo_enable']   = (int)post_var($_REQUEST['photo_enable'],   $conf['photo_enable']);
-            $conf['session_name']   = post_var($_REQUEST['session_name'],   $conf['session_name']);
-            $conf['mark_changed']   = (int)post_var($_REQUEST['mark_changed'],   $conf['mark_changed']);
+        $conf['canonical']   = (int)post_var($_REQUEST['canonical'],   $conf['canonical']);
+        $conf['auth_enabled']   = (int)post_var($_REQUEST['auth_enabled'],   $conf['auth_enabled']);
+        $conf['auth_allow_guest']   = (int)post_var($_REQUEST['auth_allow_guest'],   $conf['auth_allow_guest']);
+        $conf['im_convert']   = post_var($_REQUEST['im_convert'],   $conf['im_convert']);
+        $conf['photo_enable']   = (int)post_var($_REQUEST['photo_enable'],   $conf['photo_enable']);
+        $conf['session_name']   = post_var($_REQUEST['session_name'],   $conf['session_name']);
+        $conf['mark_changed']   = (int)post_var($_REQUEST['mark_changed'],   $conf['mark_changed']);
 
-            $conf['debug']   = (int)post_var($_REQUEST['debug'],   $conf['debug']);
+        $conf['debug']   = (int)post_var($_REQUEST['debug'],   $conf['debug']);
 
-            $conf['vcard_fb_enc']   = post_var($_REQUEST['vcard_fb_enc'],   $conf['vcard_fb_enc']);
-            $conf['ldif_base']   = post_var($_REQUEST['ldif_base'],   $conf['ldif_base']);
-            $conf['ldif_mozilla']   = (int)post_var($_REQUEST['ldif_mozilla'],   $conf['ldif_mozilla']);
-            $conf['xmlrpc_enable']   = (int)post_var($_REQUEST['xmlrpc_enable'],   $conf['xmlrpc_enable']);
+        $conf['vcard_fb_enc']   = post_var($_REQUEST['vcard_fb_enc'],   $conf['vcard_fb_enc']);
+        $conf['ldif_base']   = post_var($_REQUEST['ldif_base'],   $conf['ldif_base']);
+        $conf['ldif_mozilla']   = (int)post_var($_REQUEST['ldif_mozilla'],   $conf['ldif_mozilla']);
+        $conf['xmlrpc_enable']   = (int)post_var($_REQUEST['xmlrpc_enable'],   $conf['xmlrpc_enable']);
         break;
     default:
         break;
 }
+
+// language can be changed in every step!
+$conf['lang']   = post_var($_REQUEST['lang'],   $conf['lang']);
+
 
 // start processing
 action_dispatch($state['action']);
@@ -793,9 +799,5 @@ action_dispatch($state['action']);
 //close session
 save_session();
 session_write_close();
-
-//restore old umask
-umask($conf['oldumask']);
-
 
 ?>

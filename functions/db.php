@@ -38,6 +38,7 @@ function db_init($config = NULL) {
         $db_config['dbtable_truth'] = $config['dbtable_truth'];
         $db_config['dbtable_sync'] = $config['dbtable_sync'];
         $db_config['dbtable_action'] = $config['dbtable_action'];
+        $db_config['dbtable_users'] = $config['dbtable_users'];
         $db_config['dbdebug'] = $config['debug_db'];
     } else  {
         // defaults
@@ -52,6 +53,7 @@ function db_init($config = NULL) {
         $db_config['dbtable_truth'] = $conf['dbtable_truth'];
         $db_config['dbtable_sync'] = $conf['dbtable_sync'];
         $db_config['dbtable_action'] = $conf['dbtable_action'];
+        $db_config['dbtable_users'] = $conf['dbtable_users'];
         $db_config['dbdebug'] = $conf['debug_db'];
     }
     
@@ -66,13 +68,14 @@ function db_open() {
         
     if($db === false or empty($db_config['dbname'])) {
         msg("Cannot connect to database: Error in database configuration.", -1);
+        $db = false;
         return false;
     }
     
     if($db_config['dbdebug']) $db->debug = true;
     
     if($db_config['dbtype'] == 'sqlite') {
-        $db_config['dbserver'] = AB_INC."conf/".$db_config['dbserver'];
+        $db_config['dbserver'] = AB_INC.$db_config['dbserver'];
     }
     
     if(!$db->Connect($db_config['dbserver'], $db_config['dbuser'], $db_config['dbpass'], $db_config['dbname'])) {

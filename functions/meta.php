@@ -7,6 +7,10 @@
  *
  */
 
+// define the include path
+if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
+require_once(AB_INC.'functions/common.php');
+
 // read lang and template directory
 function list_dirs($dir, $base=AB_INC) {
     return (is_dir($base.'/'.$dir) && (substr($dir, 0, 1) != '.'));
@@ -29,9 +33,6 @@ $meta['dbpass'] = array('string');
 $meta['dbtable_ab'] = array('string');
 $meta['dbtable_cat'] = array('string');
 $meta['dbtable_catmap'] = array('string');
-$meta['dbtable_truth'] = array('string');
-$meta['dbtable_sync'] = array('string');
-$meta['dbtable_action'] = array('string');
 $meta['lang'] = array('multichoice', '_choices' => $lang_dirs);
 $meta['title'] = array('string');
 $meta['template'] = array('multichoice', '_choices' => $tpl_dirs);

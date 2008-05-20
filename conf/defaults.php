@@ -26,6 +26,7 @@ $conf['dbtable_catmap'] = 'addressbook_catmap';  // table inside database for ma
 $conf['dbtable_truth']  = 'addressbook_truth';   // table inside database that holds the sync truth of the last sync
 $conf['dbtable_sync']   = 'addressbook_sync';    // table inside database that contains the situation on the remote side
 $conf['dbtable_action'] = 'addressbook_action';  // table inside database that contains sync actions to be performed
+$conf['dbtable_users']  = 'addressbook_users';   // table inside database that contains user information (fullname, password etc.)
 
 
 // Display Options
@@ -86,6 +87,6 @@ $conf['ldif_base'] = 'ou=customers, dc=example, dc=com';
 $conf['ldif_mozilla'] = 1;                       // use mozilla LDAP classes (mozillaOrgPerson, mozillaAddressBookEntry)
 
 // Synchronization
-$conf['xmlrpc_enable'] = 1;                  // Enable XMLRPC synchronization (not yet implemented)
+$conf['xmlrpc_enable'] = 0;                  // Enable XMLRPC synchronization (not yet implemented)
 
 ?>

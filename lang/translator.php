@@ -14,7 +14,10 @@
 // define the include path
 if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
 require_once(AB_INC.'functions/init.php');
+require_once(AB_INC.'functions/common.php');
 
+$conf['fmode'] = 666;
+init_creationmodes();
 
 // define languages to be translated
 global $all_languages;
@@ -89,27 +92,6 @@ function read_header($language) {
 
 }
 
-function array_to_text($array, $prefix='') {
-    $text = '';
-    
-    if(empty($prefix)) $prefix = '$lang';
-    
-    foreach($array as $key => $value) {
-        if(gettype($value) == 'string') {
-            $line = $prefix .'[\''.$key.'\']';
-            $line = str_pad($line, 40);
-            $line .= "= '".addcslashes($value, "'")."';";
-            $text .= $line . "\n";
-        } else if(gettype($value) == 'array') {
-            $text .= "\n";
-            $text .= array_to_text($value, $prefix . '[\''.$key.'\']');
-        } else {
-            echo "cannot convert: unsupported object";
-        }
-    }
-    return $text;
-}
-
 function write_lang_php($array, $lng) {
     global $header;
     global $conf;
@@ -132,8 +114,7 @@ function write_lang_php($array, $lng) {
     fwrite($fd, "\n\n?>");
 
     fclose($fd);
-    
-    if($conf['fperm']) chmod($file, $conf['fperm']);
+    fix_fmode($file);
 }
 
 function del_lang_php($lng) {

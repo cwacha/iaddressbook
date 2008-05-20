@@ -225,9 +225,9 @@ $lang['bdformat_help']          = 'Date format for birthday<br>
 
 $lang['dformat_help']           = 'Date format as accepted by PHPs date() function';
 $lang['lastfirst_help']         = 'Sort ortder for contact list: Lastname, Firstname if true; Firstname Lastname else';
-$lang['photo_resize_help']      = 'Max. photo size on manual photo import. Set to \'\' to disable automatic resizing';
+$lang['photo_resize_help']      = 'Max. photo size on manual photo import - blank to disable resizing';
 $lang['photo_size_help']        = 'Max. height of photo display size in default template';
-$lang['photo_format_help']      = 'Image format to be used when exporting vCards (the internal format is always png). Set to \'\' to disable image export.';
+$lang['photo_format_help']      = 'Image format to be used for contact photos and vCard Exports';
 $lang['map_link_help']          = 'Sets the map link to be used for addresses.<br>
                                     $street<br>
                                     $city<br>
@@ -256,6 +256,95 @@ $lang['ldif_base_help']         = 'The base dn for LDIF exports';
 $lang['ldif_mozilla_help']      = 'Use mozilla LDAP classes in LDIF export (mozillaOrgPerson, mozillaAddressBookEntry)';
 $lang['xmlrpc_enable_help']     = 'Enable XMLRPC api';
 
+// Installer strings
+$lang['back']                    = 'Back';
+$lang['next']                    = 'Next';
+$lang['finish']                  = 'Finish';
+$lang['retry']                   = 'Retry';
 
+$lang['step_welcome']            = 'Welcome!';
+$lang['step_prerequisites']      = 'Prerequisites';
+$lang['step_check']              = 'Checking your installation';
+$lang['step_tests']              = 'Tests';
+$lang['step_results']            = 'Results';
+$lang['step_check']              = 'Checking your installation';
+$lang['step_install']            = 'Setting up the database';
+$lang['step_configure']          = 'Configure your PHP iAddressBook';
+$lang['step_finish']             = 'Installation Complete!';
+$lang['step_disabled']           = 'PHP iAddressBook is already installed!';
+$lang['step_open_ab']            = 'Open the AddressBook';
+
+$lang['welcome_message']         = 'Welcome to PHP iAddressBook!
+                                    <p><p>
+                                    This project is very special to me as it solved one major issue in keeping all
+                                    my addresses handy and in sync with my other gadets. I put hundreds of hours
+                                    into this project and I am dedicated to make it better every day. If you have
+                                    comments, suggestions or blame please send me an e-mail to
+                                    <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+                                    <p>
+                                    If you like this program, please 
+                                    <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">donate</a>!
+                                    <p>
+                                    Enjoy and have Fun!
+                                    <p style="text-align: right;">&#8212; Clemens Wacha</p>';
+$lang['welcome_prerequisites']   = '<p><p>
+                                    This installer helps you with the first time installation and configuration
+                                    of <a href="http://iaddressbook.org/">PHP iAddressBook</a>.
+                                    <br>
+                                    You will need:
+                                    <ul>
+                                        <li>PHP version 4.3 or higher.</li>
+                                        <li>MySQL version 4.0 or higher or SQLite version 2.x</li>
+                                        <li>(optional) iconv (if you want to import vcards that are not UTF-8 encoded)</li>
+                                        <li>(optional) ImageMagick\'s convert or GD (if you want to import photos)</li>
+                                    </ul>
+                                    <p>';
+$lang['error_imagefolder']       = 'Cannot use contact photos: No write permission to $1_images';
+$lang['error_importfolder']      = 'Cannot delete vCards from import folder: No write permission to $1_import';
+$lang['error_conffolder']        = 'Cannot create configuration/authorizations: No write permission to $1conf';
+$lang['info_im']                 = 'ImageMagick\'s convert found at: $1';
+$lang['info_im_version']         = 'convert available (version $1)';
+$lang['error_im']                = 'Cannot execute ImageMagick\'s convert at $1';
+$lang['error_im2']               = 'Cannot find ImageMagick\'s convert at $1';
+$lang['info_gd']                 = 'GD available (version $1)';
+$lang['info_usingim']            = 'Using ImageMagick to convert photos.';
+$lang['info_usinggd']            = 'Using GD to convert photos';
+$lang['error_usingimgd']         = 'Contact photos are not supported! Neither ImageMagick\'s convert nor GD is available';
+$lang['info_iconv']              = 'iconv available (version $1)';
+$lang['error_iconv']             = 'iconv not available. vCards must be encoded in UTF-8 to be imported properly';
+$lang['info_sqlite']             = 'SQLite available (version $1)';
+$lang['error_sqlite']            = 'SQLite not available';
+$lang['error_total']             = '$1 problem found!';
+$lang['errors_total']            = '$1 problems found!';
+
+$lang['error_saveconfig2']       = 'Error saving configuration: file $1 already exists!';
+$lang['error_saveconfig']        = 'Error saving configuration: could not write $1';
+$lang['info_saveconfig']         = 'Configuration saved successfully!';
+
+
+$lang['configure_errors']        = 'You cannot continue with the installation until you have fixed all problems.';
+$lang['configure_ok']            = 'Everything is ok.<p>You may continue with the installation.';
+$lang['install_createdb']        = 'Create Database and Tables';
+$lang['info_db1']                = 'Database setup successfully';
+$lang['info_db2']                = 'Click \'next\' to continue';
+
+$lang['finish_message']          = '&nbsp;<p>
+                                    <b>Congratulations!</b>
+                                    <p><p>
+                                    You have completed the installation of PHP iAddressBook. You may start using
+                                    it immediately. Please send me your feedback and comments to
+                                    <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+                                    <p>
+                                    <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">
+                                    Don\'t forget to donate if you like this program!</a>
+                                    <p>
+                                    Enjoy and have Fun!
+                                    <p style="text-align: right;">&#8212; Clemens Wacha</p>';
+$lang['disabled_message']        = 'You have already completed the installation of PHP iAddressBook.
+                                    <p>
+                                    If you want to re-install make sure to remove the configuration file
+                                    conf/config.php and the database.
+                                    <p style="text-align: right;">&#8212; Clemens Wacha</p>';
+    
 
 ?>
