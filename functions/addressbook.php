@@ -67,7 +67,7 @@ class addressbook {
 
         $contactlist = array();
         
-        if(!db) return $contactlist;
+        if(!$db) return $contactlist;
         
         $search_array = explode(" ", $searchstring);
         $sql_searchstring = "";
