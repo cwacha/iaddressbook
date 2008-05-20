@@ -12,6 +12,7 @@
 
     if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
     require_once(AB_INC."functions/html.php");
+    require_once(AB_INC."functions/common.php");
 
 
 function img_create($id, $image) {
@@ -26,6 +27,7 @@ function img_create($id, $image) {
     if(is_resource($fd)) {
         fwrite($fd, $image);
         fclose($fd);
+        fix_fmode($image_file);
     } else {
         msg("Could not write image $image_file", -1);
     }
@@ -111,6 +113,7 @@ function img_convert($in_image, $type='png', $resize='') {
         if(is_resource($fd)) {
             fwrite($fd, $in_image);
             fclose($fd);
+            fix_fmode($tmp_file);
 
             // now try to convert the file using ImageMagick
             if(!empty($resize)) $options = '-resize '. $resize;
