@@ -17,8 +17,8 @@ function list_dirs($dir, $base=AB_INC) {
 }
 function is_lang_dir($dir) { return list_dirs($dir, AB_INC.'lang'); }
 function is_tpl_dir($dir) { return list_dirs($dir, AB_INC.'tpl'); }
-$lang_dirs = array_filter(scandir(AB_INC.'lang'), is_lang_dir);
-$tpl_dirs = array_filter(scandir(AB_INC.'tpl'), is_tpl_dir);
+$lang_dirs = array_filter(scandir(AB_INC.'lang'), 'is_lang_dir');
+$tpl_dirs = array_filter(scandir(AB_INC.'tpl'), 'is_tpl_dir');
 
 
 $meta['fmode'] = array('string');

@@ -94,6 +94,8 @@ function db_open() {
 }
 
 function db_close() {
+    global $db;
+    
     if($db) $db->Close();
     $db = false;
 }

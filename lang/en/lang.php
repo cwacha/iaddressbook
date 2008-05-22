@@ -277,7 +277,7 @@ $lang['step_open_ab']            = 'Open the AddressBook';
 $lang['welcome_message']         = 'Welcome to PHP iAddressBook!
                                     <p><p>
                                     This project is very special to me as it solved one major issue in keeping all
-                                    my addresses handy and in sync with my other gadets. I put hundreds of hours
+                                    my addresses handy and in sync with my other gadgets. I put hundreds of hours
                                     into this project and I am dedicated to make it better every day. If you have
                                     comments, suggestions or blame please send me an e-mail to
                                     <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.

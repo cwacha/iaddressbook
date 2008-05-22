@@ -51,7 +51,7 @@
     // set register_globals to off
     if (ini_get('register_globals')) {
         foreach($GLOBALS as $s_variable_name => $m_variable_value) {
-            if (!in_array($s_variable_name, array('GLOBALS', 'argv', 'argc', '_FILES', '_COOKIE', '_POST', '_GET', '_SERVER', '_ENV', '_SESSION', '_REQUEST', 's_variable_name', 'm_variable_value', 'conf'))) {
+            if (!in_array($s_variable_name, array('GLOBALS', 'argv', 'argc', '_FILES', '_COOKIE', '_POST', '_GET', '_SERVER', '_ENV', '_SESSION', '_REQUEST', 's_variable_name', 'm_variable_value', 'conf', 'VERSION'))) {
                unset($GLOBALS[$s_variable_name]);
             }
         }
