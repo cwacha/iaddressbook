@@ -152,7 +152,7 @@ class addressbook {
         return $contactlist;
     }
     
-    function getall($limit = 1000) {
+    function getall($limit = 1000, $offset = 0) {
         global $db;
         global $db_config;
         global $CAT;
@@ -165,14 +165,14 @@ class addressbook {
         $selected = $db->Quote($CAT_ID);
         
         if($CAT_ID == 0) {
-            $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." ORDER BY lastname ASC LIMIT $limit";
+            $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         } else {
             $sql_select  = $db_config['dbtable_ab'].".*, ";
             $sql_select .= $db_config['dbtable_catmap'].".category_id ";
             
             $sql  = "SELECT ".$sql_select." FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
             $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") ";
-            $sql .= " ORDER BY lastname ASC LIMIT $limit";
+            $sql .= " ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         }
         
         $result = $db->Execute($sql);

@@ -34,9 +34,13 @@ if($ACT == 'login') {
     auth_check();
 }
 
-
+//
 // access control
-$ACT = auth_verify_action($userinfo['username'], $ACT);
+//
+// accept everything if authentication is disabled
+if($conf['auth_enabled']) {
+    $ACT = auth_verify_action($userinfo['username'], $ACT);
+}
 
 
 // contact list offset

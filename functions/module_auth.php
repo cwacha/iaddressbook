@@ -206,9 +206,6 @@ function auth_verify_action($username, $action, $deny_action = 'show') {
     global $conf;
     global $lang;
     global $auth;
-
-    // accept everything if authentication is disabled
-    if($conf['auth_enabled'] == false) return $action;
     
     if(!is_array($auth)) {
         msg("No authentication array found! Access granted. Does conf/auth.php exist?", -1);
