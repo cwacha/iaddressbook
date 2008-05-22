@@ -94,7 +94,7 @@ function act_dispatch(){
         
         case 'import_vcard':
             @set_time_limit(0);
-            act_importvcard();
+            act_importvcard_file();
             act_search();
             act_getcontact();
             break;
@@ -402,7 +402,7 @@ function act_getcontact() {
 
     $contact = $AB->get($ID);
 
-    $contact_categories = $CAT->find($contact->id);
+    if($contact) $contact_categories = $CAT->find($contact->id);
     $contact_categories = $CAT->sort($contact_categories);
 }
 

@@ -18,7 +18,32 @@
 
     
 
-function act_importvcard($filename = '') {
+function act_importvcard_file($filename = '') {
+    global $conf;
+        
+    if($filename == '') $filename = $_FILES['vcard_file']['tmp_name'];
+    
+    if(!is_string($filename)) {
+        msg("file was not uploaded!", -1);
+        return;
+    }
+    if(!file_exists($filename)) {
+        msg("file $filename does not exist!", -1);
+        return;
+    }
+    
+    $data = file_get_contents($filename);
+    
+    act_importvcard($data);
+    
+    if(is_writeable($filename)) {
+        unlink($filename);
+    } else {
+        msg("Cannot remove $filename: read-only file", -1);
+    }
+}
+
+function act_importvcard($vcard_string) {
     global $AB;
     global $conf;
     global $CAT;
@@ -27,23 +52,12 @@ function act_importvcard($filename = '') {
     $error = 0;
     $imported = 0;
     $person_id = false;
-    
-    if($filename == '') $filename = $_FILES['vcard_file']['tmp_name'];
-    
-    if(!is_string($filename)) {
-        msg("file was not uploaded<br>", -1);
-        return;
-    }
-    if(!file_exists($filename)) {
-        msg("file does not exist", -1);
-        return;
-    }
-    
+        
     // instantiate a parser object
     $parse = new Contact_Vcard_Parse();
     
     // parse it
-    $data = $parse->fromFile($filename, true, $conf['vcard_fb_enc']);
+    $data = $parse->fromText($vcard_string, true, $conf['vcard_fb_enc']);
     
     if(!is_array($data)) {
         msg("Error importing vcard!!", -1);
@@ -94,12 +108,6 @@ function act_importvcard($filename = '') {
         }
     }
     
-    if(is_writeable($filename)) {
-        unlink($filename);
-    } else {
-        msg("Cannot remove $filename: read-only file", -1);
-    }
-
     if($imported > 0) msg("$imported vCard(s) succesfully imported!", 1);
     
     $n = count($data);
@@ -135,7 +143,7 @@ function act_importfolder($folder = '') {
     while(false !== ($file = readdir($dh))) {
         if(is_file($folder . $file) and strtolower(substr($file, -4, 4)) == ".vcf") {
             msg("Processing file: $file", 1);
-            act_importvcard($folder . $file);
+            act_importvcard_file($folder . $file);
             $processed++;
         }
     }
