@@ -200,22 +200,44 @@ function html_footer() {
 
 function html_install_step() {
     global $state;
+    global $lang;
     
     $step = $state['step'];
     $step_max = 5;
     $space = (string)(100 / $step_max);
+    $color = '';
     
     echo '<div style="width:80%; height:100px; margin: 0 auto; font-size: 500%; font-weight:bold;">';
     for($t = 1; $t <= $step_max; $t++) {
         if($t == $state['step']) {
-            echo "<div style='float:left; width: $space%; color:#000;'>";
-            echo $t;
-            echo "</div>";
+            $color = 'color:#000;';
         } else {
-            echo "<div style='float:left; width: $space%; color:#bebebe;'>";
-            echo $t;
-            echo "</div>";
+            $color = 'color:#bebebe;';
         }
+        echo "<div style='float:left; width: $space%; $color'>";
+        echo $t;
+        echo "<div style='font-size: 20%;'>";
+        switch ($t) {
+            case 1:
+                echo $lang['step_welcome'];
+                break;
+            case 2:
+                echo $lang['step_check'];
+                break;
+            case 3:
+                echo $lang['step_install'];
+                break;
+            case 4:
+                echo $lang['step_configure'];
+                break;
+            case 5:
+                echo $lang['step_finish'];
+                break;
+            default:
+                break;
+        }
+        echo "</div>";
+        echo "</div>";
     }
     echo '</div>';
 }
