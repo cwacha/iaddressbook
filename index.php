@@ -39,7 +39,10 @@ if($ACT == 'login') {
 //
 // accept everything if authentication is disabled
 if($conf['auth_enabled']) {
-    $ACT = auth_verify_action($userinfo['username'], $ACT);
+    if(!auth_verify_action($userinfo['username'], $ACT)) {
+        // user is not allowed to execute $ACT, change to 'show'
+        $ACT = 'show';
+    }
 }
 
 

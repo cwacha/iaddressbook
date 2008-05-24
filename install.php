@@ -189,7 +189,7 @@ function html_footer() {
         <!-- Begin Footer --> 
         <div class="separator">&nbsp;</div>
         <div class="footer">
-            <a href='http://iaddressbook.org/'>PHP iAddressBook <?= display_version() ?></a>
+            <a href='http://iaddressbook.org/'>PHP iAddressBook <?= get_version() ?></a>
         </div>
         <!-- End Footer -->
     </div>

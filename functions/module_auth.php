@@ -200,33 +200,31 @@ function auth_logout() {
  *
  * @param   username
  * @param   action
- * @return  boolean
+ * @return  boolean isAllowed 
  */
-function auth_verify_action($username, $action, $deny_action = 'show') {
+function auth_verify_action($username, $action) {
     global $conf;
     global $lang;
     global $auth;
     
     if(!is_array($auth)) {
         msg("No authentication array found! Access granted. Does conf/auth.php exist?", -1);
-        return $action;
+        return true;
     }
     
     if(array_key_exists($username, $auth)) {
-        if( in_array($action, $auth[$username]['permissions']) ) return $action;
+        if( in_array($action, $auth[$username]['permissions']) ) return true;
     }
     
     if(is_array($auth[$username]['groups'])) {
         foreach($auth[$username]['groups'] as $group) {
-            if( in_array($action, $auth[$group]['permissions']) ) return $action;
+            if( in_array($action, $auth[$group]['permissions']) ) return true;
         }
     }
     
-    if($action != $deny_action) {
-        msg($lang['action_not_allowed'] . " ($action)", -1);
-    }
+    msg($lang['action_not_allowed'] . " ($action)", -1);
     
-    return $deny_action;
+    return false;
 }
 
 function auth_get_userinfo($username) {

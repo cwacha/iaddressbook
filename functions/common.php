@@ -4,7 +4,7 @@
     require_once(AB_CONF.'defaults.php');
 
 
-function display_version() {
+function get_version() {
     global $VERSION;
     
     return $VERSION;

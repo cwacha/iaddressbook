@@ -88,7 +88,7 @@
     <!-- Begin Footer --> 
     <div class="separator">&nbsp;</div>
     <div class="footer">
-        <a href='http://iaddressbook.org/'>PHP iAddressbook <?= display_version() ?></a>
+        <a href='http://iaddressbook.org/'>PHP iAddressbook <?= get_version() ?></a>
     </div>
     <!-- End Footer --> 
 

@@ -17,7 +17,10 @@ require_once(AB_INC.'functions/common.php');
 
 global $conf;
 
-if($conf['xmlrpc_enable'] == false) exit();
+if(!$conf['xmlrpc_enable']) {
+    echo xml_reply(0, 'XML-RPC api disabled')->serialize();
+    exit();
+}
 
 /*
  * Declare the functions, etc.
@@ -432,18 +435,28 @@ function finish_sync($params) {
 
 }
 
+function xml_reply($retval, $contents = '') {
+    $ret = array();
+    $ret['status'] = 'success';
+    $ret['result'] = $contents;
+
+    if(!$retval) {
+        $ret['status'] = 'error';
+        if(empty($contents)) $ret['result'] = msg_text();
+    }
+    
+    $val = XML_RPC_encode($ret);
+    return new XML_RPC_Response($val);    
+}
+
 function version($params) {
     $api_key = XML_RPC_decode($params->getParam(0));
     
-
-    $act = auth_verify_action($api_key, 'xml_version');
-    if($act != 'xml_version') {
-        $val = XML_RPC_encode(msg_text());
-        return new XML_RPC_Response($val);    
+    if(!auth_verify_action($api_key, 'xml_version')) {
+        return xml_reply(0);
     }
 
-    $val = XML_RPC_encode(display_version());
-	return new XML_RPC_Response($val);
+    return xml_reply(1, get_version());
 }
 
 function get_contact($params) {
@@ -452,6 +465,10 @@ function get_contact($params) {
     
     $api_key = XML_RPC_decode($params->getParam(0));
     $id = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_get_contact')) {
+        return xml_reply(0);
+    }
 
     $contact = $AB->get($id);
 
@@ -464,8 +481,7 @@ function get_contact($params) {
         $person['categories'][$key] = $value->name;
     }
 
-    $val = XML_RPC_encode($person);
-	return new XML_RPC_Response($val);
+    return xml_reply(1, $person);
 }
 
 function get_all_contacts($params) {
@@ -477,6 +493,10 @@ function get_all_contacts($params) {
     $api_key = XML_RPC_decode($params->getParam(0));
     $limit = XML_RPC_decode($params->getParam(1));
     $offset = XML_RPC_decode($params->getParam(2));
+
+    if(!auth_verify_action($api_key, 'xml_get_all_contacts')) {
+        return xml_reply(0);
+    }
 
     $contactlist = $AB->getall($limit, $offset);
 
@@ -492,18 +512,20 @@ function get_all_contacts($params) {
         }
 
         $results[] = $person;
-    }    
-
-    $val = XML_RPC_encode($results);
-	return new XML_RPC_Response($val);
+    }
+    
+    return xml_reply(1, $results);
 }
 
 function set_contact($params) {
     $api_key = XML_RPC_decode($params->getParam(0));
     $contact = XML_RPC_decode($params->getParam(1));
 
-    $val = XML_RPC_encode("not implemented");
-	return new XML_RPC_Response($val);
+    if(!auth_verify_action($api_key, 'xml_set_contact')) {
+        return xml_reply(0);
+    }
+
+    return xml_reply(0, 'not implemented');
 }
 
 function search($params) {
@@ -512,6 +534,10 @@ function search($params) {
     
     $api_key = XML_RPC_decode($params->getParam(0));
     $query = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_search')) {
+        return xml_reply(0);
+    }
 
     if(empty($query)) {
         $contactlist = $AB->getall();
@@ -523,8 +549,8 @@ function search($params) {
     foreach($contactlist as $contact) {
         $results[$contact->id] = $contact->person_array();
     }
-    $val = XML_RPC_encode($results);
-	return new XML_RPC_Response($val);
+    
+    return xml_reply(1, $results);
  }
 
 function search_email($params) {
@@ -534,6 +560,10 @@ function search_email($params) {
 
     $api_key = XML_RPC_decode($params->getParam(0));
     $query = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_search_email')) {
+        return xml_reply(0);
+    }
 
     if(empty($query)) {
         $contactlist = $AB->getall();
@@ -547,11 +577,16 @@ function search_email($params) {
         
         foreach($contact->emails as $key => $value) {
             $person['email'] = $value['email'];
-            array_push($results, $person);
+            $results[] = $person;
         }
     }
-    $val = XML_RPC_encode($results);
-	return new XML_RPC_Response($val);
+    $results['umlaute_in'] = 'broken';
+    if($query == 'ü') $results['umlaute_in'] = 'ok';
+
+    $results['q'] = $query;
+    $results['q'] = 'ü';
+    
+    return xml_reply(1, $results);
 }
 
 function delete_contact($params) {
@@ -562,24 +597,30 @@ function delete_contact($params) {
     $api_key = XML_RPC_decode($params->getParam(0));
     $id = XML_RPC_decode($params->getParam(1));
 
+    if(!auth_verify_action($api_key, 'xml_delete_contact')) {
+        return xml_reply(0);
+    }
+
     $contact_categories = $CAT->find($id);
     foreach($contact_categories as $category) {
         $CAT->delete_contact($id, $category->id);
     }
     $AB->delete($id);
 
-    $val = XML_RPC_encode(msg_text());
-	return new XML_RPC_Response($val);
+    return xml_reply(1, msg_text());
 }
 
 function import_vcard($params) {
     $api_key = XML_RPC_decode($params->getParam(0));
     $vcard = XML_RPC_decode($params->getParam(1));
 
+    if(!auth_verify_action($api_key, 'xml_import_vcard')) {
+        return xml_reply(0);
+    }
+
     act_importvcard($vcard);
     
-    $val = XML_RPC_encode(msg_text());
-	return new XML_RPC_Response($val);
+    return xml_reply(1, msg_text());
 }
 
 function export_vcard($params) {
@@ -590,6 +631,10 @@ function export_vcard($params) {
 
     $api_key = XML_RPC_decode($params->getParam(0));
     $id_list = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_export_vcard')) {
+        return xml_reply(0);
+    }
 
     $contactlist = $AB->getall();
     
@@ -606,8 +651,7 @@ function export_vcard($params) {
         $vcard_list .= $vcard['vcard'];
     }
 
-    $val = XML_RPC_encode($vcard_list);
-	return new XML_RPC_Response($val);
+    return xml_reply(1, $vcard_list);
 }
 
 /*
@@ -619,7 +663,6 @@ db_open();
 
 $AB = new addressbook;
 $CAT = new categories;
-
 
 /*
  * Establish the dispatch map and XML_RPC server instance.
@@ -652,7 +695,7 @@ $server = new XML_RPC_Server(
             'docstring' => '@params: api_key, search_string; @return: contacts'
         ),
         'search_email' => array(
-            'function' => 'email_search',
+            'function' => 'search_email',
             'signature' => array( array('struct', 'string', 'string') ),
             'docstring' => '@params: api_key, search_string; @return: array of e-mail name pairs'
         ),
@@ -671,6 +714,7 @@ $server = new XML_RPC_Server(
             'signature' => array( array('string', 'string', 'array') ),
             'docstring' => '@params: api_key, contact ids; @return: vcards as string'
         ),
+        /*
         'sync.start_sync' => array(
             'function' => 'start_sync'
         ),
@@ -683,6 +727,7 @@ $server = new XML_RPC_Server(
         'sync.finish_sync' => array(
             'function' => 'finish_sync'
         ),
+        */
     ),
     1  // serviceNow
 );
