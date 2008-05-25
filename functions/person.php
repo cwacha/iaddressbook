@@ -54,7 +54,7 @@ class person {
         $this->modificationdate = gmdate('Y-m-d H:i:s') . ' GMT';
     }
     
-    function person_array() {
+    function get_array() {
         $person = array();
         $person['title'] = $this->title;
         $person['firstname'] = $this->firstname;
@@ -85,6 +85,42 @@ class person {
         $person['urls'] = $this->urls;
 
         return $person;
+    }
+    
+    function set_array($person) {
+        if(!is_array($person)) return;
+        
+        $this->title              = $person['title'];
+        $this->firstname          = $person['firstname'];
+        $this->firstname2         = $person['firstname2'];
+        $this->lastname           = $person['lastname'];
+        $this->suffix             = $person['suffix'];
+        $this->nickname           = $person['nickname'];
+        $this->name               = $person['name'];
+        $this->phoneticfirstname  = $person['phoneticfirstname'];
+        $this->phoneticlastname   = $person['phoneticlastname'];
+
+        $this->jobtitle           = $person['jobtitle'];
+        $this->department         = $person['department'];
+        $this->organization       = $person['organization'];
+        $this->company            = $person['company'];
+
+        $this->birthdate          = $person['birthdate'];
+        $this->note               = $person['note'];
+        $this->creationdate       = $person['creationdate'];
+        //$this->modificationdate   = $person['modificationdate'];
+        $this->modificationdate   = gmdate('Y-m-d H:i:s') . ' GMT';
+
+        $this->id                 = $person['id'];
+
+        $this->addresses          = $person['addresses'];
+        $this->emails             = $person['emails'];
+        $this->phones             = $person['phones'];
+        $this->chathandles        = $person['chathandles'];
+        $this->relatednames       = $person['relatednames'];
+        $this->urls               = $person['urls'];
+
+        $this->validate();
     }
     
     function name($lastfirst = NULL) {

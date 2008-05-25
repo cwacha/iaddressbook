@@ -435,14 +435,15 @@ function finish_sync($params) {
 
 }
 
-function xml_reply($retval, $contents = '') {
+function xml_reply($retval, $contents = null, $errormsg = null) {
     $ret = array();
     $ret['status'] = 'success';
     $ret['result'] = $contents;
 
     if(!$retval) {
         $ret['status'] = 'error';
-        if(empty($contents)) $ret['result'] = msg_text();
+        $ret['errmsg'] = $errormsg;
+        if(empty($errormsg)) $ret['errmsg'] = msg_text();
     }
     
     $val = XML_RPC_encode($ret);
@@ -475,7 +476,7 @@ function get_contact($params) {
     if($contact) $contact_categories = $CAT->find($contact->id);
     $contact_categories = $CAT->sort($contact_categories);
     
-    $person = $contact->person_array();
+    $person = $contact->get_array();
     $person['categories'] = array();
     foreach($contact_categories as $key => $value) {
         $person['categories'][$key] = $value->name;
@@ -484,24 +485,29 @@ function get_contact($params) {
     return xml_reply(1, $person);
 }
 
-function get_all_contacts($params) {
+function get_contacts($params) {
     global $AB;
     global $CAT;
     
     $results = array();
     
     $api_key = XML_RPC_decode($params->getParam(0));
-    $limit = XML_RPC_decode($params->getParam(1));
-    $offset = XML_RPC_decode($params->getParam(2));
+    $query = XML_RPC_decode($params->getParam(1));
+    $limit = XML_RPC_decode($params->getParam(2));
+    $offset = XML_RPC_decode($params->getParam(3));
 
-    if(!auth_verify_action($api_key, 'xml_get_all_contacts')) {
+    if(!auth_verify_action($api_key, 'xml_get_contacts')) {
         return xml_reply(0);
     }
 
-    $contactlist = $AB->getall($limit, $offset);
+    if(empty($query)) {
+        $contactlist = $AB->getall($limit, $offset);
+    } else {
+        $contactlist = $AB->find($query, $limit, $offset);
+    }
 
     foreach($contactlist as $contact) {
-        $person = $contact->person_array();
+        $person = $contact->get_array();
 
         $contact_categories = $CAT->find($contact->id);
         $contact_categories = $CAT->sort($contact_categories);
@@ -518,24 +524,31 @@ function get_all_contacts($params) {
 }
 
 function set_contact($params) {
+    global $AB;
+
     $api_key = XML_RPC_decode($params->getParam(0));
-    $contact = XML_RPC_decode($params->getParam(1));
+    $contact_array = XML_RPC_decode($params->getParam(1));
 
     if(!auth_verify_action($api_key, 'xml_set_contact')) {
         return xml_reply(0);
     }
+    
+    $contact = new person;
+    $contact->set_array($contact_array);
+    
+    $id = $AB->set($contact);
 
-    return xml_reply(0, 'not implemented');
+    return xml_reply(1, $id);
 }
 
-function search($params) {
+function count_contacts($params) {
     global $AB;
     $contactlist = array();
     
     $api_key = XML_RPC_decode($params->getParam(0));
     $query = XML_RPC_decode($params->getParam(1));
 
-    if(!auth_verify_action($api_key, 'xml_search')) {
+    if(!auth_verify_action($api_key, 'xml_count_contacts')) {
         return xml_reply(0);
     }
 
@@ -545,14 +558,12 @@ function search($params) {
         $contactlist = $AB->find($query);
     }
 
-    $results = array();
-    foreach($contactlist as $contact) {
-        $results[$contact->id] = $contact->person_array();
-    }
+    $result = count($contactlist);
     
-    return xml_reply(1, $results);
- }
+    return xml_reply(1, $result);
+}
 
+/*
 function search_email($params) {
     global $AB;
     $contactlist = array();
@@ -580,14 +591,10 @@ function search_email($params) {
             $results[] = $person;
         }
     }
-    $results['umlaute_in'] = 'broken';
-    if($query == 'ü') $results['umlaute_in'] = 'ok';
-
-    $results['q'] = $query;
-    $results['q'] = 'ü';
     
     return xml_reply(1, $results);
 }
+*/
 
 function delete_contact($params) {
     global $AB;
@@ -679,26 +686,28 @@ $server = new XML_RPC_Server(
             'signature' => array( array('struct', 'string', 'int') ),
             'docstring' => '@params: api_key, contact id; @return: contact'
         ),
-        'get_all_contacts' => array(
-            'function' => 'get_all_contacts',
-            'signature' => array( array('struct', 'string', 'int', 'int') ),
-            'docstring' => '@params: api_key, limit, offset; @return: contacts'
+        'get_contacts' => array(
+            'function' => 'get_contacts',
+            'signature' => array( array('struct', 'string', 'string', 'int', 'int') ),
+            'docstring' => '@params: api_key, search_string, limit, offset; @return: contacts'
         ),
         'set_contact' => array(
             'function' => 'set_contact',
             'signature' => array( array('int', 'string', 'struct') ),
             'docstring' => '@params: api_key, contact; @return: contact id'
         ),
-        'search' => array(
-            'function' => 'search',
-            'signature' => array( array('struct', 'string', 'string') ),
-            'docstring' => '@params: api_key, search_string; @return: contacts'
-        ),
+        'count_contacts' => array(
+            'function' => 'count_contacts',
+            'signature' => array( array('int', 'string', 'string') ),
+            'docstring' => '@params: api_key, search_string; @return: number of id\'s'
+        ),  
+/*      
         'search_email' => array(
             'function' => 'search_email',
             'signature' => array( array('struct', 'string', 'string') ),
             'docstring' => '@params: api_key, search_string; @return: array of e-mail name pairs'
         ),
+*/
         'delete_contact' => array(
             'function' => 'delete_contact',
             'signature' => array( array('int', 'string', 'int') ),

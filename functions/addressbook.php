@@ -59,7 +59,7 @@ class addressbook {
         return $contact;
     }
    
-    function find($searchstring, $limit = 1000) {
+    function find($searchstring, $limit = 1000, $offset = 0) {
         global $db;
         global $db_config;
         global $CAT;
@@ -106,7 +106,7 @@ class addressbook {
             }
             $sql = substr($sql, 0, -5);
             
-            $sql .= " ORDER BY lastname ASC LIMIT $limit";
+            $sql .= " ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         } else {
             $sql  = "SELECT * FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
             $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") AND (";
@@ -135,7 +135,7 @@ class addressbook {
             }
             $sql = substr($sql, 0, -5);
             
-            $sql .= ") ORDER BY lastname ASC LIMIT $limit";
+            $sql .= ") ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         }
         $result = $db->Execute($sql);
         
