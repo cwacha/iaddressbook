@@ -1,19 +1,21 @@
 
                              PHP iAddressbook
 
-                               Version 0.99
+                               Version 1.0
 
 ---
 http://iaddressbook.org/
 
-An address book for a single user. Personal or Business Cards supporting
-tons of different fields, searchable, supports categories, transparent
-vCard import/export, multilanguage support, design templates, intuitive
-interface. Aims at 100% compatibility to the AddressBook in Mac OS X.
+PHP iAddressBook is an address book for a single user. It supports
+Personal or Business Cards supporting tons of different fields, is searchable,
+supports categories, has transparent vCard import/export, contains
+multilanguage support, design templates and an intuitive interface.
+Besides that it aims at 100% compatibility to the AddressBook found
+in Mac OS X.
 
 
 Enjoy!
     Clemens Wacha                   <clemens.wacha@gmx.net>
 
 
-April 14 2008
+May 26, 2008

@@ -5,7 +5,7 @@
     */
     
     global $VERSION;
-    $VERSION = "1.0 DEV";
+    $VERSION = "1.0";
     
     // define the include path
     if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');

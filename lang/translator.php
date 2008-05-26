@@ -9,7 +9,7 @@
  */
 
 //disable if not used
-//echo "translator disabled"; exit(0);
+echo "translator disabled"; exit(0);
 
 // define the include path
 if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
