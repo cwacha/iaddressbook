@@ -158,9 +158,6 @@ $lang['dbpass']               = 'Password';
 $lang['dbtable_ab']           = 'DB table';
 $lang['dbtable_cat']          = 'DB table';
 $lang['dbtable_catmap']       = 'DB table';
-$lang['dbtable_truth']        = 'DB table';
-$lang['dbtable_sync']         = 'DB table';
-$lang['dbtable_action']       = 'DB table';
 
 $lang['lang']                 = 'Language';
 $lang['title']                = 'Title';
@@ -208,9 +205,6 @@ $lang['dbpass_help']            = 'Cleartext password to connect to server';
 $lang['dbtable_ab_help']        = 'Table inside database for addressbook entries';
 $lang['dbtable_cat_help']       = 'Table inside database for categories';
 $lang['dbtable_catmap_help']    = 'Table inside database for mapping contacts to categories';
-$lang['dbtable_truth_help']     = 'Table inside database that holds the sync truth of the last sync';
-$lang['dbtable_sync_help']      = 'Table inside database that contains the situation on the remote side';
-$lang['dbtable_action_help']    = 'Table inside database that contains sync actions to be performed';
 
 $lang['lang_help']              = 'Language';
 $lang['title_help']             = 'What to show in the title';

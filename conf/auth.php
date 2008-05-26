@@ -31,33 +31,29 @@ $auth['guest']['groups']        = array('@guest');
 //   This means that Fred is able to execute all actions that the @editor group may
 //   execute as well as the action check.
 //
-// For an explanation of all actions see the documentation at http://wacha.ch/addressbook:docs#permissions_access_controls
+// For an explanation of all actions see the documentation at http://iaddressbook.org/docs#permissions_access_controls
 
+// Editor
+//
 // $auth['fred']['password']    = '72b302bf297a228a75730123efef7c41';
 // $auth['fred']['permissions'] = array( 'check' );
 // $auth['fred']['groups']      = array('@editor');
 // $auth['fred']['fullname']    = 'Fred the Geek';
 // $auth['fred']['email']       = 'fred@geeks.com';
 
-
+// Admin User
+//
 // $auth['your_admin_username']['password']    = '--fill-in-your-password--';
 // $auth['your_admin_username']['permissions'] = array();
 // $auth['your_admin_username']['groups']      = array('@admin');
 // $auth['your_admin_username']['fullname']    = 'Administrator';
 // $auth['your_admin_username']['email']       = '';
 
-$auth['hermann']['password']    = 'a08f6dcee64691d6907b0e3560046565';
-$auth['hermann']['permissions'] = array();
-$auth['hermann']['groups']      = array('@admin');
-$auth['hermann']['fullname']    = 'Hermann Giesser';
-$auth['hermann']['email']       = '';
-
-$auth['ingrid']['password']    = '0c5e8dc20d5f7778d3da083ceb16e841';
-$auth['ingrid']['permissions'] = array();
-$auth['ingrid']['groups']      = array('@admin');
-$auth['ingrid']['fullname']    = 'Ingrid Giesser';
-$auth['ingrid']['email']       = '';
-
+// XML-RPC api_key=abcd
+//
+// $auth['abcd']['password']    = '';
+// $auth['abcd']['permissions'] = array();
+// $auth['abcd']['groups']      = array('@xml_client');
 
 ///////////////////////
 //    G R O U P S    //
@@ -78,5 +74,10 @@ $auth['@guest']['permissions']  = array('show', 'img', 'search', 'select_letter'
                                         'export_vcard', 'export_vcard_cat', 'export_csv_cat', 'export_ldif_cat',
                                         'login', 'logout', 'reset');
 
+$auth['@xml_client']['permissions']  = array('xml_version',
+                                        'xml_search', 'xml_search_email', 'xml_get_contact', 'xml_get_contacts', 'xml_count_contacts',
+                                        'xml_set_contact', 'xml_delete_contact',
+                                        'xml_import_vcard', 'xml_export_vcard');
+                                        
     
 ?>

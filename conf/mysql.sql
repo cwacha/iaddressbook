@@ -41,32 +41,3 @@ CREATE TABLE addressbook_catmap (
 ) COLLATE utf8_general_ci;
 
 
-CREATE TABLE addressbook_truth (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    local_id int unsigned NOT NULL,
-    mod_date datetime NOT NULL default '0000-00-00 00:00:00',
-    PRIMARY KEY (id)
-) COLLATE utf8_general_ci;
- 
-CREATE TABLE addressbook_sync (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    sync_state int unsigned NOT NULL,
-    mod_date datetime NOT NULL default '0000-00-00 00:00:00',
-    PRIMARY KEY (id)
-) COLLATE utf8_general_ci;
-
-CREATE TABLE addressbook_syncactions (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    syncaction int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    local_id int unsigned NOT NULL,
-    vcard_data text NOT NULL,
-    PRIMARY KEY (id)
-) COLLATE utf8_general_ci;
-
-
