@@ -1288,7 +1288,7 @@ class XML_RPC_Message extends XML_RPC_Base
             $this->payload = $GLOBALS['XML_RPC_func_ereg_replace']("\r\n|\n|\r|\n\r", "\r\n", $this->payload);
         }
         if (function_exists('mb_convert_encoding')) {
-            $this->payload = mb_convert_encoding($this->payload, $this->send_encoding);
+            $this->payload = mb_convert_encoding($this->payload, $this->send_encoding, 'auto');
         }
     }
 

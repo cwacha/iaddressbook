@@ -23,7 +23,7 @@ CREATE TABLE addressbook (
     creationdate datetime NOT NULL default '0000-00-00 00:00:00',
     modificationdate datetime NOT NULL default '0000-00-00 00:00:00',
     PRIMARY KEY (id)
-);
+) COLLATE utf8_general_ci;
 
 CREATE TABLE addressbook_cat (
     id int unsigned NOT NULL auto_increment,
@@ -31,42 +31,13 @@ CREATE TABLE addressbook_cat (
     type int unsigned NOT NULL,
     query text NOT NULL,
     PRIMARY KEY (id)
-);
+) COLLATE utf8_general_ci;
 
 CREATE TABLE addressbook_catmap (
     id int unsigned NOT NULL auto_increment,
     category_id int unsigned NOT NULL,
     person_id int unsigned NOT NULL,
     PRIMARY KEY (id)
-);
+) COLLATE utf8_general_ci;
 
-/*
-CREATE TABLE addressbook_truth (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    local_id int unsigned NOT NULL,
-    mod_date datetime NOT NULL default '0000-00-00 00:00:00',
-    PRIMARY KEY (id)
-);
- 
-CREATE TABLE addressbook_sync (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    sync_state int unsigned NOT NULL,
-    mod_date datetime NOT NULL default '0000-00-00 00:00:00',
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE addressbook_syncactions (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    syncaction int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    local_id int unsigned NOT NULL,
-    vcard_data text NOT NULL,
-    PRIMARY KEY (id)
-);
-*/
 

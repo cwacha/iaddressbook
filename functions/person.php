@@ -54,6 +54,75 @@ class person {
         $this->modificationdate = gmdate('Y-m-d H:i:s') . ' GMT';
     }
     
+    function get_array() {
+        $person = array();
+        $person['title'] = $this->title;
+        $person['firstname'] = $this->firstname;
+        $person['firstname2'] = $this->firstname2;
+        $person['lastname'] = $this->lastname;
+        $person['suffix'] = $this->suffix;
+        $person['nickname'] = $this->nickname;
+        $person['name'] = $this->name();
+        $person['phoneticfirstname'] = $this->phoneticfirstname;
+        $person['phoneticlastname'] = $this->phoneticlastname;
+
+        $person['jobtitle'] = $this->jobtitle;
+        $person['department'] = $this->department;
+        $person['organization'] = $this->organization;
+        $person['company'] = $this->company;
+
+        $person['birthdate'] = $this->birthdate;
+        $person['note'] = $this->note;
+        $person['creationdate'] = $this->creationdate;
+        $person['modificationdate'] = $this->modificationdate;
+        $person['id'] = $this->id;
+
+        $person['addresses'] = $this->addresses;
+        $person['emails'] = $this->emails;
+        $person['phones'] = $this->phones;
+        $person['chathandles'] = $this->chathandles;
+        $person['relatednames'] = $this->relatednames;
+        $person['urls'] = $this->urls;
+
+        return $person;
+    }
+    
+    function set_array($person) {
+        if(!is_array($person)) return;
+        
+        $this->title              = $person['title'];
+        $this->firstname          = $person['firstname'];
+        $this->firstname2         = $person['firstname2'];
+        $this->lastname           = $person['lastname'];
+        $this->suffix             = $person['suffix'];
+        $this->nickname           = $person['nickname'];
+        $this->name               = $person['name'];
+        $this->phoneticfirstname  = $person['phoneticfirstname'];
+        $this->phoneticlastname   = $person['phoneticlastname'];
+
+        $this->jobtitle           = $person['jobtitle'];
+        $this->department         = $person['department'];
+        $this->organization       = $person['organization'];
+        $this->company            = $person['company'];
+
+        $this->birthdate          = $person['birthdate'];
+        $this->note               = $person['note'];
+        $this->creationdate       = $person['creationdate'];
+        //$this->modificationdate   = $person['modificationdate'];
+        $this->modificationdate   = gmdate('Y-m-d H:i:s') . ' GMT';
+
+        $this->id                 = $person['id'];
+
+        $this->addresses          = $person['addresses'];
+        $this->emails             = $person['emails'];
+        $this->phones             = $person['phones'];
+        $this->chathandles        = $person['chathandles'];
+        $this->relatednames       = $person['relatednames'];
+        $this->urls               = $person['urls'];
+
+        $this->validate();
+    }
+    
     function name($lastfirst = NULL) {
         global $conf;
         global $lang;
@@ -250,128 +319,7 @@ class person {
         }
         return false;
     }
-    
-    /*
-    function vcard($version = 3) {
-        if($version == 3) {
-            $num = 0;
-
-            $out =  "BEGIN:VCARD\n";
-            $out .= "VERSION:3.0\n";
-            $out .= "N:$this->lastname;$this->firstname;$this->firstname2;$this->title;$this->suffix\n";
-            $out .= "FN:$this->firstname $this->lastname\n";
-            if($this->nickname) $out .= "NICKNAME:$this->nickname\n";
-            if($this->organization or $this->department) $out .= "ORG:$this->organization;$this->department\n";
-            if($this->jobtitle) $out .= "TITLE:$this->jobtitle\n";
-            
-            $first = true;
-            $pref = ";type=pref";
-            foreach ($this->emails as $email) {
-                if($first) $first = false; else $pref = "";
-                
-                $label = strtoupper($email['label']);
-                if(!in_array($label, array("WORK", "HOME")) ) {
-                    $num++;
-                    $item = "item$num.";
-                } else {
-                    $item = "";
-                }
-                
-                $out .= $item ."EMAIL;type=INTERNET;type=$label$pref:{$email['email']}\n";
-                if($item) $out .= "$itemX-ABLabel:{$email['label']}\n";
-            }
-
-            $first = true;
-            $pref = ";type=pref";
-            foreach ($this->phones as $phone) {
-                if($first) $first = false; else $pref = "";
-                
-                $label = strtoupper($phone['label']);
-                if(in_array($label, array("WORK", "CELL", "HOME", "MAIN", "PAGER")) ) {
-                    $item = "";
-                } else {
-                    // FAX HACK
-                    if(in_array($label, array( "WORK FAX", "HOME FAX")) ) {
-                        $label = str_replace(" ", ";type=", $label);
-                    }
-                    $num++;
-                    $item = "item$num.";
-                }
-                
-                $out .= $item ."TEL;type=$label$pref:{$phone['phone']}\n";
-                if($item) $out .= $item ."X-ABLabel:{$phone['label']}\n";
-            }
-
-            $first = true;
-            $pref = ";type=pref";
-            foreach ($this->addresses as $address) {
-                if($first) $first = false; else $pref = "";
-                
-                $label = strtoupper($address['label']);
-                if(in_array($label, array( "WORK", "HOME")) ) {
-                    $item = "";
-                } else {
-                    $num++;
-                    $item = "item$num.";
-                }
-                
-                $out .= $item ."ADR;type=$label$pref:{$address['pobox']};{$address['ext_adr']};{$address['street']};{$address['city']};{$address['state']};{$address['zip']};{$address['country']}\n";
-                $out .= $item."X-ABLabel:{$address['label']}\n";
-                if($address['countrycode']) $out .= $item."X-ABADR:".$address['countrycode']."\n";
-            }
-
-            $first = true;
-            $pref = ";type=pref";
-            foreach ($this->chathandles as $handle) {
-                if($first) $first = false; else $pref = "";
-                
-                $label = strtoupper($handle['type']);
-                $vtype = strtoupper($handle['label']);
-                switch($label) {
-                    case "AIM":
-                        $vname = "X-AIM";
-                        break;
-                    case "JABBER":
-                        $vname = "X-JABBER";
-                        break;
-                    case "MSN":
-                        $vname = "X-MSN";
-                        break;
-                    case "YAHOO":
-                        $vname = "X-YAHOO";
-                        break;
-                    case "ICQ":
-                        $vname = "X-ICQ";
-                        break;
-                    case "IRC":
-                        $vname = "X-IRC";
-                        break;
-                    default:
-                        $vname = ""; $vtype = "";
-                }
-                
-                if($vname) $out .= "$vname;type=$vtype$pref:{$handle['handle']}\n";
-            }
-            
-            
-            // FIXME with \n
-            if($this->note) $out .= "NOTE:".str_replace("\n", "\\n", $this->note)."\n";
-            if($this->homepage) $out .= "URL:$this->homepage\n";
-            if(!empty($this->birthdate) and $this->birthdate != "0000-00-00") $out .= "BDAY;value=date:$this->birthdate\n";
-            
-            // TODO
-            // $out .= "PHOTO;BASE64:\n";
-            // $out .= "  $this->image\n";
-            
-            //$out .= "CATEGORIES:\n";
-            
-            $out .= "END:VCARD\n";
-            
-            return $out;
-        }
-    }
-    */
-    
+        
     function show() {
         echo "$this->title $this->firstname $this->firstname2 $this->lastname $this->suffix<br>\n";
         if($this->nickname != "") echo "\"$this->nickname\"<br>\n";

@@ -29,8 +29,8 @@ class addressbook {
         }
         
         $contact->id = (int)$row[$prefix . 'ID'];
-        $contact->creationdate = $contact->unescape($row[$prefix . 'CREATIONDATE'] . " GMT");
-        $contact->modificationdate = $contact->unescape($row[$prefix . 'MODIFICATIONDATE'] . " GMT");
+        $contact->creationdate = $contact->unescape($row[$prefix . 'CREATIONDATE']);
+        $contact->modificationdate = $contact->unescape($row[$prefix . 'MODIFICATIONDATE']);
         
         $contact->title = $contact->unescape($row[$prefix . 'TITLE']);
         $contact->firstname = $contact->unescape($row[$prefix . 'FIRSTNAME']);
@@ -59,7 +59,7 @@ class addressbook {
         return $contact;
     }
    
-    function find($searchstring, $limit = 1000) {
+    function find($searchstring, $limit = 1000, $offset = 0) {
         global $db;
         global $db_config;
         global $CAT;
@@ -67,7 +67,7 @@ class addressbook {
 
         $contactlist = array();
         
-        if(!db) return $contactlist;
+        if(!$db) return $contactlist;
         
         $search_array = explode(" ", $searchstring);
         $sql_searchstring = "";
@@ -106,7 +106,7 @@ class addressbook {
             }
             $sql = substr($sql, 0, -5);
             
-            $sql .= " ORDER BY lastname ASC LIMIT $limit";
+            $sql .= " ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         } else {
             $sql  = "SELECT * FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
             $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") AND (";
@@ -135,7 +135,7 @@ class addressbook {
             }
             $sql = substr($sql, 0, -5);
             
-            $sql .= ") ORDER BY lastname ASC LIMIT $limit";
+            $sql .= ") ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         }
         $result = $db->Execute($sql);
         
@@ -152,7 +152,7 @@ class addressbook {
         return $contactlist;
     }
     
-    function getall($limit = 1000) {
+    function getall($limit = 1000, $offset = 0) {
         global $db;
         global $db_config;
         global $CAT;
@@ -165,14 +165,14 @@ class addressbook {
         $selected = $db->Quote($CAT_ID);
         
         if($CAT_ID == 0) {
-            $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." ORDER BY lastname ASC LIMIT $limit";
+            $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         } else {
             $sql_select  = $db_config['dbtable_ab'].".*, ";
             $sql_select .= $db_config['dbtable_catmap'].".category_id ";
             
             $sql  = "SELECT ".$sql_select." FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
             $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") ";
-            $sql .= " ORDER BY lastname ASC LIMIT $limit";
+            $sql .= " ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         }
         
         $result = $db->Execute($sql);
@@ -313,7 +313,7 @@ class addressbook {
             if($contact->id > 0) {
                 if(!empty($contact->image)) {
                     // convert and create image file
-                    $contact->image = img_convert($contact->image, $conf['photo_format']);
+                    $contact->image = img_convert($contact->image, $conf['photo_format'], $conf['photo_resize']);
                     img_create($contact->id, $contact->image);
                 } else {
                     img_delete($contact->id);

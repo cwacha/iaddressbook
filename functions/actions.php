@@ -94,7 +94,7 @@ function act_dispatch(){
         
         case 'import_vcard':
             @set_time_limit(0);
-            act_importvcard();
+            act_importvcard_file();
             act_search();
             act_getcontact();
             break;
@@ -266,11 +266,7 @@ function act_save() {
         $contact->image = NULL;
     } else if($conf['photo_enable'] && !empty($_FILES['photo_file']['tmp_name']) ) {
         //change or add picture
-        if(!empty($conf['photo_resize'])) {
-            $contact->image = img_convert(@file_get_contents($_FILES['photo_file']['tmp_name']), $conf['photo_format'], '-resize ' . $conf['photo_resize']);
-        } else {
-            $contact->image = @file_get_contents($_FILES['photo_file']['tmp_name']);
-        }
+        $contact->image = @file_get_contents($_FILES['photo_file']['tmp_name']);
     }
     
     $contact->addresses = array();
@@ -406,7 +402,7 @@ function act_getcontact() {
 
     $contact = $AB->get($ID);
 
-    $contact_categories = $CAT->find($contact->id);
+    if($contact) $contact_categories = $CAT->find($contact->id);
     $contact_categories = $CAT->sort($contact_categories);
 }
 

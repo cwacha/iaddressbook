@@ -26,17 +26,17 @@ function html_debug() {
  *
  * @author Andreas Gohr <andi@splitbrain.org>
  */
-function html_msgarea(){
+function html_msgarea($msg_array = null) {
     global $MSG;
     
-    if(!isset($MSG)) return;
+    if(!isset($msg_array)) $msg_array = $MSG;
+    if(!isset($msg_array)) return;
 
-    foreach($MSG as $msg){
-        print '<div class="'.$msg['lvl'].'">';
+    foreach($msg_array as $msg){
+        print '<div class="'.$msg['lvl'].'" style="text-align: left;">';
         print $msg['msg'];
         print '</div>';
     }
-//    $MSG = array();
 }
 
 /**

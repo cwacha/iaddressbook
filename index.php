@@ -12,14 +12,18 @@ require_once(AB_INC.'functions/db.php');
 require_once(AB_INC.'functions/module_auth.php');
 require_once(AB_INC.'functions/actions.php');
 
-$VERSION = "0.99 DEVEL";
+if(!file_exists(AB_INC.'conf/config.php')) {
+    // no config found. redirect to installer
+    header('Location: '.AB_URL.'install.php?do=reset');
+    exit;
+}
+
+db_init();
+db_open();
 
 //import variables
 $ACT = trim($_REQUEST['do']);
 if(empty($ACT)) $ACT = 'show';
-
-
-$userinfo = array();
 
 // check if user has to login
 if($ACT == 'login') {
@@ -30,9 +34,16 @@ if($ACT == 'login') {
     auth_check();
 }
 
-
+//
 // access control
-$ACT = auth_verify_action($ACT);
+//
+// accept everything if authentication is disabled
+if($conf['auth_enabled']) {
+    if(!auth_verify_action($userinfo['username'], $ACT)) {
+        // user is not allowed to execute $ACT, change to 'show'
+        $ACT = 'show';
+    }
+}
 
 
 // contact list offset
@@ -116,9 +127,6 @@ $contact = false;               // the contact
 $contact_categories = array();  // categories the current contact is a member of
 $categories = array();          // all categories
 
-db_init();
-db_open();
-
 $AB = new addressbook;
 $CAT = new categories;
 //$CAT->selected = $CAT_ID;
@@ -128,8 +136,4 @@ act_dispatch();
 
 db_close();
 
-//restore old umask
-umask($conf['oldumask']);
-
-//  xdebug_dump_function_profile(1);
 ?>

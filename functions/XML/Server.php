@@ -428,7 +428,7 @@ class XML_RPC_Server
                               . $r->serialize();
         if (function_exists('mb_convert_encoding')) {
             $this->server_payload = mb_convert_encoding($this->server_payload,
-                                                        $this->encoding);
+                                                        $this->encoding, 'auto');
         }
     }
 

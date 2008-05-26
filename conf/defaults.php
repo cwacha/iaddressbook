@@ -10,8 +10,8 @@
 
 // Datastorage
 
-$conf['fmode']          = 0644;                  //set file creation mode
-$conf['dmode']          = 0755;                  //set directory creation mode
+$conf['fmode']          = 644;                  //set file creation mode
+$conf['dmode']          = 755;                  //set directory creation mode
 $conf['basedir']        = '';                    //relative dir to serveroot - blank for autodetection
 $conf['baseurl']        = '';                    //URL to server including protocol - blank for autodetect
 
@@ -26,6 +26,7 @@ $conf['dbtable_catmap'] = 'addressbook_catmap';  // table inside database for ma
 $conf['dbtable_truth']  = 'addressbook_truth';   // table inside database that holds the sync truth of the last sync
 $conf['dbtable_sync']   = 'addressbook_sync';    // table inside database that contains the situation on the remote side
 $conf['dbtable_action'] = 'addressbook_action';  // table inside database that contains sync actions to be performed
+$conf['dbtable_users']  = 'addressbook_users';   // table inside database that contains user information (fullname, password etc.)
 
 
 // Display Options
@@ -45,7 +46,7 @@ $conf['bdformat']    = '$d. $month $YYYY';       // dateformat for birthday (eur
                                                  // $YYYY - Year (4-digit)
 
 $conf['dformat']     = 'd.m.Y H:i';              // dateformat as accepted by PHPs date() function
-$conf['lastfirst']   = true;                     // Displayformat for contact list: Lastname, Firstname if true; Firstname Lastname else
+$conf['lastfirst']   = 1;                     // Displayformat for contact list: Lastname, Firstname if true; Firstname Lastname else
 $conf['photo_resize'] = '128';                   // sets max. photo size on manual photo import (default: 100 times 100 pixels). set to '' to disable
 $conf['photo_size'] = '128';                     // sets max. height of photo display size in default template
 $conf['photo_format'] = 'png';                   // image format to be used when exporting vCards (default: png) (the internal format is always png)
@@ -73,9 +74,9 @@ $conf['im_convert']  = '/usr/bin/convert';       // path to ImageMagicks convert
 $conf['photo_enable'] = 1;                       // enable photo usage (disable, if you are using sqlite 2.x)
 $conf['session_name'] = '';                      // override session name if you have more than one addressbook on your server
                                                  // only use alphanumeric characters (0-9, a-z, A-Z). No dots, does not consist of numbers only!
-$conf['mark_changed'] = true;                    // every contact that is added or modified will be automatically added to a new category called "modified contacts"
+$conf['mark_changed'] = 1;                    // every contact that is added or modified will be automatically added to a new category called "modified contacts"
 $conf['debug'] = 0;                              // enable debug mode: use ?do=debug to show debug information
-$conf['debug_db']  = 0;							 // enable database debugging 
+$conf['debug_db']       = 0;					 // enable database debugging 
 
 // Import / Export
 
@@ -86,6 +87,6 @@ $conf['ldif_base'] = 'ou=customers, dc=example, dc=com';
 $conf['ldif_mozilla'] = 1;                       // use mozilla LDAP classes (mozillaOrgPerson, mozillaAddressBookEntry)
 
 // Synchronization
-$conf['xmlrpc_enable'] = false;                  // Enable XMLRPC synchronization (not yet implemented)
+$conf['xmlrpc_enable'] = 0;                  // Enable XMLRPC synchronization (not yet implemented)
 
 ?>

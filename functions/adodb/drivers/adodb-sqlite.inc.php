@@ -161,8 +161,11 @@ class ADODB_sqlite extends ADOConnection {
 		if (!function_exists('sqlite_open')) return null;
 		if (empty($argHostname) && $argDatabasename) $argHostname = $argDatabasename;
 		
-		$this->_connectionID = sqlite_open($argHostname);
-		if ($this->_connectionID === false) return false;
+		$this->_connectionID = @sqlite_open($argHostname);
+		if ($this->_connectionID === false) {
+            ADOConnection::outp("<p>Cannot open SQLite database: $argHostname<p>", false);
+            return false;
+        }
 		$this->_createFunctions();
 		return true;
 	}

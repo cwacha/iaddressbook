@@ -36,31 +36,3 @@ CREATE TABLE addressbook_catmap (
     category_id int unsigned NOT NULL,
     person_id int unsigned NOT NULL
 );
-
-/*
-CREATE TABLE addressbook_truth (
-    id INTEGER PRIMARY KEY,
-    syncpartner_id int unsigned NOT NULL,
-    remote_id varchar(255) NOT NULL,
-    local_id int unsigned NOT NULL,
-    mod_date datetime NOT NULL default '0000-00-00 00:00:00'
-);
- 
-CREATE TABLE addressbook_sync (
-    id INTEGER PRIMARY KEY,
-    syncpartner_id int unsigned NOT NULL,
-    remote_id varchar(255) NOT NULL,
-    sync_state int unsigned NOT NULL,
-    mod_date datetime NOT NULL default '0000-00-00 00:00:00'
-);
-
-CREATE TABLE addressbook_syncactions (
-    id INTEGER PRIMARY KEY,
-    syncpartner_id int unsigned NOT NULL,
-    side int unsigned NOT NULL,
-    syncaction int unsigned NOT NULL,
-    remote_id varchar(255) NOT NULL,
-    local_id int unsigned NOT NULL,
-    vcard_data text NOT NULL
-);
-*/

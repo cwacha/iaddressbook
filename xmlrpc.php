@@ -11,12 +11,16 @@ require_once(AB_INC.'functions/init.php');
 require_once(AB_INC.'functions/db.php');
 require_once(AB_INC.'functions/XML/Server.php');
 require_once(AB_INC.'functions/module_vcard.php');
+require_once(AB_INC.'functions/module_auth.php');
 require_once(AB_INC.'functions/common.php');
 
 
 global $conf;
 
-if($conf['xmlrpc_enable'] == false) exit();
+if(!$conf['xmlrpc_enable']) {
+    echo xml_reply(0, 'XML-RPC api disabled')->serialize();
+    exit();
+}
 
 /*
  * Declare the functions, etc.
@@ -431,96 +435,230 @@ function finish_sync($params) {
 
 }
 
-function vcard_upload($params) {
-    global $AB;
-    global $conf;
-    global $CAT;
-        
-    $ret = '';
-    $error = 0;
-    $imported = 0;
+function xml_reply($retval, $contents = null, $errormsg = null) {
+    $ret = array();
+    $ret['status'] = 'success';
+    $ret['result'] = $contents;
 
-	$param = $params->getParam(0);
-	
-	if(!XML_RPC_Value::isValue($param)) {
-		$ret = "Error: wrong parameter given for upload";
-		$val = new XML_RPC_Value($ret, 'string');
-		return new XML_RPC_Response($val);
-	}
-
-	$vcard = $param->scalarval();
-	
-	$parse = new Contact_Vcard_Parse();
-	
-	$data = $parse->fromText($vcard);
-
-    if(!is_array($data)) {
-        $ret = "Error importing vcard!!";
-		$val = new XML_RPC_Value($ret, 'string');
-		return new XML_RPC_Response($val);
+    if(!$retval) {
+        $ret['status'] = 'error';
+        $ret['errmsg'] = $errormsg;
+        if(empty($errormsg)) $ret['errmsg'] = msg_text();
     }
     
-    //clear "last import" category
-    $import_cat = $CAT->exists('__lastimport__');
-    if(is_object($import_cat)) $CAT->delete($import_cat->id);
-    
-    $import_cat = new category;
-    $import_cat->name = '__lastimport__';
-    $import_id = $CAT->set($import_cat);
-    
-    foreach($data as $card) {
-        $contact = vcard2contact($card);
-        
-        if($AB->is_duplicate($contact)) {
-            //$ret .= $contact->name() . " is duplicate!!\n";
-            //$error++;
-        } else {
-            //import
-            $person_id = $AB->set($contact);
-            if($person_id === false) {
-                $error++;
-                $ret .= "Could not import contact ".$contact->name() ."\n";
-            } else {
-                $imported++;
-                // add to last import category
-                $CAT->add_contact($person_id, $import_id);
+    $val = XML_RPC_encode($ret);
+    return new XML_RPC_Response($val);    
+}
 
-                if(is_array($card['CATEGORIES']['0']['value']['0'])) {
-                    foreach($card['CATEGORIES']['0']['value']['0'] as $cat_name) {
-                        // add to corresponding categories
-                        $category = $CAT->exists($cat_name);
-                        if(is_object($category)) {
-                            $cat_id = $category->id;
-                        } else {
-                            $category = new category;
-                            $category->name = $cat_name;
-                            $cat_id = $CAT->set($category);
-                        }
-                        $CAT->add_contact($person_id, $cat_id);
-                    }
-                }
-            }
+function version($params) {
+    $api_key = XML_RPC_decode($params->getParam(0));
+    
+    if(!auth_verify_action($api_key, 'xml_version')) {
+        return xml_reply(0);
+    }
+
+    return xml_reply(1, get_version());
+}
+
+function get_contact($params) {
+    global $AB;
+    global $CAT;
+    
+    $api_key = XML_RPC_decode($params->getParam(0));
+    $id = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_get_contact')) {
+        return xml_reply(0);
+    }
+
+    $contact = $AB->get($id);
+
+    if($contact) $contact_categories = $CAT->find($contact->id);
+    $contact_categories = $CAT->sort($contact_categories);
+    
+    $person = $contact->get_array();
+    $person['categories'] = array();
+    foreach($contact_categories as $key => $value) {
+        $person['categories'][$key] = $value->name;
+    }
+
+    return xml_reply(1, $person);
+}
+
+function get_contacts($params) {
+    global $AB;
+    global $CAT;
+    
+    $results = array();
+    
+    $api_key = XML_RPC_decode($params->getParam(0));
+    $query = XML_RPC_decode($params->getParam(1));
+    $limit = XML_RPC_decode($params->getParam(2));
+    $offset = XML_RPC_decode($params->getParam(3));
+
+    if(!auth_verify_action($api_key, 'xml_get_contacts')) {
+        return xml_reply(0);
+    }
+
+    if(empty($query)) {
+        $contactlist = $AB->getall($limit, $offset);
+    } else {
+        $contactlist = $AB->find($query, $limit, $offset);
+    }
+
+    foreach($contactlist as $contact) {
+        $person = $contact->get_array();
+
+        $contact_categories = $CAT->find($contact->id);
+        $contact_categories = $CAT->sort($contact_categories);
+        
+        $person['categories'] = array();
+        foreach($contact_categories as $key => $value) {
+            $person['categories'][$key] = $value->name;
+        }
+
+        $results[] = $person;
+    }
+    
+    return xml_reply(1, $results);
+}
+
+function set_contact($params) {
+    global $AB;
+
+    $api_key = XML_RPC_decode($params->getParam(0));
+    $contact_array = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_set_contact')) {
+        return xml_reply(0);
+    }
+    
+    $contact = new person;
+    $contact->set_array($contact_array);
+    
+    $id = $AB->set($contact);
+
+    return xml_reply(1, $id);
+}
+
+function count_contacts($params) {
+    global $AB;
+    $contactlist = array();
+    
+    $api_key = XML_RPC_decode($params->getParam(0));
+    $query = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_count_contacts')) {
+        return xml_reply(0);
+    }
+
+    if(empty($query)) {
+        $contactlist = $AB->getall();
+    } else {
+        $contactlist = $AB->find($query);
+    }
+
+    $result = count($contactlist);
+    
+    return xml_reply(1, $result);
+}
+
+/*
+function search_email($params) {
+    global $AB;
+    $contactlist = array();
+    $results = array();
+
+    $api_key = XML_RPC_decode($params->getParam(0));
+    $query = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_search_email')) {
+        return xml_reply(0);
+    }
+
+    if(empty($query)) {
+        $contactlist = $AB->getall();
+    } else {
+        $contactlist = $AB->find($query);
+    }
+
+    foreach($contactlist as $contact) {
+        $person = array();
+        $person['name'] = $contact->name();
+        
+        foreach($contact->emails as $key => $value) {
+            $person['email'] = $value['email'];
+            $results[] = $person;
+        }
+    }
+    
+    return xml_reply(1, $results);
+}
+*/
+
+function delete_contact($params) {
+    global $AB;
+    global $CAT;
+    global $contact_categories;
+
+    $api_key = XML_RPC_decode($params->getParam(0));
+    $id = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_delete_contact')) {
+        return xml_reply(0);
+    }
+
+    $contact_categories = $CAT->find($id);
+    foreach($contact_categories as $category) {
+        $CAT->delete_contact($id, $category->id);
+    }
+    $AB->delete($id);
+
+    return xml_reply(1, msg_text());
+}
+
+function import_vcard($params) {
+    $api_key = XML_RPC_decode($params->getParam(0));
+    $vcard = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_import_vcard')) {
+        return xml_reply(0);
+    }
+
+    act_importvcard($vcard);
+    
+    return xml_reply(1, msg_text());
+}
+
+function export_vcard($params) {
+    global $CAT;
+    global $AB;
+    $contacts_selected = array();
+    $vcard_list = '';
+
+    $api_key = XML_RPC_decode($params->getParam(0));
+    $id_list = XML_RPC_decode($params->getParam(1));
+
+    if(!auth_verify_action($api_key, 'xml_export_vcard')) {
+        return xml_reply(0);
+    }
+
+    $contactlist = $AB->getall();
+    
+    foreach($id_list as $id) {
+        if(array_key_exists($id, $contactlist)) {
+            $contacts_selected[$id] = $contactlist[$id];
         }
     }
 
-    if($imported > 0) {
-    	$ret .= "$imported vCard(s) succesfully imported!\n";
-   	} else {
-   		$ret .= "no new vCards imported.\n";
-   	}
-    
-    $n = count($data);
-    if($n == 0) {
-        $ret .= "no vCards found to import.\n";
-        $error++;
+    foreach ($contacts_selected as $contact) {
+        $contact->image = img_load($contact->id);
+        $categories = $CAT->find($contact->id);
+        $vcard = contact2vcard($contact, $categories);
+        $vcard_list .= $vcard['vcard'];
     }
-    
-    if($error != 0) {
-        $ret .= "Import ended with $error error(s).\n";
-    }
-	
-	$val = new XML_RPC_Value($ret, 'string');
-	return new XML_RPC_Response($val);
+
+    return xml_reply(1, $vcard_list);
 }
 
 /*
@@ -533,15 +671,59 @@ db_open();
 $AB = new addressbook;
 $CAT = new categories;
 
-
 /*
  * Establish the dispatch map and XML_RPC server instance.
  */
 $server = new XML_RPC_Server(
     array(
-        'vcard_upload' => array(
-            'function' => 'vcard_upload'
+        'version' => array(
+            'function' => 'version',
+            'signature' => array( array('string', 'string') ),
+            'docstring' => '@params: api_key; @return: version string'
         ),
+        'get_contact' => array(
+            'function' => 'get_contact',
+            'signature' => array( array('struct', 'string', 'int') ),
+            'docstring' => '@params: api_key, contact id; @return: contact'
+        ),
+        'get_contacts' => array(
+            'function' => 'get_contacts',
+            'signature' => array( array('struct', 'string', 'string', 'int', 'int') ),
+            'docstring' => '@params: api_key, search_string, limit, offset; @return: contacts'
+        ),
+        'set_contact' => array(
+            'function' => 'set_contact',
+            'signature' => array( array('int', 'string', 'struct') ),
+            'docstring' => '@params: api_key, contact; @return: contact id'
+        ),
+        'count_contacts' => array(
+            'function' => 'count_contacts',
+            'signature' => array( array('int', 'string', 'string') ),
+            'docstring' => '@params: api_key, search_string; @return: number of id\'s'
+        ),  
+/*      
+        'search_email' => array(
+            'function' => 'search_email',
+            'signature' => array( array('struct', 'string', 'string') ),
+            'docstring' => '@params: api_key, search_string; @return: array of e-mail name pairs'
+        ),
+*/
+        'delete_contact' => array(
+            'function' => 'delete_contact',
+            'signature' => array( array('int', 'string', 'int') ),
+            'docstring' => '@params: api_key, contact id; @return: 1 if success'
+        ),
+        'import_vcard' => array(
+            'function' => 'import_vcard',
+            'signature' => array( array('int', 'string', 'string') ),
+            'docstring' => '@params: api_key, vCard string; @return: 1 if success'
+        ),
+        'export_vcard' => array(
+            'function' => 'export_vcard',
+            'signature' => array( array('string', 'string', 'array') ),
+            'docstring' => '@params: api_key, contact ids; @return: vcards as string'
+        ),
+        /*
         'sync.start_sync' => array(
             'function' => 'start_sync'
         ),
@@ -554,6 +736,7 @@ $server = new XML_RPC_Server(
         'sync.finish_sync' => array(
             'function' => 'finish_sync'
         ),
+        */
     ),
     1  // serviceNow
 );

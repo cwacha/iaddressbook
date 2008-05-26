@@ -13,6 +13,6 @@ If you execute translator.php (http://youraddressbook.com/lang/translator.php)
 all translation files are checked automatically against the english version.
 All languages that need to be updated can be found in /lang/*.php. I.e. if
 the spanish language file needs to be updated a file called /lang/es.php
-will exist. The strings that are new are prefixed with the string
-"TRANSLATE: ". Just send me the file at <clemens.wacha@gmx.net> and I
+will be created. New strings are prefixed with the string
+"TRANSLATE: ". Just send me the file to <clemens.wacha@gmx.net> and I
 will include it in the next release.
