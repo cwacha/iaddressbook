@@ -6,6 +6,7 @@
 * @author     Clemens Wacha <clemens.wacha@gmx.net>
 */
 
+
 if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__)).'/');
 require_once(AB_INC.'functions/init.php');
 require_once(AB_INC.'functions/db.php');
@@ -14,11 +15,11 @@ require_once(AB_INC.'functions/module_vcard.php');
 require_once(AB_INC.'functions/module_auth.php');
 require_once(AB_INC.'functions/common.php');
 
-
 global $conf;
 
 if(!$conf['xmlrpc_enable']) {
-    echo xml_reply(0, 'XML-RPC api disabled')->serialize();
+    $response = xml_reply(0, 'XML-RPC api disabled');
+    echo $response->serialize();
     exit();
 }
 

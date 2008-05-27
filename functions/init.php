@@ -3,7 +3,6 @@
     /**
     * Initialize some defaults
     */
-    
     global $VERSION;
     $VERSION = "1.0 DEV";
     
@@ -47,25 +46,30 @@
         session_set_cookie_params(0, AB_BASE);
         session_start();
     }
-    
+
     // set register_globals to off
-    if (ini_get('register_globals')) {
-        foreach($GLOBALS as $s_variable_name => $m_variable_value) {
-            if (!in_array($s_variable_name, array('GLOBALS', 'argv', 'argc', '_FILES', '_COOKIE', '_POST', '_GET', '_SERVER', '_ENV', '_SESSION', '_REQUEST', 's_variable_name', 'm_variable_value', 'conf', 'VERSION'))) {
-               unset($GLOBALS[$s_variable_name]);
+    if (ini_get(register_globals)) {
+        $array = array('_REQUEST', '_SESSION', '_SERVER', '_ENV', '_FILES');
+        foreach ($array as $value) {
+            foreach ($GLOBALS[$value] as $key => $var) {
+                if ($var === $GLOBALS[$key]) {
+                    unset($GLOBALS[$key]);
+                }
             }
         }
-        unset($GLOBALS['s_variable_name']);
-        unset($GLOBALS['m_variable_value']);
-        
-        @ini_set('register_globals', 'Off');
-    }    
+    }
+    
+    // we have to re-register all variables... register_globals sucks...
+    
+    //prepare config array()
+    $conf = array();
+    $defaults = array();
 
-    // EVIL HACK: we have to re-read the configuration... register_globals sucks
+    // load the config file(s)
     @include(AB_CONF.'defaults.php');
     $defaults = $conf;
     @include(AB_CONF.'config.php');
-    
+        
     // load meta information
     global $meta;
     $meta = array();
