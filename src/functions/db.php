@@ -12,7 +12,7 @@
     define('ADODB_ASSOC_CASE', 1); # use uppercase field names for ADODB_FETCH_ASSOC
 
     if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    require_once(AB_INC."functions/adodb/adodb.inc.php");
+    require_once(AB_INC."functions/adodb5/adodb.inc.php");
     require_once(AB_INC."functions/common.php");
 
 function db_msg($msg, $newline=true) {

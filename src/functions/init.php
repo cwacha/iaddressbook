@@ -1,17 +1,18 @@
 <?php
 
-    /**
+   /**
     * Initialize some defaults
     */
-    global $VERSION;
-    $VERSION = "1.0 DEV";
-    
-    // define the include path
+
+	// define the include path
     if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    require_once(AB_INC.'functions/common.php');
-    
-    // define config path 
+    // define config path
     if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
+    
+    global $VERSION; 
+    $VERSION = file_get_contents(AB_INC.'VERSION');
+
+    require_once(AB_INC.'functions/common.php');
     
     // set up error reporting to sane values
     @ini_set('display_errors', 'On');

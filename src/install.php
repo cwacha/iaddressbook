@@ -66,7 +66,7 @@ function html_header() {
     global $state;
     global $meta;
     
-   ; ?>
+    ?>
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>"
      lang="<?php echo $conf['lang']; ?>" dir="<?php echo $lang['direction']; ?>">
     <head>

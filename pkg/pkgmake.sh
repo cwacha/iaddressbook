@@ -10,8 +10,8 @@ import() {
 	[ -d BUILD ] && rm -rf BUILD
 	mkdir BUILD
 	cp -r ../src/* BUILD
-	find . -depth -name ".DS_Store" -exec rm {} \;
-	find . -depth -name ".svn" -exec rm {} \;
+	find BUILD -depth -name ".DS_Store" -exec rm {} \;
+	find BUILD -depth -name ".svn" -exec rm -rf {} \;
 	rm BUILD/conf/config.php
 	rm BUILD/conf/auth.php
 }
@@ -43,5 +43,5 @@ if [ $# -eq 0 ]; then
 fi
 
 $*
-echo "##### done."
+echo "##### done"
 
