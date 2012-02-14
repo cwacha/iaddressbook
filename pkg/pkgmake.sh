@@ -14,6 +14,9 @@ import() {
 	find BUILD -depth -name ".svn" -exec rm -rf {} \;
 	rm BUILD/conf/config.php
 	rm BUILD/conf/auth.php
+	chmod 777 BUILD/_images
+	chmod 777 BUILD/_import
+	chmod 777 BUILD/conf
 }
 
 pkg() {
