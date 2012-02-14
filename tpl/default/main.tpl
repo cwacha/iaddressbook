@@ -14,23 +14,23 @@
  */
 
 ?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>"
- lang="<?php echo $conf['lang'] ?>" dir="<?php echo $lang['direction'] ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>"
+ lang="<?php echo $conf['lang']; ?>" dir="<?php echo $lang['direction']; ?>">
 <head>
-    <title><?= $conf['title'] ?></title>
+    <title><?php echo $conf['title']; ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <link rel="shortcut icon" href="<?= AB_TPL ?>images/favicon.ico" />
-    <link rel="stylesheet" media="screen" type="text/css" href="<?= AB_TPL ?>design.css" />
+    <link rel="shortcut icon" href="<?php echo AB_TPL; ?>images/favicon.ico" />
+    <link rel="stylesheet" media="screen" type="text/css" href="<?php echo AB_TPL; ?>design.css" />
 
-	<link rel="stylesheet" type="text/css" href="<?= AB_TPL ?>applesearch/default.css" id="default"  />
-	<link rel="stylesheet" type="text/css" href="<?= AB_TPL ?>applesearch/dummy.css" id="dummy_css"  />
-	<script type="text/javascript" src="<?= AB_TPL ?>applesearch/applesearch.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo AB_TPL; ?>applesearch/default.css" id="default"  />
+	<link rel="stylesheet" type="text/css" href="<?php echo AB_TPL; ?>applesearch/dummy.css" id="dummy_css"  />
+	<script type="text/javascript" src="<?php echo AB_TPL; ?>applesearch/applesearch.js"></script>
 
     <script type="text/javascript">
     <!--
     window.onload = function () {
-        applesearch.init('<?= AB_TPL ?>applesearch/');
+        applesearch.init('<?php echo AB_TPL; ?>applesearch/');
         applesearch.onChange('srch_fld','srch_clear');
         document.search.q.focus(); 
         document.search.q.select();
@@ -41,7 +41,7 @@
 
 <body>
 
-<?= html_msgarea() ?>
+<?php echo html_msgarea(); ?>
 
 <div class="mainview">
     <!-- Begin Logo -->
@@ -49,13 +49,13 @@
         <tr>
             <td>
                 <div class="logo">
-                    <a href='<?= AB_URL ?>?do=reset'>
-                    <img src="<?= AB_TPL ?>images/logo.png">
+                    <a href='<?php echo AB_URL; ?>?do=reset'>
+                    <img src="<?php echo AB_TPL; ?>images/logo.png">
                     </a>
                 </div>
             </td>
             <td>
-                <div class="title"><?= $conf['title'] ?></div>
+                <div class="title"><?php echo $conf['title']; ?></div>
             </td>
             <td align="right" valign="top">
                 <div class="login_box">
@@ -67,12 +67,12 @@
                                 echo "<a href='?do=login'>". $lang['btn_login'] ."</a>";
                             }
                         }
-                    ?>
+					?>
                 </div>
         
                 <div class="birthday_box">
-                    <div class="birthday_title"><?= $lang['birthdays'] ?></div>
-                    <div class="birthday_text"><?php tpl_birthday() ?></div>
+                    <div class="birthday_title"><?php echo $lang['birthdays']; ?></div>
+                    <div class="birthday_text"><?php tpl_birthday(); ?></div>
                 </div>                
             </td>
         </tr>
@@ -86,15 +86,15 @@
         <tr>
             <td align="left">
                 <!-- Begin Import VCard -->
-                <form method="POST" enctype="multipart/form-data" action="<?= $PHP_SELF ?>" style="float: left; padding-left: 10px;">
+                <form method="POST" enctype="multipart/form-data" action="<?php echo $PHP_SELF; ?>" style="float: left; padding-left: 10px;">
                     <input type="hidden" name="do" value="import_vcard" />
                     <input type="file" name="vcard_file" value="" size="" class="button" />
-                    <input type="submit" value="<?= $lang['btn_vcardimport'] ?>" class="button" />
+                    <input type="submit" value="<?php echo $lang['btn_vcardimport']; ?>" class="button" />
                 </form>
                 <!-- End Import VCard -->
             </td>
             <td align="right" style="padding-right: 10px;" >
-                <?php tpl_include('search.tpl') ?>
+                <?php tpl_include('search.tpl'); ?>
             </td>
         </tr>
     </table>
@@ -106,7 +106,7 @@
         <td width="10"></td>
         
         <!-- Begin Contact List -->
-        <?php tpl_showcontactlist() ?>
+        <?php tpl_showcontactlist(); ?>
         <!-- End Contact List -->
         
         <td width="50"></td>
@@ -117,14 +117,14 @@
                 <div class="panel">
                     <table class="header">
                         <tr class="header_tr">
-                            <td class="endcap"><img src="<?= AB_TPL ?>images/split1_left.gif"></td>
+                            <td class="endcap"><img src="<?php echo AB_TPL; ?>images/split1_left.gif"></td>
                             <td class="middle"> </td>
-                            <td class='endcap'><img src="<?= AB_TPL ?>images/split1_right.gif"></td>
+                            <td class='endcap'><img src="<?php echo AB_TPL; ?>images/split1_right.gif"></td>
                         </tr>
                     </table>
                 </div>
                 
-                <?php tpl_showperson() ?>
+                <?php tpl_showperson(); ?>
                 
                 <br>
             </div>
@@ -140,7 +140,7 @@
     <!-- Begin Footer --> 
     <div class="separator">&nbsp;</div>
     <div class="footer">
-        <a href='http://iaddressbook.org/'>PHP iAddressbook <?= get_version() ?></a>
+        <a href='http://iaddressbook.org/'>PHP iAddressbook <?php echo get_version(); ?></a>
     </div>
     <!-- End Footer --> 
 

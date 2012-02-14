@@ -1,6 +1,6 @@
     <tr>
         <td class="person_left">
-            <div class="person_labels"><?= $lang['label_relatednames'] ?></div>
+            <div class="person_labels"><?php echo $lang['label_relatednames']; ?></div>
         </td>
         <td></td>
     </tr>
@@ -9,28 +9,28 @@
         <td class="person_left">
             <div class="person_labels">
                 <select name="relatednamelabel_" size="1" class="text" onchange="custom_relatedlabel(this);">
-                    <option value='_$!<Father>!$_' ><?= tpl_label('_$!<Father>!$_') ?></option>
-                    <option value='_$!<Mother>!$_' ><?= tpl_label('_$!<Mother>!$_') ?></option>
-                    <option value='_$!<Parent>!$_' ><?= tpl_label('_$!<Parent>!$_') ?></option>
-                    <option value='_$!<Brother>!$_' ><?= tpl_label('_$!<Brother>!$_') ?></option>
-                    <option value='_$!<Sister>!$_' ><?= tpl_label('_$!<Sister>!$_') ?></option>
-                    <option value='_$!<Child>!$_' ><?= tpl_label('_$!<Child>!$_') ?></option>
-                    <option value='_$!<Friend>!$_' selected ><?= tpl_label('_$!<Friend>!$_') ?></option>
-                    <option value='_$!<Spouse>!$_' ><?= tpl_label('_$!<Spouse>!$_') ?></option>
-                    <option value='_$!<Partner>!$_' ><?= tpl_label('_$!<Partner>!$_') ?></option>
-                    <option value='_$!<Assistant>!$_' ><?= tpl_label('_$!<Assistant>!$_') ?></option>
-                    <option value='_$!<Manager>!$_' ><?= tpl_label('_$!<Manager>!$_') ?></option>
-                    <option value='_$!<Other>!$_' ><?= tpl_label('_$!<Other>!$_') ?></option>
+                    <option value='_$!<Father>!$_' ><?php echo tpl_label('_$!<Father>!$_'); ?></option>
+                    <option value='_$!<Mother>!$_' ><?php echo tpl_label('_$!<Mother>!$_'); ?></option>
+                    <option value='_$!<Parent>!$_' ><?php echo tpl_label('_$!<Parent>!$_'); ?></option>
+                    <option value='_$!<Brother>!$_' ><?php echo tpl_label('_$!<Brother>!$_'); ?></option>
+                    <option value='_$!<Sister>!$_' ><?php echo tpl_label('_$!<Sister>!$_'); ?></option>
+                    <option value='_$!<Child>!$_' ><?php echo tpl_label('_$!<Child>!$_'); ?></option>
+                    <option value='_$!<Friend>!$_' selected ><?php echo tpl_label('_$!<Friend>!$_'); ?></option>
+                    <option value='_$!<Spouse>!$_' ><?php echo tpl_label('_$!<Spouse>!$_'); ?></option>
+                    <option value='_$!<Partner>!$_' ><?php echo tpl_label('_$!<Partner>!$_'); ?></option>
+                    <option value='_$!<Assistant>!$_' ><?php echo tpl_label('_$!<Assistant>!$_'); ?></option>
+                    <option value='_$!<Manager>!$_' ><?php echo tpl_label('_$!<Manager>!$_'); ?></option>
+                    <option value='_$!<Other>!$_' ><?php echo tpl_label('_$!<Other>!$_'); ?></option>
                     <option disabled>-------</option>
-                    <option value='CUSTOM' ><?= tpl_label("CUSTOM") ?></option>
+                    <option value='CUSTOM' ><?php echo tpl_label("CUSTOM"); ?></option>
                 </select>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
                 <input type="text" name="relatedname_" value="" class="text" />
-                <a href="#" onclick="add_relatedlabel('_$!<Friend>!$_');return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="#" onclick="del_relatedlabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_relatedlabel('_$!<Friend>!$_');return false;"><img src="<?php echo AB_TPL; ?>images/plus.gif"></a>
+                <a href="#" onclick="del_relatedlabel(this);return false;"><img src="<?php echo AB_TPL; ?>images/minus.gif"></a>
             </div>
         </td>
     </tr>
@@ -85,7 +85,7 @@ function del_relatedlabel(object) {
 function custom_relatedlabel(object) {
     if(object.options[object.selectedIndex].value == 'CUSTOM') {
         // get custom label
-        var label = prompt("<?= $lang['label_customprompt'] ?>", "");
+        var label = prompt("<?php echo $lang['label_customprompt']; ?>", "");
         
         // add custom label to options
         if(label) {

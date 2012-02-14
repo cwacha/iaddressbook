@@ -11,14 +11,14 @@
  */
 
 ?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>"
- lang="<?php echo $conf['lang'] ?>" dir="<?php echo $lang['direction'] ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>"
+ lang="<?php echo $conf['lang']; ?>" dir="<?php echo $lang['direction']; ?>">
 <head>
-    <title><?= $conf['title'] ?></title>
+    <title><?php echo $conf['title']; ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <link rel="shortcut icon" href="<?= AB_TPL ?>images/favicon.ico" />
-    <link rel="stylesheet" media="screen" type="text/css" href="<?= AB_TPL ?>design.css" />
+    <link rel="shortcut icon" href="<?php echo AB_TPL; ?>images/favicon.ico" />
+    <link rel="stylesheet" media="screen" type="text/css" href="<?php echo AB_TPL; ?>design.css" />
 
     <script>
     <!--
@@ -44,12 +44,12 @@
         <tr>
             <td>
                 <div class="logo">
-                    <img src="<?= AB_TPL ?>images/logo.png">
+                    <img src="<?php echo AB_TPL; ?>images/logo.png">
                 </div>
             </td>
             <td>
                 <div class="title">
-                    <?= $conf['title'] ?>
+                    <?php echo $conf['title']; ?>
                 </div>
             </td>
         </tr>
@@ -57,28 +57,28 @@
     <!-- End Logo -->
 
     <div style="height: 4em;"></div>
-    <?= html_msgarea() ?>
+    <?php echo html_msgarea(); ?>
     <div style="height: 1em;"></div>
     
     <div class="centeralign">
-        <!-- <?= $lang['username'] ?> = demo <br> -->
-        <!-- <?= $lang['password'] ?> = demo <br> -->
-        <form action="<?= $PHP_SELF ?>" accept-charset="utf-8" method="post" name='f'>
+        <!-- <?php echo $lang['username']; ?> = demo <br> -->
+        <!-- <?php echo $lang['password']; ?> = demo <br> -->
+        <form action="<?php echo $PHP_SELF; ?>" accept-charset="utf-8" method="post" name='f'>
           <fieldset>
-            <legend><?= $lang['login'] ?></legend>
+            <legend><?php echo $lang['login']; ?></legend>
             <label class="block">
-                <span><?= $lang['username'] ?></span>
-                <input type="text" name="u" value="<?= $_REQUEST['u'] ?>" class="edit" />
+                <span><?php echo $lang['username']; ?></span>
+                <input type="text" name="u" value="<?php echo $_REQUEST['u']; ?>" class="edit" />
             </label><br />
             <label class="block">
-                <span><?= $lang['password'] ?></span>
+                <span><?php echo $lang['password']; ?></span>
                 <input type="password" name="p" class="edit" />
             </label><br />
             <input type="checkbox" name="r" />
-            <span><?= $lang['sticky'] ?></span>
+            <span><?php echo $lang['sticky']; ?></span>
             <br /><br />
                 
-            <input type="submit" value="<?= $lang['btn_login'] ?>" class="button" />
+            <input type="submit" value="<?php echo $lang['btn_login']; ?>" class="button" />
           </fieldset>
         </form>
     </div>
@@ -88,7 +88,7 @@
     <!-- Begin Footer --> 
     <div class="separator">&nbsp;</div>
     <div class="footer">
-        <a href='http://iaddressbook.org/'>PHP iAddressbook <?= get_version() ?></a>
+        <a href='http://iaddressbook.org/'>PHP iAddressbook <?php echo get_version(); ?></a>
     </div>
     <!-- End Footer --> 
 

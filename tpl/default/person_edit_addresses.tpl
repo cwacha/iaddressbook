@@ -1,6 +1,6 @@
     <tr>
         <td class="person_left">
-            <div class="person_labels"><?= $lang['label_addresses'] ?></div>
+            <div class="person_labels"><?php echo $lang['label_addresses']; ?></div>
         </td>
         <td></td>
     </tr>
@@ -9,18 +9,18 @@
         <td class="person_left">
             <div class="person_labels" style="height: 20px;">
                 <select name="addresslabel_" size="1" class="text" onchange="custom_addresslabel(this);">
-                    <option value='HOME' selected ><?= tpl_label('HOME') ?></option>
-                    <option value='WORK' ><?= tpl_label('WORK') ?></option>
-                    <option value='_$!<Other>!$_' ><?= tpl_label('_$!<Other>!$_') ?></option>
+                    <option value='HOME' selected ><?php echo tpl_label('HOME'); ?></option>
+                    <option value='WORK' ><?php echo tpl_label('WORK'); ?></option>
+                    <option value='_$!<Other>!$_' ><?php echo tpl_label('_$!<Other>!$_'); ?></option>
                     <option disabled>-------</option>
-                    <option value='CUSTOM' ><?= tpl_label("CUSTOM") ?></option>
+                    <option value='CUSTOM' ><?php echo tpl_label("CUSTOM"); ?></option>
                 </select>
             </div>
-            <div class="person_labels" style="height: 20px;"><?= $lang['label_street'] ?></div>
-            <div class="person_labels" style="height: 20px;"><?= $lang['label_zip'] ?></div>
-            <div class="person_labels" style="height: 20px;"><?= $lang['label_city'] ?></div>
-            <div class="person_labels" style="height: 20px;"><?= $lang['label_state'] ?></div>
-            <div class="person_labels" style="height: 20px;"><?= $lang['label_country'] ?></div>
+            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_street']; ?></div>
+            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_zip']; ?></div>
+            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_city']; ?></div>
+            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_state']; ?></div>
+            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_country']; ?></div>
         </td>
         <td class="person_right">
             <div class="person_text" style="height: 20px;">
@@ -29,8 +29,8 @@
             </div>
             <div class="person_text" style="height: 20px;">
                 <input type="text" name="street_" value='' class="text" />
-                <a href="#" onclick="add_addresslabel('HOME');return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="#" onclick="del_addresslabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_addresslabel('HOME');return false;"><img src="<?php echo AB_TPL; ?>images/plus.gif"></a>
+                <a href="#" onclick="del_addresslabel(this);return false;"><img src="<?php echo AB_TPL; ?>images/minus.gif"></a>
             </div>
             <div class="person_text" style="height: 20px;">
                 <input type="text" name="zip_" value='' class="text" size="10" />
@@ -106,7 +106,7 @@ function del_addresslabel(object) {
 function custom_addresslabel(object) {
     if(object.options[object.selectedIndex].value == 'CUSTOM') {
         // get custom label
-        var label = prompt("<?= $lang['label_customprompt'] ?>", "");
+        var label = prompt("<?php echo $lang['label_customprompt']; ?>", "");
         
         // add custom label to options
         if(label) {

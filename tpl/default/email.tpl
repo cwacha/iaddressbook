@@ -1,12 +1,12 @@
 <tr>
     <td class="person_left">
         <div class="person_labels">
-            <?= tpl_label($email['label']) ?>
+            <?php echo tpl_label($email['label']); ?>
         </div>
     </td>
     <td class="person_right">
         <div class="person_text">
-            <a href='mailto:<?= $email['email'] ?>' ><?= $email['email'] ?></a>
+            <a href='mailto:<?php echo $email['email']; ?>' ><?php echo $email['email']; ?></a>
         </div>
     </td>
 </tr>

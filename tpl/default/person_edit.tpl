@@ -1,18 +1,18 @@
-<form method="post" enctype="multipart/form-data" action="<?= $PHP_SELF ?>">
+<form method="post" enctype="multipart/form-data" action="<?php echo $PHP_SELF; ?>">
 
 <table width="100%">
     <tr><td style="height: 2em;"></td><td></td></tr>
     <tr>
         <td class="person_left" >
             <!-- Begin Photo -->
-            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'" ?> src="<?= $PHP_SELF ?>?do=img&id=<?= $contact->id ?>">
+            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="<?php echo $PHP_SELF; ?>?do=img&id=<?php echo $contact->id; ?>">
             <!-- End Photo -->
         </td>
         <td class="person_right" >
             <div class="person_text">
                 <!-- Begin Photo Edit -->
-                <?= $lang['label_photoremove'] ?> <input type="checkbox" name="photo_delete" /><br><br>
-                <?= $lang['label_photochange'] ?> <input type="file" name="photo_file" value="" /><br>
+                <?php echo $lang['label_photoremove']; ?> <input type="checkbox" name="photo_delete" /><br><br>
+                <?php echo $lang['label_photochange']; ?> <input type="file" name="photo_file" value="" /><br>
                 <!-- End Photo Edit -->
             </div>
         </td>
@@ -24,60 +24,60 @@
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_title'] ?>
+                <?php echo $lang['label_title']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="title" value="<?= $contact->title ?>" class="text" />
+                <input type="text" name="title" value="<?php echo $contact->title; ?>" class="text" />
             </div>
         </td>
     </tr>
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_firstname'] ?>
+                <?php echo $lang['label_firstname']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="firstname" value="<?= $contact->firstname ?>" class="text" />
+                <input type="text" name="firstname" value="<?php echo $contact->firstname; ?>" class="text" />
             </div>
         </td>
     </tr>
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_firstname2'] ?>
+                <?php echo $lang['label_firstname2']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="firstname2" value="<?= $contact->firstname2 ?>" class="text" />
+                <input type="text" name="firstname2" value="<?php echo $contact->firstname2; ?>" class="text" />
             </div>
         </td>
     </tr>
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_lastname'] ?>
+                <?php echo $lang['label_lastname']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="lastname" value="<?= $contact->lastname ?>" class="text" />
+                <input type="text" name="lastname" value="<?php echo $contact->lastname; ?>" class="text" />
             </div>
         </td>
     </tr>
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_suffix'] ?>
+                <?php echo $lang['label_suffix']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="suffix" value="<?= $contact->suffix ?>" class="text" />
+                <input type="text" name="suffix" value="<?php echo $contact->suffix; ?>" class="text" />
             </div>
         </td>
     </tr>
@@ -87,12 +87,12 @@
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_nickname'] ?>
+                <?php echo $lang['label_nickname']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="nickname" value="<?= $contact->nickname ?>" class="text" />
+                <input type="text" name="nickname" value="<?php echo $contact->nickname; ?>" class="text" />
             </div>
         </td>
     </tr>
@@ -102,48 +102,48 @@
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_jobtitle'] ?>
+                <?php echo $lang['label_jobtitle']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="jobtitle" value="<?= $contact->jobtitle ?>" class="text" />
+                <input type="text" name="jobtitle" value="<?php echo $contact->jobtitle; ?>" class="text" />
             </div>
         </td>
     </tr>
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_department'] ?>
+                <?php echo $lang['label_department']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="department" value="<?= $contact->department ?>" class="text" />
+                <input type="text" name="department" value="<?php echo $contact->department; ?>" class="text" />
             </div>
         </td>
     </tr>
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_organization'] ?>
+                <?php echo $lang['label_organization']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="organization" value="<?= $contact->organization ?>" class="text" />
+                <input type="text" name="organization" value="<?php echo $contact->organization; ?>" class="text" />
             </div>
         </td>
     </tr>
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_organization'] ?>
+                <?php echo $lang['label_isorganization']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="checkbox" name="company" <?php if($contact->company == true) echo "checked" ?> class="text" />
+                <input type="checkbox" name="company" <?php if($contact->company == true) echo "checked"; ?> class="text" />
             </div>
         </td>
     </tr>    
@@ -152,19 +152,19 @@
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Phones -->
-    <?php tpl_include('person_edit_phones.tpl') ?>
+    <?php tpl_include('person_edit_phones.tpl'); ?>
     <!-- End Phones -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Emails -->
-    <?php tpl_include('person_edit_emails.tpl') ?>
+    <?php tpl_include('person_edit_emails.tpl'); ?>
     <!-- End Emails -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin URLs -->
-    <?php tpl_include('person_edit_urls.tpl') ?>
+    <?php tpl_include('person_edit_urls.tpl'); ?>
     <!-- End URLs -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
@@ -173,12 +173,12 @@
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_birthday'] ?>
+                <?php echo $lang['label_birthday']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <input type="text" name="birthdate" value="<?= $contact->birthdate ?>" class="text" />
+                <input type="text" name="birthdate" value="<?php echo $contact->birthdate; ?>" class="text" />
                 (YYYY-MM-DD)
             </div>
         </td>
@@ -188,20 +188,20 @@
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Relatednames -->
-    <?php tpl_include('person_edit_relatednames.tpl') ?>
+    <?php tpl_include('person_edit_relatednames.tpl'); ?>
     <!-- End Relatednames -->
 
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Chathandles -->
-    <?php tpl_include('person_edit_chathandles.tpl') ?>
+    <?php tpl_include('person_edit_chathandles.tpl'); ?>
     <!-- End Chathandles -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Addresses -->
-    <?php tpl_include('person_edit_addresses.tpl') ?>
+    <?php tpl_include('person_edit_addresses.tpl'); ?>
     <!-- End Addresses -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
@@ -209,11 +209,11 @@
     <!-- Begin Notes -->
     <tr>
         <td class="person_left">
-            <div class="person_labels"><?= $lang['label_notes']?></div>
+            <div class="person_labels"><?php echo $lang['label_notes']?></div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <textarea name="note" rows="5" cols="50" class="text"><?= $contact->note ?></textarea>
+                <textarea name="note" rows="5" cols="50" class="text"><?php echo $contact->note; ?></textarea>
             </div>
         </td>
     </tr>
@@ -224,15 +224,17 @@
     <!-- Begin Categories -->
     <tr>
         <td class="person_left">
-            <div class="person_labels"><?= $lang['category']?></div>
+            <div class="person_labels"><?php echo $lang['category']?></div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <textarea name="category" rows="5" cols="50" class="text"><?php
+                <textarea name="category" rows="5" cols="50" class="text">
+					<?php
                     foreach($categories as $category) {
                         echo "$category->name\n";
                     }
-                    ?></textarea>
+					?>
+				</textarea>
             </div>
         </td>
     </tr>
@@ -245,17 +247,17 @@
 <div class="separator100"></div>
 
 
-    <input type="hidden" name="id" value="<?= $contact->id ?>" />
+    <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
     <input type="hidden" name="do" value="save" />
-    <input type="submit" value="<?= $lang['btn_save']?>" class="button" style="float: left;" />
+    <input type="submit" value="<?php echo $lang['btn_save']?>" class="button" style="float: left;" />
 </form>
 
 <!-- Begin Buttons -->
-<form method="POST" action="<?= $PHP_SELF ?>">
-    <input type="hidden" name="id" value="<?= $contact->id ?>" />
+<form method="POST" action="<?php echo $PHP_SELF; ?>">
+    <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
     <input type="hidden" name="do" value="show" />
     <div class="person_text" style="text-align: right;">
-    <input type="submit" value="<?= $lang['btn_cancel']?>" class="button" style="float: right;" />
+    <input type="submit" value="<?php echo $lang['btn_cancel']?>" class="button" style="float: right;" />
     </div>
 </form>
 <!-- End Buttons -->

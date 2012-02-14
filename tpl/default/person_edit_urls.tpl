@@ -1,6 +1,6 @@
     <tr>
         <td class="person_left">
-            <div class="person_labels"><?= $lang['label_urls'] ?></div>
+            <div class="person_labels"><?php echo $lang['label_urls']; ?></div>
         </td>
         <td></td>
     </tr>
@@ -9,20 +9,20 @@
         <td class="person_left">
             <div class="person_labels">
                 <select name="urllabel_" size="1" class="text" onchange="custom_urllabel(this);">
-                    <option value='_$!<HomePage>!$_' selected ><?= tpl_label('_$!<HomePage>!$_') ?></option>
-                    <option value='HOME' selected ><?= tpl_label('HOME') ?></option>
-                    <option value='WORK' ><?= tpl_label('WORK') ?></option>
-                    <option value='_$!<Other>!$_' ><?= tpl_label('_$!<Other>!$_') ?></option>
+                    <option value='_$!<HomePage>!$_' selected ><?php echo tpl_label('_$!<HomePage>!$_'); ?></option>
+                    <option value='HOME' selected ><?php echo tpl_label('HOME'); ?></option>
+                    <option value='WORK' ><?php echo tpl_label('WORK'); ?></option>
+                    <option value='_$!<Other>!$_' ><?php echo tpl_label('_$!<Other>!$_'); ?></option>
                     <option disabled>-------</option>
-                    <option value='CUSTOM' ><?= tpl_label("CUSTOM") ?></option>
+                    <option value='CUSTOM' ><?php echo tpl_label("CUSTOM"); ?></option>
                 </select>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
                 <input type="text" name="url_" value="" class="text" />
-                <a href="#" onclick="add_urllabel('HOME');return false;"><img src="<?= AB_TPL ?>images/plus.gif"></a>
-                <a href="#" onclick="del_urllabel(this);return false;"><img src="<?= AB_TPL ?>images/minus.gif"></a>
+                <a href="#" onclick="add_urllabel('HOME');return false;"><img src="<?php echo AB_TPL; ?>images/plus.gif"></a>
+                <a href="#" onclick="del_urllabel(this);return false;"><img src="<?php echo AB_TPL; ?>images/minus.gif"></a>
             </div>
         </td>
     </tr>
@@ -77,7 +77,7 @@ function del_urllabel(object) {
 function custom_urllabel(object) {
     if(object.options[object.selectedIndex].value == 'CUSTOM') {
         // get custom label
-        var label = prompt("<?= $lang['label_customprompt'] ?>", "");
+        var label = prompt("<?php echo $lang['label_customprompt']; ?>", "");
         
         // add custom label to options
         if(label) {

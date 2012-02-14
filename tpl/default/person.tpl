@@ -3,47 +3,47 @@
     <tr>
         <td class="person_left" >
             <!-- Begin Photo -->
-            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'" ?> src="<?= $PHP_SELF ?>?do=img&id=<?= $contact->id ?>">
+            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="<?php echo $PHP_SELF; ?>?do=img&id=<?php echo $contact->id; ?>">
             <!-- End Photo -->
         </td>
         <td class="person_right" >
             <!-- Begin Name / Company -->
-            <?php if($contact->company == false) { ?>
+            <?php if($contact->company == false) {; ?>
             <div class="person_name">
-                <?= $contact->title ?>
-                <?= $contact->firstname ?>
-                <?= $contact->firstname2 ?>
-                <?= $contact->lastname ?>
-                <?= $contact->suffix ?>
+                <?php echo $contact->title; ?>
+                <?php echo $contact->firstname; ?>
+                <?php echo $contact->firstname2; ?>
+                <?php echo $contact->lastname; ?>
+                <?php echo $contact->suffix; ?>
                 <br>
             </div>
             <div class="person_nickname">
-                <?php if($contact->nickname != "") echo "\"$contact->nickname\"<br>" ?>
+                <?php if($contact->nickname != "") echo "\"$contact->nickname\"<br>"; ?>
             </div>
             <div class="person_text">
-                <?= $contact->jobtitle ?><br>
-                <?= $contact->department ?><br>
-                <?= $contact->organization ?><br>                
+                <?php echo $contact->jobtitle; ?><br>
+                <?php echo $contact->department; ?><br>
+                <?php echo $contact->organization; ?><br>                
             </div>
-            <?php } else { ?>
+            <?php } else {; ?>
             <div class="person_name">
-                <?= $contact->organization ?><br>                
+                <?php echo $contact->organization; ?><br>                
             </div>
             <div class="person_text">
-                <?= $contact->title ?>
-                <?= $contact->firstname ?>
-                <?= $contact->firstname2 ?>
-                <?= $contact->lastname ?>
-                <?= $contact->suffix ?>
+                <?php echo $contact->title; ?>
+                <?php echo $contact->firstname; ?>
+                <?php echo $contact->firstname2; ?>
+                <?php echo $contact->lastname; ?>
+                <?php echo $contact->suffix; ?>
                 <br>
             <div class="person_nickname">
-                <?php if($contact->nickname != "") echo "\"$contact->nickname\"<br>" ?>
+                <?php if($contact->nickname != "") echo "\"$contact->nickname\"<br>"; ?>
             </div>
             <div class="person_text">
-                <?= $contact->jobtitle ?><br>
-                <?= $contact->department ?><br>
+                <?php echo $contact->jobtitle; ?><br>
+                <?php echo $contact->department; ?><br>
             </div>            
-            <?php } ?>
+            <?php }; ?>
             <!-- End Name / Company -->
         </td>
     </tr>
@@ -51,19 +51,19 @@
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Phones -->
-    <?php tpl_phones() ?>
+    <?php tpl_phones(); ?>
     <!-- End Phones -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Emails -->
-    <?php tpl_emails() ?>
+    <?php tpl_emails(); ?>
     <!-- End Emails -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin URLs -->
-    <?php tpl_urls() ?>
+    <?php tpl_urls(); ?>
     <!-- End URLs -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
@@ -74,35 +74,35 @@
     <tr>
         <td class="person_left">
             <div class="person_labels">
-                <?= $lang['label_birthday'] ?>
+                <?php echo $lang['label_birthday']; ?>
             </div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <?= nice_date($conf['bdformat'], $contact->birthdate) ?>
+                <?php echo nice_date($conf['bdformat'], $contact->birthdate); ?>
             </div>
         </td>
     </tr>
-    <?php } else {} ?>
+    <?php } else {}; ?>
     <!-- End Birthday -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Relatednames -->
-    <?php tpl_relatednames() ?>
+    <?php tpl_relatednames(); ?>
     <!-- End Relatednames -->
 
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Chathandles -->
-    <?php tpl_chathandles() ?>
+    <?php tpl_chathandles(); ?>
     <!-- End Chathandles -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Addresses -->
-    <?php tpl_addresses() ?>
+    <?php tpl_addresses(); ?>
     <!-- End Addresses -->
 
     <tr><td style="height: 1em;"></td><td></td></tr>
@@ -111,15 +111,15 @@
     <?php if(!empty($contact->note)) { ?>
     <tr>
         <td class="person_left">
-            <div class="person_labels"><?= $lang['label_notes']?></div>
+            <div class="person_labels"><?php echo $lang['label_notes']?></div>
         </td>
         <td class="person_right">
             <div class="person_text">
-                <?php echo str_replace("\n", "<br>", $contact->note). "<br>" ?>
+                <?php echo str_replace("\n", "<br>", $contact->note). "<br>"; ?>
             </div>
         </td>
     </tr>
-    <?php } else {} ?>
+    <?php } else {}; ?>
     <!-- End Notes -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
@@ -128,7 +128,7 @@
     <tr>
         <?php if(!empty($categories)) { ?>
             <td class="person_left">
-                <div class="person_labels"><?= $lang['category']?></div>
+                <div class="person_labels"><?php echo $lang['category']?></div>
             </td>
             <td class="person_right">
                 <div class="person_text">
@@ -139,7 +139,7 @@
                     ?>
                 </div>
             </td>
-        <?php } ?>
+        <?php }; ?>
     </tr>
     <!-- End Categories -->
 
@@ -149,25 +149,25 @@
 
 
 <div class="person_smalltext">
-    <?= $lang['label_updated'] . date($conf['dformat'], strtotime($contact->modificationdate)) ?>
+    <?php echo $lang['label_updated'] . date($conf['dformat'], strtotime($contact->modificationdate)); ?>
 </div>
 <div class="separator100"></div>
 
 
 <!-- Begin Buttons -->
-    <form method="POST" action="<?= $PHP_SELF ?>">
-        <input type="hidden" name="id" value="<?= $contact->id ?>" />
+    <form method="POST" action="<?php echo $PHP_SELF; ?>">
+        <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
         <input type="hidden" name="do" value="edit" />
-        <input type="submit" value="<?= $lang['btn_edit']?>" class="button" style="float: right;" />
+        <input type="submit" value="<?php echo $lang['btn_edit']?>" class="button" style="float: right;" />
     </form>
-    <form method="POST" action="<?= $PHP_SELF ?>">
+    <form method="POST" action="<?php echo $PHP_SELF; ?>">
         <input type="hidden" name="do" value="delete" />
-        <input type="hidden" name="id" value="<?= $contact->id ?>" />
-        <input type="submit" value="<?= $lang['btn_delete']?>" onClick="return confirm('<?= $contact->name() .": " . $lang['confirm_del_contact'] ?>')" class="button" style="float: right;" />
+        <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
+        <input type="submit" value="<?php echo $lang['btn_delete']?>" onClick="return confirm('<?php echo $contact->name() .": " . $lang['confirm_del_contact']; ?>')" class="button" style="float: right;" />
     </form>
-    <form method="post" action="<?= $PHP_SELF ?>">
+    <form method="post" action="<?php echo $PHP_SELF; ?>">
         <input type="hidden" name="do" value="export_vcard" />
-        <input type="hidden" name="id" value="<?= $contact->id ?>" />
-        <input type="submit" value="<?= $lang['btn_vcardexport']?>" class="button" style="float: right;" />
+        <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
+        <input type="submit" value="<?php echo $lang['btn_vcardexport']?>" class="button" style="float: right;" />
     </form>
 <!-- End Buttons -->
