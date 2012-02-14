@@ -51,9 +51,9 @@ $auth['guest']['groups']        = array('@guest');
 
 // XML-RPC api_key=abcd
 //
-// $auth['abcd']['password']    = '';
-// $auth['abcd']['permissions'] = array();
-// $auth['abcd']['groups']      = array('@xml_client');
+$auth['abcd']['password']    = '';
+$auth['abcd']['permissions'] = array();
+$auth['abcd']['groups']      = array('@xml_client');
 
 ///////////////////////
 //    G R O U P S    //

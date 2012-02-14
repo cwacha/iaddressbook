@@ -102,6 +102,7 @@ $lang['label_phoneticlastname']  = 'Phonetic Lastname';
 $lang['label_jobtitle']       = 'Job Title';
 $lang['label_department']     = 'Department';
 $lang['label_organization']   = 'Company';
+$lang['label_isorganization'] = 'Show as Company';
 $lang['label_photoremove']    = 'Remove';
 $lang['label_photochange']    = 'Change';
 
@@ -288,7 +289,7 @@ $lang['welcome_prerequisites']   = '<p><p>
                                     You will need:
                                     <ul>
                                         <li>PHP version 4.3 or higher.</li>
-                                        <li>MySQL version 4.0 or higher or SQLite version 2.x</li>
+                                        <li>MySQL version 4.1 or higher or SQLite version 2.x</li>
                                         <li>(optional) iconv (if you want to import vcards that are not UTF-8 encoded)</li>
                                         <li>(optional) ImageMagick\'s convert or GD (if you want to import photos)</li>
                                     </ul>

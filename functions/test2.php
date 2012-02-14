@@ -17,7 +17,7 @@ $request[] = XML_RPC_encode($offset);
 
 $msg = new XML_RPC_Message('get_contacts', $request);
 
-$cli = new XML_RPC_Client('/~cwacha/iaddressbook/trunk/xmlrpc.php', 'localhost');
+$cli = new XML_RPC_Client('/xmlrpc.php', 'ab.wacha.ch');
 $cli->setDebug(1);
 $resp = $cli->send($msg);
 

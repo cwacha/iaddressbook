@@ -18,7 +18,7 @@ require_once(AB_INC.'functions/common.php');
 global $conf;
 
 if(!$conf['xmlrpc_enable']) {
-    $response = xml_reply(0, 'XML-RPC api disabled');
+    $response = xml_error('XML-RPC api disabled');
     echo $response->serialize();
     exit();
 }
@@ -444,21 +444,31 @@ function xml_reply($retval, $contents = null, $errormsg = null) {
     if(!$retval) {
         $ret['status'] = 'error';
         $ret['errmsg'] = $errormsg;
+        $ret['result'] = null;
         if(empty($errormsg)) $ret['errmsg'] = msg_text();
     }
     
     $val = XML_RPC_encode($ret);
-    return new XML_RPC_Response($val);    
+    $b = new XML_RPC_Response($val);
+    return $b;
+}
+
+function xml_error($errormsg = null) {
+    return xml_reply(0, null, $errormsg);
+}
+
+function xml_success($results = null) {
+    return xml_reply(1, $results, null);
 }
 
 function version($params) {
     $api_key = XML_RPC_decode($params->getParam(0));
     
     if(!auth_verify_action($api_key, 'xml_version')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
 
-    return xml_reply(1, get_version());
+    return xml_success(get_version());
 }
 
 function get_contact($params) {
@@ -469,7 +479,7 @@ function get_contact($params) {
     $id = XML_RPC_decode($params->getParam(1));
 
     if(!auth_verify_action($api_key, 'xml_get_contact')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
 
     $contact = $AB->get($id);
@@ -483,7 +493,7 @@ function get_contact($params) {
         $person['categories'][$key] = $value->name;
     }
 
-    return xml_reply(1, $person);
+    return xml_success($person);
 }
 
 function get_contacts($params) {
@@ -498,9 +508,10 @@ function get_contacts($params) {
     $offset = XML_RPC_decode($params->getParam(3));
 
     if(!auth_verify_action($api_key, 'xml_get_contacts')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
 
+    $contactlist = array();
     if(empty($query)) {
         $contactlist = $AB->getall($limit, $offset);
     } else {
@@ -520,8 +531,10 @@ function get_contacts($params) {
 
         $results[] = $person;
     }
-    
-    return xml_reply(1, $results);
+    //$results = array();
+    //msg("bla3");
+    //return xml_error();
+    return xml_success($results);
 }
 
 function set_contact($params) {
@@ -531,7 +544,7 @@ function set_contact($params) {
     $contact_array = XML_RPC_decode($params->getParam(1));
 
     if(!auth_verify_action($api_key, 'xml_set_contact')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
     
     $contact = new person;
@@ -539,7 +552,7 @@ function set_contact($params) {
     
     $id = $AB->set($contact);
 
-    return xml_reply(1, $id);
+    return xml_success($id);
 }
 
 function count_contacts($params) {
@@ -550,7 +563,7 @@ function count_contacts($params) {
     $query = XML_RPC_decode($params->getParam(1));
 
     if(!auth_verify_action($api_key, 'xml_count_contacts')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
 
     if(empty($query)) {
@@ -561,7 +574,7 @@ function count_contacts($params) {
 
     $result = count($contactlist);
     
-    return xml_reply(1, $result);
+    return xml_success($result);
 }
 
 /*
@@ -574,7 +587,7 @@ function search_email($params) {
     $query = XML_RPC_decode($params->getParam(1));
 
     if(!auth_verify_action($api_key, 'xml_search_email')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
 
     if(empty($query)) {
@@ -593,7 +606,7 @@ function search_email($params) {
         }
     }
     
-    return xml_reply(1, $results);
+    return xml_success($results);
 }
 */
 
@@ -606,7 +619,7 @@ function delete_contact($params) {
     $id = XML_RPC_decode($params->getParam(1));
 
     if(!auth_verify_action($api_key, 'xml_delete_contact')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
 
     $contact_categories = $CAT->find($id);
@@ -615,7 +628,7 @@ function delete_contact($params) {
     }
     $AB->delete($id);
 
-    return xml_reply(1, msg_text());
+    return xml_success(msg_text());
 }
 
 function import_vcard($params) {
@@ -623,12 +636,12 @@ function import_vcard($params) {
     $vcard = XML_RPC_decode($params->getParam(1));
 
     if(!auth_verify_action($api_key, 'xml_import_vcard')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
 
     act_importvcard($vcard);
     
-    return xml_reply(1, msg_text());
+    return xml_success(msg_text());
 }
 
 function export_vcard($params) {
@@ -641,7 +654,7 @@ function export_vcard($params) {
     $id_list = XML_RPC_decode($params->getParam(1));
 
     if(!auth_verify_action($api_key, 'xml_export_vcard')) {
-        return xml_reply(0);
+        return xml_error('access denied');
     }
 
     $contactlist = $AB->getall();
@@ -659,7 +672,7 @@ function export_vcard($params) {
         $vcard_list .= $vcard['vcard'];
     }
 
-    return xml_reply(1, $vcard_list);
+    return xml_success($vcard_list);
 }
 
 /*

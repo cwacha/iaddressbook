@@ -66,15 +66,15 @@ function html_header() {
     global $state;
     global $meta;
     
-    ?>
-    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $conf['lang'] ?>"
-     lang="<?= $conf['lang'] ?>" dir="<?= $lang['direction'] ?>">
+   ; ?>
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>"
+     lang="<?php echo $conf['lang']; ?>" dir="<?php echo $lang['direction']; ?>">
     <head>
-        <title><?= $conf['title'] ?></title>
+        <title><?php echo $conf['title']; ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-        <link rel="shortcut icon" href="<?= AB_TPL ?>images/favicon.ico" />
-        <link rel="stylesheet" media="screen" type="text/css" href="<?= AB_TPL ?>design.css" />
+        <link rel="shortcut icon" href="<?php echo AB_TPL; ?>images/favicon.ico" />
+        <link rel="stylesheet" media="screen" type="text/css" href="<?php echo AB_TPL; ?>design.css" />
         
         <script type="text/javascript" language="JavaScript">
         <!--
@@ -109,69 +109,69 @@ function html_header() {
     <form name="actions" action="" method="post">
         <input type="hidden" name="do" value="show" />
 
-        <input type="hidden" name="fmode" value="<?= $conf['fmode'] ?>" />
-        <input type="hidden" name="dmode" value="<?= $conf['dmode'] ?>" />
-        <input type="hidden" name="basedir" value="<?= $conf['basedir'] ?>" />
-        <input type="hidden" name="baseurl" value="<?= $conf['baseurl'] ?>" />
+        <input type="hidden" name="fmode" value="<?php echo $conf['fmode']; ?>" />
+        <input type="hidden" name="dmode" value="<?php echo $conf['dmode']; ?>" />
+        <input type="hidden" name="basedir" value="<?php echo $conf['basedir']; ?>" />
+        <input type="hidden" name="baseurl" value="<?php echo $conf['baseurl']; ?>" />
 
-        <input type="hidden" name="dbtype" value="<?= $conf['dbtype'] ?>" />
-        <input type="hidden" name="dbname" value="<?= $conf['dbname'] ?>" />
-        <input type="hidden" name="dbserver" value="<?= $conf['dbserver'] ?>" />
-        <input type="hidden" name="dbuser" value="<?= $conf['dbuser'] ?>" />
-        <input type="hidden" name="dbpass" value="<?= $conf['dbpass'] ?>" />
-        <input type="hidden" name="debug_db" value="<?= $conf['debug_db'] ?>" />
-        <input type="hidden" name="dbtable_ab" value="<?= $conf['dbtable_ab'] ?>" />
-        <input type="hidden" name="dbtable_cat" value="<?= $conf['dbtable_cat'] ?>" />
-        <input type="hidden" name="dbtable_catmap" value="<?= $conf['dbtable_catmap'] ?>" />
-        <input type="hidden" name="dbtable_truth" value="<?= $conf['dbtable_truth'] ?>" />
-        <input type="hidden" name="dbtable_sync" value="<?= $conf['dbtable_sync'] ?>" />
-        <input type="hidden" name="dbtable_action" value="<?= $conf['dbtable_action'] ?>" />
+        <input type="hidden" name="dbtype" value="<?php echo $conf['dbtype']; ?>" />
+        <input type="hidden" name="dbname" value="<?php echo $conf['dbname']; ?>" />
+        <input type="hidden" name="dbserver" value="<?php echo $conf['dbserver']; ?>" />
+        <input type="hidden" name="dbuser" value="<?php echo $conf['dbuser']; ?>" />
+        <input type="hidden" name="dbpass" value="<?php echo $conf['dbpass']; ?>" />
+        <input type="hidden" name="debug_db" value="<?php echo $conf['debug_db']; ?>" />
+        <input type="hidden" name="dbtable_ab" value="<?php echo $conf['dbtable_ab']; ?>" />
+        <input type="hidden" name="dbtable_cat" value="<?php echo $conf['dbtable_cat']; ?>" />
+        <input type="hidden" name="dbtable_catmap" value="<?php echo $conf['dbtable_catmap']; ?>" />
+        <input type="hidden" name="dbtable_truth" value="<?php echo $conf['dbtable_truth']; ?>" />
+        <input type="hidden" name="dbtable_sync" value="<?php echo $conf['dbtable_sync']; ?>" />
+        <input type="hidden" name="dbtable_action" value="<?php echo $conf['dbtable_action']; ?>" />
 
-        <input type="hidden" name="lang" value="<?= $conf['lang'] ?>" />
-        <input type="hidden" name="title" value="<?= $conf['title'] ?>" />
-        <input type="hidden" name="template" value="<?= $conf['template'] ?>" />
-        <input type="hidden" name="bdformat" value="<?= $conf['bdformat'] ?>" />
-        <input type="hidden" name="dformat" value="<?= $conf['dformat'] ?>" />
-        <input type="hidden" name="lastfirst" value="<?= $conf['lastfirst'] ?>" />
-        <input type="hidden" name="photo_resize" value="<?= $conf['photo_resize'] ?>" />
-        <input type="hidden" name="photo_size" value="<?= $conf['photo_size'] ?>" />
-        <input type="hidden" name="photo_format" value="<?= $conf['photo_format'] ?>" />
-        <input type="hidden" name="map_link" value="<?= $conf['map_link'] ?>" />
-        <input type="hidden" name="contactlist_limit" value="<?= $conf['contactlist_limit'] ?>" />
-        <input type="hidden" name="bday_advance_week" value="<?= $conf['bday_advance_week'] ?>" />
+        <input type="hidden" name="lang" value="<?php echo $conf['lang']; ?>" />
+        <input type="hidden" name="title" value="<?php echo $conf['title']; ?>" />
+        <input type="hidden" name="template" value="<?php echo $conf['template']; ?>" />
+        <input type="hidden" name="bdformat" value="<?php echo $conf['bdformat']; ?>" />
+        <input type="hidden" name="dformat" value="<?php echo $conf['dformat']; ?>" />
+        <input type="hidden" name="lastfirst" value="<?php echo $conf['lastfirst']; ?>" />
+        <input type="hidden" name="photo_resize" value="<?php echo $conf['photo_resize']; ?>" />
+        <input type="hidden" name="photo_size" value="<?php echo $conf['photo_size']; ?>" />
+        <input type="hidden" name="photo_format" value="<?php echo $conf['photo_format']; ?>" />
+        <input type="hidden" name="map_link" value="<?php echo $conf['map_link']; ?>" />
+        <input type="hidden" name="contactlist_limit" value="<?php echo $conf['contactlist_limit']; ?>" />
+        <input type="hidden" name="bday_advance_week" value="<?php echo $conf['bday_advance_week']; ?>" />
 
-        <input type="hidden" name="canonical" value="<?= $conf['canonical'] ?>" />
-        <input type="hidden" name="auth_enabled" value="<?= $conf['auth_enabled'] ?>" />
-        <input type="hidden" name="auth_allow_guest" value="<?= $conf['auth_allow_guest'] ?>" />
-        <input type="hidden" name="im_convert" value="<?= $conf['im_convert'] ?>" />
-        <input type="hidden" name="photo_enable" value="<?= $conf['photo_enable'] ?>" />
-        <input type="hidden" name="session_name" value="<?= $conf['session_name'] ?>" />
-        <input type="hidden" name="mark_changed" value="<?= $conf['mark_changed'] ?>" />
-        <input type="hidden" name="debug" value="<?= $conf['debug'] ?>" />
+        <input type="hidden" name="canonical" value="<?php echo $conf['canonical']; ?>" />
+        <input type="hidden" name="auth_enabled" value="<?php echo $conf['auth_enabled']; ?>" />
+        <input type="hidden" name="auth_allow_guest" value="<?php echo $conf['auth_allow_guest']; ?>" />
+        <input type="hidden" name="im_convert" value="<?php echo $conf['im_convert']; ?>" />
+        <input type="hidden" name="photo_enable" value="<?php echo $conf['photo_enable']; ?>" />
+        <input type="hidden" name="session_name" value="<?php echo $conf['session_name']; ?>" />
+        <input type="hidden" name="mark_changed" value="<?php echo $conf['mark_changed']; ?>" />
+        <input type="hidden" name="debug" value="<?php echo $conf['debug']; ?>" />
 
-        <input type="hidden" name="vcard_fb_enc" value="<?= $conf['vcard_fb_enc'] ?>" />
-        <input type="hidden" name="ldif_base" value="<?= $conf['ldif_base'] ?>" />
-        <input type="hidden" name="ldif_mozilla" value="<?= $conf['ldif_mozilla'] ?>" />
-        <input type="hidden" name="xmlrpc_enable" value="<?= $conf['xmlrpc_enable'] ?>" />
+        <input type="hidden" name="vcard_fb_enc" value="<?php echo $conf['vcard_fb_enc']; ?>" />
+        <input type="hidden" name="ldif_base" value="<?php echo $conf['ldif_base']; ?>" />
+        <input type="hidden" name="ldif_mozilla" value="<?php echo $conf['ldif_mozilla']; ?>" />
+        <input type="hidden" name="xmlrpc_enable" value="<?php echo $conf['xmlrpc_enable']; ?>" />
  
     </form>
     
     <div class="mainview">
-        <?= html_msgarea() ?>
+        <?php echo html_msgarea(); ?>
 
         <!-- Begin Logo -->
         <table width="100%">
             <tr>
                 <td>
                     <div class="logo">
-                        <img src="<?= AB_TPL ?>images/logo.png">
+                        <img src="<?php echo AB_TPL; ?>images/logo.png">
                     </div>
                 </td>
                 <td>
-                    <div class="title"><?= $lang['installation'] ?></div>
+                    <div class="title"><?php echo $lang['installation']; ?></div>
                 </td>
                 <td>
-                    <?= $lang['lang'] ?>:<br>
+                    <?php echo $lang['lang']; ?>:<br>
                     <? html_select($conf['lang'], $meta['lang']['_choices'], "do_set('lang',this.value);do_action('show');"); ?>
                 </td>
             </tr>
@@ -184,12 +184,12 @@ function html_header() {
 function html_footer() {
     global $_SESSION;
     global $conf;
-    ?>
+   ; ?>
         <div style="height: 10px; clear: both;" ></div>
         <!-- Begin Footer --> 
         <div class="separator">&nbsp;</div>
         <div class="footer">
-            <a href='http://iaddressbook.org/'>PHP iAddressBook <?= get_version() ?></a>
+            <a href='http://iaddressbook.org/'>PHP iAddressBook <?php echo get_version(); ?></a>
         </div>
         <!-- End Footer -->
     </div>

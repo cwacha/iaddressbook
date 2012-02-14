@@ -114,6 +114,39 @@ function html_debug(){
     exit();
 }
 
+function html_numberlayout($string) {
+    global $conf;
+    
+    if(!is_array($conf['number_layout'])) return $string;
+
+    $orig = $string;
+    $string = preg_replace("/[0-9]/", "#", $string);
+    $string_num = count_char($string, "#");
+
+    foreach($conf['number_layout'] as $layout) {
+        $layout_num = count_char($layout, "#");
+    
+        if($layout_num == $string_num) {
+            // make layout adjustments to string
+            $string = preg_replace("/[^0-9]/", "", $orig);
+            for($t=0; $t < strlen($string); $t++) {
+                $layout = preg_replace("/#/", $string[$t], $layout, 1);
+            }
+            return $layout;
+        }
+    }
+    
+    return $orig;
+}
+
+function count_char($string, $char) {
+    $i = 0;
+    for ($t = 0; $t < strlen($string); $t++) {
+        if ($string[$t] == $char) $i++;
+    }
+    return $i;
+}
+
 function html_phpinfo() {
     phpinfo();    
 }

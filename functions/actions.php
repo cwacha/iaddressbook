@@ -454,8 +454,8 @@ function act_search() {
     }
 
     // load sort rules
-    $sort_rules_from = split(',', $lang['sort_rules_from']);
-    $sort_rules_to   = split(',', $lang['sort_rules_to']);
+    $sort_rules_from = explode(',', $lang['sort_rules_from']);
+    $sort_rules_to   = explode(',', $lang['sort_rules_to']);
 
     if(isset($contactlist_letter) and $contactlist_letter != 'A-Z') {
         $contactlist_letter = strtoupper($contactlist_letter{0});

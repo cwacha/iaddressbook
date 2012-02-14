@@ -248,7 +248,7 @@ $lang['welcome_prerequisites']          = '<p><p>
                                     <br>Anforderungen:
                                     <ul>
                                         <li>PHP Version 4.3 oder höher</li>
-                                        <li>MySQL Version 4.0 oder höher oder SQLite Version 2.x</li>
+                                        <li>MySQL Version 4.1 oder höher oder SQLite Version 2.x</li>
                                         <li>(optional) iconv (falls sie vCards importieren wollen, die nicht in UTF-8 kodiert sind)</li>
                                         <li>(optional) ImageMagick\'s convert oder GD (falls Sie Fotos verwenden wollen)</li>
                                     </ul>

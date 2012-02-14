@@ -422,8 +422,8 @@ class addressbook {
         $sorted = array();
 
         // load sort rules
-        $sort_rules_from = split(',', $lang['sort_rules_from']);
-        $sort_rules_to   = split(',', $lang['sort_rules_to']);
+        $sort_rules_from = explode(',', $lang['sort_rules_from']);
+        $sort_rules_to   = explode(',', $lang['sort_rules_to']);
         
         if(is_array($contactlist)) {
             foreach($contactlist as $contact) {
