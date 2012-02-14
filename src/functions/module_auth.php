@@ -64,7 +64,7 @@ function auth_check($force_login = false) {
     // read cookie information
     if(empty($auth_login) and isset($_COOKIE[AB_COOKIE])) {
         $cookie = base64_decode($_COOKIE[AB_COOKIE]);
-        list($auth_login, $sticky, $auth_pass) = split('\|', $cookie, 3);
+        list($auth_login, $sticky, $auth_pass) = explode('\|', $cookie, 3);
         //msg("lg: $auth_login, sticky: $sticky, pw: $auth_pass");
         $auth_pass = PMA_blowfish_decrypt($auth_pass, auth_cookiesalt());
     }

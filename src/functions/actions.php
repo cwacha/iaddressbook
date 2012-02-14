@@ -277,7 +277,7 @@ function act_save() {
     $contact->urls = array();
 
     foreach($_REQUEST as $key => $web_value) {
-        list($web_param, $web_id) = split("_", $key);
+        list($web_param, $web_id) = explode("_", $key);
         
         //msg("$web_param=$web_value ($web_id)");
         

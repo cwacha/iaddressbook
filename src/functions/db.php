@@ -113,7 +113,7 @@ function db_createtables() {
         return false;
     }
 
-    $queries = split(";", $queries);
+    $queries = explode(";", $queries);
     
     $errors = 0;
     
