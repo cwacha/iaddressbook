@@ -171,8 +171,8 @@ function html_header() {
                     <div class="title"><?php echo $lang['installation']; ?></div>
                 </td>
                 <td>
-                    <?php echo $lang['lang']; ?>:<br>
-                    <? html_select($conf['lang'], $meta['lang']['_choices'], "do_set('lang',this.value);do_action('show');"); ?>
+                    <?php echo $lang['lang']; ?>:<br/>
+                    <?php html_select($conf['lang'], $meta['lang']['_choices'], "do_set('lang',this.value);do_action('show');"); ?>
                 </td>
             </tr>
         </table>
@@ -184,7 +184,7 @@ function html_header() {
 function html_footer() {
     global $_SESSION;
     global $conf;
-   ; ?>
+    ?>
         <div style="height: 10px; clear: both;" ></div>
         <!-- Begin Footer --> 
         <div class="separator">&nbsp;</div>
