@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 all() {
 	clean && import && pkg
 }
@@ -45,6 +46,14 @@ if [ $# -eq 0 ]; then
 	exit
 fi
 
-$*
+action="$1"
+shift
+# eclipse support
+[ "$action" = incremental ] && action=all
+[ "$action" = full ] && action=all
+
+declare -F "$action" >/dev/null && $action $*
+[ $? -ne 0 ] && echo "no such action: $action"
+
 echo "##### done"
 
