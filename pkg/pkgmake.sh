@@ -24,6 +24,7 @@ pkg() {
 	PKG=iaddressbook-$VERSION
 	mv BUILD $PKG
 	tar cfz $PKG.tar.gz $PKG
+	zip -r $PKG.zip $PKG >/dev/null
 }
 
 clean() {
