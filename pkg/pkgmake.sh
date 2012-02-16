@@ -1,8 +1,7 @@
 #!/bin/sh
 
-
 all() {
-	import && pkg
+	clean && import && pkg
 }
 
 import() {
@@ -37,7 +36,7 @@ usage() {
 	echo "Usage: $0 <action>"
 	echo
 	echo "ACTIONS:"
-	declare -F | awk '{print $3}' | grep -v usage
+	declare -F | awk '{print "   "$3}' | grep -v usage
 }
 
 if [ $# -eq 0 ]; then
