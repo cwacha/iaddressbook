@@ -1,0 +1,54 @@
+# Folder Layout for iAddressbook
+
+/src
+	# code
+	/bin
+		/applescript
+		/functions
+		/defaults
+		/lang
+		/tpl
+	index.php
+	install.php
+	xmlrpc.php
+	README.txt
+	COPYING.txt
+
+	# plugins
+	/plugins
+		/modules
+		/tpl
+
+	# config
+	/conf
+
+	# var
+	/var
+		/import
+		/state
+		/images
+		/log
+/doc
+/pkg
+
+
+AB_INC=trunk/
+AB_CONF=$AB_INC/conf/
+AB_TPL=$AB_BASE/tpl/<config>/
+
+AB_BASE=iadressbook.org/
+AB_URL=http://iaddressbook.org/
+
+AB_COOKIE="AB".md5($AB_URL)
+
+neu:
+
+AB_INC=trunk/
+AB_CONF=$AB_INC/conf
+AB_BIN=$AB_INC/bin
+AB_TPL=$AB_BASE/tpl/default/
+
+AB_BASE=iadressbook.org/
+AB_URL=http://iaddressbook.org/
+
+AB_COOKIE="AB".md5($AB_URL)
