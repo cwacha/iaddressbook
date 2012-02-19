@@ -22,16 +22,18 @@ function collect_birthdays() {
     if(!$db) return array();
     $upcoming = array();
     
+    $thismonth = date('m');
+    $nextmonth = ($thismonth + 1) % 12;
+        
     if($db_config['dbtype'] == 'sqlite') {
-        $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE strftime('%m', birthdate) = strftime('%m', 'now')";
-        $sql .= " OR strftime('%m', birthdate) = strftime('%m', 'now', '+1 month')";
-        $sql .= " ORDER BY strftime('%j', birthdate) ASC LIMIT 100";
+        $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE strftime('%m', birthdate) = " . $thismonth;
+        $sql .= " OR strftime('%m', birthdate) = " . $nextmonth;
+        $sql .= " ORDER BY strftime('%j', birthdate) ASC LIMIT 20";
     } else {
-        $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE MONTH(birthdate) = MONTH(NOW())";
-        $sql .= " OR MONTH(birthdate) = MONTH(NOW()) + 1";
-        $sql .= " ORDER BY DAYOFYEAR(birthdate) ASC LIMIT 100";
+        $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE MONTH(birthdate) = " . $thismonth;
+        $sql .= " OR MONTH(birthdate) = " . $nextmonth;
+        $sql .= " ORDER BY DAYOFYEAR(birthdate) ASC LIMIT 20";
     }
-    
     
     $result = $db->Execute($sql);
     
@@ -56,20 +58,25 @@ function tpl_birthday() {
     $people = collect_birthdays();
         
     foreach($people as $contact) {
+        $now = time();
+        //$now = strtotime('2011-02-01');
+        $da = getdate($now);
+        $thisyear = $da['year'];
+        
         // if we are in december and the persons birthday is in january
         // we have to add 1 to his year
         if(date('n') == 12 and date('n', $contact->birthdate) == 1) {
-            $bd_year = date('Y') + 1;
+            $bd_year = $thisyear + 1;
         } else {
-            $bd_year = date('Y');
+            $bd_year = $thisyear;
         }        
         $birthday = strtotime( $bd_year . nice_date('-$mm-$dd', $contact->birthdate) );
         
         $age    = $bd_year - nice_date('$YYYY', $contact->birthdate);
         
-        $days   = datediff('d', time(), $birthday, true) + 1;
-        $weeks  = datediff('ww', time(), $birthday, true);
-        $months = datediff('m', time(), $birthday, true);
+        $days   = datediff('d', $now, $birthday, true) + 1;
+        $weeks  = datediff('ww', $now, $birthday, true);
+        $months = datediff('m', $now, $birthday, true);
         
         if($weeks > $conf['bday_advance_week']) continue;
         
