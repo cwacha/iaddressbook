@@ -14,6 +14,9 @@ import() {
 	find BUILD -depth -name ".svn" -exec rm -rf {} \;
 	rm BUILD/conf/config.php
 	rm BUILD/conf/auth.php
+	rm BUILD/conf/localhost
+	rm BUILD/_images/*
+	rm BUILD/_import/*
 	chmod 777 BUILD/_images
 	chmod 777 BUILD/_import
 	chmod 777 BUILD/conf
@@ -52,8 +55,9 @@ shift
 [ "$action" = incremental ] && action=all
 [ "$action" = full ] && action=all
 
-declare -F "$action" >/dev/null && $action $*
-[ $? -ne 0 ] && echo "no such action: $action"
+declare -F "$action" >/dev/null
+[ $? -ne 0 ] && echo "no such action: $action" && exit 1
 
+$action $*
 echo "##### done"
 
