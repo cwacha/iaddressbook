@@ -1,7 +1,7 @@
 
                              PHP iAddressbook
 
-                               Version 1.0
+                               Version 1.1
 
 ---
 http://iaddressbook.org/
@@ -15,7 +15,7 @@ in Mac OS X.
 
 
 Enjoy!
-    Clemens Wacha                   <clemens.wacha@gmx.net>
+    Clemens Wacha                   <clemens@wacha.ch>
 
 
-May 26, 2008
+February 20th, 2012
