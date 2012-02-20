@@ -22,7 +22,8 @@ function collect_birthdays() {
     if(!$db) return array();
     $upcoming = array();
     
-    $thismonth = date('m');
+    $thismonth = date('n');
+    //$thismonth = 12;
     $nextmonth = ($thismonth + 1) % 12;
         
     if($db_config['dbtype'] == 'sqlite') {
@@ -34,7 +35,7 @@ function collect_birthdays() {
         $sql .= " OR MONTH(birthdate) = " . $nextmonth;
         $sql .= " ORDER BY DAYOFYEAR(birthdate) ASC LIMIT 20";
     }
-    
+
     $result = $db->Execute($sql);
     
     if($result) {
@@ -59,16 +60,14 @@ function tpl_birthday() {
         
     foreach($people as $contact) {
         $now = time();
-        //$now = strtotime('2011-02-01');
-        $da = getdate($now);
-        $thisyear = $da['year'];
+        //$now = strtotime('2011-12-20');
         
         // if we are in december and the persons birthday is in january
         // we have to add 1 to his year
-        if(date('n') == 12 and date('n', $contact->birthdate) == 1) {
-            $bd_year = $thisyear + 1;
+        if(date('n', $now) == 12 and date('n', strtotime($contact->birthdate)) == 1) {
+            $bd_year = date('Y', $now) + 1;
         } else {
-            $bd_year = $thisyear;
+            $bd_year = date('Y', $now);
         }        
         $birthday = strtotime( $bd_year . nice_date('-$mm-$dd', $contact->birthdate) );
         
@@ -77,7 +76,7 @@ function tpl_birthday() {
         $days   = datediff('d', $now, $birthday, true) + 1;
         $weeks  = datediff('ww', $now, $birthday, true);
         $months = datediff('m', $now, $birthday, true);
-        
+
         if($weeks > $conf['bday_advance_week']) continue;
         
         if($days < 0) continue;
