@@ -9,7 +9,7 @@
  */
 
 //disable if not used
-//echo "translator disabled"; exit(0);
+echo "translator disabled"; exit(0);
 
 // define the include path
 if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
@@ -37,130 +37,139 @@ $header = array();
 
 
 function rewrite($array) {
-    foreach($array as $key => $value) {
-        if(gettype($value) == 'string') {
-            $array[$key] = 'TRANSLATE:' . $value;
-        } else if(gettype($value) == 'array') {
-            $array[$key] = rewrite($value);
-        } else {
-            echo "unsupported type!";
-        }
-    }
-    return $array;
+	foreach($array as $key => $value) {
+		if(gettype($value) == 'string') {
+			$array[$key] = 'TRANSLATE:' . $value;
+		} else if(gettype($value) == 'array') {
+			$array[$key] = rewrite($value);
+		} else {
+			echo "unsupported type!";
+		}
+	}
+	return $array;
 }
 
 function update_language($language) {
-    global $base_language;
-    $lang = array();
-    
-    require(AB_INC.'lang/'.$base_language.'/lang.php');
-    
-    $lang = rewrite($lang);
-    
-    @include(AB_INC.'lang/'.$language.'/lang.php');
-    read_header($language);
-    return $lang;
+	global $base_language;
+	$lang = array();
+	
+	require(AB_INC.'lang/'.$base_language.'/lang.php');
+	
+	$lang = rewrite($lang);
+	
+	@include(AB_INC.'lang/'.$language.'/lang.php');
+	read_header($language);
+	return $lang;
 }
 
 function read_header($language) {
-    global $header;
-    
-    $file = AB_INC.'lang/'.$language.'/lang.php';
-    
-    $header = @file($file);
-    
-    if(is_array($header)) {
-        array_shift($header);
-        $ln = '';
-        while( trim($ln) != '*/' and count($header) > 1) {
-            $ln = array_pop($header);
-        }
-        while( trim($header[0]) == '' and count($header) > 1) {
-            array_shift($header);
-        }
-        $header[] = " */\n\n\n";
-    } else {
-        $header = array();
-    }
+	global $header;
+	
+	$file = AB_INC.'lang/'.$language.'/lang.php';
+	
+	$header = @file($file);
+	
+	if(is_array($header)) {
+		array_shift($header);
+		$ln = '';
+		while( trim($ln) != '*/' and count($header) > 1) {
+			$ln = array_pop($header);
+		}
+		while( trim($header[0]) == '' and count($header) > 1) {
+			array_shift($header);
+		}
+		$header[] = " */\n\n\n";
+	} else {
+		$header = array();
+	}
 
 /*
-    echo '<pre>';
-    echo 'Header: '.$language.'<br>';
-    print_r($header);
-    echo '</pre>';
-*/    
+	echo '<pre>';
+	echo 'Header: '.$language.'<br>';
+	print_r($header);
+	echo '</pre>';
+*/	
 
 }
 
 function write_lang_php($array, $lng) {
-    global $header;
-    global $conf;
-    
-    $file = AB_INC.'lang/'.$lng.'.php';
-    $fd = fopen($file, "w");
-    if(!$fd) {
-        echo "could not write $file<br>";
-        return;
-    }
-    fwrite($fd, "<?php\n");
-    
-    foreach($header as $line) {
-        fwrite($fd, $line);
-    }
+	global $header;
+	global $conf;
+	
+	$file = AB_INC.'lang/'.$lng.'.php';
+	$fd = fopen($file, "w");
+	if(!$fd) {
+		echo "could not write $file<br>";
+		return;
+	}
+	fwrite($fd, "<?php\n");
+	
+	foreach($header as $line) {
+		fwrite($fd, $line);
+	}
 
-    $data = array_to_text($array);
-    fwrite($fd, $data);
+	$data = array_to_text($array);
+	fwrite($fd, $data);
 
-    fwrite($fd, "\n\n?>");
+	fwrite($fd, "\n\n?>");
 
-    fclose($fd);
-    fix_fmode($file);
+	fclose($fd);
+	fix_fmode($file);
 }
 
 function del_lang_php($lng) {
-    $file = AB_INC.'lang/'.$lng.'.php';
-    @unlink($file);
+	$file = AB_INC.'lang/'.$lng.'.php';
+	@unlink($file);
 }
 
 function has_new_text($array) {
-    $count = 0;
-    $total = 0;
-    foreach($array as $value) {
-        if(strpos($value, 'TRANSLATE:') === 0) $count++;
-        $total++;
-    }
-    return  array($count,$total);
+	$count = 0;
+	$total = 0;
+	foreach($array as $value) {
+		if(gettype($value) == 'string') {
+			if(strpos($value, 'TRANSLATE:') === 0) $count++;
+			$total++;
+		} else if(gettype($value) == 'array') {
+			list($count1, $total1) = has_new_text($value);
+			$count += $count1;
+			$total += $total1;
+		} else {
+			echo "unsupported type!";
+		}
+	}
+	return array($count,$total);
 }
 
 /* * * * * * * * * * * * * *
- *                         *
- *        M A I N          *
- *                         *
+ *						 *
+ *		M A I N		  *
+ *						 *
  * * * * * * * * * * * * * */
-    echo "<pre>";
-    echo "Updating languages...<br>";
-    foreach($all_languages as $lng) {
-        echo "Processing $lng ";
-        $lang = update_language($lng);
-    /*    echo '<pre>';
-        echo 'Language: '.$lng.'<br>';
-        print_r($lang);
-        echo '</pre>';
-    */
-        list($count, $total) = has_new_text($lang);
-        $percent = (($total-$count)/$total) * 100;
-        if($count) {
-            echo ": ".number_format($percent,0)."% ($count new strings)";
-            write_lang_php($lang, $lng);
-        } else {
-            echo ": ".number_format($percent,0)."%";
-            // delete old temporary language file if it exists
-            del_lang_php($lng);
-        }
-        echo "<br>";
-    }
-    echo "done.<br>";
-    echo "</pre>";
+	echo "<pre>";
+	echo "Updating languages...<br>";
+	foreach($all_languages as $lng) {
+		echo "Processing $lng ";
+		$lang = update_language($lng);
+/*
+		echo '<pre>';
+		echo 'Language: '.$lng.'<br>';
+		print_r($lang);
+		echo '</pre>';
+*/
+		list($count, $total) = has_new_text($lang);
+		$percent = (($total-$count)/$total) * 100;
+		if($count) {
+			echo ": ".number_format($percent,0)."% ($count new strings)";
+			write_lang_php($lang, $lng);
+		} else {
+			echo ": ".number_format($percent,0)."%";
+			// delete old temporary language file if it exists
+			del_lang_php($lng);
+		}
+		echo "<br>";
+	}
+	echo "done.<br>";
+	echo "</pre>";
 
 
 ?>
