@@ -1,16 +1,17 @@
-# Old folder layout for iAddressbook
+# Old folder layout for iAddressbook (incl. new destination)
 
 /src
-	/_images        [new: /var/images]
-	/_import        [new: /var/import]
-	/applescript    [new: /lib/applescript]
-	/conf           [new: /conf]
-	/functions      [new: /lib/php]
-	/lang           [new: /lib/lang]
-	/tpl            [new: /lib/tpl]
-	index.php       [new: index.php]
-	install.php     [new: install.php]
-	xmlrpc.php      [new: xmlrpc.php]
+	/functions          [new: /lib/php]
+	/lang               [new: /lib/lang]
+	/tpl                [new: /lib/tpl]
+	/applescript        [new: /lib/applescript]
+	/conf               [new: /conf]
+	/conf/*.sql         [new: /lib/sql/*.sql]
+	/conf/defaults.php  [new: /lib/default/config.php]
+	/conf/auth.php      [new: /lib/default/auth.php]
+	/conf/(sqlite db)   [new: /var/state/(sqlite db)]
+	/_images            [new: /var/images]
+	/_import            [new: /var/import]
 /doc
 /pkg
 
@@ -23,7 +24,7 @@
 		/php
 		/default
             auth.php
-            conf.php
+            config.php
         /sql
             *.sql
 		/lang
@@ -41,30 +42,7 @@
 	/var
 		/import
 		/state
-            localhost.sqlite
+            addressbook.sqlite
 		/images
-		/log
 /doc
 /pkg
-
-
-AB_INC=src/
-AB_CONF=$AB_INC/conf/
-AB_TPL=$AB_BASE/tpl/<config>/
-
-AB_BASE=iadressbook.org/
-AB_URL=http://iaddressbook.org/
-
-AB_COOKIE="AB".md5($AB_URL)
-
-neu:
-
-AB_INC=src/
-AB_CONF=$AB_INC/conf
-AB_BIN=$AB_INC/bin
-AB_TPL=$AB_BASE/tpl/default/
-
-AB_BASE=iadressbook.org/
-AB_URL=http://iaddressbook.org/
-
-AB_COOKIE="AB".md5($AB_URL)

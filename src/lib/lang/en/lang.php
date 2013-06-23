@@ -294,6 +294,7 @@ $lang['welcome_prerequisites']   = '<p><p>
                                         <li>(optional) ImageMagick\'s convert or GD (if you want to import photos)</li>
                                     </ul>
                                     <p>';
+$lang['error_statefolder']       = 'Cannot write to state folder: No write permission to $1';
 $lang['error_imagefolder']       = 'Cannot use contact photos: No write permission to $1';
 $lang['error_importfolder']      = 'Cannot delete vCards from import folder: No write permission to $1';
 $lang['error_conffolder']        = 'Cannot create configuration/authorizations: No write permission to $1';

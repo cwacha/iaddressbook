@@ -12,14 +12,15 @@ import() {
 	cp -r ../src/* BUILD
 	find BUILD -depth -name ".DS_Store" -exec rm {} \;
 	find BUILD -depth -name ".svn" -exec rm -rf {} \;
-	rm BUILD/conf/config.php
-	rm BUILD/conf/auth.php
-	rm BUILD/conf/localhost
-	rm BUILD/_images/*
-	rm BUILD/_import/*
-	chmod 777 BUILD/_images
-	chmod 777 BUILD/_import
-	chmod 777 BUILD/conf
+	rm -rf BUILD/conf/config.php
+	rm -rf BUILD/conf/auth.php
+	rm -rf BUILD/var/state/*
+	rm -rf BUILD/var/images/*
+	rm -rf BUILD/var/import/*
+    chmod 777 BUILD/conf
+    chmod 777 BUILD/var/state
+    chmod 777 BUILD/var/images
+	chmod 777 BUILD/var/import
 }
 
 pkg() {

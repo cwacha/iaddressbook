@@ -320,6 +320,11 @@ function step_check() {
     step_title($lang['step_tests']);
     echo '<div>';
     
+    if(!is_writable(AB_STATEDIR)) {
+        imsg(str_replace('$1', AB_STATEDIR, $lang['error_statefolder']), -1);
+        $errors++;
+    }
+    
     if(!is_writable(AB_IMAGEDIR)) {
         imsg(str_replace('$1', AB_IMAGEDIR, $lang['error_imagefolder']), -1);
         $errors++;
@@ -333,9 +338,6 @@ function step_check() {
         imsg(str_replace('$1', AB_CONFDIR, $lang['error_conffolder']), -1);
         $errors++;
     }
-    
-    // TODO: remove this
-    //$conf['im_convert'] = '/Users/cwacha/Desktop/ImageMagick-6.4.0/bin/convert';
     
     $use_im = 0;
     $use_gd = 0;

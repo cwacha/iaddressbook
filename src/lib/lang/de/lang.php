@@ -253,6 +253,7 @@ $lang['welcome_prerequisites']          = '<p><p>
                                         <li>(optional) ImageMagick\'s convert oder GD (falls Sie Fotos verwenden wollen)</li>
                                     </ul>
                                     <p>';
+$lang['error_statefolder']              = 'Keine Schreibberechtigung auf $1';
 $lang['error_imagefolder']              = 'Kontaktfotos können nicht verwendet werden: Keine Schreibberechtigung auf $1';
 $lang['error_importfolder']             = 'vCards können nicht aus import Verzeichnis gelöscht werden: Keine Schreibberechtigung auf $1';
 $lang['error_conffolder']               = 'Konfiguration kann nicht erstellt werden: Keine Schreibberechtigung auf $1error_conffolder';
