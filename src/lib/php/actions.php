@@ -1,24 +1,22 @@
 <?php
-/**
- * AddressBook Actions
- *
- * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
- */
-
-if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
-require_once(AB_CONF.'defaults.php');
-
-if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-require_once(AB_INC.'functions/addressbook.php');
-require_once(AB_INC.'functions/category.php');
-require_once(AB_INC.'functions/template.php');
-require_once(AB_INC.'functions/image.php');
-require_once(AB_INC.'functions/common.php');
-require_once(AB_INC.'functions/module_vcard.php');
-require_once(AB_INC.'functions/module_csv.php');
-require_once(AB_INC.'functions/module_ldif.php');
-require_once(AB_INC.'functions/module_birthday.php');
+    /**
+     * iAddressBook Actions
+     *
+     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+     * @author     Clemens Wacha <clemens.wacha@gmx.net>
+     */
+    
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+    require_once(AB_BASEDIR.'/lib/php/include.php');
+    require_once(AB_BASEDIR.'/lib/php/addressbook.php');
+    require_once(AB_BASEDIR.'/lib/php/category.php');
+    require_once(AB_BASEDIR.'/lib/php/template.php');
+    require_once(AB_BASEDIR.'/lib/php/image.php');
+    require_once(AB_BASEDIR.'/lib/php/common.php');
+    require_once(AB_BASEDIR.'/lib/php/module_vcard.php');
+    require_once(AB_BASEDIR.'/lib/php/module_csv.php');
+    require_once(AB_BASEDIR.'/lib/php/module_ldif.php');
+    require_once(AB_BASEDIR.'/lib/php/module_birthday.php');
 
 
 /**
@@ -166,33 +164,33 @@ function act_check() {
     msg("PHP iAddressBook Version: ". $VERSION, 1);
     msg("PHP version ". phpversion(), 1);
     
-    if(!is_writable(AB_INC."_images")) {
-        msg("Cannot use contact photos: No write permission to ".AB_INC."_images", -1);
+    if(!is_writable(AB_IMAGEDIR)) {
+        msg("Cannot use contact photos: No write permission to ".AB_IMAGEDIR, -1);
     } else {
         msg("Photo folder is writeable", 1);
     }
 
-    if(!is_writable(AB_INC."_import")) {
-        msg("Cannot delete vCards from import folder: No write permission to ".AB_INC."_import", -1);
+    if(!is_writable(AB_IMPORTDIR)) {
+        msg("Cannot delete vCards from import folder: No write permission to ".AB_IMPORTDIR, -1);
     } else {
         msg("vCard import folder is writeable", 1);
     }
 
-    if(!is_readable(AB_INC."conf/config.php")) {
-        msg("Cannot read configuration /conf/config.php", -1);
+    if(!is_readable(AB_CONFDIR."/config.php")) {
+        msg("Cannot read configuration ".AB_CONFDIR."/config.php", -1);
     } else {
-        msg("Configuration /conf/config.php is readable", 1);
+        msg("Configuration ".AB_CONFDIR."/config.php is readable", 1);
     }
 
     if($conf['auth_enabled']) {
-        if(!is_readable(AB_INC."conf/auth.php")) {
-            msg("Cannot read authorizations in /conf/auth.php", -1);
+        if(!is_readable(AB_CONFDIR."/auth.php")) {
+            msg("Cannot read authorizations in ".AB_CONFDIR."/auth.php", -1);
         } else {
-            msg("Authorization in /conf/auth.php is readable", 1);
+            msg("Authorization in ".AB_CONFDIR."/auth.php is readable", 1);
         }
     } else {
-        if(!is_readable(AB_INC."conf/auth.php")) {
-            msg("Cannot read authorizations in /conf/auth.php");
+        if(!is_readable(AB_CONFDIR."/auth.php")) {
+            msg("Cannot read authorizations in ".AB_CONFDIR."/auth.php");
         }
     }
     

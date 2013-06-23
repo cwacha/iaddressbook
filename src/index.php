@@ -1,18 +1,19 @@
 <?php
 /**
- * AddressBook mainscript
+ * iAddressBook mainscript
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Clemens Wacha <clemens.wacha@gmx.net>
  */
 
-if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__)).'/');
-require_once(AB_INC.'functions/init.php');
-require_once(AB_INC.'functions/db.php');
-require_once(AB_INC.'functions/module_auth.php');
-require_once(AB_INC.'functions/actions.php');
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/');
+require_once(AB_BASEDIR.'/lib/php/include.php');
+require_once(AB_BASEDIR.'/lib/php/init.php');
+require_once(AB_BASEDIR.'/lib/php/db.php');
+require_once(AB_BASEDIR.'/lib/php/module_auth.php');
+require_once(AB_BASEDIR.'/lib/php/actions.php');
 
-if(!file_exists(AB_INC.'conf/config.php')) {
+if(!file_exists(AB_CONFDIR.'/config.php')) {
     // no config found. redirect to installer
     header('Location: '.AB_URL.'install.php?do=reset');
     exit;

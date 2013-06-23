@@ -1,19 +1,20 @@
 <?php
 /**
-* AddressBook xmlrpc automation
+* iAddressBook xmlrpc automation
 *
 * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
 * @author     Clemens Wacha <clemens.wacha@gmx.net>
 */
 
 
-if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__)).'/');
-require_once(AB_INC.'functions/init.php');
-require_once(AB_INC.'functions/db.php');
-require_once(AB_INC.'functions/XML/Server.php');
-require_once(AB_INC.'functions/module_vcard.php');
-require_once(AB_INC.'functions/module_auth.php');
-require_once(AB_INC.'functions/common.php');
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/');
+require_once(AB_BASEDIR.'/lib/php/include.php');
+require_once(AB_BASEDIR.'/lib/php/init.php');
+require_once(AB_BASEDIR.'/lib/php/db.php');
+require_once(AB_BASEDIR.'/lib/php/XML/Server.php');
+require_once(AB_BASEDIR.'/lib/php/module_vcard.php');
+require_once(AB_BASEDIR.'/lib/php/module_auth.php');
+require_once(AB_BASEDIR.'/lib/php/common.php');
 
 global $conf;
 

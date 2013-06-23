@@ -168,7 +168,7 @@ $lang['basedir_help']                   = 'Verzeichnis relativ zum Serverroot - 
 $lang['baseurl_help']                   = 'URL zum Server (inkl. Protokoll) - leer lassen für automatische Erkennung';
 $lang['dbtype_help']                    = 'Datenbank-Typ: mysql, sqlite';
 $lang['dbname_help']                    = 'Name der Datenbank';
-$lang['dbserver_help']                  = 'MySQL: Servername<p>SQLite: Datenbank Dateiname';
+$lang['dbserver_help']                  = 'MySQL: Servername<br/>SQLite: Datenbank Dateiname<br/>';
 $lang['dbuser_help']                    = 'Benutzername für Datenbank';
 $lang['dbpass_help']                    = 'Klartext Passwort für Datenbank';
 $lang['dbtable_ab_help']                = 'Tabellenname für Adressbuch Einträge';
@@ -253,9 +253,9 @@ $lang['welcome_prerequisites']          = '<p><p>
                                         <li>(optional) ImageMagick\'s convert oder GD (falls Sie Fotos verwenden wollen)</li>
                                     </ul>
                                     <p>';
-$lang['error_imagefolder']              = 'Kontaktfotos können nicht verwendet werden: Keine Schreibberechtigung auf $1_images';
-$lang['error_importfolder']             = 'vCards können nicht aus import Verzeichnis gelöscht werden: Keine Schreibberechtigung auf $1_import';
-$lang['error_conffolder']               = 'Konfiguration kann nicht erstellt werden: Keine Schreibberechtigung auf $1conf';
+$lang['error_imagefolder']              = 'Kontaktfotos können nicht verwendet werden: Keine Schreibberechtigung auf $1';
+$lang['error_importfolder']             = 'vCards können nicht aus import Verzeichnis gelöscht werden: Keine Schreibberechtigung auf $1';
+$lang['error_conffolder']               = 'Konfiguration kann nicht erstellt werden: Keine Schreibberechtigung auf $1error_conffolder';
 $lang['info_im']                        = 'ImageMagick\'s convert gefunden unter: $1';
 $lang['info_im_version']                = 'convert verfügbar (Version $1)';
 $lang['error_im']                       = 'Kann ImageMagick\'s convert unter $1 nicht ausführen';

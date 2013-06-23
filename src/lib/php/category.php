@@ -1,17 +1,15 @@
 <?php
-/**
- * AddressBook category functions
- *
- * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
- */
+    /**
+     * iAddressBook category functions
+     *
+     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+     * @author     Clemens Wacha <clemens.wacha@gmx.net>
+     */
 
-    if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
-    require_once(AB_CONF.'defaults.php');
-
-    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    require_once(AB_INC.'functions/db.php');
-    require_once(AB_INC.'functions/common.php');
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+    require_once(AB_BASEDIR.'/lib/php/include.php');
+    require_once(AB_BASEDIR.'/lib/php/db.php');
+    require_once(AB_BASEDIR.'/lib/php/common.php');
 
 
 class category {

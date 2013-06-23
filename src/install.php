@@ -7,18 +7,19 @@
 */
 
 
-if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__)).'/');
-require_once(AB_INC.'functions/init.php');
-require_once(AB_INC.'functions/db.php');
-require_once(AB_INC.'functions/template.php');
-require_once(AB_INC.'functions/common.php');
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)));
+require_once(AB_BASEDIR.'/lib/php/include.php');
+require_once(AB_BASEDIR.'/lib/php/init.php');
+require_once(AB_BASEDIR.'/lib/php/db.php');
+require_once(AB_BASEDIR.'/lib/php/template.php');
+require_once(AB_BASEDIR.'/lib/php/common.php');
 
 // the state of the script
 global $state;
 $state = array();
 
 function stop_if_installed() {
-    if(file_exists(AB_INC.'conf/config.php')) {
+    if(file_exists(AB_CONFDIR.'/config.php')) {
         html_header();
         echo '<div style="min-height: 350px; width: 80%; margin: 0 auto; text-align: left; font-size: 110%;">';
         step_disabled();
@@ -319,18 +320,17 @@ function step_check() {
     step_title($lang['step_tests']);
     echo '<div>';
     
-    $bla = AB_INC;
-    if(!is_writable(AB_INC."_images")) {
-        imsg(str_replace('$1', AB_INC, $lang['error_imagefolder']), -1);
+    if(!is_writable(AB_IMAGEDIR)) {
+        imsg(str_replace('$1', AB_IMAGEDIR, $lang['error_imagefolder']), -1);
         $errors++;
     }
     
-    if(!is_writable(AB_INC."_import")) {
-        imsg(str_replace('$1', AB_INC, $lang['error_importfolder']), 0);
+    if(!is_writable(AB_IMPORTDIR)) {
+        imsg(str_replace('$1', AB_IMPORTDIR, $lang['error_importfolder']), 0);
     }
     
-    if(!is_writeable(AB_INC."conf")) {
-        imsg(str_replace('$1', AB_INC, $lang['error_conffolder']), -1);
+    if(!is_writeable(AB_CONFDIR)) {
+        imsg(str_replace('$1', AB_CONFDIR, $lang['error_conffolder']), -1);
         $errors++;
     }
     
@@ -382,7 +382,7 @@ function step_check() {
     if(function_exists('sqlite_open')) {
         // pre-select sqlite if it is available
         $conf['dbtype'] = 'sqlite';
-        $conf['dbserver'] = 'conf/localhost';
+        $conf['dbserver'] = 'addressbook.sqlite';
         imsg(str_replace('$1', sqlite_libversion(), $lang['info_sqlite']), 1);
     } else {
         imsg($lang['error_sqlite']);
@@ -481,14 +481,14 @@ function step_finish() {
     if(!$state['config_saved']) {
         // make sure we have creation modes setup correctly
         init_creationmodes();
-        $ret = save_config($new_config, 'conf/config.php');
+        $ret = save_config($new_config);
         if($ret) {
             $state['config_saved'] = 1;
         }
         
         // fix fmode if using sqlite!
         if($conf['dbtype'] == 'sqlite') {
-            fix_fmode(AB_INC.$conf['dbserver']);
+            fix_fmode(AB_STATEDIR.'/'.$conf['dbserver']);
         }
     }
     
@@ -515,7 +515,7 @@ function step_disabled() {
     step_next('open_addressbook', $lang['step_open_ab']);        
 }
 
-function save_config($config, $filename = 'conf/config.php', $overwrite = 0) {
+function save_config($config, $filename = 'config.php', $overwrite = 0) {
     global $lang;
     
     if(!is_array($config) || empty($filename)) {
@@ -530,7 +530,7 @@ function save_config($config, $filename = 'conf/config.php', $overwrite = 0) {
     $header[] = " *";
     $header[] = " */\n\n";
 
-    $file = AB_INC.$filename;
+    $file = AB_CONFDIR.'/'.$filename;
     if(!$overwrite && file_exists($filename)) {
         imsg(str_replace('$1', $file, $lang['error_saveconfig2']), -1);
         return false;

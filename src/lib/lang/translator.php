@@ -12,9 +12,10 @@
 echo "translator disabled"; exit(0);
 
 // define the include path
-if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-require_once(AB_INC.'functions/init.php');
-require_once(AB_INC.'functions/common.php');
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+require_once(AB_BASEDIR.'/lib/php/include.php');
+require_once(AB_BASEDIR.'/lib/php/init.php');
+require_once(AB_BASEDIR.'/lib/php/common.php');
 
 $conf['fmode'] = 666;
 init_creationmodes();
@@ -53,11 +54,11 @@ function update_language($language) {
 	global $base_language;
 	$lang = array();
 	
-	require(AB_INC.'lang/'.$base_language.'/lang.php');
+	require(AB_LANGDIR.'/'.$base_language.'/lang.php');
 	
 	$lang = rewrite($lang);
 	
-	@include(AB_INC.'lang/'.$language.'/lang.php');
+	@include(AB_LANGDIR.'/'.$language.'/lang.php');
 	read_header($language);
 	return $lang;
 }
@@ -65,7 +66,7 @@ function update_language($language) {
 function read_header($language) {
 	global $header;
 	
-	$file = AB_INC.'lang/'.$language.'/lang.php';
+	$file = AB_LANGDIR.'/'.$language.'/lang.php';
 	
 	$header = @file($file);
 	
@@ -96,7 +97,7 @@ function write_lang_php($array, $lng) {
 	global $header;
 	global $conf;
 	
-	$file = AB_INC.'lang/'.$lng.'.php';
+	$file = AB_LANGDIR.'/'.$lng.'.php';
 	$fd = fopen($file, "w");
 	if(!$fd) {
 		echo "could not write $file<br>";
@@ -118,7 +119,7 @@ function write_lang_php($array, $lng) {
 }
 
 function del_lang_php($lng) {
-	$file = AB_INC.'lang/'.$lng.'.php';
+	$file = AB_LANGDIR.'/'.$lng.'.php';
 	@unlink($file);
 }
 

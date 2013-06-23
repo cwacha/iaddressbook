@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AddressBook Default Template
+ * iAddressBook Default Template
  *
  * This is the template you need to change for the overall look
  * of AddressBook.

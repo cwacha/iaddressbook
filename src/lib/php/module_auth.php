@@ -1,25 +1,24 @@
 <?php
-/**
- * AddressBook authentication functions
- *
- * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
- */
+    /**
+     * iAddressBook authentication functions
+     *
+     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+     * @author     Clemens Wacha <clemens.wacha@gmx.net>
+     */
 
-    if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
-    require_once(AB_CONF.'defaults.php');
-
-    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    require_once(AB_INC.'functions/blowfish.php');
-    require_once(AB_INC.'functions/common.php');
-    require_once(AB_INC.'functions/template.php');
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+    require_once(AB_BASEDIR.'/lib/php/include.php');
+    require_once(AB_BASEDIR.'/lib/php/blowfish.php');
+    require_once(AB_BASEDIR.'/lib/php/common.php');
+    require_once(AB_BASEDIR.'/lib/php/template.php');
 
     // prepare authentication array
     global $auth;
     $auth = array();
     
     // load users and permissions
-    @include_once(AB_CONF.'auth.php');
+    @include_once(AB_BASEDIR.'/lib/default/auth.php');
+    @include(AB_CONFDIR.'/auth.php');
 
     // userinfo array, contains information about logged in user (or guest)
     // logged_in is just informative (for template code). $_SESSION['authorized'] contains
@@ -254,7 +253,7 @@ function auth_get_userinfo($username) {
  */
 function auth_cookiesalt(){
     global $conf;
-    $file = AB_INC."_images/_htcookiesalt";
+    $file = AB_STATEDIR."/_htcookiesalt";
     $salt = @file($file);
     if(empty($salt)){
         $salt = uniqid(rand(), true);

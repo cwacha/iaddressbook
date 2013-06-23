@@ -1,19 +1,17 @@
 <?php
-/**
- * AddressBook database functions
- *
- * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
- */
+    /**
+     * iAddressBook database functions
+     *
+     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+     * @author     Clemens Wacha <clemens.wacha@gmx.net>
+     */
 
-    if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
-    require_once(AB_CONF.'defaults.php');
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+    require_once(AB_BASEDIR.'/lib/php/include.php');
 
     define('ADODB_ASSOC_CASE', 1); # use uppercase field names for ADODB_FETCH_ASSOC
-
-    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    require_once(AB_INC."functions/adodb5/adodb.inc.php");
-    require_once(AB_INC."functions/common.php");
+    require_once(AB_BASEDIR.'/lib/php/adodb5/adodb.inc.php');
+    require_once(AB_BASEDIR.'/lib/php/common.php');
 
 function db_msg($msg, $newline=true) {
     msg($msg, -1);
@@ -75,7 +73,7 @@ function db_open() {
     if($db_config['dbdebug']) $db->debug = true;
     
     if($db_config['dbtype'] == 'sqlite') {
-        $db_config['dbserver'] = AB_INC.$db_config['dbserver'];
+        $db_config['dbserver'] = AB_STATEDIR.'/'.$db_config['dbserver'];
     }
     
     if(!$db->Connect($db_config['dbserver'], $db_config['dbuser'], $db_config['dbpass'], $db_config['dbname'])) {
@@ -106,7 +104,7 @@ function db_createtables() {
     
     if(!$db) return false;
     
-    $filename = AB_INC."conf/".$db_config['dbtype'].".sql";
+    $filename = AB_SQLDIR.'/'.$db_config['dbtype'].'.sql';
     $queries = file_get_contents($filename);
     if($queries === false) {
         msg("Error creating db: Cannot open file $filename", -1);

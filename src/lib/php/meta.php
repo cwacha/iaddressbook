@@ -1,24 +1,23 @@
 <?php
+    /**
+     * iAddressBook meta config
+     *
+     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+     * @author     Clemens Wacha <clemens.wacha@gmx.net>
+     */
 
- /**
- * This is the AddressBook's Meta Configuration file
- * This is a piece of PHP code so PHP syntax applies!
- *
- *
- */
-
-// define the include path
-if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-require_once(AB_INC.'functions/common.php');
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+    require_once(AB_BASEDIR.'/lib/php/include.php');
+    require_once(AB_BASEDIR.'/lib/php/common.php');
 
 // read lang and template directory
-function list_dirs($dir, $base=AB_INC) {
+function list_dirs($dir, $base=AB_BASEDIR) {
     return (is_dir($base.'/'.$dir) && (substr($dir, 0, 1) != '.'));
 }
-function is_lang_dir($dir) { return list_dirs($dir, AB_INC.'lang'); }
-function is_tpl_dir($dir) { return list_dirs($dir, AB_INC.'tpl'); }
-$lang_dirs = array_filter(scandir(AB_INC.'lang'), 'is_lang_dir');
-$tpl_dirs = array_filter(scandir(AB_INC.'tpl'), 'is_tpl_dir');
+function is_lang_dir($dir) { return list_dirs($dir, AB_BASEDIR.'/lib/lang'); }
+function is_tpl_dir($dir) { return list_dirs($dir, AB_BASEDIR.'/lib/tpl'); }
+$lang_dirs = array_filter(scandir(AB_BASEDIR.'/lib/lang'), 'is_lang_dir');
+$tpl_dirs = array_filter(scandir(AB_BASEDIR.'/lib/tpl'), 'is_tpl_dir');
 
 
 $meta['fmode'] = array('string');

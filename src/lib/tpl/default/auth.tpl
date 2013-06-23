@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AddressBook Login Page
+ * iAddressBook Login Page
  *
  * You should leave the doctype at the very top - It should
  * always be the very first line of a document.

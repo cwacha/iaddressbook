@@ -1,18 +1,15 @@
 <?php
-/**
- * AddressBook image display functions
- *
- * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
- */
+    /**
+     * iAddressBook image display functions
+     *
+     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+     * @author     Clemens Wacha <clemens.wacha@gmx.net>
+     */
 
-
-    if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
-    require_once(AB_CONF.'defaults.php');
-
-    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    require_once(AB_INC."functions/html.php");
-    require_once(AB_INC."functions/common.php");
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+    require_once(AB_BASEDIR.'/lib/php/include.php');
+    require_once(AB_BASEDIR.'/lib/php/html.php');
+    require_once(AB_BASEDIR.'/lib/php/common.php');
 
 
 function img_create($id, $image) {
@@ -22,7 +19,7 @@ function img_create($id, $image) {
     
     $id = (int)$id;
     $format = strtolower($conf['photo_format']);
-    $image_file = AB_INC."_images/".$id.".".$format;
+    $image_file = AB_IMAGEDIR.'/'.$id.'.'.$format;
     $fd = @fopen($image_file, "wb");
     if(is_resource($fd)) {
         fwrite($fd, $image);
@@ -39,7 +36,7 @@ function img_delete($id) {
     $id = (int)$id;
     if($id != 0) {
         $format = strtolower($conf['photo_format']);
-        $image_file = AB_INC."_images/".$id.".".$format;
+        $image_file = AB_IMAGEDIR.'/'.$id.'.'.$format;
         if(is_readable($image_file)) {
             unlink($image_file);
         }
@@ -51,7 +48,7 @@ function img_load($id) {
 
     $id = (int)$id;    
     $format = strtolower($conf['photo_format']);
-    $image_file = AB_INC."_images/".$id.".".$format;
+    $image_file = AB_IMAGEDIR.'/'.$id.'.'.$format;
     $image = @file_get_contents($image_file);
 
     return $image;
@@ -68,7 +65,7 @@ function img_display() {
     act_getcontact();
 
     $format = strtolower($conf['photo_format']);
-    $image_file = AB_INC."_images/".$contact->id.".".$format;
+    $image_file = AB_IMAGEDIR.'/'.$contact->id.'.'.$format;
     if(is_readable($image_file)) {
         $image = @file_get_contents($image_file);
     }
@@ -103,7 +100,7 @@ function img_convert($in_image, $type='png', $resize='') {
     
     $out_image = '';
     $type = strtolower($type);
-    $tmp_file = AB_INC."_images/tmp.xxx";
+    $tmp_file = AB_IMAGEDIR.'/tmp.xxx';
 
     if(!empty($conf['im_convert']) and is_readable($conf['im_convert'])) {
 

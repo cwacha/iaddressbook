@@ -199,7 +199,7 @@ $lang['baseurl_help']           = 'URL to server including protocol - blank for 
 
 $lang['dbtype_help']            = 'Database type: mysql, sqlite';
 $lang['dbname_help']            = 'The name of the database';
-$lang['dbserver_help']          = 'MySQL: Server to connect to<p>SQLite: Database file';
+$lang['dbserver_help']          = 'MySQL: Server to connect to<br/>SQLite: Database file<br/>';
 $lang['dbuser_help']            = 'Username to connect to server';
 $lang['dbpass_help']            = 'Cleartext password to connect to server';
 
@@ -294,9 +294,9 @@ $lang['welcome_prerequisites']   = '<p><p>
                                         <li>(optional) ImageMagick\'s convert or GD (if you want to import photos)</li>
                                     </ul>
                                     <p>';
-$lang['error_imagefolder']       = 'Cannot use contact photos: No write permission to $1_images';
-$lang['error_importfolder']      = 'Cannot delete vCards from import folder: No write permission to $1_import';
-$lang['error_conffolder']        = 'Cannot create configuration/authorizations: No write permission to $1conf';
+$lang['error_imagefolder']       = 'Cannot use contact photos: No write permission to $1';
+$lang['error_importfolder']      = 'Cannot delete vCards from import folder: No write permission to $1';
+$lang['error_conffolder']        = 'Cannot create configuration/authorizations: No write permission to $1';
 $lang['info_im']                 = 'ImageMagick\'s convert found at: $1';
 $lang['info_im_version']         = 'convert available (version $1)';
 $lang['error_im']                = 'Cannot execute ImageMagick\'s convert at $1';

@@ -64,7 +64,7 @@ define('VCARD_ADR_COUNTRY',  6);
 define('VCARD_GEO_LAT',      0);
 define('VCARD_GEO_LON',      1);
 
-require_once(AB_INC.'functions/PEAR.php');
+require_once(AB_BASEDIR.'/lib/php/PEAR.php');
 //require_once 'PEAR.php';
 
 // written by Clemens Wacha <clemens.wacha@gmx.net>

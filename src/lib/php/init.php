@@ -1,18 +1,21 @@
 <?php
+    /**
+     * iAddressBook initialization routine
+     *
+     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+     * @author     Clemens Wacha <clemens.wacha@gmx.net>
+     */
 
-   /**
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+    require_once(AB_BASEDIR.'/lib/php/include.php');
+    require_once(AB_BASEDIR.'/lib/php/common.php');
+
+    /**
     * Initialize some defaults
     */
-
-	// define the include path
-    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    // define config path
-    if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
     
     global $VERSION; 
-    $VERSION = file_get_contents(AB_INC.'VERSION');
-
-    require_once(AB_INC.'functions/common.php');
+    $VERSION = file_get_contents(AB_BASEDIR.'/VERSION');
     
     // set up error reporting to sane values
     @ini_set('display_errors', 'On');
@@ -35,9 +38,9 @@
     $defaults = array();
 
     // load the config file(s)
-    require_once(AB_CONF.'defaults.php');
+    require_once(AB_BASEDIR.'/lib/default/config.php');
     $defaults = $conf;
-    @include_once(AB_CONF.'config.php');
+    @include_once(AB_CONFDIR.'/config.php');
     
     // init session
     if(!empty($conf['session_name'])) session_name($conf['session_name']);
@@ -67,14 +70,14 @@
     $defaults = array();
 
     // load the config file(s) (again...)
-    @include(AB_CONF.'defaults.php');
+    @include(AB_BASEDIR.'/lib/default/config.php');
     $defaults = $conf;
-    @include(AB_CONF.'config.php');
+    @include(AB_CONFDIR.'/config.php');
         
     // load meta information
     global $meta;
     $meta = array();
-    require_once(AB_INC.'functions/meta.php');
+    require_once(AB_BASEDIR.'/lib/php/meta.php');
     
     //prepare language array
     global $lang;
@@ -84,15 +87,12 @@
     if(!empty($_REQUEST['lang']) && strlen($_REQUEST['lang']) < 6) $conf['lang'] = $_REQUEST['lang'];
     
     //load the language files
-    require_once(AB_INC.'lang/en/lang.php');
-    @include_once(AB_INC.'lang/'.$conf['lang'].'/lang.php');
+    require_once(AB_LANGDIR.'/en/lang.php');
+    @include_once(AB_LANGDIR.'/'.$conf['lang'].'/lang.php');
     $_SESSION['lang'] = $conf['lang'];
-    
-    // define main script
-    //if(!defined('DOKU_SCRIPT')) define('DOKU_SCRIPT','doku.php');
-    
+        
     // define Template baseURL
-    if(!defined('AB_TPL')) define('AB_TPL', AB_BASE.'tpl/'.$conf['template'].'/');
+    if(!defined('AB_TPL')) define('AB_TPL', AB_BASE.'lib/tpl/'.$conf['template'].'/');
     
     // make session rewrites XHTML compliant
     @ini_set('arg_separator.output', '&amp;');    

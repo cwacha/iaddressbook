@@ -1,20 +1,18 @@
 <?php
-/**
- * AddressBook VCard Import
- *
- * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
- */
+    /**
+     * iAddressBook VCard Import
+     *
+     * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+     * @author     Clemens Wacha <clemens.wacha@gmx.net>
+     */
 
-    if(!defined('AB_CONF')) define('AB_CONF',AB_INC.'conf/');
-    require_once(AB_CONF.'defaults.php');
-
-    if(!defined('AB_INC')) define('AB_INC',realpath(dirname(__FILE__).'/../').'/');
-    require_once(AB_INC.'functions/addressbook.php');
-    require_once(AB_INC.'functions/Contact_Vcard_Parse.php');
-    require_once(AB_INC.'functions/Contact_Vcard_Build.php');
-    require_once(AB_INC.'functions/image.php');
-    require_once(AB_INC.'functions/category.php');
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+    require_once(AB_BASEDIR.'/lib/php/include.php');
+    require_once(AB_BASEDIR.'/lib/php/addressbook.php');
+    require_once(AB_BASEDIR.'/lib/php/Contact_Vcard_Parse.php');
+    require_once(AB_BASEDIR.'/lib/php/Contact_Vcard_Build.php');
+    require_once(AB_BASEDIR.'/lib/php/image.php');
+    require_once(AB_BASEDIR.'/lib/php/category.php');
 
     
 
@@ -130,7 +128,7 @@ function act_importvcard($vcard_string) {
 }
 
 function act_importfolder($folder = '') {
-    if($folder == '') $folder = AB_INC.'_import/';
+    if($folder == '') $folder = AB_IMPORTDIR;
 
     $dh = opendir($folder);
     if(!is_resource($dh)) {
