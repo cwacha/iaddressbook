@@ -1,38 +1,54 @@
-# Folder Layout for iAddressbook
+# Old folder layout for iAddressbook
+
+/src
+	/_images        [new: /var/images]
+	/_import        [new: /var/import]
+	/applescript    [new: /lib/applescript]
+	/conf           [new: /conf]
+	/functions      [new: /lib/php]
+	/lang           [new: /lib/lang]
+	/tpl            [new: /lib/tpl]
+	index.php       [new: index.php]
+	install.php     [new: install.php]
+	xmlrpc.php      [new: xmlrpc.php]
+/doc
+/pkg
+
+# New Folder Layout for iAddressbook
 
 /src
 	# code
-	/bin
+	/lib
 		/applescript
-		/functions
-		/defaults
+		/php
+		/default
+            auth.php
+            conf.php
+        /sql
+            *.sql
 		/lang
 		/tpl
 	index.php
 	install.php
 	xmlrpc.php
-	README.txt
-	COPYING.txt
-
-	# plugins
-	/plugins
-		/modules
-		/tpl
 
 	# config
 	/conf
+        auth.php
+        config.php
 
 	# var
 	/var
 		/import
 		/state
+            localhost.sqlite
 		/images
 		/log
 /doc
 /pkg
 
 
-AB_INC=trunk/
+AB_INC=src/
 AB_CONF=$AB_INC/conf/
 AB_TPL=$AB_BASE/tpl/<config>/
 
@@ -43,7 +59,7 @@ AB_COOKIE="AB".md5($AB_URL)
 
 neu:
 
-AB_INC=trunk/
+AB_INC=src/
 AB_CONF=$AB_INC/conf
 AB_BIN=$AB_INC/bin
 AB_TPL=$AB_BASE/tpl/default/
