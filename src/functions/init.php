@@ -66,7 +66,7 @@
     $conf = array();
     $defaults = array();
 
-    // load the config file(s)
+    // load the config file(s) (again...)
     @include(AB_CONF.'defaults.php');
     $defaults = $conf;
     @include(AB_CONF.'config.php');
