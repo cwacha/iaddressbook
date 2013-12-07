@@ -206,13 +206,16 @@ function auth_verify_action($username, $action) {
     global $lang;
     global $auth;
     
+    if(empty($username)) return false;
+
     if(!is_array($auth)) {
         msg("No authentication array found! Access granted. Does conf/auth.php exist?", -1);
         return true;
     }
-    
+
     if(array_key_exists($username, $auth)) {
-        if( in_array($action, $auth[$username]['permissions']) ) return true;
+        $permission = $auth[$username]['permissions'];
+        if( !empty($permission) && in_array($action, permission) ) return true;
     }
     
     if(is_array($auth[$username]['groups'])) {

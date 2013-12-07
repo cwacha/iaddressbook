@@ -485,7 +485,11 @@ function get_contact($params) {
 
     $contact = $AB->get($id);
 
-    if($contact) $contact_categories = $CAT->find($contact->id);
+    if(empty($contact)) {
+        return xml_error('no such contact');
+    }
+    
+    $contact_categories = $CAT->find($contact->id);
     $contact_categories = $CAT->sort($contact_categories);
     
     $person = $contact->get_array();
