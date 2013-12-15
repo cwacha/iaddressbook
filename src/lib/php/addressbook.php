@@ -1,27 +1,109 @@
 <?php
-    /**
+/**
      * iAddressBook adressbook functions
      *
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
+if (!defined('AB_BASEDIR'))
+	define('AB_BASEDIR', realpath(dirname(__FILE__) . '/../../'));
 
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-    require_once(AB_BASEDIR.'/lib/php/include.php');
-    require_once(AB_BASEDIR.'/lib/php/db.php');
-    require_once(AB_BASEDIR.'/lib/php/person.php');
-    require_once(AB_BASEDIR.'/lib/php/common.php');
+require_once (AB_BASEDIR . '/lib/php/include.php');
+require_once (AB_BASEDIR . '/lib/php/db.php');
+require_once (AB_BASEDIR . '/lib/php/person.php');
+require_once (AB_BASEDIR . '/lib/php/common.php');
 
-class addressbook {
+class Addressbooks {
+
+	function Addressbooks() {
+	}
+	
+	function row2book($row) {
+		global $db_config;
+		$prefix = '';
+		$row = array_change_key_case($row, CASE_UPPER);
+		
+		if(!array_key_exists('ID', $row)) {
+			$prefix = strtoupper($db_config['dbtable_addressbooks']) . '.';
+		}
+
+		$book = array(
+				'id' => (int)$row[$prefix . 'ID'],
+				'displayname' => $row[$prefix . 'DISPLAYNAME'],
+				'uri' => $row[$prefix . 'URI'],
+				'description' => $row[$prefix . 'DESCRIPTION'],
+				'ctag' => (int)$row[$prefix . 'CTAG']
+		);
+		return $book;
+	}
+
+	function createAddressbook($principaluri, $displayname = 'default', $uri = 'default', $description = '') {
+		global $db;
+		global $db_config;
+		
+		$principaluri = $db->escape($principaluri);
+		$displayname = $db->escape($displayname);
+		$uri = $db->escape($uri);
+		$description = $db->escape($description);
+		
+		$sql = "INSERT INTO " . $db_config ['dbtable_addressbooks'] . "  (";
+		$sql .= "principaluri, displayname, uri, description, ctag";
+		$sql .= ") VALUES ( ";
+		$sql .= "$principaluri, $displayname, $uri, $description, 1 );";
+		
+		$db->insert($sql);
+		$id = $db->insertId();
+		if ($id == -1) {
+			msg("DB error on createAddressbook: " . $db->lasterror(), -1);
+		}
+		return $id;
+	}
+
+	function getAddressBooksForUser($principaluri) {
+        global $db;
+        global $db_config;
+        $books = array();
+        
+        $principaluri = $db->escape($principaluri);
+        
+        $sql = "SELECT * FROM ".$db_config['dbtable_addressbooks']." WHERE principaluri=$principaluri";
+		$result = $db->selectAll($sql);
+
+		foreach($result as $row) {
+			$books[] = $this->row2book($row);
+		}
+		return $books;
+	}
+
+	function getAddressBookForId($addressbookId) {
+		global $db;
+		global $db_config;
+		
+		$addressbookId = $db->escape((int)$addressbookId);
+		
+		$sql = "SELECT * FROM " . $db_config ['dbtable_addressbooks'] . " WHERE id=$addressbookId";
+		$row = $db->selectOne($sql);
+		if($row) {
+			return $this->row2book($row);
+		}
+		return NULL;
+	}
+	
+}
     
-    function addressbook() {
+class Addressbook {
+    
+	var $addressbookId;
+	
+    function Addressbook($id=-1) {
+    	$this->addressbookId = $id;
     }
     
     function row2contact($row) {
         global $db_config;
         $prefix = '';
         
-        $contact = new person;
+        $contact = new Person;
         if(empty($row)) return $contact;
         
         if(is_object($row)) $row = get_object_vars($row);
@@ -33,6 +115,8 @@ class addressbook {
         }
         
         $contact->id = (int)$row[$prefix . 'ID'];
+        $contact->uid = $contact->unescape($row[$prefix . 'UID']);
+        $contact->etag = (int)$row[$prefix . 'ETAG'];
         $contact->creationdate = $contact->unescape($row[$prefix . 'CREATIONDATE']);
         $contact->modificationdate = $contact->unescape($row[$prefix . 'MODIFICATIONDATE']);
         
@@ -78,10 +162,10 @@ class addressbook {
         foreach($search_array as $key => $value) {
             // escape %
             $value = real_addcslashes($value, "%\\");
-            $value = $db->Quote("%" . $value . "%");
+            $value = $db->escape("%" . $value . "%");
             $search_array[$key] = $value;
         }
-        $selected = $db->Quote($CAT_ID);
+        $selected = $db->escape($CAT_ID);
         
         if($CAT_ID == 0) {
             $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE ";
@@ -141,17 +225,11 @@ class addressbook {
             
             $sql .= ") ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         }
-        $result = $db->Execute($sql);
-        
-        if($result) {
-            while ($row = $result->FetchRow()) {
-                $contact = $this->row2contact($row);
-                $contactlist[$contact->id] = $contact;
-            }
-        } else {
-            // no results
-            msg("DB error on find: ".$db->ErrorMsg(), -1);
-        }
+        $result = $db->selectAll($sql);
+		foreach ( $result as $row ) {
+			$contact = $this->row2contact( $row );
+			$contactlist [$contact->id] = $contact;
+		}
         
         return $contactlist;
     }
@@ -159,14 +237,14 @@ class addressbook {
     function getall($limit = 1000, $offset = 0) {
         global $db;
         global $db_config;
-        global $CAT;
+        //global $CAT;
         global $CAT_ID;
         
         $contactlist = array();
         
         if(!$db) return $contactlist;
         
-        $selected = $db->Quote($CAT_ID);
+        $selected = $db->escape($CAT_ID);
         
         if($CAT_ID == 0) {
             $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
@@ -179,45 +257,45 @@ class addressbook {
             $sql .= " ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
         }
         
-        $result = $db->Execute($sql);
+        $result = $db->selectAll($sql);
         
-        if($result) {
-            while ($row = $result->FetchRow()) {
-                $contact = $this->row2contact($row);
-                $contactlist[$contact->id] = $contact;
-            }
-        } else {
-            // no results
-            msg("DB error on getall: ".$db->ErrorMsg(), -1);
+        foreach($result as $row) {
+        	$contact = $this->row2contact($row);        	 
+        	$contactlist[$contact->id] = $contact;
         }
-        
         return $contactlist;
     }
 
     function get($id, $with_image = false) {
         global $db;
         global $db_config;
+        global $CAT;
         $contact = false;
         if(!$db or $id == 0) return $contact;
         
         // quote db specific characters
-        $id = $db->Quote((int)$id);
+        if(is_string($id)) {
+        	$uid = $db->escape($id);
+        	$sql = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE uid=$uid LIMIT 1";
+		} else {
+			$id = $db->escape(( int ) $id);
+			$sql = "SELECT * FROM " . $db_config ['dbtable_ab'] . " WHERE id=$id LIMIT 1";
+		}
         
-        $sql = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE id=$id LIMIT 1";
-        $result = $db->Execute($sql);
-        
-        if($result) {
-            $row = $result->FetchRow();
-            if($row) {
-                $contact = $this->row2contact($row);
-                if($with_image === true) $contact->image = img_load($contact->id);
-            }
-        } else {
-            // not found
-            msg("DB error on get: ".$db->ErrorMsg(), -1);
-        }
-        
-        return $contact;        
+		$row = $db->selectOne($sql);
+		if (!$row)
+			return false;
+
+		$contact = $this->row2contact($row);
+		$categories = $CAT->getCategoriesForPerson($contact->id);
+		foreach ( $categories as $category ) {
+			$contact->add_category($category);
+		}
+		
+		if ($with_image === true)
+			$contact->image = img_load($contact->id);
+		
+		return $contact;        
     }
     
    
@@ -225,125 +303,174 @@ class addressbook {
         global $db;
         global $db_config;
         global $conf;
+        global $CAT;
         if(!$db) return false;
         
-        if(is_object($contact)) {
-            
-            $contact->validate();
-            
-            // Input validation
-            $id = $db->Quote((int)$contact->id);
-            $title = $db->Quote($contact->escape($contact->title));
-            $firstname = $db->Quote($contact->escape($contact->firstname));
-            $firstname2 = $db->Quote($contact->escape($contact->firstname2));
-            $lastname = $db->Quote($contact->escape($contact->lastname));
-            $suffix = $db->Quote($contact->escape($contact->suffix));
-            $nickname = $db->Quote($contact->escape($contact->nickname));
-            $phoneticfirstname = $db->Quote($contact->escape($contact->phoneticfirstname));
-            $phoneticlastname = $db->Quote($contact->escape($contact->phoneticlastname));
-            $jobtitle = $db->Quote($contact->escape($contact->jobtitle));
-            $department = $db->Quote($contact->escape($contact->department));
-            $organization = $db->Quote($contact->escape($contact->organization));
-            $company = $db->Quote( (int)$contact->company);
-            $birthdate = $db->Quote($contact->escape($contact->birthdate));
-            $note = $db->Quote($contact->escape($contact->note));
-                        
-            $a_line = $db->Quote($contact->addresses_string());
-            $e_line = $db->Quote($contact->emails_string());
-            $p_line = $db->Quote($contact->phones_string());
-            $c_line = $db->Quote($contact->chathandles_string());
-            $r_line = $db->Quote($contact->relatednames_string());
-            $u_line = $db->Quote($contact->urls_string());
-            
-            $mod_date = $db->Quote($contact->escape(gmdate('Y-m-d H:i:s') . ' GMT'));
-            
-            if(empty($contact->birthdate)) $contact->birthdate = '0001-01-01';
-            
-            if($contact->id == 0) {
-                // insert
-                $sql = "INSERT INTO ".$db_config['dbtable_ab']."  ";
-                $sql .= "( title, firstname, firstname2, lastname, suffix, nickname, phoneticfirstname, phoneticlastname, ";
-                $sql .= "jobtitle, department, organization, company, birthdate, note, ";
-                $sql .= "addresses, emails, phones, chathandles, relatednames, urls, creationdate, modificationdate ) VALUES ( ";
-                //$sql .= "VALUES (";
-                
-                $sql .= "$title, $firstname, $firstname2, $lastname, $suffix, $nickname, $phoneticfirstname, $phoneticlastname, ";
-                $sql .= "$jobtitle, $department, $organization, $company, $birthdate, $note, ";
-                
-                $sql .= "$a_line, $e_line, $p_line, $c_line, $r_line, $u_line, $mod_date, $mod_date );";
-                
-            } else {
-                // update
-                $sql = "UPDATE ".$db_config['dbtable_ab']." SET ";
-                    
-                $sql .= "title=$title, ";
-                $sql .= "firstname=$firstname, ";
-                $sql .= "firstname2=$firstname2, ";
-                $sql .= "lastname=$lastname, ";
-                $sql .= "suffix=$suffix, ";
-                $sql .= "nickname=$nickname, ";
-                $sql .= "phoneticfirstname=$phoneticfirstname, ";
-                $sql .= "phoneticlastname=$phoneticlastname, ";
-
-                $sql .= "jobtitle=$jobtitle, ";
-                $sql .= "department=$department, ";
-                $sql .= "organization=$organization, ";
-                $sql .= "company=$company, ";
-                
-                $sql .= "birthdate=$birthdate, ";
-                $sql .= "note=$note, ";
-
-                $sql .= "addresses=$a_line, ";
-                $sql .= "emails=$e_line, ";
-                $sql .= "phones=$p_line, ";
-                $sql .= "chathandles=$c_line, ";
-                $sql .= "relatednames=$r_line, ";
-                $sql .= "urls=$u_line, ";
-    
-                $sql .= "modificationdate = $mod_date ";
-    
-                $sql .= "WHERE id=$id";
-            }
-            
-            $result = $db->Execute($sql);
-            if(!$result) {
-                msg("DB error on set: ". $db->ErrorMsg(), -1);
-                return false;
-            }
-            
-            if($contact->id == 0) $contact->id = $db->Insert_ID();
-            //msg("InsertID: ". $db->Insert_ID());
-            
-            if($contact->id > 0) {
-                if(!empty($contact->image)) {
-                    // convert and create image file
-                    $contact->image = img_convert($contact->image, $conf['photo_format'], $conf['photo_resize']);
-                    img_create($contact->id, $contact->image);
-                } else {
-                    img_delete($contact->id);
-                }
-            }
-            
-            return $contact->id;
+        if(!is_object($contact)) {
+        	return false;
         }
+        
+		$contact->validate();
+		
+		if (empty($contact->uid)) {
+			$uid = '';
+			while ( strlen($uid) < 32 ) {
+				$uid .= uniqid();
+			}
+			$contact->uid = strtoupper(sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)));
+		}
+		
+		// Input validation
+		$id = $db->escape(( int ) $contact->id);
+		$uid = $db->escape($contact->escape($contact->uid));
+		$title = $db->escape($contact->escape($contact->title));
+		$firstname = $db->escape($contact->escape($contact->firstname));
+		$firstname2 = $db->escape($contact->escape($contact->firstname2));
+		$lastname = $db->escape($contact->escape($contact->lastname));
+		$suffix = $db->escape($contact->escape($contact->suffix));
+		$nickname = $db->escape($contact->escape($contact->nickname));
+		$phoneticfirstname = $db->escape($contact->escape($contact->phoneticfirstname));
+		$phoneticlastname = $db->escape($contact->escape($contact->phoneticlastname));
+		$jobtitle = $db->escape($contact->escape($contact->jobtitle));
+		$department = $db->escape($contact->escape($contact->department));
+		$organization = $db->escape($contact->escape($contact->organization));
+		$company = $db->escape(( int ) $contact->company);
+		$birthdate = $db->escape($contact->escape($contact->birthdate));
+		$note = $db->escape($contact->escape($contact->note));
+		
+		$a_line = $db->escape($contact->addresses_string());
+		$e_line = $db->escape($contact->emails_string());
+		$p_line = $db->escape($contact->phones_string());
+		$c_line = $db->escape($contact->chathandles_string());
+		$r_line = $db->escape($contact->relatednames_string());
+		$u_line = $db->escape($contact->urls_string());
+		
+		$mod_date = $db->escape($contact->escape(gmdate('Y-m-d H:i:s') . ' GMT'));
+		
+		if (empty($contact->birthdate))
+			$contact->birthdate = '0001-01-01';
+		
+		if ($contact->id == 0) {
+			// insert
+			$sql = "INSERT INTO " . $db_config ['dbtable_ab'] . "  (";
+			$sql .= "uid, etag, ";
+			$sql .= "title, firstname, firstname2, lastname, suffix, nickname, phoneticfirstname, phoneticlastname, ";
+			$sql .= "jobtitle, department, organization, company, birthdate, note, ";
+			$sql .= "addresses, emails, phones, chathandles, relatednames, urls, creationdate, modificationdate ";
+			$sql .= ") VALUES ( ";
+			
+			$sql .= "$uid, 1, ";
+			$sql .= "$title, $firstname, $firstname2, $lastname, $suffix, $nickname, $phoneticfirstname, $phoneticlastname, ";
+			$sql .= "$jobtitle, $department, $organization, $company, $birthdate, $note, ";
+			$sql .= "$a_line, $e_line, $p_line, $c_line, $r_line, $u_line, $mod_date, $mod_date );";
+			
+			$db->insert($sql);
+			$insertid = $db->insertId();
+			if ($insertid == -1) {
+				msg("DB error on set: " . $db->lasterror(), -1);
+				return false;
+			}
+			$contact->id = $insertid;
+		} else {
+			// update
+			$sql = "UPDATE " . $db_config ['dbtable_ab'] . " SET ";
+			
+			$sql .= "uid=$uid, ";
+			$sql .= "etag=etag+1, ";
+			$sql .= "title=$title, ";
+			$sql .= "firstname=$firstname, ";
+			$sql .= "firstname2=$firstname2, ";
+			$sql .= "lastname=$lastname, ";
+			$sql .= "suffix=$suffix, ";
+			$sql .= "nickname=$nickname, ";
+			$sql .= "phoneticfirstname=$phoneticfirstname, ";
+			$sql .= "phoneticlastname=$phoneticlastname, ";
+			
+			$sql .= "jobtitle=$jobtitle, ";
+			$sql .= "department=$department, ";
+			$sql .= "organization=$organization, ";
+			$sql .= "company=$company, ";
+			
+			$sql .= "birthdate=$birthdate, ";
+			$sql .= "note=$note, ";
+			
+			$sql .= "addresses=$a_line, ";
+			$sql .= "emails=$e_line, ";
+			$sql .= "phones=$p_line, ";
+			$sql .= "chathandles=$c_line, ";
+			$sql .= "relatednames=$r_line, ";
+			$sql .= "urls=$u_line, ";
+			
+			$sql .= "modificationdate = $mod_date ";
+			
+			$sql .= "WHERE id=$id";
+			$result = $db->update($sql);
+			if (!$result) {
+				msg("DB error on set: " . $db->lasterror(), -1);
+				return false;
+			}
+		}
+
+		if($conf['mark_changed']) {
+			//since the contact is new or has changed, add it to the "changed" category!
+			$changed_category = ' __changed__';
+			$contact->add_category($changed_category);
+		}
+		
+		$old_categories = $CAT->getCategoriesForPerson($contact->id);
+		$new_categories = $contact->get_categories();
+		
+		foreach($new_categories as $category) {
+			$CAT->addPersonToCategory($contact->id, $category->name());
+		}
+		
+		// calculate removed categories
+		foreach($old_categories as $old_category) {
+			$should_remove = true;
+			foreach($new_categories as $new_category) {
+				if($old_category->name() == $new_category->name())
+					$should_remove = false;
+			}
+			if($should_remove)
+				$CAT->deletePersonFromCategory($contact->id, $old_category->name());
+		}
+		
+		$this->update_ctag();
+		
+		if ($contact->id > 0) {
+			if (!empty($contact->image)) {
+				// convert and create image file
+				$contact->image = img_convert($contact->image, $conf ['photo_format'], $conf ['photo_resize']);
+				img_create($contact->id, $contact->image);
+			} else {
+				img_delete($contact->id);
+			}
+		}
+		
+		return $contact->id;
     }
     
-    function delete($id) {
+    function delete($personId) {
         global $db;
         global $db_config;
-        if(!$db) return;
+        global $CAT;
+        if(!$db) return false;
         
-        img_delete($id);
-
+        img_delete($personId);
+        $CAT->deletePersonFromAllCategories($personId);
+        
         // quote db specific characters
-        $id = $db->Quote((int)$id);
+        $personId = $db->escape((int)$personId);
         
-        $sql = "DELETE FROM ".$db_config['dbtable_ab']." WHERE id=$id";
-        $result = $db->Execute($sql);
+        $sql = "DELETE FROM ".$db_config['dbtable_ab']." WHERE id=$personId";
+        $result = $db->delete($sql);
         if(!$result) {
-            msg("DB error on delete: ". $db->ErrorMsg(), -1);
-            print_r($result);
-        }        
+            msg("DB error on delete: ". $db->lasterror(), -1);
+            return false;
+        }
+        
+        $this->update_ctag();
+        return true;
     }
     
     function is_duplicate($contact) {
@@ -351,34 +478,33 @@ class addressbook {
         global $db_config;
         if(!$db) return false;
         
-        //return false;
-
         $contact->validate();
         
         // Input validation
         $id = (int)$contact->id;
-        $title = $db->Quote($contact->escape($contact->title));
-        $firstname = $db->Quote($contact->escape($contact->firstname));
-        $firstname2 = $db->Quote($contact->escape($contact->firstname2));
-        $lastname = $db->Quote($contact->escape($contact->lastname));
-        $suffix = $db->Quote($contact->escape($contact->suffix));
-        $nickname = $db->Quote($contact->escape($contact->nickname));
-        $phoneticfirstname = $db->Quote($contact->escape($contact->phoneticfirstname));
-        $phoneticlastname = $db->Quote($contact->escape($contact->phoneticlastname));
-        $jobtitle = $db->Quote($contact->escape($contact->jobtitle));
-        $department = $db->Quote($contact->escape($contact->department));
-        $organization = $db->Quote($contact->escape($contact->organization));
-        $company = $db->Quote((int)$contact->company);
-        $birthdate = $db->Quote($contact->escape($contact->birthdate));
-        $note = $db->Quote($contact->escape($contact->note));
+        $uid = $db->escape($contact->escape($contact->uid));
+        $title = $db->escape($contact->escape($contact->title));
+        $firstname = $db->escape($contact->escape($contact->firstname));
+        $firstname2 = $db->escape($contact->escape($contact->firstname2));
+        $lastname = $db->escape($contact->escape($contact->lastname));
+        $suffix = $db->escape($contact->escape($contact->suffix));
+        $nickname = $db->escape($contact->escape($contact->nickname));
+        $phoneticfirstname = $db->escape($contact->escape($contact->phoneticfirstname));
+        $phoneticlastname = $db->escape($contact->escape($contact->phoneticlastname));
+        $jobtitle = $db->escape($contact->escape($contact->jobtitle));
+        $department = $db->escape($contact->escape($contact->department));
+        $organization = $db->escape($contact->escape($contact->organization));
+        $company = $db->escape((int)$contact->company);
+        $birthdate = $db->escape($contact->escape($contact->birthdate));
+        $note = $db->escape($contact->escape($contact->note));
         // TODO: what to do with the photo??
         
-        $a_line = $db->Quote($contact->addresses_string());
-        $e_line = $db->Quote($contact->emails_string());
-        $p_line = $db->Quote($contact->phones_string());
-        $c_line = $db->Quote($contact->chathandles_string());
-        $r_line = $db->Quote($contact->relatednames_string());
-        $u_line = $db->Quote($contact->urls_string());
+        $a_line = $db->escape($contact->addresses_string());
+        $e_line = $db->escape($contact->emails_string());
+        $p_line = $db->escape($contact->phones_string());
+        $c_line = $db->escape($contact->chathandles_string());
+        $r_line = $db->escape($contact->relatednames_string());
+        $u_line = $db->escape($contact->urls_string());
 
         
         $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE ";
@@ -405,17 +531,12 @@ class addressbook {
         $sql .= "(chathandles = $c_line) AND ";
         $sql .= "(relatednames = $r_line) AND ";
         $sql .= "(urls = $u_line) ";
-        //$sql .= "LIMIT 1";
-        
-        $result = $db->Execute($sql);
-        if($result) {
-            $row = $result->FetchRow();
-            if($row) return true;
-        } else {
-            msg("DB error on is_duplicate: ". $db->ErrorMsg(), -1);
-        }
-        
-        return false;
+			// $sql .= "LIMIT 1";
+		$row = $db->selectOne($sql);
+		if ($row)
+			return true;
+		
+		return false;
     }
     
     function sort($contactlist) {
@@ -441,8 +562,17 @@ class addressbook {
         
         return $sorted;
     }
-
-
+        
+    function update_ctag() {
+    	global $db;
+    	global $db_config;
+    	
+        $id = $db->escape($this->addressbookId);
+    	
+    	$sql = "UPDATE ".$db_config['dbtable_addressbooks']." SET ctag=ctag+1 WHERE id=$id";
+    	$db->update($sql);
+    }
+    
 }
 
 

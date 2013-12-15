@@ -11,7 +11,7 @@
     require_once(AB_BASEDIR.'/lib/php/common.php');
 
 
-class person {
+class Person {
     var $title;
     var $firstname;
     var $firstname2;
@@ -32,7 +32,9 @@ class person {
 
     var $creationdate;    // date in format: "YYYY-MM-DD HH:MM:SS GMT"
     var $modificationdate;    // date in format: "YYYY-MM-DD HH:MM:SS GMT"
-    var $id;
+    var $id;    // DB id
+    var $uid;   // UUID string (new and no check for uniqueness yet)
+    var $etag;  // edit tag integer that increases everytime the person is saved
 
     // embedded objects
     var $addresses;
@@ -41,8 +43,11 @@ class person {
     var $chathandles;
     var $relatednames;
     var $urls;
+    
+    // categories
+    var $categories; // conains array of categories (keys will not match DB IDs!)
 
-    function person() {
+    function Person() {
         $this->company = 0;
         $this->birthdate = '0000-00-00';
 
@@ -53,7 +58,11 @@ class person {
         $this->relatednames = array();
         $this->urls = array();
         
+        $this->categories = array();
+        
         $this->id = 0;
+        $this->uid = '';
+        $this->etag = 0;
         $this->creationdate = gmdate('Y-m-d H:i:s') . ' GMT';
         $this->modificationdate = gmdate('Y-m-d H:i:s') . ' GMT';
     }
@@ -80,6 +89,8 @@ class person {
         $person['creationdate'] = $this->creationdate;
         $person['modificationdate'] = $this->modificationdate;
         $person['id'] = $this->id;
+        $person['uid'] = $this->uid;
+        $person['etag'] = $this->etag;
 
         $person['addresses'] = $this->addresses;
         $person['emails'] = $this->emails;
@@ -87,6 +98,7 @@ class person {
         $person['chathandles'] = $this->chathandles;
         $person['relatednames'] = $this->relatednames;
         $person['urls'] = $this->urls;
+        $person['categories'] = $this->categories;
 
         return $person;
     }
@@ -116,6 +128,8 @@ class person {
         $this->modificationdate   = gmdate('Y-m-d H:i:s') . ' GMT';
 
         $this->id                 = $person['id'];
+        $this->uid                = $person['uid'];
+        $this->etag               = $person['etag'];
 
         $this->addresses          = $person['addresses'];
         $this->emails             = $person['emails'];
@@ -123,6 +137,8 @@ class person {
         $this->chathandles        = $person['chathandles'];
         $this->relatednames       = $person['relatednames'];
         $this->urls               = $person['urls'];
+        
+        $this->categories         = $person['categories'];
 
         $this->validate();
     }
@@ -200,6 +216,7 @@ class person {
         if(!is_array($this->chathandles)) $this->chathandles = array();
         if(!is_array($this->relatednames)) $this->relatednames = array();
         if(!is_array($this->urls)) $this->urls = array();
+        if(!is_array($this->categories)) $this->categories = array();
     }
 
     function add_address($address) {
@@ -323,70 +340,44 @@ class person {
         }
         return false;
     }
-        
-    function show() {
-        echo "$this->title $this->firstname $this->firstname2 $this->lastname $this->suffix<br>\n";
-        if($this->nickname != "") echo "\"$this->nickname\"<br>\n";
-        echo "<br>\n";
-        if($this->company) {
-        
-        } else {
-            
-        }
-        if($this->jobtitle != "") echo "Title: $this->jobtitle<br>\n";
-        if($this->department != "") echo "Dept. : $this->department<br>\n";
-        if($this->organization != "") echo "Organization: $this->organization<br>\n";
-        echo "<br>\n";
-        
-        
-        if(!empty($this->birthdate) and $this->birthdate != "0000-00-00") echo "Birth day: " . date('d.m.Y', strtotime($this->birthdate)) . "<br>\n";
-        if($this->homepage != "") echo "Homepage: $this->homepage<br>\n";
-        if($this->image != "") echo "Image exists<br>\n";
-        echo "<br>\n";
-        if($this->note) echo "Note: $this->note<br>\n";
-        
-
-        foreach ($this->addresses as $address) {
-            echo "address {$address['label']}:<br>\n";
-            echo "    {$address['street']}<br>\n";
-            echo "    {$address['zip']} {$address['city']}<br>\n";
-            echo "    {$address['country']} ({$address['template']})<br>\n";
-            echo "    {$address['state']}<br>\n";
-            echo "<br>\n";
-        }
-        
-        foreach ($this->emails as $email) {
-            echo "email {$email['label']}: {$email['email']}<br>\n";
-        }
-        echo "<br>\n";
-
-        foreach ($this->phones as $phone) {
-            echo "phone {$phone['label']}: {$phone['phone']}<br>\n";
-        }
-        echo "<br>\n";
-
-        foreach ($this->urls as $url) {
-            echo "url {$url['label']}: {$url['url']}<br>\n";
-        }
-        echo "<br>\n";
-        
-        foreach ($this->chathandles as $handle) {
-            echo "{$handle['label']} (type: {$handle['type']}): {$handle['handle']}<br>\n";
-        }
-        echo "<br>\n";
-
-        foreach ($this->relatednames as $name) {
-            echo "{$name['label']}: {$name['name']}<br>\n";
-        }
-        echo "<br>\n";
-
-        echo "created: ". date('r', strtotime($this->creationdate)) ." ($this->creationdate)<br>\n";
-        echo "modified: ". date('r', strtotime($this->modificationdate)) ." ($this->modificationdate)<br>\n";
-        echo "id: $this->id<br>\n";
-        echo "<br>\n";
-
-   }
-
+    
+    function add_category($category) {
+    	if(!is_object($category))
+			return;
+		
+		foreach ( $this->categories as $cat ) {
+			if ($cat->name() == $category->name())
+				return;
+		}
+		$this->categories [] = $category;
+	}
+    
+    function del_category_by_name($categoryName) {
+    	if(!is_string($categoryName) || empty($categoryName))
+    		return;
+    	
+    	foreach ( $this->categories as $key => $category ) {
+    		if ($category->name() == $categoryName) {
+    			unset($this->categories[$key]);
+    		}
+    	}
+    }
+    
+    function clear_categories() {
+    	$this->categories = array();
+    }
+    
+    function sort_categories() {
+    	global $CAT;
+    	
+    	$this->categories = $CAT->sort($this->categories); 
+    }
+    
+    // return array of category class objects
+    function get_categories() {
+    	return $this->categories;
+    }
+    
     function addresses_string() {
         $line = "";
         
@@ -636,6 +627,8 @@ class person {
         
         $this->company            = (int)$this->company;
         $this->id                 = (int)$this->id;
+        $this->uid                = real_nl2br(htmlspecialchars($this->uid));
+        $this->etag               = (int)$this->etag;
         
         $this->creationdate       = real_nl2br(htmlspecialchars($this->creationdate));
         $this->modificationdate   = real_nl2br(htmlspecialchars($this->modificationdate));
@@ -684,6 +677,13 @@ class person {
                 $this->urls[$key]['url']   = real_nl2br(htmlspecialchars($this->urls[$key]['url']));
             }
         }
+        
+        if(is_array($this->categories)) {
+        	foreach($this->categories as $key => $value) {
+        		$this->categories[$key] = $this->html_escapelabel($value);
+        	}
+        }
+        
     }
     
 }

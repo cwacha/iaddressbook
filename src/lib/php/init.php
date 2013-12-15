@@ -6,7 +6,7 @@
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
 
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
+	if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
     require_once(AB_BASEDIR.'/lib/php/include.php');
     require_once(AB_BASEDIR.'/lib/php/common.php');
 
@@ -52,7 +52,7 @@
     }
 
     // set register_globals to off
-    if (ini_get(register_globals)) {
+    if (ini_get('register_globals')) {
         $array = array('_REQUEST', '_SESSION', '_SERVER', '_ENV', '_FILES');
         foreach ($array as $value) {
             foreach ($GLOBALS[$value] as $key => $var) {
@@ -106,7 +106,10 @@
         //if (!empty($_SESSION)) remove_magic_quotes($_SESSION);
         @ini_set('magic_quotes_gpc', 0);
     }
-    @set_magic_quotes_runtime(0);
+    if(get_magic_quotes_runtime()) {
+        // Deactivate
+        set_magic_quotes_runtime(false);
+    }
     @ini_set('magic_quotes_sybase',0);
     
 
@@ -164,58 +167,62 @@ function remove_magic_quotes(&$array) {
  * @author Andreas Gohr <andi@splitbrain.org>
  */
 
-function getBaseURL($abs=false){
-  global $conf;
-  //if canonical url enabled always return absolute
-  if($conf['canonical']) $abs = true;
-
-  if($conf['basedir']){
-    $dir = $conf['basedir'].'/';
-  }elseif($_SERVER['SCRIPT_NAME']){
-    $dir = dirname($_SERVER['SCRIPT_NAME']).'/';
-  }elseif($_SERVER['DOCUMENT_ROOT'] && $_SERVER['SCRIPT_FILENAME']){
-    $dir = preg_replace ('/^'.preg_quote($_SERVER['DOCUMENT_ROOT'],'/').'/','',
-                         $_SERVER['SCRIPT_FILENAME']);
-    $dir = dirname('/'.$dir).'/';
-  }else{
-    $dir = dirname($_SERVER['PHP_SELF']).'/';
-  }
-
-  $dir = str_replace('\\','/',$dir); #bugfix for weird WIN behaviour
-  $dir = preg_replace('#//+#','/',$dir);
-
-  //handle script in lib/exe dir
-  $dir = preg_replace('!lib/exe/$!','',$dir);
-
-  //finish here for relative URLs
-  if(!$abs) return $dir;
-
-  //use config option if available
-  if($conf['baseurl']) return $conf['baseurl'].$dir;
-
-  //split hostheader into host and port
-  list($host, $port) = explode(':', $_SERVER['HTTP_HOST']);
-  if(!$port)  $port = $_SERVER['SERVER_PORT'];
-  if(!$port)  $port = 80;
-
-  // see if HTTPS is enabled - apache leaves this empty when not available,
-  // IIS sets it to 'off', 'false' and 'disabled' are just guessing
-  if (preg_match('/^(|off|false|disabled)$/i',$_SERVER['HTTPS'])){
-    $proto = 'http://';
-    if ($port == '80') {
-      $port='';
+    function getBaseURL($abs=false){
+        global $conf;
+        //if canonical url enabled always return absolute
+        if($conf['canonical']) $abs = true;
+        
+        if($conf['basedir']){
+            $dir = $conf['basedir'].'/';
+        }elseif($_SERVER['SCRIPT_NAME']){
+            $dir = dirname($_SERVER['SCRIPT_NAME']).'/';
+        }elseif($_SERVER['DOCUMENT_ROOT'] && $_SERVER['SCRIPT_FILENAME']){
+            $dir = preg_replace ('/^'.preg_quote($_SERVER['DOCUMENT_ROOT'],'/').'/','',
+                                 $_SERVER['SCRIPT_FILENAME']);
+            $dir = dirname('/'.$dir).'/';
+        }else{
+            $dir = dirname($_SERVER['PHP_SELF']).'/';
+        }
+        
+        $dir = str_replace('\\','/',$dir); #bugfix for weird WIN behaviour
+        $dir = preg_replace('#//+#','/',$dir);
+        
+        //handle script in lib/exe dir
+        $dir = preg_replace('!lib/exe/$!','',$dir);
+        
+        //finish here for relative URLs
+        if(!$abs) return $dir;
+        
+        //use config option if available
+        if($conf['baseurl']) return $conf['baseurl'].$dir;
+        
+        //split hostheader into host and port
+        list($host, $port) = explode(':', $_SERVER['HTTP_HOST'] . ':');
+        if(!$port)  $port = $_SERVER['SERVER_PORT'];
+        if(!$port)  $port = 80;
+        
+        // see if HTTPS is enabled - apache leaves this empty when not available,
+        // IIS sets it to 'off', 'false' and 'disabled' are just guessing
+        
+        $proto = 'http://';
+        if(array_key_exists('HTTPS', $_SERVER)) {
+            if (preg_match('/^(|off|false|disabled)$/i',$_SERVER['HTTPS'])){
+                $proto = 'http://';
+                if ($port == '80') {
+                    $port='';
+                }
+            } else {
+                $proto = 'https://';
+                if ($port == '443') {
+                    $port='';
+                }
+            }
+        }
+        
+        if($port) $port = ':'.$port;
+        
+        return $proto.$host.$port.$dir;
     }
-  }else{
-    $proto = 'https://';
-    if ($port == '443') {
-      $port='';
-    }
-  }
-
-  if($port) $port = ':'.$port;
-
-  return $proto.$host.$port.$dir;
-}
 
 
 ?>

@@ -119,48 +119,15 @@ function auth_check($force_login = false) {
  *
  * @return  boolean
  */
-function auth_login($username, $password) {
+function auth_login($userid, $password) {
     global $auth;
+    global $conf;
     
-    if(array_key_exists($username, $auth) && $auth[$username]['password'] == md5($password)) {
-        return true;
-    }
-    return false;
-}
-
-
-// currently unused 
-function auth_login_db($username, $password) {
-    global $db;
-    global $db_config;
-    
-    if(empty($username)) return false;
-    
-    if(!$db) {
-        msg("DB not available. Login failed.", -1);
-        return false;
-    }
-    
-    // quote db specific characters
-    $u = $db->Quote($username);
+    if(!$conf['auth_enabled'] || $conf['auth_allow_guest'])
+    	return true;
         
-    $sql = "SELECT * FROM ".$db_config['dbtable_users']." WHERE username=$u";
-    $result = $db->Execute($sql);
-    if(!$result) {
-        msg("DB error on login. Login failed: ". $db->ErrorMsg(), -1);
-        return false;
-    }
-    
-    $row = $result->FetchRow();
-    if($row) {
-        // user found. now check password
-        if(is_object($row)) $row = get_object_vars($row);        
-        $row = array_change_key_case($row, CASE_UPPER);
-        if(!array_key_exists('ID', $row)) {
-            $prefix = strtoupper($db_config['dbtable_users']) . '.';
-        }
-        $db_pw = $row[$prefix . 'PASSWORD'];
-        if(md5($password) == $db_pw) return true;
+    if(array_key_exists($userid, $auth) && $auth[$userid]['password'] == md5($password)) {
+        return true;
     }
     return false;
 }
@@ -201,25 +168,25 @@ function auth_logout() {
  * @param   action
  * @return  boolean isAllowed 
  */
-function auth_verify_action($username, $action) {
+function auth_verify_action($userid, $action) {
     global $conf;
     global $lang;
     global $auth;
     
-    if(empty($username)) return false;
+    if(empty($userid)) return false;
 
     if(!is_array($auth)) {
         msg("No authentication array found! Access granted. Does conf/auth.php exist?", -1);
         return true;
     }
 
-    if(array_key_exists($username, $auth)) {
-        $permission = $auth[$username]['permissions'];
+    if(array_key_exists($userid, $auth)) {
+        $permission = $auth[$userid]['permissions'];
         if( !empty($permission) && in_array($action, permission) ) return true;
     }
     
-    if(is_array($auth[$username]['groups'])) {
-        foreach($auth[$username]['groups'] as $group) {
+    if(is_array($auth[$userid]['groups'])) {
+        foreach($auth[$userid]['groups'] as $group) {
             if( in_array($action, $auth[$group]['permissions']) ) return true;
         }
     }
@@ -229,14 +196,14 @@ function auth_verify_action($username, $action) {
     return false;
 }
 
-function auth_get_userinfo($username) {
+function auth_get_userinfo($userid) {
     global $auth;
     $ui = array();
     
-    if(array_key_exists($username, $auth)) {
-        $ui['username'] = $username;
-        $ui['fullname'] = $auth[$username]['fullname'];
-        $ui['email']    = $auth[$username]['email'];
+    if(array_key_exists($userid, $auth)) {
+        $ui['userid'] = $userid;
+        $ui['fullname'] = $auth[$userid]['fullname'];
+        $ui['email']    = $auth[$userid]['email'];
     }
 
     return $ui;

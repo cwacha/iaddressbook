@@ -64,16 +64,16 @@
                     <?php
                         foreach($categories as $category) {
                             if($category->id == $CAT_ID) {
-                                if(substr($category->int_name,0,1) != ' ')
-                                    echo "<option value='catdel_$category->id' >".$lang['cat_delete']." $category->name</option>";
+                                if(substr($category->name(),0,1) != ' ')
+                                    echo "<option value='catdel_$category->id' >".$lang['cat_delete']." ".$category->displayName()."</option>";
                             }
                         }
                     ?>
                     <optgroup label="<?php echo $lang['cat_add_to']; ?>">
                     <?php
                         foreach($categories as $category) {
-                            if(substr($category->int_name,0,1) != ' ')
-                                echo "<option value='addcon_$category->id' $sel >$category->name</option> \n";
+                            if(substr($category->name(),0,1) != ' ')
+                                echo "<option value='addcon_$category->id' $sel >".$category->displayName()."</option> \n";
                         }
                     ?>
                     </optgroup>
@@ -81,10 +81,10 @@
                     <?php
                         foreach($categories as $category) {
                             $disp = 1;
-                            if($category->int_name == ' __all__') $disp = 0;
-                            if($category->int_name == ' __lastimport__') $disp = 0;
+                            if($category->name() == ' __all__') $disp = 0;
+                            if($category->name() == ' __lastimport__') $disp = 0;
                             if($CAT_ID != 0 && $category->id != $CAT_ID) $disp = 0;
-                            if($disp) echo "<option value='delcon_$category->id' $sel >$category->name</option> \n";
+                            if($disp) echo "<option value='delcon_$category->id' $sel >".$category->displayName()."</option> \n";
                         }
                     ?>
                     </optgroup>

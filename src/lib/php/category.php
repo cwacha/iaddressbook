@@ -1,364 +1,377 @@
 <?php
-    /**
+/**
      * iAddressBook category functions
      *
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
+if (!defined('AB_BASEDIR'))
+	define('AB_BASEDIR', realpath(dirname(__FILE__) . '/../../'));
+require_once (AB_BASEDIR . '/lib/php/include.php');
+require_once (AB_BASEDIR . '/lib/php/db.php');
+require_once (AB_BASEDIR . '/lib/php/common.php');
 
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-    require_once(AB_BASEDIR.'/lib/php/include.php');
-    require_once(AB_BASEDIR.'/lib/php/db.php');
-    require_once(AB_BASEDIR.'/lib/php/common.php');
+class Category {
+	var $id;
+	var $name;
 
+	function Category($name = '') {
+		$this->id = 0;
+		$this->name = $name;
+	}
 
-class category {
-    var $id;
-    var $int_name; // internal name (used for sort)
-    var $name;
-    var $type;
-    var $query;
-    
-    function category() {
-        $this->id = 0;
-        $this->int_name = '';
-        $this->name = '';
-        $this->type = 0;
-        $this->query = '';
-    }
+	public function name() {
+		return $this->name;
+	}
 
-    function html_escape() {
-        $this->id = (int)$this->id;
-        $this->name = htmlspecialchars($this->name);
-        $this->type = (int)$this->type;
-        //this->query??
-    }
+	function displayName() {
+		global $lang;
+		
+		if ($this->name == ' __all__')
+			return $lang ['category_all'];
+		if ($this->name == ' __lastimport__')
+			return $lang ['cat_lastimport'];
+		if ($this->name == ' __changed__')
+			return $lang ['cat_changed'];
+		
+		return $this->name;
+	}
 
+	public function html_escape() {
+		$this->id = ( int ) $this->id;
+		$this->name = htmlspecialchars($this->name);
+	}
 }
+class Categories {
 
-class categories {
+	function Categories($config = NULL) {
+	}
 
-    //var $selected;
+	function row2category($row) {
+		global $lang;
+		global $db_config;
+		$prefix = '';
+		
+		$category = new Category();
+		if (empty($row))
+			return $category;
+		
+		if (is_object($row))
+			$row = get_object_vars($row);
+		
+		$row = array_change_key_case($row, CASE_UPPER);
+		
+		if (!array_key_exists('ID', $row)) {
+			$prefix = strtoupper($db_config ['dbtable_cat']) . '.';
+		}
+		
+		$category->id = ( int ) $row [$prefix . 'ID'];
+		$category->name = $row [$prefix . 'NAME'];
+		
+		return $category;
+	}
+	
+	// returns array of all categories, empty array else
+	function getAllCategories($limit = 1000) {
+		global $db;
+		global $db_config;
+		$categories = array ();
+		
+		if (!$db)
+			return $categories;
+		
+		$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " ORDER BY name ASC LIMIT $limit";
+		
+		$result = $db->selectAll($sql);
+		
+		foreach ( $result as $row ) {
+			$category = $this->row2category($row);
+			$categories [] = $category;
+		}
+		
+		$all_category = new Category(' __all__');
+		$categories [] = $all_category;
+		
+		return $categories;
+	}
+	
+	// return array of categories for person, empty array otherwise
+	function getCategoriesForPerson($personId, $limit = 1000) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return array ();
+		
+		$categories = array ();
+		
+		// quote db specific characters
+		$searchstring = $db->escape(( int ) $person_id);
+		$internal = $db->escape(' __%__');
+		
+		$sql = "SELECT " . $db_config ['dbtable_cat'] . ".* FROM " . $db_config ['dbtable_cat'] . ", " . $db_config ['dbtable_catmap'] . " WHERE (";
+		$sql .= $db_config ['dbtable_cat'] . ".id = " . $db_config ['dbtable_catmap'] . ".category_id ) AND ";
+		$sql .= "( person_id = $searchstring ) AND ( name NOT LIKE " . $internal . " ) ";
+		
+		$sql .= " LIMIT $limit";
+		
+		$result = $db->selectAll($sql);
+		
+		foreach ( $result as $row ) {
+			$category = $this->row2category($row);
+			$categories [] = $category;
+		}
+		
+		return $categories;
+	}
+	
+	// adds person to category (and creates it if does not yet exist)
+	function addPersonToCategory($personId, $categoryName) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return false;
+		
+		$category = $this->get($categoryName);
+		if (!$category) {
+			$category = new Category($categoryName);
+			$category->id = $this->set($category);
+		}
+		
+		if ($this->personIsMemberOf($personId, $categoryName))
+			return true;
+			
+			// Input validation
+		$personId = $db->escape(( int ) $personId);
+		$categoryId = $db->escape(( int ) $category->id);
+		
+		// insert
+		$sql = "INSERT INTO " . $db_config ['dbtable_catmap'] . "  ";
+		$sql .= "( category_id, person_id ) VALUES ( ";
+		$sql .= " $categoryId, $personId );";
+		
+		$result = $db->insert($sql);
+		
+		if ($result)
+			return true;
+		
+		msg("DB error on addPersonToCategory: " . $db->lasterror(), -1);
+		return false;
+	}
+	
+	// deletes person from category
+	function deletePersonFromCategory($personId, $categoryName) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return;
+		
+		if (!$this->personIsMemberOf($personId, $categoryName))
+			return true;
+		
+		$category = $this->get($categoryName);
+		if (!$category)
+			return false;
+		
+		$categoryId = $db->escape(( int ) $category->id);
+		$personId = $db->escape(( int ) $personId);
+		
+		$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
+		$sql .= "category_id=$categoryId AND person_id=$personId;";
+		$result = $db->delete($sql);
+		
+		if ($result)
+			return true;
+		
+		msg("DB error on deletePersonFromCategory: " . $db->lasterror(), -1);
+		return false;
+	}
 
-    function categories($config = NULL) {
-        //$this->selected = 0;
-    }
-    
-    function row2category($row) {
-        global $lang;
-        global $db_config;
-        $prefix = '';
-        
-        
-        $category = new category;
-        if(empty($row)) return $category;
+	function deletePersonFromAllCategories($personId) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return;
+		
+		$personId = $db->escape(( int ) $personId);
+		
+		$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
+		$sql .= "person_id=$personId;";
+		$result = $db->delete($sql);
+		
+		if ($result)
+			return true;
+		
+		msg("DB error on deletePersonFromAllCategories: " . $db->lasterror(), -1);
+		return false;
+	}
 
-        if(is_object($row)) $row = get_object_vars($row);
-        
-        $row = array_change_key_case($row, CASE_UPPER);
-        
-           if(!array_key_exists('ID', $row)) {
-               $prefix = strtoupper($db_config['dbtable_cat']) . '.';
-           }
+	function personIsMemberOf($personId, $categoryName) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return false;
+		
+		$category = $this->get($categoryName);
+		if (!$category)
+			return false;
+		
+		$personId = $db->escape(( int ) $personId);
+		$categoryId = $db->escape(( int ) $category->id);
+		
+		$sql = "SELECT * FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
+		$sql .= "(category_id = $categoryId) AND ";
+		$sql .= "(person_id = $personId) ";
+		
+		$row = $db->selectOne($sql);
+		if (row)
+			return true;
+		
+		return false;
+	}
 
-        $category->id       = (int)$row[$prefix . 'ID'];
-        $category->int_name =      $row[$prefix . 'NAME'];
-        $category->name     =      $row[$prefix . 'NAME'];
-        $category->type     = (int)$row[$prefix . 'TYPE'];
-        $category->query    =      $row[$prefix . 'QUERY'];
+	function get($categoryName) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return false;
+			
+			// quote db specific characters
+		$categoryName = $db->escape($categoryName);
+		
+		$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " WHERE name=$categoryName LIMIT 1";
+		$row = $db->selectOne($sql);
+		
+		if (!$row)
+			return false;
+		
+		$category = $this->row2category($row);
+		return $category;
+	}
 
-        if($category->int_name == ' __all__')        $category->name = $lang['category_all'];
-        if($category->int_name == ' __lastimport__') $category->name = $lang['cat_lastimport'];
-        if($category->int_name == ' __changed__')    $category->name = $lang['cat_changed'];
-        
-        return $category;
-    }
+	function getById($categoryId) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return false;
+			
+			// quote db specific characters
+		$categoryId = $db->escape($categoryId);
+		
+		$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " WHERE id=$categoryId LIMIT 1";
+		$row = $db->selectOne($sql);
+		
+		if (!$row)
+			return false;
+		
+		$category = $this->row2category($row);
+		return $category;
+	}
+	
+	// sets a category (usually add)
+	function set($category) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return false;
+		
+		if (!is_object($category))
+			return false;
+			
+			// Input validation
+		$id = $db->escape(( int ) $category->id);
+		$name = $db->escape($category->name);
+		
+		if ($id == 0) {
+			// insert
+			$sql = "INSERT INTO " . $db_config ['dbtable_cat'] . "  ";
+			$sql .= "( name ) VALUES ( $name );";
+			$db->insert($sql);
+			$insertid = $db->insertId();
+			
+			if ($insertid == -1) {
+				msg("DB error on set: " . $db->lasterror(), -1);
+				return false;
+			}
+			$id = $insertid;
+		} else {
+			// update
+			$sql = "UPDATE " . $db_config ['dbtable_cat'] . " SET ";
+			
+			$sql .= "name=$name ";
+			$sql .= "WHERE id=$id";
+			
+			$result = $db->update($sql);
+			if (!$result) {
+				msg("DB error on set: " . $db->lasterror(), -1);
+				return false;
+			}
+		}
+		
+		return $id;
+	}
 
-    function get($id) {
-        global $db;
-        global $db_config;
-        $category = new category;
-        if(!$db or $id == 0) return false;
-        
-        // quote db specific characters
-        $id = $db->Quote((int)$id);
-        
-        $sql = "SELECT * FROM ".$db_config['dbtable_cat']." WHERE id=$id LIMIT 1";
-        $result = $db->Execute($sql);
-        
-        if($result) {
-            $row = $result->FetchRow();
-            if($row) $category = $this->row2category($row);
-            return $category;
-        } else {
-            // not found
-            msg("DB error on get: ". $db->ErrorMsg(), -1);
-        }
-        
-        return false;        
-    }
+	function deleteById($categoryId) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return false;
 
-    // sets a category (usually add)
-    function set($category) {
-        global $db;
-        global $db_config;
-        if(!$db) return false;
-        
-        if(is_object($category)) {
-            
-            // Input validation
-            $id = $db->Quote((int)$category->id);
-            $name = $db->Quote($category->name);
-            $type = $db->Quote((int)$category->type);
-            $query = $db->Quote($category->query);
-            
-            if($id == 0) {
-                // insert
-                $sql = "INSERT INTO ".$db_config['dbtable_cat']."  ";
-                $sql .= "( name, type, query ) VALUES ( ";
-                
-                $sql .= " $name, $type, $query );";
-                
-            } else {
-                // update
-                $sql = "UPDATE ".$db_config['dbtable_cat']." SET ";
-                
-                $sql .= "name=$name, ";
-                $sql .= "type=$type, ";
-                $sql .= "query=$query ";
-                
-                $sql .= "WHERE id=$id";
-            }
-            
-            $result = $db->Execute($sql);
-            if(!$result) {
-                msg("DB error on set: ". $db->ErrorMsg(), -1);
-                return false;
-            }
-            
-            if($id == 0) $id = $db->Insert_ID();
-            
-            return $id;
-        }
-        return false;
-    }
-    
-    function delete($id) {
-        global $db;
-        global $db_config;
-        if(!$db) return false;
-        
-        // quote db specific characters
-        $id = $db->Quote((int)$id);
-        
-        $sql = "DELETE FROM ".$db_config['dbtable_cat']." WHERE id=$id";
-        $result = $db->Execute($sql);
-        if(!$result) {
-            msg("DB error delete: ". $db->ErrorMsg(), -1);
-            return false;
-        }
-        
-        $sql = "DELETE FROM ".$db_config['dbtable_catmap']." WHERE category_id=$id";
-        $result = $db->Execute($sql);
-        if(!$result) {
-            msg("DB error on delete: ". $db->ErrorMsg(), -1);
-            return false;
-        }
-        
-        return true;
-    }
-    
-    // returns list of categories the person is a member of
-    function find($person_id, $limit = 1000) {
-        global $db;
-        global $db_config;
-        if(!$db) return array();
-        
-        $categorylist = array();
-        
-        // quote db specific characters
-        $searchstring = $db->Quote((int)$person_id);
-        $internal = $db->Quote(' __%__');
-        
-        $sql  = "SELECT ".$db_config['dbtable_cat'].".* FROM ".$db_config['dbtable_cat'].", ".$db_config['dbtable_catmap']." WHERE (";
-        $sql .= $db_config['dbtable_cat'].".id = ".$db_config['dbtable_catmap'].".category_id ) AND "; 
-        $sql .= "( person_id = $searchstring ) AND ( name NOT LIKE ".$internal." ) ";
-        
-        $sql .= " LIMIT $limit";
-        
-        $result = $db->Execute($sql);
-        
-        if($result) {
-            while ($row = $result->FetchRow()) {
-                $category = $this->row2category($row);
-                $categorylist[$category->id] = $category;
-            }
-        } else {
-            // no results
-            msg("DB error on find: ". $db->ErrorMsg(), -1);
-        }
-        
-        return $categorylist;
-    }
-    
-    function getall($limit = 1000) {
-        global $db;
-        global $db_config;
-        if(!$db) return array();
-        
-        $categorylist = array();
-        
-        $sql  = "SELECT * FROM ".$db_config['dbtable_cat']." ORDER BY name ASC LIMIT $limit";
-        
-        $result = $db->Execute($sql);
-        
-        if($result) {
-            while ($row = $result->FetchRow()) {
-                $category = $this->row2category($row);
-                $categorylist[$category->id] = $category;
-            }
-            
-            // add the ALL category
-            $row = array('ID' => 0, 'NAME' => ' __all__', 'TYPE' => 0);
-            $category = $this->row2category($row);
-            $categorylist[$category->id] = $category;
-        } else {
-            // no results
-            msg("DB error on getall: ". $db->ErrorMsg(), -1);
-        }
-        
-        return $categorylist;
-    }
-    
-    function add_contact($contact_id, $category_id) {
-        global $db;
-        global $db_config;
-        if(!$db) return false;
-        
-        // Input validation
-        $c_id = $db->Quote((int)$category_id);
-        $p_id = $db->Quote((int)$contact_id);
-        
-        if(!$this->is_member($contact_id, $category_id)) {
-           
-            // insert
-            $sql = "INSERT INTO ".$db_config['dbtable_catmap']."  ";
-            $sql .= "( category_id, person_id ) VALUES ( ";
-            
-            $sql .= " $c_id, $p_id );";
-            
-            $result = $db->Execute($sql);
-            if($result) return true;
-            
-            msg("DB error on add_contact: ". $db->ErrorMsg(), -1);
-            return false;
-        }
-        
-        return true;
-    }
-    
-    function delete_contact($contact_id, $category_id) {
-        global $db;
-        global $db_config;
-        if(!$db) return;
-        
-        $id = $this->is_member($contact_id, $category_id);
-        
-        while($id) {
-            $sql = "DELETE FROM ".$db_config['dbtable_catmap']." WHERE id=$id";
-            $result = $db->Execute($sql);
-            if(!$result) {
-                msg("DB error on delete_contact: ". $db->ErrorMsg(), -1);
-                return false;
-            }
-            $id = $this->is_member($contact_id, $category_id);
-        }
-        return true;
-    }
-    
-    function is_member($contact_id, $category_id) {
-        global $db;
-        global $db_config;
-        if(!$db) return false;
-        
-        if($this->exists((int)$category_id) === false) return false;
+		// quote db specific characters
+		$categoryId = $db->escape(( int ) $categoryId);
+		
+		$sql = "DELETE FROM " . $db_config ['dbtable_cat'] . " WHERE id=$categoryId";
+		$result = $db->delete($sql);
+		if (!$result) {
+			msg("DB error delete: " . $db->lasterror(), -1);
+			return false;
+		}
+		
+		$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE category_id=$categoryId";
+		$result = $db->delete($sql);
+		if (!$result) {
+			msg("DB error on delete: " . $db->lasterror(), -1);
+			return false;
+		}
+		
+		return true;
+	}
 
-        // quote db specific characters
-        $contact_id = $db->Quote((int)$contact_id);
-        $category_id = $db->Quote((int)$category_id);
-        
-        $sql  = "SELECT * FROM ".$db_config['dbtable_catmap']." WHERE ";
-        $sql .= "(category_id = $category_id) AND ";
-        $sql .= "(person_id = $contact_id) ";
-        
-        $result = $db->Execute($sql);
-        if($result) {
-            $row = $result->FetchRow();
-            $category = $this->row2category($row);
-            if($row) return $category->id;
-        } else {
-            msg("DB error on is_member: ". $db->ErrorMsg(), -1);
-        }
-        
-        return false;
-    }
-    
-    function exists($mixed) {
-        global $db;
-        global $db_config;
-        if(!$db) return false;
-        
-        $sql  = "SELECT * FROM ".$db_config['dbtable_cat']." WHERE ";
-        
-        if(is_string($mixed)) {
-            $name = $db->Quote($mixed);
-            $sql .= "(name = $name) ";
-        } else if(is_object($mixed)) {
-            $name = $db->Quote($mixed->name);
-            $sql .= "(name = $name) ";
-        } else if(is_int($mixed)) {
-            $id = $db->Quote((int)$mixed);
-            $sql .= "(id = $id) ";
-        } else return false;
-        
-        $result = $db->Execute($sql);
-        
-        if($result) {
-            $row = $result->FetchRow();
-            if($row) {
-                $category = $this->row2category($row);
-                return $category;
-            }
-        } else {
-            // no results
-            msg("DB error on exists: ". $db->ErrorMsg(), -1);
-        }
+	function delete($categoryName) {
+		$category = $this->get($categoryName);
+		if (!$category)
+			return false;
+		return $this->deleteById($category->id);
+	}
 
-        return false;
-    }
-    
-    function sort($categories) {
-        global $lang;
-
-        //$categories is an array of category
-        $sorted_names = array();
-        $sorted = array();
-        
-        // load sort rules
-        $sort_rules_from = explode(',', $lang['sort_rules_from']);
-        $sort_rules_to   = explode(',', $lang['sort_rules_to']);
-
-        if(is_array($categories)) {
-            foreach($categories as $cat) {
-                $sorted_names[$cat->id] = str_replace($sort_rules_from, $sort_rules_to, strtoupper($cat->int_name));
-            }
-            asort($sorted_names);
-            
-            foreach($sorted_names as $key => $value) $sorted[$key] = $categories[$key];
-        }
-        
-        return $sorted;
-    }
+	function sort($categories) {
+		global $lang;
+		
+		// $categories is an array of category
+		$sorted_names = array ();
+		$sorted = array ();
+		
+		if (!is_array($categories))
+			return $categories;
+		
+		$new_cat = array();
+		foreach($categories as $category) {
+			$new_cat[$category->id] = $category;
+		}
+			
+		// load sort rules
+		$sort_rules_from = explode(',', $lang ['sort_rules_from']);
+		$sort_rules_to = explode(',', $lang ['sort_rules_to']);
+		
+		foreach ( $categories as $cat ) {
+			$sorted_names [$cat->id] = str_replace($sort_rules_from, $sort_rules_to, strtoupper($cat->name()));
+		}
+		asort($sorted_names);
+		
+		foreach ( $sorted_names as $key => $value )
+			$sorted [$key] = $new_cat [$key];
+		
+		return $sorted;
+	}
 }
 
 

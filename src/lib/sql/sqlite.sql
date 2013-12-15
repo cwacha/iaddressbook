@@ -1,5 +1,15 @@
+CREATE TABLE addressbooks (
+    id INTEGER PRIMARY KEY ASC,
+    principaluri TEXT,
+    displayname TEXT,
+    uri TEXT,
+    description TEXT,
+	ctag INTEGER
+);
+
 CREATE TABLE addressbook (
     id INTEGER PRIMARY KEY,
+    uid varchar(255) NOT NULL,
     title varchar(255) NOT NULL,
     firstname varchar(255) NOT NULL,
     firstname2 varchar(255) NOT NULL,
@@ -21,14 +31,13 @@ CREATE TABLE addressbook (
     relatednames text NOT NULL,
     urls text NOT NULL,
     creationdate datetime NOT NULL default '0000-00-00 00:00:00',
-    modificationdate datetime NOT NULL default '0000-00-00 00:00:00'
+    modificationdate datetime NOT NULL default '0000-00-00 00:00:00',
+    etag INTEGER NOT NULL default 1
 );
 
 CREATE TABLE addressbook_cat (
     id INTEGER PRIMARY KEY,
     name varchar(255) NOT NULL,
-    type int unsigned NOT NULL,
-    query text NOT NULL
 );
 
 CREATE TABLE addressbook_catmap (

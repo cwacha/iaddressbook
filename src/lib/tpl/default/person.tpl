@@ -134,7 +134,7 @@
                 <div class="person_text">
                     <?php
                     foreach($categories as $category) {
-                        echo "<a href='?do=cat_select&cat_id=".$category->id."'>".$category->name."</a>  ";
+                        echo "<a href='?do=cat_select&cat_id=".$category->id."'>".$category->displayName()."</a>  ";
                     }
                     ?>
                 </div>

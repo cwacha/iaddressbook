@@ -231,7 +231,7 @@
                 <textarea name="category" rows="5" cols="50" class="text">
 					<?php
                     foreach($categories as $category) {
-                        echo "$category->name\n";
+                        echo "$category->displayName()\n";
                     }
 					?>
 				</textarea>

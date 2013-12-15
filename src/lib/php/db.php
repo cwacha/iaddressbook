@@ -8,85 +8,69 @@
 
     if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
     require_once(AB_BASEDIR.'/lib/php/include.php');
-
-    define('ADODB_ASSOC_CASE', 1); # use uppercase field names for ADODB_FETCH_ASSOC
-    require_once(AB_BASEDIR.'/lib/php/adodb5/adodb.inc.php');
-    require_once(AB_BASEDIR.'/lib/php/common.php');
+    require_once(AB_BASEDIR.'/lib/php/DBConnector.php');
+    require_once(AB_BASEDIR.'/lib/php/DBConnector_sqlite.php');
+    require_once(AB_BASEDIR.'/lib/php/DBConnector_sqlite3.php');
 
 function db_msg($msg, $newline=true) {
     msg($msg, -1);
 }
 
 function db_init($config = NULL) {
-    global $conf;
-    global $db_config;
-    global $db;
-    global $ADODB_OUTP;
-    $ADODB_OUTP = 'db_msg';
-    
-    if($config) {
-        $db_config['dbtype'] = strtolower($config['dbtype']);
-        $db_config['dbname'] = $config['dbname'];
-        $db_config['dbserver'] = $config['dbserver'];
-        $db_config['dbuser'] = $config['dbuser'];
-        $db_config['dbpass'] = $config['dbpass'];
-        $db_config['dbtable_ab'] = $config['dbtable_ab'];
-        $db_config['dbtable_cat'] = $config['dbtable_cat'];
-        $db_config['dbtable_catmap'] = $config['dbtable_catmap'];
-        $db_config['dbtable_truth'] = $config['dbtable_truth'];
-        $db_config['dbtable_sync'] = $config['dbtable_sync'];
-        $db_config['dbtable_action'] = $config['dbtable_action'];
-        $db_config['dbtable_users'] = $config['dbtable_users'];
-        $db_config['dbdebug'] = $config['debug_db'];
-    } else  {
-        // defaults
-        $db_config['dbtype'] = strtolower($conf['dbtype']);
-        $db_config['dbname'] = $conf['dbname'];
-        $db_config['dbserver'] = $conf['dbserver'];
-        $db_config['dbuser'] = $conf['dbuser'];
-        $db_config['dbpass'] = $conf['dbpass'];
-        $db_config['dbtable_ab'] = $conf['dbtable_ab'];
-        $db_config['dbtable_cat'] = $conf['dbtable_cat'];
-        $db_config['dbtable_catmap'] = $conf['dbtable_catmap'];
-        $db_config['dbtable_truth'] = $conf['dbtable_truth'];
-        $db_config['dbtable_sync'] = $conf['dbtable_sync'];
-        $db_config['dbtable_action'] = $conf['dbtable_action'];
-        $db_config['dbtable_users'] = $conf['dbtable_users'];
-        $db_config['dbdebug'] = $conf['debug_db'];
-    }
-    
+	global $conf;
+	global $db_config;
+	global $db;
+	
+	if (empty($config)) {
+		$config = $conf;
+	}
+	// defaults
+	$db_config['dbtype'] = strtolower( $config ['dbtype'] );
+	$db_config['dbname'] = $config['dbname'];
+	$db_config['dbserver'] = $config['dbserver'];
+	$db_config['dbuser'] = $config['dbuser'];
+	$db_config['dbpass'] = $config['dbpass'];
+	$db_config['dbtable_addressbooks'] = $config['dbtable_addressbooks'];
+	$db_config['dbtable_ab'] = $config['dbtable_ab'];
+	$db_config['dbtable_cat'] = $config['dbtable_cat'];
+	$db_config['dbtable_catmap'] = $config['dbtable_catmap'];
+	$db_config['dbtable_truth'] = $config['dbtable_truth'];
+	$db_config['dbtable_sync'] = $config['dbtable_sync'];
+	$db_config['dbtable_action'] = $config['dbtable_action'];
+	$db_config['dbtable_users'] = $config['dbtable_users'];
+	$db_config['dbdebug'] = $config['debug_db'];
+	    
     $db = false;
 }
 
 function db_open() {
     global $db_config;
     global $db;
+    
+    if($db_config['dbtype'] == 'sqlite') {
+    	$db_config['dbserver'] = AB_STATEDIR.'/'.$db_config['dbserver'];
+    	$db = new DBConnector_sqlite();
+    }
+    if($db_config['dbtype'] == 'sqlite3') {
+    	$db_config['dbserver'] = AB_STATEDIR.'/'.$db_config['dbserver'];
+    	$db = new DBConnector_sqlite3();
+    }
+    if($db_config['dbtype'] == 'mysql') {
+    	$db = new DBConnector_mysql();
+    }
 
-    $db = NewADOConnection($db_config['dbtype']);
-        
     if($db === false or empty($db_config['dbname'])) {
         msg("Cannot connect to database: Error in database configuration.", -1);
         $db = false;
         return false;
     }
-    
-    if($db_config['dbdebug']) $db->debug = true;
-    
-    if($db_config['dbtype'] == 'sqlite') {
-        $db_config['dbserver'] = AB_STATEDIR.'/'.$db_config['dbserver'];
-    }
-    
-    if(!$db->Connect($db_config['dbserver'], $db_config['dbuser'], $db_config['dbpass'], $db_config['dbname'])) {
-        msg("Cannot connect to database: Connection error to server or db file '".$db_config['dbserver']."' with user '".$db_config['dbuser']."'", -1);
-        $db = false;
-        return false;
-    }
-    
+        
+    $db->init($db_config['dbserver'], $db_config['dbname'], $db_config['dbuser'], $db_config['dbpass']);
+    if($db_config['dbdebug']) $db->debug = true;    
+        
     if($db_config['dbtype'] == 'mysql') {
-        $sql = "SET NAMES 'utf8'";
-        $result = $db->Execute($sql);
+        $db->execute("SET NAMES 'utf8'");
     }
-    $db->SetFetchMode(ADODB_FETCH_ASSOC);
     
     return true;
 }
@@ -94,7 +78,7 @@ function db_open() {
 function db_close() {
     global $db;
     
-    if($db) $db->Close();
+    if($db) $db->destroy();
     $db = false;
 }
 
@@ -118,10 +102,10 @@ function db_createtables() {
     foreach($queries as $sql) {
         $sql = trim($sql);
         if(empty($sql)) continue;
-        $result = $db->Execute($sql);
+        $result = $db->execute($sql);
         if(!$result) {
             $errors++;
-            msg("Error creating db: ". $db->ErrorMsg(), -1);
+            msg("Error creating db: ". $db->lasterror(), -1);
         }
     }
     

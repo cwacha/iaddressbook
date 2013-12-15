@@ -31,7 +31,6 @@ function act_ldifexport() {
     if(count($contacts_selected) == 0) $contacts_selected = $contactlist;
 
     foreach ($contacts_selected as $contact) {
-        //$categories = $CAT->find($contact->id);
         $contents .= contact2ldif($contact) . "\n";
     }
     

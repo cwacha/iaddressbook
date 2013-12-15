@@ -5,7 +5,7 @@
      * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
-    
+
     if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
     require_once(AB_BASEDIR.'/lib/php/include.php');
     require_once(AB_BASEDIR.'/lib/php/addressbook.php');
@@ -17,8 +17,7 @@
     require_once(AB_BASEDIR.'/lib/php/module_csv.php');
     require_once(AB_BASEDIR.'/lib/php/module_ldif.php');
     require_once(AB_BASEDIR.'/lib/php/module_birthday.php');
-
-
+	
 /**
  * Call the needed action handlers
  *
@@ -226,11 +225,10 @@ function act_save() {
     global $ID;
     global $conf;
     global $CAT;
-    global $contact_categories;
 
     // load contact with image
     $contact = $AB->get($ID, true);
-    if($contact == false) $contact = new person;
+    if($contact == false) $contact = new Person;
 
     $contact->title         = real_br2nl($_REQUEST['title']);
     $contact->firstname     = real_br2nl($_REQUEST['firstname']);
@@ -328,67 +326,14 @@ function act_save() {
         }
     }
 
+    $contact->clear_categories();
+    $new_categories = explode("\n", str_replace("\r", "", $_REQUEST['category']));
+    foreach($new_categories as $name) {
+    	$category = new Category($name);
+    	$contact->add_category($category);
+    }
+    
     $person_id = $AB->set($contact);
-
-    if($person_id == false) return;
-
-    //since the contact is new or has changed, add it to the "changed" category!
-    if($conf['mark_changed']) {
-        $changed_id = 0;
-        
-        $changed_name = ' __changed__';
-        $category = $CAT->exists($changed_name);
-        if(is_object($category)) {
-            $changed_id = $category->id;
-        } else {
-            $category = new category;
-            $category->name = $changed_name;
-            $changed_id = $CAT->set($category);
-        }
-        
-        // add to changed category
-        $CAT->add_contact($person_id, $changed_id);
-    }
-    
-    //add contact to the categories
-    
-    //first create array of old category ids
-    $old_cat = array();
-    foreach($contact_categories as $category) {
-        array_push($old_cat, $category->id);
-    }
-    
-    // now create array of new category ids
-    $new_cat = array();
-    $new_cat_string = str_replace("\r", "", $_REQUEST['category']);
-    $new_cat_names = explode("\n", $new_cat_string);
-    foreach($new_cat_names as $name) {
-        $category = new category;
-        $category->name = trim($name);
-        $category->type = 0;
-        
-        if(!empty($category->name)) {
-            $ret = $CAT->exists($category->name);
-            if($ret === false) {
-                // new category, create it and add contact to category
-                $id = $CAT->set($category);
-                $CAT->add_contact($person_id, $id);
-            } else {
-                // category exists; add contact if necessary
-                $CAT->add_contact($person_id, $ret->id);
-                array_push($new_cat, $ret->id);
-            }
-        }
-    }
-    
-    // calculate removed categories
-    foreach($old_cat as $id) {
-        $key = array_search($id, $new_cat);
-        if($key === false) {
-            // remove contact from category
-            $CAT->delete_contact($person_id, $id);
-        }
-    }
 }
 
 function act_getcontact() {
@@ -396,32 +341,24 @@ function act_getcontact() {
     global $ID;
     global $CAT;
     global $contact;
-    global $contact_categories;
 
     $contact = $AB->get($ID);
-
-    if($contact) $contact_categories = $CAT->find($contact->id);
-    $contact_categories = $CAT->sort($contact_categories);
+    if($contact)
+	    $contact->sort_categories();
 }
 
 function act_new() {
     global $contact;
 
-    $contact = new person;
+    $contact = new Person;
 
 }
 
 function act_delete() {
     global $ID;
     global $AB;
-    global $CAT;
-    global $contact_categories;
 
-    $contact_categories = $CAT->find($ID);
-    foreach($contact_categories as $category) {
-        $CAT->delete_contact($ID, $category->id);
-    }
-    $AB->delete($ID);
+    $AB->deleteById($ID);
 }
 
 function act_delete_many() {
@@ -484,7 +421,7 @@ function act_search() {
     // sort the list
     $contactlist = $AB->sort($contactlist);
     
-    $categories = $CAT->getall();
+    $categories = $CAT->getAllCategories();
     $categories = $CAT->sort($categories);
 }
 
@@ -500,21 +437,17 @@ function act_search_and_select() {
 function act_category_add() {
     global $CAT;
     
-    $category = new category;
-    $category->name = trim($_REQUEST['cat_name']);
-    //$category->type = $REQUEST['cat_type'];
-    $category->type = 0; //set to manual: TODO smart queries
+    $categoryName = trim($_REQUEST['cat_name']);
+    $category = new Category($categoryName);
     
-    if(empty($category->name)) return;
-    
-    if($CAT->exists($category->name) === false) $CAT->set($category);
+    $CAT->set($category);
 }
 
 function act_category_del() {
     global $CAT;
     global $CAT_ID;
     
-    $CAT->delete($CAT_ID);
+    $CAT->deleteById($CAT_ID);
     $CAT_ID = 0;
 }
 
@@ -523,18 +456,17 @@ function act_category_del_empty() {
     global $CAT_ID;
     global $AB;
     
-    $categories = $CAT->getall();
+    $categories = $CAT->getAllCategories();
     
 	$i = 0;
 	
     foreach($categories as $category) {
-        $CAT_ID = $category->id;
         $contacts = $AB->getall();
         
         if(count($contacts) == 0) {
             // remove the category
-            msg("Deleting empty category: ". $category->name);
-            $CAT->delete($CAT_ID);
+            msg("Deleting empty category: ". $category->displayName());
+            $CAT->deleteById($category->id);
 			$i++;
         }
     }
@@ -545,11 +477,13 @@ function act_category_del_empty() {
 
 function act_category_addcontacts() {
     global $CAT;
-    $cat_id = (int)trim($_REQUEST['cat_id']);
+    $cat_id = trim($_REQUEST['cat_id']);
 
     foreach($_REQUEST as $key => $value) {
         if(strpos($key, 'ct_') === 0) {
-            $CAT->add_contact($value, $cat_id);
+        	$category = $CAT->getById($cat_id);
+        	if($category)
+	            $CAT->addPersonToCategory($value, $category->name());
         }
     }
 
@@ -561,7 +495,9 @@ function act_category_delcontacts() {
 
     foreach($_REQUEST as $key => $value) {
         if(strpos($key, 'ct_') === 0) {
-            $CAT->delete_contact($value, $cat_id);
+        	$category = $CAT->getById($cat_id);
+        	if($category)
+        		$CAT->delete_contact($value, $category->name());
         }
     }
 
@@ -572,13 +508,11 @@ function act_hsc_everything() {
     global $ACT;
     global $QUERY;
     global $contact;
-    global $contact_categories;
     global $contactlist;
     global $categories;
     global $CAT_ID;
 
     if(is_object($contact)) $contact->html_escape();
-    foreach($contact_categories as $tmp) $tmp->html_escape();
     foreach($contactlist as $tmp) $tmp->html_escape();
     foreach($categories as $tmp) $tmp->html_escape();
 
@@ -587,25 +521,5 @@ function act_hsc_everything() {
     $QUERY = hsc($QUERY);
     $CAT_ID = hsc($CAT_ID);
 }
-
-/*
-function act_db_ex() {
-    global $contactlist;
-    global $db;
-    
-    echo "<pre style='text-align: left;'>";
-    foreach($contactlist as $contact) {
-        if(!empty($contact->emails)) {
-            $name  = $db->Quote($contact->name());
-            $email = $db->Quote($contact->emails[0]['email']);
-            $first = $db->Quote($contact->firstname);
-            $last  = $db->Quote($contact->lastname);
-            echo "INSERT INTO contacts (user_id, changed, del, name, email, firstname, surname ) VALUES (2, '2006-09-03 23:30:00', 0, $name, $email, $first, $last ) ; \n";
-        }    
-    }
-    echo "</pre>";
-    exit();
-}
-*/
 
 ?>

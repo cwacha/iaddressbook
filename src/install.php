@@ -6,8 +6,7 @@
 * @author     Clemens Wacha <clemens.wacha@gmx.net>
 */
 
-
-if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)));
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/'));
 require_once(AB_BASEDIR.'/lib/php/include.php');
 require_once(AB_BASEDIR.'/lib/php/init.php');
 require_once(AB_BASEDIR.'/lib/php/db.php');
@@ -381,12 +380,23 @@ function step_check() {
         imsg($lang['error_iconv']);
     }
 
+    $has_sqlite = false;
     if(function_exists('sqlite_open')) {
         // pre-select sqlite if it is available
         $conf['dbtype'] = 'sqlite';
         $conf['dbserver'] = 'addressbook.sqlite';
         imsg(str_replace('$1', sqlite_libversion(), $lang['info_sqlite']), 1);
-    } else {
+        $has_sqlite = true;
+    }
+    if(class_exists('SQLite3')) {
+    	// pre-select sqlite3 if it is available
+        $conf['dbtype'] = 'sqlite3';
+        $conf['dbserver'] = 'addressbook.sqlite';
+        $version = SQLite3::version();
+        imsg(str_replace('$1', $version['versionString'], $lang['info_sqlite3']), 1);
+        $has_sqlite = true;
+    }
+    if (!$has_sqlite) {
         imsg($lang['error_sqlite']);
     }
     

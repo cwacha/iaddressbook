@@ -36,16 +36,17 @@ function collect_birthdays() {
         $sql .= " ORDER BY DAYOFYEAR(birthdate) ASC LIMIT 20";
     }
 
-    $result = $db->Execute($sql);
+    $result = $db->selectAll($sql);
     
     if($result) {
-        while($row = $result->FetchRow()) {
+        //while($row = $result->FetchRow()) {
+        foreach($result as $row) {
             $contact = $AB->row2contact($row);
             $upcoming[] = $contact;
         }
     } else {
         // not found
-        msg("DB error on birthday collect: ".$db->ErrorMsg(), -1);
+        msg("DB error on birthday collect: ".$db->lasterror(), -1);
     }
     
     return $upcoming;

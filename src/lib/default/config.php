@@ -20,6 +20,7 @@ $conf['dbname']         = 'addressbook';         // database name
 $conf['dbserver']       = 'localhost';           // server to connect to
 $conf['dbuser']         = '';                    // username to connect to server
 $conf['dbpass']         = '';                    // cleartext password to connect to server
+$conf['dbtable_addressbooks'] = 'addressbooks';  // table inside database for all addressbooks
 $conf['dbtable_ab']     = 'addressbook';         // table inside database for addressbook entries
 $conf['dbtable_cat']    = 'addressbook_cat';     // table inside database for categories
 $conf['dbtable_catmap'] = 'addressbook_catmap';  // table inside database for mapping contacts to categories

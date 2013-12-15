@@ -6,8 +6,7 @@
 * @author     Clemens Wacha <clemens.wacha@gmx.net>
 */
 
-
-if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/');
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/'));
 require_once(AB_BASEDIR.'/lib/php/include.php');
 require_once(AB_BASEDIR.'/lib/php/init.php');
 require_once(AB_BASEDIR.'/lib/php/db.php');
@@ -474,7 +473,6 @@ function version($params) {
 
 function get_contact($params) {
     global $AB;
-    global $CAT;
     
     $api_key = XML_RPC_decode($params->getParam(0));
     $id = XML_RPC_decode($params->getParam(1));
@@ -489,14 +487,7 @@ function get_contact($params) {
         return xml_error('no such contact');
     }
     
-    $contact_categories = $CAT->find($contact->id);
-    $contact_categories = $CAT->sort($contact_categories);
-    
     $person = $contact->get_array();
-    $person['categories'] = array();
-    foreach($contact_categories as $key => $value) {
-        $person['categories'][$key] = $value->name;
-    }
 
     return xml_success($person);
 }
@@ -526,19 +517,8 @@ function get_contacts($params) {
     foreach($contactlist as $contact) {
         $person = $contact->get_array();
 
-        $contact_categories = $CAT->find($contact->id);
-        $contact_categories = $CAT->sort($contact_categories);
-        
-        $person['categories'] = array();
-        foreach($contact_categories as $key => $value) {
-            $person['categories'][$key] = $value->name;
-        }
-
         $results[] = $person;
     }
-    //$results = array();
-    //msg("bla3");
-    //return xml_error();
     return xml_success($results);
 }
 
@@ -552,7 +532,7 @@ function set_contact($params) {
         return xml_error('access denied');
     }
     
-    $contact = new person;
+    $contact = new Person;
     $contact->set_array($contact_array);
     
     $id = $AB->set($contact);
@@ -618,7 +598,6 @@ function search_email($params) {
 function delete_contact($params) {
     global $AB;
     global $CAT;
-    global $contact_categories;
 
     $api_key = XML_RPC_decode($params->getParam(0));
     $id = XML_RPC_decode($params->getParam(1));
@@ -627,10 +606,6 @@ function delete_contact($params) {
         return xml_error('access denied');
     }
 
-    $contact_categories = $CAT->find($id);
-    foreach($contact_categories as $category) {
-        $CAT->delete_contact($id, $category->id);
-    }
     $AB->delete($id);
 
     return xml_success(msg_text());
@@ -671,6 +646,7 @@ function export_vcard($params) {
     }
 
     foreach ($contacts_selected as $contact) {
+    	// FIXME: category handling and vcard has changed....
         $contact->image = img_load($contact->id);
         $categories = $CAT->find($contact->id);
         $vcard = contact2vcard($contact, $categories);
@@ -687,8 +663,8 @@ function export_vcard($params) {
 db_init();
 db_open();
 
-$AB = new addressbook;
-$CAT = new categories;
+$AB = new Addressbook;
+$CAT = new Categories;
 
 /*
  * Establish the dispatch map and XML_RPC server instance.

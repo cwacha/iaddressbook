@@ -86,12 +86,9 @@ function tpl_showperson() {
     global $CAT;
     global $CAT_ID;
     global $contact;
-    global $contact_categories;
     global $lang;
     global $conf;
-    
-    $categories = $contact_categories;
-    
+        
     if(is_object($contact)) {
         if($ACT == 'edit' or $ACT == 'new') {
             include(template('person_edit.tpl'));
@@ -280,7 +277,7 @@ function tpl_catselect() {
                         
                         foreach($categories as $category) {
                             $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
-                            echo "<option value='".$category->id."' $sel >".$category->name."</option> \n";
+                            echo "<option value='".$category->id."' $sel >".$category->displayName()."</option> \n";
                         }
                     ?>
                 </select>

@@ -31,7 +31,6 @@ function act_csvexport() {
     if(count($contacts_selected) == 0) $contacts_selected = $contactlist;
 
     foreach ($contacts_selected as $contact) {
-        //$categories = $CAT->find($contact->id);
         $contents .= contact2csvline($contact) . "\n";
     }
     
@@ -134,7 +133,7 @@ function contact2csvline($contact) {
 }
 
 function csv_title() {
-    $contact = new person;
+    $contact = new Person;
     
     $contact->title             = "Title";
     $contact->firstname         = "Firstname";

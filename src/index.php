@@ -6,7 +6,7 @@
  * @author     Clemens Wacha <clemens.wacha@gmx.net>
  */
 
-if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/');
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/'));
 require_once(AB_BASEDIR.'/lib/php/include.php');
 require_once(AB_BASEDIR.'/lib/php/init.php');
 require_once(AB_BASEDIR.'/lib/php/db.php');
@@ -40,7 +40,7 @@ if($ACT == 'login') {
 //
 // accept everything if authentication is disabled
 if($conf['auth_enabled']) {
-    if(!auth_verify_action($userinfo['username'], $ACT)) {
+    if(!auth_verify_action($userinfo['userid'], $ACT)) {
         // user is not allowed to execute $ACT, change to 'show'
         $ACT = 'show';
     }
@@ -125,11 +125,20 @@ $contactlist = array();         // key = contact->id, value = contact
 $contactlist_limit = $conf['contactlist_limit'];
 
 $contact = false;               // the contact
-$contact_categories = array();  // categories the current contact is a member of
 $categories = array();          // all categories
 
-$AB = new addressbook;
-$CAT = new categories;
+$principaluri = 'principals/' . $userinfo['userid'];
+$ABcatalog = new Addressbooks();
+$books = $ABcatalog->getAddressBooksForUser($principaluri);
+$bookId = -1;
+if(empty($books)) {
+	$bookId = $ABcatalog->createAddressbook($principaluri);
+} else {
+	$bookId = $books[0]['id'];
+}
+
+$AB = new Addressbook($bookId);
+$CAT = new Categories();
 //$CAT->selected = $CAT_ID;
 
 //do the work

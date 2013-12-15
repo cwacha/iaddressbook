@@ -24,7 +24,7 @@ $meta['fmode'] = array('string');
 $meta['dmode'] = array('string');
 $meta['basedir'] = array('string');
 $meta['baseurl'] = array('string');
-$meta['dbtype'] = array('multichoice', '_choices' => array('mysql', 'sqlite'));
+$meta['dbtype'] = array('multichoice', '_choices' => array('mysql', 'sqlite', 'sqlite3'));
 $meta['dbname'] = array('string');
 $meta['dbserver'] = array('string');
 $meta['dbuser'] = array('string');

@@ -308,8 +308,9 @@ $lang['info_usinggd']            = 'Using GD to convert photos';
 $lang['error_usingimgd']         = 'Contact photos are not supported! Neither ImageMagick\'s convert nor GD is available';
 $lang['info_iconv']              = 'iconv available (version $1)';
 $lang['error_iconv']             = 'iconv not available. vCards must be encoded in UTF-8 to be imported properly';
-$lang['info_sqlite']             = 'SQLite available (version $1)';
-$lang['error_sqlite']            = 'SQLite not available';
+$lang['info_sqlite']             = 'SQLite2 available (version $1)';
+$lang['info_sqlite3']            = 'SQLite3 available (version $1)';
+$lang['error_sqlite']            = 'SQLite2 or 3 not available';
 $lang['error_total']             = '$1 problem found!';
 $lang['errors_total']            = '$1 problems found!';
 

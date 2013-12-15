@@ -72,6 +72,17 @@ function html_debug(){
     print 'output as a mail to clemens.wacha@gmx.net ';
     print 'The best way to do this is to save this page in your browser</p>';
     
+    print '<b>Path Settings:</b><pre>';
+    print('AB_BASEDIR='.AB_BASEDIR.'<br/>');
+    print('AB_CONFDIR='.AB_CONFDIR.'<br/>');
+    print('AB_LANGDIR='.AB_LANGDIR.'<br/>');
+    print('AB_TPLDIR='.AB_TPLDIR.'<br/>');
+    print('AB_SQLDIR='.AB_SQLDIR.'<br/>');
+    print('AB_IMAGEDIR='.AB_IMAGEDIR.'<br/>');
+    print('AB_IMPORTDIR='.AB_IMPORTDIR.'<br/>');
+    print('AB_STATEDIR='.AB_STATEDIR.'<br/>');
+    print '</pre>';
+    
     print '<b>$_SERVER:</b><pre>';
     print_r($_SERVER);
     print '</pre>';
@@ -114,7 +125,7 @@ function html_debug(){
     $inis = ini_get_all();
     print_r($inis);
     print '</pre>';
-    
+        
     print '</body></html>';
     
     exit();
