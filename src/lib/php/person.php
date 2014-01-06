@@ -26,12 +26,11 @@ class Person {
     var $organization;
     var $company;    // boolean
 
-    var $birthdate;    // date in format: "YYYY-MM-DD"
+    var $birthdate;    // date as string: "YYYY-MM-DD"
     var $image;    // picture
     var $note;
 
-    var $creationdate;    // date in format: "YYYY-MM-DD HH:MM:SS GMT"
-    var $modificationdate;    // date in format: "YYYY-MM-DD HH:MM:SS GMT"
+    var $modification_ts;     // unix timestamp
     var $id;    // DB id
     var $uid;   // UUID string (new and no check for uniqueness yet)
     var $etag;  // edit tag integer that increases everytime the person is saved
@@ -46,6 +45,8 @@ class Person {
     
     // categories
     var $categories; // conains array of categories (keys will not match DB IDs!)
+    var $isgroup;  // boolean that is true when this entry is a GROUP (required for CARDDAV)
+    var $groupmembers; // members of the group as list of UIDs (for carddav...)
 
     function Person() {
         $this->company = 0;
@@ -63,8 +64,10 @@ class Person {
         $this->id = 0;
         $this->uid = '';
         $this->etag = 0;
-        $this->creationdate = gmdate('Y-m-d H:i:s') . ' GMT';
-        $this->modificationdate = gmdate('Y-m-d H:i:s') . ' GMT';
+        $this->modification_ts = time();
+
+        $this->isgroup = false;
+        $this->groupmembers = array();
     }
     
     function get_array() {
@@ -86,8 +89,7 @@ class Person {
 
         $person['birthdate'] = $this->birthdate;
         $person['note'] = $this->note;
-        $person['creationdate'] = $this->creationdate;
-        $person['modificationdate'] = $this->modificationdate;
+        $person['modification_ts'] = $this->modification_ts;
         $person['id'] = $this->id;
         $person['uid'] = $this->uid;
         $person['etag'] = $this->etag;
@@ -99,6 +101,9 @@ class Person {
         $person['relatednames'] = $this->relatednames;
         $person['urls'] = $this->urls;
         $person['categories'] = $this->categories;
+
+        $person['isgroup'] = $this->isgroup;
+        $person['groupmembers'] = $this->groupmembers;
 
         return $person;
     }
@@ -123,10 +128,8 @@ class Person {
 
         $this->birthdate          = $person['birthdate'];
         $this->note               = $person['note'];
-        $this->creationdate       = $person['creationdate'];
-        //$this->modificationdate   = $person['modificationdate'];
-        $this->modificationdate   = gmdate('Y-m-d H:i:s') . ' GMT';
-
+        $this->modification_ts    = $person['modification_ts'];
+        
         $this->id                 = $person['id'];
         $this->uid                = $person['uid'];
         $this->etag               = $person['etag'];
@@ -140,6 +143,9 @@ class Person {
         
         $this->categories         = $person['categories'];
 
+        $this->isgroup            = $person['isgroup'];
+        $this->groupmembers       = $person['groupmembers'];
+        
         $this->validate();
     }
     
@@ -208,7 +214,7 @@ class Person {
         
         if(!is_string($this->birthdate) or empty($this->birthdate) or strlen($this->birthdate) != 10) $this->birthdate = '0000-00-00';
         
-        if(!is_integer($this->company)) $this->company = (int)$this->company;
+        if(!is_bool($this->company)) $this->company = (bool)$this->company;
         
         if(!is_array($this->addresses)) $this->addresses = array();
         if(!is_array($this->emails)) $this->emails = array();
@@ -217,6 +223,9 @@ class Person {
         if(!is_array($this->relatednames)) $this->relatednames = array();
         if(!is_array($this->urls)) $this->urls = array();
         if(!is_array($this->categories)) $this->categories = array();
+
+        if(!is_bool($this->isgroup)) $this->isgroup = (bool)$this->isgroup;
+        if(!is_array($this->groupmembers)) $this->groupmembers = array();
     }
 
     function add_address($address) {
@@ -376,6 +385,26 @@ class Person {
     // return array of category class objects
     function get_categories() {
     	return $this->categories;
+    }
+    
+    function add_groupmember($uid) {
+    	$uid = strtolower($uid);
+    	$this->groupmembers [$uid] = true; 
+    	$this->isgroup = true;
+    }
+
+	function delete_groupmember($uid) {
+		$uid = strtolower($uid);
+		if (array_key_exists($uid, $this->groupmembers))
+			unset($this->groupmembers[$uid]);
+    }
+    
+    function clear_groupmembers() {
+    	$this->groupmembers = array();
+    }
+    
+    function get_groupmembers() {
+    	return array_keys($this->groupmembers);
     }
     
     function addresses_string() {
@@ -628,10 +657,8 @@ class Person {
         $this->company            = (int)$this->company;
         $this->id                 = (int)$this->id;
         $this->uid                = real_nl2br(htmlspecialchars($this->uid));
-        $this->etag               = (int)$this->etag;
-        
-        $this->creationdate       = real_nl2br(htmlspecialchars($this->creationdate));
-        $this->modificationdate   = real_nl2br(htmlspecialchars($this->modificationdate));
+        $this->etag               = (int)$this->etag;        
+        $this->modification_ts    = (int)$this->modification_ts;
         
         if(is_array($this->addresses)) {
             foreach($this->addresses as $key => $value) {
@@ -680,7 +707,7 @@ class Person {
         
         if(is_array($this->categories)) {
         	foreach($this->categories as $key => $value) {
-        		$this->categories[$key] = $this->html_escapelabel($value);
+        		$value->html_escape();
         	}
         }
         

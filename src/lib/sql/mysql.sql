@@ -20,8 +20,7 @@ CREATE TABLE addressbook (
     chathandles text NOT NULL,
     relatednames text NOT NULL,
     urls text NOT NULL,
-    creationdate datetime NOT NULL default '0000-00-00 00:00:00',
-    modificationdate datetime NOT NULL default '0000-00-00 00:00:00',
+    modification_ts INTEGER NOT NULL default 0,
     PRIMARY KEY (id)
 ) COLLATE utf8_general_ci;
 

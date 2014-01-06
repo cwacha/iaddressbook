@@ -119,15 +119,17 @@
             </div>
         </td>
     </tr>
-    <?php } else {}; ?>
+    <?php }; ?>
     <!-- End Notes -->
 
     <tr><td style="height: 2em;"></td><td></td></tr>
 
     <!-- Begin Categories -->
     <tr>
-        <?php if(!empty($categories)) { ?>
-            <td class="person_left">
+        <?php
+        	$categories = $contact->get_categories();
+        	if(!empty($categories)) {
+        ?><td class="person_left">
                 <div class="person_labels"><?php echo $lang['category']?></div>
             </td>
             <td class="person_right">
@@ -149,7 +151,7 @@
 
 
 <div class="person_smalltext">
-    <?php echo $lang['label_updated'] . date($conf['dformat'], strtotime($contact->modificationdate)); ?>
+    <?php echo $contact->uid . ' &mdash; ' . $lang['label_updated'] . date($conf['dformat'], $contact->modification_ts); ?>
 </div>
 <div class="separator100"></div>
 

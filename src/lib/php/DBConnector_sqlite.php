@@ -29,25 +29,25 @@ class DBConnector_sqlite extends DBConnector {
 	
 	// clean up and close DB connection
 	function destroy() {
-		if($initialized && !empty($connection)) {
-			sqlite_close($connection);
-			$initialized = false;
+		if($this->initialized && !empty($this->connection)) {
+			sqlite_close($this->connection);
+			$this->initialized = false;
 		}
 	}
 	
 	// returns true if DB could be opened, false otherwise
 	function open() {
-		if(!$initialized) {
+		if(!$this->initialized) {
 			$this->connection = sqlite_open($this->url);
-			$initialized = true;
+			$this->initialized = true;
 			return true;
 		}
 	}
 	
 	// returns array of row with first result from SQL select, NULL otherwise 
 	function selectOne($sql) {
-		if(!$initialized)
-			$this->open();
+		if(!$this->open())
+			return NULL;
 		
 		if($this->debug)
 			$this->logmsg("DB selectOne: $sql");
@@ -64,9 +64,9 @@ class DBConnector_sqlite extends DBConnector {
 		
 		// returns array of row arrays with all results from SQL select, empty array otherwise
 	function selectAll($sql) {
-		if (!$initialized)
-			$this->open();
-		
+		if(!$this->open())
+			return array();
+				
 		if($this->debug)
 			$this->logmsg("DB selectAll: $sql");
 
@@ -91,9 +91,9 @@ class DBConnector_sqlite extends DBConnector {
 	
 	// return the insert ID of the last insert statement
 	function insertId() {
-		if(!$initialized)
-			$this->open();
-		
+		if(!$this->open())
+			return -1;
+				
 		$insertId = sqlite_last_insert_rowid($this->connection);
 		return $insertId;
 	}
@@ -110,9 +110,9 @@ class DBConnector_sqlite extends DBConnector {
 	
 	// returns true if execution of sql statement went fine
 	function execute($sql) {
-		if(!$initialized)
-			$this->open();
-		
+		if(!$this->open())
+			return false;
+				
 		if($this->debug)
 			$this->logmsg("DB execute: $sql");
 		

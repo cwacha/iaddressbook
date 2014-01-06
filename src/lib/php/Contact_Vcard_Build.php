@@ -778,12 +778,14 @@ class Contact_Vcard_Build extends PEAR {
     
     function getName()
     {
-        return $this->getMeta('N', 0) .
-            $this->getValue('N', 0, VCARD_N_FAMILY) . ';' .
+    	$name = $this->getValue('N', 0, VCARD_N_FAMILY) . ';' .
             $this->getValue('N', 0, VCARD_N_GIVEN) . ';' .
             $this->getValue('N', 0, VCARD_N_ADDL) . ';' .
             $this->getValue('N', 0, VCARD_N_PREFIX) . ';' .
             $this->getValue('N', 0, VCARD_N_SUFFIX);
+    
+    	$name = rtrim($name, ';');
+        return $this->getMeta('N', 0) . $name;
     }
     
     
@@ -1563,7 +1565,7 @@ class Contact_Vcard_Build extends PEAR {
     
     function getRevision()
     {
-        return $this->getMeta('REV') . $this->getValue('REV', 0, 0);
+        return $this->getMeta('REV') . $this->value['REV'][0][0][0];;
     }
     
     
@@ -2152,14 +2154,14 @@ class Contact_Vcard_Build extends PEAR {
             return $this->raiseError('VERSION not set (required).');
         }
         
-        // FN component is required
-        if (! is_array($this->value['FN'])) {
-            return $this->raiseError('FN component not set (required).');
-        }
-        
         // N component is required
         if (! is_array($this->value['N'])) {
             return $this->raiseError('N component not set (required).');
+        }
+        
+        // FN component is required
+        if (! is_array($this->value['FN'])) {
+            return $this->raiseError('FN component not set (required).');
         }
         
         // initialize the vCard lines
@@ -2172,17 +2174,23 @@ class Contact_Vcard_Build extends PEAR {
         // available in both 2.1 and 3.0
         $lines[] = $this->getVersion();
         
-        // formatted name (required)
-        // available in both 2.1 and 3.0
-        $lines[] = $this->getFormattedName();
+        // prodid (3.0 only)
+        if (isset($this->value['PRODID']) &&
+            $this->value['VERSION'][0][0][0] == '3.0') {
+            $lines[] = $this->getProductID();
+        }
         
         // structured name (required)
         // available in both 2.1 and 3.0
         $lines[] = $this->getName();
         
+        // formatted name (required)
+        // available in both 2.1 and 3.0
+        $lines[] = $this->getFormattedName();
+        
         // profile (3.0 only)
         if ($this->value['VERSION'][0][0][0] == '3.0') {
-            $lines[] = "PROFILE:VCARD";
+            //$lines[] = "PROFILE:VCARD";
         }
         
         // displayed name of the data source  (3.0 only)
@@ -2313,18 +2321,6 @@ class Contact_Vcard_Build extends PEAR {
             $lines[] = $this->getNote();
         }
         
-        // prodid (3.0 only)
-        if (isset($this->value['PRODID']) &&
-            $this->value['VERSION'][0][0][0] == '3.0') {
-            $lines[] = $this->getProductID();
-        }
-        
-        // rev
-        // available in both 2.1 and 3.0
-        if (isset($this->value['REV'])) {
-            $lines[] = $this->getRevision();
-        }
-        
         // sort-string (3.0 only)
         if (isset($this->value['SORT-STRING']) &&
             $this->value['VERSION'][0][0][0] == '3.0') {
@@ -2335,12 +2331,6 @@ class Contact_Vcard_Build extends PEAR {
         // available in both 2.1 and 3.0
         if (isset($this->value['SOUND'])) {
             $lines[] = $this->getSound();
-        }
-        
-        // uid
-        // available in both 2.1 and 3.0
-        if (isset($this->value['UID'])) {
-            $lines[] = $this->getUniqueID();
         }
         
         // url
@@ -2381,6 +2371,18 @@ class Contact_Vcard_Build extends PEAR {
                 }
             }
         }    
+        
+        // rev
+        // available in both 2.1 and 3.0
+        if (isset($this->value['REV'])) {
+            $lines[] = $this->getRevision();
+        }
+        
+        // uid
+        // available in both 2.1 and 3.0
+        if (isset($this->value['UID'])) {
+            $lines[] = $this->getUniqueID();
+        }
         
         // required
         $lines[] = "END:VCARD";

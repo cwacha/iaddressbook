@@ -189,6 +189,7 @@ $lang['vcard_fb_enc']         = 'Fallback encoding';
 $lang['ldif_base']            = 'LDIF base dn';
 $lang['ldif_mozilla']         = 'Mozilla LDIF';
 $lang['xmlrpc_enable']        = 'Enable XMLRPC api';
+$lang['carddav_enable']       = 'Enable CardDAV server';
 
 
 
@@ -197,7 +198,7 @@ $lang['dmode_help']             = 'Set directory creation mode';
 $lang['basedir_help']           = 'Relative dir to serveroot - blank for autodetection';
 $lang['baseurl_help']           = 'URL to server including protocol - blank for autodetect';
 
-$lang['dbtype_help']            = 'Database type: mysql, sqlite';
+$lang['dbtype_help']            = 'Database type: mysql, sqlite, sqlite3';
 $lang['dbname_help']            = 'The name of the database';
 $lang['dbserver_help']          = 'MySQL: Server to connect to<br/>SQLite: Database file<br/>';
 $lang['dbuser_help']            = 'Username to connect to server';
@@ -250,6 +251,7 @@ $lang['vcard_fb_enc_help']      = 'Fallback encoding if we cannot detect the pro
 $lang['ldif_base_help']         = 'The base dn for LDIF exports';
 $lang['ldif_mozilla_help']      = 'Use mozilla LDAP classes in LDIF export (mozillaOrgPerson, mozillaAddressBookEntry)';
 $lang['xmlrpc_enable_help']     = 'Enable XMLRPC api';
+$lang['carddav_enable_help']    = 'Enable CardDAV server (iCloud/ownCloud alternative)';
 
 // Installer strings
 $lang['back']                    = 'Back';
@@ -259,13 +261,12 @@ $lang['retry']                   = 'Retry';
 
 $lang['step_welcome']            = 'Welcome!';
 $lang['step_prerequisites']      = 'Prerequisites';
-$lang['step_check']              = 'Checking your installation';
+$lang['step_check']              = 'Check';
 $lang['step_tests']              = 'Tests';
 $lang['step_results']            = 'Results';
-$lang['step_check']              = 'Checking your installation';
-$lang['step_install']            = 'Setting up the database';
-$lang['step_configure']          = 'Configure your PHP iAddressBook';
-$lang['step_finish']             = 'Installation Complete!';
+$lang['step_dbsetup']            = 'Database Setup';
+$lang['step_configure']          = 'Configuration';
+$lang['step_finish']             = 'Finish!';
 $lang['step_disabled']           = 'PHP iAddressBook is already installed!';
 $lang['step_open_ab']            = 'Open the AddressBook';
 
@@ -289,7 +290,7 @@ $lang['welcome_prerequisites']   = '<p><p>
                                     You will need:
                                     <ul>
                                         <li>PHP version 4.3 or higher.</li>
-                                        <li>MySQL version 4.1 or higher or SQLite version 2.x</li>
+                                        <li>MySQL version 4.1 or higher or SQLite version 2.x/3.x</li>
                                         <li>(optional) iconv (if you want to import vcards that are not UTF-8 encoded)</li>
                                         <li>(optional) ImageMagick\'s convert or GD (if you want to import photos)</li>
                                     </ul>

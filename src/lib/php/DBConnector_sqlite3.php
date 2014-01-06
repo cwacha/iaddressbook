@@ -29,15 +29,15 @@ class DBConnector_sqlite3 extends DBConnector {
 	
 	// clean up and close DB connection
 	function destroy() {
-		if ($initialized && !empty($connection)) {
-			$connection->close();
-			$initialized = false;
+		if ($this->initialized && !empty($this->connection)) {
+			$this->connection->close();
+			$this->initialized = false;
 		}
 	}
 	
 	// returns true if DB could be opened, false otherwise
 	function open() {
-		if (!$initialized) {
+		if (!$this->initialized) {
 			try {
 				$this->connection = new SQLite3($this->url);
 			} catch ( Exception $e ) {
@@ -45,7 +45,7 @@ class DBConnector_sqlite3 extends DBConnector {
 				return false;
 			}
 			
-			$initialized = true;
+			$this->initialized = true;
 		}
 		return true;
 	}
@@ -130,7 +130,7 @@ class DBConnector_sqlite3 extends DBConnector {
 		
 		$result = false;
 		try {
-			$result = $this->connection->exec($sql);
+			@$result = $this->connection->exec($sql);
 		} catch ( Exception $e ) {
 			$this->logmsg('Failed executing SQL statement: "' . $sql . '": ' . $e->getMessage(), -1);
 			return false;

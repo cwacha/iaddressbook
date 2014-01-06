@@ -1,12 +1,21 @@
 <?php
-
 /*
+ * iAddressbook/CardDAV server
+ * 
+ * This server features CardDAV support
+ * 
+ */
 
-iAddressbook/CardDAV server
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/'));
+require_once(AB_BASEDIR.'/lib/php/include.php');
+require_once(AB_BASEDIR.'/lib/php/init.php');
 
-This server features CardDAV support
+global $conf;
 
-*/
+if(!$conf['carddav_enable']) {
+	echo "CardDAV server disabled.";
+	exit();
+}
 
 // settings
 date_default_timezone_set('Canada/Eastern');
@@ -24,11 +33,14 @@ set_error_handler("exception_error_handler");
 // Autoloader
 require_once 'lib/php/SabreDav/vendor/autoload.php';
 
+require_once 'lib/php/IABCardDAV/IABAuthenticator.php';
+require_once 'lib/php/IABCardDAV/IABPrincipalBackend.php';
+require_once 'lib/php/IABCardDAV/IABCardDAVBackend.php';
+
 // Backends
 $authBackend      = new Sabre\DAV\Auth\Backend\IABAuthenticator();
 $principalBackend = new Sabre\DAVACL\PrincipalBackend\IABPrincipalBackend();
 $carddavBackend   = new Sabre\CardDAV\Backend\IABCardDAVBackend();
-//$carddavBackend   = new Sabre\CardDAV\Backend\PDO($pdo);
 
 // Setting up the directory tree //
 $nodes = array(

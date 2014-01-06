@@ -13,11 +13,17 @@ require_once (AB_BASEDIR . '/lib/php/common.php');
 
 class Category {
 	var $id;
+	var $uid;
 	var $name;
+	var $modification_ts; // unix timestamp
+	var $etag;
 
 	function Category($name = '') {
 		$this->id = 0;
+		$this->uid = '';
 		$this->name = $name;
+		$this->modification_ts = time();
+		$this->etag = 0;
 	}
 
 	public function name() {
@@ -39,6 +45,7 @@ class Category {
 
 	public function html_escape() {
 		$this->id = ( int ) $this->id;
+		$this->uid = htmlspecialchars($this->uid);
 		$this->name = htmlspecialchars($this->name);
 	}
 }
@@ -50,7 +57,6 @@ class Categories {
 	function row2category($row) {
 		global $lang;
 		global $db_config;
-		$prefix = '';
 		
 		$category = new Category();
 		if (empty($row))
@@ -59,14 +65,18 @@ class Categories {
 		if (is_object($row))
 			$row = get_object_vars($row);
 		
-		$row = array_change_key_case($row, CASE_UPPER);
+		$row = array_change_key_case($row, CASE_LOWER);
 		
-		if (!array_key_exists('ID', $row)) {
-			$prefix = strtoupper($db_config ['dbtable_cat']) . '.';
+		$prefix = '';
+		if (!array_key_exists('id', $row)) {
+			$prefix = 'c.';
 		}
-		
-		$category->id = ( int ) $row [$prefix . 'ID'];
-		$category->name = $row [$prefix . 'NAME'];
+
+		$category->id = ( int ) $row [$prefix . 'id'];
+		$category->uid = $row [$prefix . 'uid'];
+		$category->name = $row [$prefix . 'name'];
+		$category->modification_ts = ( int ) $row [$prefix . 'modification_ts'];
+		$category->etag = ( int ) $row [$prefix . 'etag'];
 		
 		return $category;
 	}
@@ -79,7 +89,7 @@ class Categories {
 		
 		if (!$db)
 			return $categories;
-		
+				
 		$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " ORDER BY name ASC LIMIT $limit";
 		
 		$result = $db->selectAll($sql);
@@ -89,8 +99,7 @@ class Categories {
 			$categories [] = $category;
 		}
 		
-		$all_category = new Category(' __all__');
-		$categories [] = $all_category;
+		$categories [] = new Category(' __all__');
 		
 		return $categories;
 	}
@@ -105,13 +114,11 @@ class Categories {
 		$categories = array ();
 		
 		// quote db specific characters
-		$searchstring = $db->escape(( int ) $person_id);
-		$internal = $db->escape(' __%__');
+		$personId = $db->escape(( int ) $personId);
 		
-		$sql = "SELECT " . $db_config ['dbtable_cat'] . ".* FROM " . $db_config ['dbtable_cat'] . ", " . $db_config ['dbtable_catmap'] . " WHERE (";
-		$sql .= $db_config ['dbtable_cat'] . ".id = " . $db_config ['dbtable_catmap'] . ".category_id ) AND ";
-		$sql .= "( person_id = $searchstring ) AND ( name NOT LIKE " . $internal . " ) ";
-		
+		$sql = "SELECT c.* FROM " . $db_config ['dbtable_cat'] . " c, " . $db_config ['dbtable_catmap'] . " cm ";
+		$sql .= "WHERE c.id=cm.category_id AND ";
+		$sql .= "( cm.person_id = $personId ) AND ( c.name NOT LIKE ' __all__' ) ";
 		$sql .= " LIMIT $limit";
 		
 		$result = $db->selectAll($sql);
@@ -124,115 +131,145 @@ class Categories {
 		return $categories;
 	}
 	
-	// adds person to category (and creates it if does not yet exist)
-	function addPersonToCategory($personId, $categoryName) {
+	function addMembersToCategory($categoryId, $memberIds) {
 		global $db;
 		global $db_config;
+		global $AB;
 		if (!$db)
 			return false;
 		
-		$category = $this->get($categoryName);
-		if (!$category) {
-			$category = new Category($categoryName);
-			$category->id = $this->set($category);
+		$category = $this->get($categoryId);
+		if (!$category)
+			return false;
+		$categoryId = $category->id;
+		
+		$new_members = array();
+		foreach($memberIds as $memberId) {
+			$person = $AB->get($memberId);
+			if(!$person)
+				continue;
+			$new_members [$person->id] = $person->uid;
 		}
 		
-		if ($this->personIsMemberOf($personId, $categoryName))
-			return true;
+		$etag_updates = array();
+		foreach($new_members as $personId => $personUUID) {
+			if ($this->personIsMemberOf($personId, $categoryId))
+				continue;
 			
+			$etag_updates[$categoryId] = true; 
+
 			// Input validation
-		$personId = $db->escape(( int ) $personId);
-		$categoryId = $db->escape(( int ) $category->id);
+			$personId = $db->escape(( int ) $personId);
+			$categoryId = $db->escape(( int ) $categoryId);
+			
+			// insert
+			$sql = "INSERT INTO " . $db_config ['dbtable_catmap'] . "  ";
+			$sql .= "( category_id, person_id ) VALUES ( ";
+			$sql .= " $categoryId, $personId );";
+			
+			$result = $db->insert($sql);
+				
+			if (!$result) {
+				msg("DB error on addMembersToCategory: " . $db->lasterror(), -1);
+				return false;
+			}
+		}
 		
-		// insert
-		$sql = "INSERT INTO " . $db_config ['dbtable_catmap'] . "  ";
-		$sql .= "( category_id, person_id ) VALUES ( ";
-		$sql .= " $categoryId, $personId );";
+		foreach($etag_updates as $categoryId => $value) {
+			$this->update_etag($categoryId);
+		}
+		$AB->update_ctag();
 		
-		$result = $db->insert($sql);
-		
-		if ($result)
-			return true;
-		
-		msg("DB error on addPersonToCategory: " . $db->lasterror(), -1);
-		return false;
+		return true;
 	}
-	
-	// deletes person from category
-	function deletePersonFromCategory($personId, $categoryName) {
+		
+	function deleteMembersFromCategory($categoryId, $members) {
 		global $db;
 		global $db_config;
+		global $AB;
 		if (!$db)
-			return;
-		
-		if (!$this->personIsMemberOf($personId, $categoryName))
-			return true;
-		
-		$category = $this->get($categoryName);
-		if (!$category)
 			return false;
 		
-		$categoryId = $db->escape(( int ) $category->id);
-		$personId = $db->escape(( int ) $personId);
-		
-		$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
-		$sql .= "category_id=$categoryId AND person_id=$personId;";
-		$result = $db->delete($sql);
-		
-		if ($result)
-			return true;
-		
-		msg("DB error on deletePersonFromCategory: " . $db->lasterror(), -1);
-		return false;
-	}
+		$category = $this->get($categoryId);
+		if (!$category)
+			return false;
+		$categoryId = $category->id;
 
+		$new_members = array ();
+		foreach ( $members as $memberId ) {
+			$person = $AB->get($memberId);
+			if (!$person)
+				continue;
+			$new_members [$person->id] = $person->uid;
+		}
+		
+		$etag_updates = array();
+		foreach ( $new_members as $personId => $personUUID ) {
+			if (!$this->personIsMemberOf($personId, $categoryId))
+				continue;
+				
+			$etag_updates[$categoryId] = true; 
+
+			// Input validation
+			$personId = $db->escape(( int ) $personId);
+			$categoryId = $db->escape(( int ) $categoryId);
+			
+			$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
+			$sql .= "category_id=$categoryId AND person_id=$personId;";
+			$result = $db->delete($sql);
+			
+			if (!$result) {
+				msg("DB error on deleteMembersFromCategory: " . $db->lasterror(), -1);
+				return false;
+			}
+		}
+
+		foreach($etag_updates as $categoryId => $value) {
+			$this->update_etag($categoryId);
+		}
+		$AB->update_ctag();
+		
+		return true;
+	}
+		
 	function deletePersonFromAllCategories($personId) {
-		global $db;
-		global $db_config;
-		if (!$db)
-			return;
-		
-		$personId = $db->escape(( int ) $personId);
-		
-		$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
-		$sql .= "person_id=$personId;";
-		$result = $db->delete($sql);
-		
-		if ($result)
-			return true;
-		
-		msg("DB error on deletePersonFromAllCategories: " . $db->lasterror(), -1);
-		return false;
+		return $this->setCategoriesForPerson($personId, array());
 	}
 
-	function personIsMemberOf($personId, $categoryName) {
+	function personIsMemberOf($personId, $categoryId) {
 		global $db;
 		global $db_config;
 		if (!$db)
 			return false;
 		
-		$category = $this->get($categoryName);
-		if (!$category)
-			return false;
-		
+		if (is_string($categoryId)) {
+			$category = $this->get($categoryId);
+			if (!$category)
+				return false;
+			$categoryId = $category->id;
+		}
+				
 		$personId = $db->escape(( int ) $personId);
-		$categoryId = $db->escape(( int ) $category->id);
+		$categoryId = $db->escape(( int ) $categoryId);
 		
 		$sql = "SELECT * FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
 		$sql .= "(category_id = $categoryId) AND ";
 		$sql .= "(person_id = $personId) ";
 		
 		$row = $db->selectOne($sql);
-		if (row)
+		if ($row)
 			return true;
 		
 		return false;
 	}
 
-	function get($categoryName) {
+	function getByName($categoryName) {
 		global $db;
 		global $db_config;
 		if (!$db)
+			return false;
+		
+		if(!$categoryName)
 			return false;
 			
 			// quote db specific characters
@@ -248,16 +285,21 @@ class Categories {
 		return $category;
 	}
 
-	function getById($categoryId) {
+	function get($categoryId) {
 		global $db;
 		global $db_config;
 		if (!$db)
 			return false;
 			
 			// quote db specific characters
-		$categoryId = $db->escape($categoryId);
+		if (is_string($categoryId)) {
+			$uid = $db->escape(strtolower($categoryId));
+			$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " WHERE uid=$uid LIMIT 1";
+		} else {
+			$id = $db->escape(( int ) $categoryId);
+			$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " WHERE id=$id LIMIT 1";
+		}
 		
-		$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " WHERE id=$categoryId LIMIT 1";
 		$row = $db->selectOne($sql);
 		
 		if (!$row)
@@ -267,24 +309,134 @@ class Categories {
 		return $category;
 	}
 	
-	// sets a category (usually add)
-	function set($category) {
+	function getMembersForCategory($categoryId) {
 		global $db;
 		global $db_config;
 		if (!$db)
 			return false;
 		
+		//msg("getMembersForCategory: " . $categoryId);
+
+		if (is_string($categoryId)) {
+			$category = $this->get($categoryId);
+			if (!$category)
+				return false;
+			$categoryId = $category->id;
+		}
+		
+		// quote db specific characters
+		$categoryId = $db->escape(( int ) $categoryId);
+		
+		$sql = "SELECT a.* FROM " . $db_config ['dbtable_cat'] . " c, " . $db_config ['dbtable_catmap'] . " cm, " . $db_config['dbtable_ab'] . " a ";
+		$sql .= "WHERE c.id=cm.category_id AND a.id=cm.person_id AND ";
+		$sql .= "( c.id=$categoryId ) ";
+		//$sql .= " LIMIT $limit";
+		
+		$result = $db->selectAll($sql);
+		
+		$members = array ();
+		foreach ( $result as $row ) {
+			$row = array_change_key_case($row, CASE_LOWER);
+			
+			$prefix = '';
+			if (!array_key_exists('id', $row)) {
+				$prefix = 'a.';
+			}
+			
+			$members [$row [$prefix . 'id']] = $row [$prefix . 'uid'];
+		}
+		
+		return $members;
+	}
+	
+	function setMembersForCategory($categoryId, $memberUUIDs) {
+		$category = $this->get($categoryId);
+		if (!$category)
+			return false;
+		
+		// calculate elements to remove
+		$old_members = $this->getMembersForCategory($category->id);
+		$memberUUIDs = array_flip($memberUUIDs);
+		foreach ($old_members as $oldMemberId => $oldMemberUUID) {
+			if(isset($memberUUIDs[$oldMemberUUID]) || isset($memberUUIDs[$oldMemberId])) {
+				unset($old_members[$oldMemberId]);
+			}
+		}
+		
+		// remove old elements
+		$this->deleteMembersFromCategory($category->id, $old_members);
+
+		// add new elements
+		$this->addMembersToCategory($category->id, $memberUUIDs);
+
+		return true;
+	}
+	
+	function setCategoriesForPerson($personId, $categories) {
+		if(!is_array($categories))
+			return false;
+		
+		$newCategories = array();
+		foreach($categories as $category) {
+			$categoryName = $category->name();
+			if(empty($categoryName))
+				continue;
+			
+			$newCategory = $this->getByName($categoryName);
+			if(!$newCategory) {
+				$newCategory = new Category($categoryName);
+				$newCategory->id = $this->set($newCategory);
+			}
+			
+			$newCategories [$newCategory->id] = $newCategory;
+		}
+		
+		// calculate elements to remove
+		$oldCategories = $this->getCategoriesForPerson($personId);
+		foreach ($oldCategories as $oldCategoryId => $oldCategory) {
+			if(isset($newCategories[$oldCategoryId])) {
+				unset($oldCategories[$oldCategoryId]);
+			}
+		}
+		
+		$memberIds = array( $personId );
+		// remove elements
+		foreach($oldCategories as $oldCategory) {
+			$this->deleteMembersFromCategory($oldCategory->id, $memberIds);
+		}
+		
+		// add elements
+		foreach($newCategories as $category) {
+			$this->addMembersToCategory($category->id, $memberIds);
+		}
+		return true;
+	}
+	
+	// sets a category (usually add)
+	function set($category) {
+		global $db;
+		global $db_config;
+		global $AB;
+		if (!$db)
+			return false;
+		
 		if (!is_object($category))
 			return false;
-			
+
+		if (empty($category->uid))
+			$category->uid = generate_uuid();
+		
 			// Input validation
 		$id = $db->escape(( int ) $category->id);
+		$uid = $db->escape($category->uid);
 		$name = $db->escape($category->name);
 		
 		if ($id == 0) {
 			// insert
+			$mod_ts = (int)$category->modification_ts;
+
 			$sql = "INSERT INTO " . $db_config ['dbtable_cat'] . "  ";
-			$sql .= "( name ) VALUES ( $name );";
+			$sql .= "( uid, name, modification_ts, etag ) VALUES ( $uid, $name, $mod_ts, 2 );";
 			$db->insert($sql);
 			$insertid = $db->insertId();
 			
@@ -295,9 +447,13 @@ class Categories {
 			$id = $insertid;
 		} else {
 			// update
+			$mod_ts = time();
+			
 			$sql = "UPDATE " . $db_config ['dbtable_cat'] . " SET ";
 			
-			$sql .= "name=$name ";
+			$sql .= "uid=$uid, name=$name ";
+			$sql .= "modification_ts=$mod_ts, ";
+			$sql .= "etag=etag+1, ";
 			$sql .= "WHERE id=$id";
 			
 			$result = $db->update($sql);
@@ -306,16 +462,25 @@ class Categories {
 				return false;
 			}
 		}
+		$AB->update_ctag();
 		
 		return $id;
 	}
 
-	function deleteById($categoryId) {
+	function delete($categoryId) {
 		global $db;
 		global $db_config;
+		global $AB;
 		if (!$db)
 			return false;
 
+		if (is_string($categoryId)) {
+			$category = $this->get($categoryId);
+			if (!$category)
+				return false;
+			$categoryId = $category->id;
+		}
+		
 		// quote db specific characters
 		$categoryId = $db->escape(( int ) $categoryId);
 		
@@ -332,20 +497,51 @@ class Categories {
 			msg("DB error on delete: " . $db->lasterror(), -1);
 			return false;
 		}
+		$AB->update_ctag();
 		
 		return true;
 	}
 
-	function delete($categoryName) {
-		$category = $this->get($categoryName);
+	function deleteByName($categoryName) {
+		$category = $this->getByName($categoryName);
 		if (!$category)
 			return false;
-		return $this->deleteById($category->id);
+		return $this->delete($category->id);
+	}
+	
+	function update_etag($categoryId) {
+		global $db;
+		global $db_config;
+		if (!$db)
+			return false;
+
+		if (is_string($categoryId)) {
+			$category = $this->get($categoryId);
+			if (!$category)
+				return false;
+			$categoryId = $category->id;
+		}
+		$categoryId = $db->escape(( int ) $categoryId);
+		$mod_ts = time();
+			
+		// update
+		$sql = "UPDATE " . $db_config ['dbtable_cat'] . " SET ";
+		$sql .= "modification_ts=$mod_ts, ";
+		$sql .= "etag=etag+1 ";
+		$sql .= "WHERE id=$categoryId";
+			
+		$result = $db->update($sql);
+		if (!$result) {
+			msg("DB error on update_etag: " . $db->lasterror(), -1);
+			return false;
+		}
+		
+		return true;		
 	}
 
 	function sort($categories) {
 		global $lang;
-		
+
 		// $categories is an array of category
 		$sorted_names = array ();
 		$sorted = array ();

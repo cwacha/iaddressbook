@@ -88,7 +88,8 @@ function tpl_showperson() {
     global $contact;
     global $lang;
     global $conf;
-        
+    global $categories;
+    
     if(is_object($contact)) {
         if($ACT == 'edit' or $ACT == 'new') {
             include(template('person_edit.tpl'));

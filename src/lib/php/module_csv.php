@@ -65,9 +65,8 @@ function contact2csvline($contact) {
     $line['company']            = csv_escape($contact->company);
     $line['birthdate']          = csv_escape($contact->birthdate);
     $line['note']               = csv_escape($contact->note);
-    $line['creationdate']       = csv_escape($contact->creationdate);
-    $line['modificationdate']   = csv_escape($contact->modificationdate);
-    //$line['id']                 = csv_escape($contact->id);
+    $line['modification_ts']    = gmdate("Y-m-d\TH:i:s\Z", $contact->modification_ts);
+    $line['uid']                = csv_escape($contact->uid);
 
     $line['street1']            = csv_escape($contact->addresses[0]['street']);
     $line['city1']              = csv_escape($contact->addresses[0]['city']);
@@ -149,8 +148,8 @@ function csv_title() {
     $contact->company           = "Company";
     $contact->birthdate         = "Birthdate";
     $contact->note              = "Note";
-    $contact->creationdate      = "Created";
-    $contact->modificationdate  = "Modified";
+    $contact->modification_ts   = "Modified";
+    $contact->uid               = "UUID";
     
     for($i = 1; $i <= 5; $i++) {
         $contact->add_address( array('street' => 'Street'.$i,

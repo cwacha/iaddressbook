@@ -22,7 +22,7 @@ CREATE TABLE addressbook (
     department varchar(255) NOT NULL,
     organization varchar(255) NOT NULL,
     company INTEGER NOT NULL default 0,
-    birthdate date NOT NULL default '0000-00-00',
+    birthdate varchar(255) NOT NULL,
     note text NOT NULL,
     addresses text NOT NULL,
     emails text NOT NULL,
@@ -30,14 +30,16 @@ CREATE TABLE addressbook (
     chathandles text NOT NULL,
     relatednames text NOT NULL,
     urls text NOT NULL,
-    creationdate datetime NOT NULL default '0000-00-00 00:00:00',
-    modificationdate datetime NOT NULL default '0000-00-00 00:00:00',
+    modification_ts INTEGER NOT NULL default 0,
     etag INTEGER NOT NULL default 1
 );
 
 CREATE TABLE addressbook_cat (
     id INTEGER PRIMARY KEY,
+    uid varchar(255) NOT NULL,
     name varchar(255) NOT NULL,
+    modification_ts INTEGER NOT NULL default 0,
+    etag INTEGER NOT NULL default 1
 );
 
 CREATE TABLE addressbook_catmap (

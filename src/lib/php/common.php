@@ -203,6 +203,7 @@ function msg($message, $lvl=0){
             print "ERROR($lvl) $message";
         }
     }
+    error_log("[" . $errors[$lvl] . "] " . $message);
 }
 
 function imsg($message, $lvl=0) {
@@ -386,5 +387,16 @@ function fix_dmode($dir) {
     
     if($conf['dperm']) chmod($dir, $conf['dperm']);
 }
+
+function generate_uuid() {
+	return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+			mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
+}
+
 
 ?>

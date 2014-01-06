@@ -228,13 +228,14 @@
         </td>
         <td class="person_right">
             <div class="person_text">
-                <textarea name="category" rows="5" cols="50" class="text">
-					<?php
+                <textarea name="category" rows="5" cols="50" class="text"><?php
+                    $categories = $contact->get_categories();
                     foreach($categories as $category) {
-                        echo "$category->displayName()\n";
+                    	if(strpos($category->name(), ' __') === 0)
+                    		continue;
+                        echo $category->displayName()."\n";
                     }
-					?>
-				</textarea>
+				?></textarea>
             </div>
         </td>
     </tr>

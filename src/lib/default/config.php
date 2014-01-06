@@ -15,7 +15,7 @@ $conf['dmode']          = 755;                  //set directory creation mode
 $conf['basedir']        = '';                    //relative dir to serveroot - blank for autodetection
 $conf['baseurl']        = '';                    //URL to server including protocol - blank for autodetect
 
-$conf['dbtype']         = 'mysql';               // database type: mysql, postgres, sqlite etc.
+$conf['dbtype']         = 'auto';                // database type: mysql, postgres, sqlite etc.
 $conf['dbname']         = 'addressbook';         // database name
 $conf['dbserver']       = 'localhost';           // server to connect to
 $conf['dbuser']         = '';                    // username to connect to server
@@ -75,7 +75,7 @@ $conf['im_convert']  = '/usr/bin/convert';       // path to ImageMagicks convert
 $conf['photo_enable'] = 1;                       // enable photo usage (disable, if you are using sqlite 2.x)
 $conf['session_name'] = '';                      // override session name if you have more than one addressbook on your server
                                                  // only use alphanumeric characters (0-9, a-z, A-Z). No dots, does not consist of numbers only!
-$conf['mark_changed'] = 1;                    // every contact that is added or modified will be automatically added to a new category called "modified contacts"
+$conf['mark_changed'] = 1;                       // every contact that is added or modified will be automatically added to a new category called "modified contacts"
 $conf['debug'] = 0;                              // enable debug mode: use ?do=debug to show debug information
 $conf['debug_db']       = 0;					 // enable database debugging 
 
@@ -87,7 +87,8 @@ $conf['vcard_fb_enc']= 'ISO-8859-1';             // Fallback encoding if we cann
 $conf['ldif_base'] = 'ou=customers, dc=example, dc=com';
 $conf['ldif_mozilla'] = 1;                       // use mozilla LDAP classes (mozillaOrgPerson, mozillaAddressBookEntry)
 
-// Synchronization
-$conf['xmlrpc_enable'] = 0;                  // Enable XMLRPC synchronization (not yet implemented)
+// APIs
+$conf['xmlrpc_enable'] = 0;                      // Enable XMLRPC API
+$conf['carddav_enable'] = 0;                     // Enable CardDAV Server (iCloud alternative)
 
 ?>

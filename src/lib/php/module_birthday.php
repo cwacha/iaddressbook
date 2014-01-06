@@ -19,27 +19,22 @@ function collect_birthdays() {
     global $AB;
     if(!$db) return array();
     $upcoming = array();
-    
     date_default_timezone_set('UTC');
     
     $thismonth = date('n');
     //$thismonth = 12;
     $nextmonth = ($thismonth + 1) % 12;
-        
-    if($db_config['dbtype'] == 'sqlite') {
-        $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE strftime('%m', birthdate) = " . $thismonth;
-        $sql .= " OR strftime('%m', birthdate) = " . $nextmonth;
-        $sql .= " ORDER BY strftime('%j', birthdate) ASC LIMIT 20";
-    } else {
-        $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE MONTH(birthdate) = " . $thismonth;
-        $sql .= " OR MONTH(birthdate) = " . $nextmonth;
-        $sql .= " ORDER BY DAYOFYEAR(birthdate) ASC LIMIT 20";
-    }
-
+    
+    $thism = $db->escape(sprintf('%%-%02d-%%', $thismonth));
+    $nextm = $db->escape(sprintf('%%-%02d-%%', $nextmonth));
+    
+    $sql = "SELECT * FROM " . $db_config['dbtable_ab'] . " WHERE birthdate LIKE $thism";
+	$sql .= " OR birthdate LIKE $nextm";
+	$sql .= " ORDER BY birthdate ASC LIMIT 20";
+	
     $result = $db->selectAll($sql);
     
-    if($result) {
-        //while($row = $result->FetchRow()) {
+    if($result !== false) {
         foreach($result as $row) {
             $contact = $AB->row2contact($row);
             $upcoming[] = $contact;
@@ -61,7 +56,7 @@ function tpl_birthday() {
         
     foreach($people as $contact) {
         $now = time();
-        //$now = strtotime('2011-12-20');
+        //$now = strtotime('2011-12-30');
         
         // if we are in december and the persons birthday is in january
         // we have to add 1 to his year

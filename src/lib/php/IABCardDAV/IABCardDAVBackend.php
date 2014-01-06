@@ -7,7 +7,7 @@ use Sabre\DAV;
 use iAddressbook;
     
     
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/../../../../../../..');
+    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/../../..');
     require_once(AB_BASEDIR.'/lib/php/include.php');
     require_once(AB_BASEDIR.'/lib/php/init.php');
     require_once(AB_BASEDIR.'/lib/php/db.php');
@@ -32,10 +32,6 @@ class IABCardDAVBackend extends AbstractBackend {
         db_open();
 
         $this->catalog = new \Addressbooks();
-        
-        $this->pdo = $pdo;
-        $this->addressBooksTableName = $addressBooksTableName;
-        $this->cardsTableName = $cardsTableName;
     }
 
 	/**
@@ -59,7 +55,7 @@ class IABCardDAVBackend extends AbstractBackend {
                                 new CardDAV\Property\SupportedAddressData(),
                                 );
 		}
-    	error_log("getAddressBooksForUser: $principalUri");
+    	error_log("getAddressBooksForUser: $principalUri, " . $book['ctag']);
 		return $addressBooks;
     }
 
@@ -76,7 +72,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return bool|array
      */
     public function updateAddressBook($addressBookId, array $mutations) {
-    	error_log("updateAddressBook: $addressBookId");
+    	msg("updateAddressBook: $addressBookId");
     	return true;
     }
 
@@ -89,7 +85,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return void
      */
     public function createAddressBook($principalUri, $url, array $properties) {
-    	error_log("createAddressBook: $principalUri, $url");
+    	msg("createAddressBook: $principalUri, $url");
     }
 
     /**
@@ -99,7 +95,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return void
      */
     public function deleteAddressBook($addressBookId) {
-    	error_log("deleteAddressBook: $addressBookId");
+    	msg("deleteAddressBook: $addressBookId");
     }
 
     /**
@@ -122,7 +118,10 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return array
      */
     public function getCards($addressBookId) {
-    	error_log("getCards: $addressBookId");
+    	msg("getCards: $addressBookId");
+		global $AB;
+		global $CAT;
+		
     	$book = $this->catalog->getAddressBookForId($addressBookId);
 		$AB = new \Addressbook($book['id']);
         $CAT = new \Categories;        
@@ -141,14 +140,45 @@ class IABCardDAVBackend extends AbstractBackend {
             
             $item = array();
             $item['uri'] = $contact->uid;
-            $item['lastmodified'] = strtotime($contact->modificationdate);
-            $item['carddata'] = $vcarddata;
+            $item['lastmodified'] = $contact->modification_ts;
+            //$item['carddata'] = $vcarddata;
             $item['etag'] = $contact->etag;
             $item['size'] = strlen($vcarddata);
             
             $results[] = $item;
         }
-
+        
+        // now repeat for all the categories
+        $categories = $CAT->getAllCategories();
+        
+        foreach ($categories as $category) {
+        	if(strpos($category->name(), ' __') === 0)
+        		continue;
+        	
+        	// check if it is a group
+			$contact = new \Person();
+			$contact->isgroup = true;
+			$contact->uid = $category->uid;
+			$contact->modification_ts = $category->modification_ts;
+			$contact->etag = $category->etag;
+			$contact->lastname = $category->name();
+			$members = $CAT->getMembersForCategory($category->id);
+			foreach($members as $key => $value) {
+				$contact->add_groupmember($value);
+			}
+				
+			$vcarddata = contact2vcard($contact);
+        
+        	$item = array();
+        	$item['uri'] = $contact->uid;
+        	$item['lastmodified'] = $contact->modification_ts;
+        	//$item['carddata'] = $vcarddata;
+        	$item['etag'] = $contact->etag;
+        	$item['size'] = strlen($vcarddata);
+        
+        	$results[] = $item;
+        }
+        
         return $results;
     }
 
@@ -163,29 +193,49 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * @return array
 	 */
 	public function getCard($addressBookId, $cardUri) {
+		msg("getCard: $addressBookId,    $cardUri");
+		global $AB;
 		global $CAT;
-		error_log("getCard: $addressBookId, $cardUri");
-
-		$book = $this->catalog->getAddressBookForId($addressbookId);
-		$AB = new \Addressbook($book ['id']);
-		$CAT = new \Categories();
+		$uri = basename($cardUri, '.vcf');
 		
+    	$book = $this->catalog->getAddressBookForId($addressBookId);
+		$AB = new \Addressbook($book['id']);
+        $CAT = new \Categories;        
+				
 		$results = array ();
 		
-		$contact = $AB->get($cardUri, true);
+		$contact = $AB->get($uri, true);
 		
 		if (!$contact) {
-			return false;
+			// check if it is a group
+			$category = $CAT->get($uri);
+			if(!$category) {
+				error_log("not found:     $uri");
+				return false;
+			}
+			$contact = new \Person();
+			$contact->isgroup = true;
+			$contact->uid = $category->uid;
+			$contact->modification_ts = $category->modification_ts;
+			$contact->etag = $category->etag;
+			$contact->lastname = $category->name();
+			$members = $CAT->getMembersForCategory($category->id);
+			foreach($members as $key => $value) {
+				$contact->add_groupmember($value);
+			}
 		}
 		
 		$vcarddata = contact2vcard($contact);
+		//msg("vcard: " . print_r($vcarddata, true));
 		$item = array (
-				'uri' => $contact->uid,
-				'lastmodified' => strtotime($contact->modificationdate),
+				'uri' => $cardUri,
+				'lastmodified' => $contact->modification_ts,
 				'carddata' => $vcarddata,
 				'etag' => $contact->etag,
 				'size' => strlen($vcarddata) 
 		);
+		
+		msg("result:  $addressBookId,    $cardUri, " . $contact->etag);
 		
 		return $item;
 	}
@@ -215,17 +265,46 @@ class IABCardDAVBackend extends AbstractBackend {
      * @param string $cardData
      * @return string|null
      */
+	
+	/**
+	 * Example of OSX addressbook GROUP entry
+	 * 
+	 * BEGIN:VCARD
+	 * VERSION:3.0
+	 * PRODID:-//Apple Inc.//AddressBook 7.1//EN
+	 * N:Neue Gruppe
+	 * FN:Neue Gruppe
+	 * X-ADDRESSBOOKSERVER-KIND:group
+	 * X-ADDRESSBOOKSERVER-MEMBER:urn:uuid:7119696e-c552-6115-c77e-0cb34efe2b30
+	 * REV:2014-01-03T10:30:07Z
+	 * UID:9c82155a-1d63-4893-aef9-7b2057f5476d
+	 * END:VCARD
+	 * 
+	 */
     public function createCard($addressBookId, $cardUri, $cardData) {
-    	error_log("createCard: $addressBookId, $cardUri");
+    	msg("createCard: $addressBookId, $cardUri");
+    	global $AB;
+		global $CAT;
     	
-    	$book = $this->catalog->getAddressBookForId($addressbookId);
-    	$AB = new \Addressbook($book ['id']);
-    	$CAT = new \Categories();
-
+    	$book = $this->catalog->getAddressBookForId($addressBookId);
+		$AB = new \Addressbook($book['id']);
+        $CAT = new \Categories;        
+    	
+    	msg("createCard: $cardData");
     	$contacts = vcard2contacts($cardData);
     	    	
     	foreach ( $contacts as $contact ) {
-    		$person_id = $AB->set($contact);
+			if ($contact->isgroup) {
+				$category = $CAT->get($contact->uid);
+				if (!$category) {
+					$category = new \Category($contact->name());
+					$category->uid = $contact->uid;
+				}
+				$category->id = $CAT->set($category);
+				$CAT->setMembersForCategory($category->id, $contact->get_groupmembers());
+			} else {
+	    		$person_id = $AB->set($contact);
+    		}
     	}
 
     	return null;
@@ -257,36 +336,61 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return string|null
      */
     public function updateCard($addressBookId, $cardUri, $cardData) {
-    	error_log("updateCard: $addressBookId, $cardUri");
-    	 
-    	$book = $this->catalog->getAddressBookForId($addressbookId);
-		$AB = new \Addressbook($book ['id']);
-		$CAT = new \Categories();
-		
+    	msg("updateCard: $addressBookId, $cardUri");
+    	global $AB;
+    	global $CAT;
+    	
+    	$book = $this->catalog->getAddressBookForId($addressBookId);
+		$AB = new \Addressbook($book['id']);
+        $CAT = new \Categories;        
+    			
 		$contacts = vcard2contacts($vcard_string);
 		
 		foreach ( $contacts as $contact ) {
-			$person_id = $AB->set($contact);
+    		if($contact->isgroup) {
+    			$category = $CAT->get($contact->uid);
+    			if(!$category) {
+	    			$category = new \Category($contact->name());
+    				$category->uid = $contact->uid;
+    			}
+    			$category->id = $CAT->set($category);
+    			$CAT->setMembersForCategory($category->id, $contact->get_groupmembers());
+    		} else {
+	    		$person_id = $AB->set($contact);
+    		}
 		}
     	
     	return null;
     }
 
-    /**
-     * Deletes a card
-     *
-     * @param mixed $addressBookId
-     * @param string $cardUri
-     * @return bool
-     */
-    public function deleteCard($addressBookId, $cardUri) {
-    	error_log("deleteCard: $addressBookId, $cardUri");
-    	 
-    	$book = $this->catalog->getAddressBookForId($addressbookId);
-    	$AB = new \Addressbook($book ['id']);
-    	$CAT = new \Categories();
-    	
-    	$contact = $AB->get($cardUri, true);
-    	return $AB->delete($contact->id);
-    }
+	/**
+	 * Deletes a card
+	 *
+	 * @param mixed $addressBookId        	
+	 * @param string $cardUri        	
+	 * @return bool
+	 */
+	public function deleteCard($addressBookId, $cardUri) {
+		msg("deleteCard: $addressBookId, $cardUri");
+		global $AB;
+		global $CAT;		
+
+		$book = $this->catalog->getAddressBookForId($addressBookId);
+		$AB = new \Addressbook($book['id']);
+		$CAT = new \Categories;
+		
+		$uri = basename($cardUri, '.vcf');
+				
+		$contact = $AB->get($uri);
+		if ($contact)
+			return $AB->delete($contact->id);
+			
+			// check if it is a group
+		$category = $CAT->get($uri);
+		if ($category)
+			return $CAT->delete($category->id);
+		
+		error_log("not found:     $uri");
+		return false;
+	}
 }

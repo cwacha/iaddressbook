@@ -5,7 +5,7 @@ namespace Sabre\DAVACL\PrincipalBackend;
 use Sabre\DAV;
 use Sabre\DAVACL;
 
-if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/../../../../../../..');
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/../../..');
 require_once(AB_BASEDIR.'/lib/php/include.php');
 require_once(AB_BASEDIR.'/lib/php/init.php');
 

@@ -96,7 +96,7 @@ function act_dispatch(){
             act_getcontact();
             break;
         case 'import_folder':
-            act_importfolder();
+            act_importvcard_folder();
             act_search();
             act_getcontact();
             break;
@@ -104,7 +104,6 @@ function act_dispatch(){
             act_exportvcard();
             break;
         case 'export_vcard_cat':
-            act_search();  // we need the contactlist
             act_exportvcard_cat();
             break;
         
@@ -228,7 +227,7 @@ function act_save() {
 
     // load contact with image
     $contact = $AB->get($ID, true);
-    if($contact == false) $contact = new Person;
+    if($contact == false) $contact = new Person();
 
     $contact->title         = real_br2nl($_REQUEST['title']);
     $contact->firstname     = real_br2nl($_REQUEST['firstname']);
@@ -329,8 +328,9 @@ function act_save() {
     $contact->clear_categories();
     $new_categories = explode("\n", str_replace("\r", "", $_REQUEST['category']));
     foreach($new_categories as $name) {
-    	$category = new Category($name);
-    	$contact->add_category($category);
+    	if( trim($name) === "")
+    		continue;
+    	$contact->add_category(new Category($name));
     }
     
     $person_id = $AB->set($contact);
@@ -358,7 +358,7 @@ function act_delete() {
     global $ID;
     global $AB;
 
-    $AB->deleteById($ID);
+    $AB->delete($ID);
 }
 
 function act_delete_many() {
@@ -366,7 +366,7 @@ function act_delete_many() {
 
     foreach($_REQUEST as $key => $value) {
         if(strpos($key, 'ct_') === 0) {
-            $AB->delete($value);
+            $AB->delete((int)$value);
         }
     }
 
@@ -447,7 +447,7 @@ function act_category_del() {
     global $CAT;
     global $CAT_ID;
     
-    $CAT->deleteById($CAT_ID);
+    $CAT->delete($CAT_ID);
     $CAT_ID = 0;
 }
 
@@ -466,7 +466,7 @@ function act_category_del_empty() {
         if(count($contacts) == 0) {
             // remove the category
             msg("Deleting empty category: ". $category->displayName());
-            $CAT->deleteById($category->id);
+            $CAT->delete($category->id);
 			$i++;
         }
     }
@@ -476,31 +476,35 @@ function act_category_del_empty() {
 }
 
 function act_category_addcontacts() {
-    global $CAT;
-    $cat_id = trim($_REQUEST['cat_id']);
-
-    foreach($_REQUEST as $key => $value) {
-        if(strpos($key, 'ct_') === 0) {
-        	$category = $CAT->getById($cat_id);
-        	if($category)
-	            $CAT->addPersonToCategory($value, $category->name());
-        }
-    }
-
+	global $CAT;
+	$cat_id = ( int ) trim($_REQUEST ['cat_id']);
+	$category = $CAT->get($cat_id);
+	if (!$category)
+		return;
+	
+	$members = array ();
+	foreach ( $_REQUEST as $key => $value ) {
+		if (strpos($key, 'ct_') === 0) {
+			$members [] = ( int ) $value;
+		}
+	}
+	$CAT->addMembersToCategory($category->id, $members);
 }
 
 function act_category_delcontacts() {
-    global $CAT;
-    $cat_id = (int)trim($_REQUEST['cat_id']);
-
-    foreach($_REQUEST as $key => $value) {
-        if(strpos($key, 'ct_') === 0) {
-        	$category = $CAT->getById($cat_id);
-        	if($category)
-        		$CAT->delete_contact($value, $category->name());
-        }
-    }
-
+	global $CAT;
+	$cat_id = ( int ) trim($_REQUEST ['cat_id']);
+	$category = $CAT->get($cat_id);
+	if (!$category)
+		return;
+	
+	$members = array ();
+	foreach ( $_REQUEST as $key => $value ) {
+		if (strpos($key, 'ct_') === 0) {
+			$members [] = ( int ) $value;
+		}
+	}
+	$CAT->deleteMembersFromCategory($category->id, $members);
 }
 
 function act_hsc_everything() {

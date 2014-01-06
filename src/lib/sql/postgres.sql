@@ -20,8 +20,7 @@ CREATE TABLE addressbook (
     chathandles text NOT NULL,
     relatednames text NOT NULL,
     urls text NOT NULL,
-    creationdate timestamp without time zone NOT NULL default NULL,
-    modificationdate timestamp without time zone NOT NULL default NULL
+    modification_ts INTEGER NOT NULL default 0,
 );
 
 CREATE TABLE addressbook_cat (
@@ -36,34 +35,3 @@ CREATE TABLE addressbook_catmap (
     category_id int NOT NULL,
     person_id int NOT NULL
 );
-
-/*
-CREATE TABLE addressbook_truth (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    local_id int unsigned NOT NULL,
-    mod_date datetime NOT NULL default '0000-00-00 00:00:00',
-    PRIMARY KEY (id)
-);
- 
-CREATE TABLE addressbook_sync (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    sync_state int unsigned NOT NULL,
-    mod_date datetime NOT NULL default '0000-00-00 00:00:00',
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE addressbook_syncactions (
-    id int unsigned NOT NULL auto_increment,
-    syncpartner_id int unsigned NOT NULL,
-    syncaction int unsigned NOT NULL,
-    remote_id int unsigned NOT NULL,
-    local_id int unsigned NOT NULL,
-    vcard_data text NOT NULL,
-    PRIMARY KEY (id)
-);
-*/
-

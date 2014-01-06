@@ -67,16 +67,19 @@ function html_header() {
     global $meta;
     
     ?>
-    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>"
-     lang="<?php echo $conf['lang']; ?>" dir="<?php echo $lang['direction']; ?>">
-    <head>
-        <title><?php echo $conf['title']; ?></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-        <link rel="shortcut icon" href="<?php echo AB_TPL; ?>images/favicon.ico" />
-        <link rel="stylesheet" media="screen" type="text/css" href="<?php echo AB_TPL; ?>design.css" />
-        
-        <script type="text/javascript" language="JavaScript">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xml:lang="<?php echo $conf['lang']; ?>"
+	lang="<?php echo $conf['lang']; ?>"
+	dir="<?php echo $lang['direction']; ?>">
+<head>
+<title><?php echo $conf['title']; ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="shortcut icon" href="<?php echo AB_TPL; ?>images/favicon.ico" />
+<link rel="stylesheet" media="screen" type="text/css"
+	href="<?php echo AB_TPL; ?>design.css" />
+
+<script type="text/javascript" language="JavaScript">
         <!--
         function do_action($action) {
             if($action != null) {
@@ -103,80 +106,93 @@ function html_header() {
         }
         -->
         </script>
-    </head>
-    <body>
-    
-    <form name="actions" action="" method="post">
-        <input type="hidden" name="do" value="show" />
+</head>
+<body>
 
-        <input type="hidden" name="fmode" value="<?php echo $conf['fmode']; ?>" />
-        <input type="hidden" name="dmode" value="<?php echo $conf['dmode']; ?>" />
-        <input type="hidden" name="basedir" value="<?php echo $conf['basedir']; ?>" />
-        <input type="hidden" name="baseurl" value="<?php echo $conf['baseurl']; ?>" />
+	<form name="actions" action="" method="post">
+		<input type="hidden" name="do" value="show" /> <input type="hidden"
+			name="fmode" value="<?php echo $conf['fmode']; ?>" /> <input
+			type="hidden" name="dmode" value="<?php echo $conf['dmode']; ?>" /> <input
+			type="hidden" name="basedir" value="<?php echo $conf['basedir']; ?>" />
+		<input type="hidden" name="baseurl"
+			value="<?php echo $conf['baseurl']; ?>" /> <input type="hidden"
+			name="dbtype" value="<?php echo $conf['dbtype']; ?>" /> <input
+			type="hidden" name="dbname" value="<?php echo $conf['dbname']; ?>" />
+		<input type="hidden" name="dbserver"
+			value="<?php echo $conf['dbserver']; ?>" /> <input type="hidden"
+			name="dbuser" value="<?php echo $conf['dbuser']; ?>" /> <input
+			type="hidden" name="dbpass" value="<?php echo $conf['dbpass']; ?>" />
+		<input type="hidden" name="debug_db"
+			value="<?php echo $conf['debug_db']; ?>" /> <input type="hidden"
+			name="dbtable_ab" value="<?php echo $conf['dbtable_ab']; ?>" /> <input
+			type="hidden" name="dbtable_cat"
+			value="<?php echo $conf['dbtable_cat']; ?>" /> <input type="hidden"
+			name="dbtable_catmap" value="<?php echo $conf['dbtable_catmap']; ?>" />
+		<input type="hidden" name="dbtable_truth"
+			value="<?php echo $conf['dbtable_truth']; ?>" /> <input type="hidden"
+			name="dbtable_sync" value="<?php echo $conf['dbtable_sync']; ?>" /> <input
+			type="hidden" name="dbtable_action"
+			value="<?php echo $conf['dbtable_action']; ?>" /> <input
+			type="hidden" name="lang" value="<?php echo $conf['lang']; ?>" /> <input
+			type="hidden" name="title" value="<?php echo $conf['title']; ?>" /> <input
+			type="hidden" name="template"
+			value="<?php echo $conf['template']; ?>" /> <input type="hidden"
+			name="bdformat" value="<?php echo $conf['bdformat']; ?>" /> <input
+			type="hidden" name="dformat" value="<?php echo $conf['dformat']; ?>" />
+		<input type="hidden" name="lastfirst"
+			value="<?php echo $conf['lastfirst']; ?>" /> <input type="hidden"
+			name="photo_resize" value="<?php echo $conf['photo_resize']; ?>" /> <input
+			type="hidden" name="photo_size"
+			value="<?php echo $conf['photo_size']; ?>" /> <input type="hidden"
+			name="photo_format" value="<?php echo $conf['photo_format']; ?>" /> <input
+			type="hidden" name="map_link"
+			value="<?php echo $conf['map_link']; ?>" /> <input type="hidden"
+			name="contactlist_limit"
+			value="<?php echo $conf['contactlist_limit']; ?>" /> <input
+			type="hidden" name="bday_advance_week"
+			value="<?php echo $conf['bday_advance_week']; ?>" /> <input
+			type="hidden" name="canonical"
+			value="<?php echo $conf['canonical']; ?>" /> <input type="hidden"
+			name="auth_enabled" value="<?php echo $conf['auth_enabled']; ?>" /> <input
+			type="hidden" name="auth_allow_guest"
+			value="<?php echo $conf['auth_allow_guest']; ?>" /> <input
+			type="hidden" name="im_convert"
+			value="<?php echo $conf['im_convert']; ?>" /> <input type="hidden"
+			name="photo_enable" value="<?php echo $conf['photo_enable']; ?>" /> <input
+			type="hidden" name="session_name"
+			value="<?php echo $conf['session_name']; ?>" /> <input type="hidden"
+			name="mark_changed" value="<?php echo $conf['mark_changed']; ?>" /> <input
+			type="hidden" name="debug" value="<?php echo $conf['debug']; ?>" /> <input
+			type="hidden" name="vcard_fb_enc"
+			value="<?php echo $conf['vcard_fb_enc']; ?>" /> <input type="hidden"
+			name="ldif_base" value="<?php echo $conf['ldif_base']; ?>" /> <input
+			type="hidden" name="ldif_mozilla"
+			value="<?php echo $conf['ldif_mozilla']; ?>" /> <input type="hidden"
+			name="xmlrpc_enable" value="<?php echo $conf['xmlrpc_enable']; ?>" />
 
-        <input type="hidden" name="dbtype" value="<?php echo $conf['dbtype']; ?>" />
-        <input type="hidden" name="dbname" value="<?php echo $conf['dbname']; ?>" />
-        <input type="hidden" name="dbserver" value="<?php echo $conf['dbserver']; ?>" />
-        <input type="hidden" name="dbuser" value="<?php echo $conf['dbuser']; ?>" />
-        <input type="hidden" name="dbpass" value="<?php echo $conf['dbpass']; ?>" />
-        <input type="hidden" name="debug_db" value="<?php echo $conf['debug_db']; ?>" />
-        <input type="hidden" name="dbtable_ab" value="<?php echo $conf['dbtable_ab']; ?>" />
-        <input type="hidden" name="dbtable_cat" value="<?php echo $conf['dbtable_cat']; ?>" />
-        <input type="hidden" name="dbtable_catmap" value="<?php echo $conf['dbtable_catmap']; ?>" />
-        <input type="hidden" name="dbtable_truth" value="<?php echo $conf['dbtable_truth']; ?>" />
-        <input type="hidden" name="dbtable_sync" value="<?php echo $conf['dbtable_sync']; ?>" />
-        <input type="hidden" name="dbtable_action" value="<?php echo $conf['dbtable_action']; ?>" />
+	</form>
 
-        <input type="hidden" name="lang" value="<?php echo $conf['lang']; ?>" />
-        <input type="hidden" name="title" value="<?php echo $conf['title']; ?>" />
-        <input type="hidden" name="template" value="<?php echo $conf['template']; ?>" />
-        <input type="hidden" name="bdformat" value="<?php echo $conf['bdformat']; ?>" />
-        <input type="hidden" name="dformat" value="<?php echo $conf['dformat']; ?>" />
-        <input type="hidden" name="lastfirst" value="<?php echo $conf['lastfirst']; ?>" />
-        <input type="hidden" name="photo_resize" value="<?php echo $conf['photo_resize']; ?>" />
-        <input type="hidden" name="photo_size" value="<?php echo $conf['photo_size']; ?>" />
-        <input type="hidden" name="photo_format" value="<?php echo $conf['photo_format']; ?>" />
-        <input type="hidden" name="map_link" value="<?php echo $conf['map_link']; ?>" />
-        <input type="hidden" name="contactlist_limit" value="<?php echo $conf['contactlist_limit']; ?>" />
-        <input type="hidden" name="bday_advance_week" value="<?php echo $conf['bday_advance_week']; ?>" />
-
-        <input type="hidden" name="canonical" value="<?php echo $conf['canonical']; ?>" />
-        <input type="hidden" name="auth_enabled" value="<?php echo $conf['auth_enabled']; ?>" />
-        <input type="hidden" name="auth_allow_guest" value="<?php echo $conf['auth_allow_guest']; ?>" />
-        <input type="hidden" name="im_convert" value="<?php echo $conf['im_convert']; ?>" />
-        <input type="hidden" name="photo_enable" value="<?php echo $conf['photo_enable']; ?>" />
-        <input type="hidden" name="session_name" value="<?php echo $conf['session_name']; ?>" />
-        <input type="hidden" name="mark_changed" value="<?php echo $conf['mark_changed']; ?>" />
-        <input type="hidden" name="debug" value="<?php echo $conf['debug']; ?>" />
-
-        <input type="hidden" name="vcard_fb_enc" value="<?php echo $conf['vcard_fb_enc']; ?>" />
-        <input type="hidden" name="ldif_base" value="<?php echo $conf['ldif_base']; ?>" />
-        <input type="hidden" name="ldif_mozilla" value="<?php echo $conf['ldif_mozilla']; ?>" />
-        <input type="hidden" name="xmlrpc_enable" value="<?php echo $conf['xmlrpc_enable']; ?>" />
- 
-    </form>
-    
-    <div class="mainview">
+	<div class="mainview">
         <?php echo html_msgarea(); ?>
 
         <!-- Begin Logo -->
-        <table width="100%">
-            <tr>
-                <td>
-                    <div class="logo">
-                        <img src="<?php echo AB_TPL; ?>images/logo.png">
-                    </div>
-                </td>
-                <td>
-                    <div class="title"><?php echo $lang['installation']; ?></div>
-                </td>
-                <td>
-                    <?php echo $lang['lang']; ?>:<br/>
+		<table width="100%">
+			<tr>
+				<td>
+					<div class="logo">
+						<img src="<?php echo AB_TPL; ?>images/logo.png">
+					</div>
+				</td>
+				<td>
+					<div class="title"><?php echo $lang['installation']; ?></div>
+				</td>
+				<td>
+                    <?php echo $lang['lang']; ?>:<br />
                     <?php html_select($conf['lang'], $meta['lang']['_choices'], "do_set('lang',this.value);do_action('show');"); ?>
                 </td>
-            </tr>
-        </table>
-        <!-- End Logo -->
+			</tr>
+		</table>
+		<!-- End Logo -->
     <?php
 
 }
@@ -185,17 +201,17 @@ function html_footer() {
     global $_SESSION;
     global $conf;
     ?>
-        <div style="height: 10px; clear: both;" ></div>
-        <!-- Begin Footer --> 
-        <div class="separator">&nbsp;</div>
-        <div class="footer">
-            <a href='http://iaddressbook.org/'>PHP iAddressBook <?php echo get_version(); ?></a>
-        </div>
-        <!-- End Footer -->
-    </div>
-    </body>
-    </html>
-    <?php
+        <div style="height: 10px; clear: both;"></div>
+		<!-- Begin Footer -->
+		<div class="separator">&nbsp;</div>
+		<div class="footer">
+			<a href='http://iaddressbook.org/'>PHP iAddressBook <?php echo get_version(); ?></a>
+		</div>
+		<!-- End Footer -->
+	</div>
+</body>
+</html>
+<?php
 }
 
 function html_install_step() {
@@ -225,7 +241,7 @@ function html_install_step() {
                 echo $lang['step_check'];
                 break;
             case 3:
-                echo $lang['step_install'];
+                echo $lang['step_dbsetup'];
                 break;
             case 4:
                 echo $lang['step_configure'];
@@ -254,7 +270,7 @@ function act_content() {
             step_check();
             break;
         case 3:
-            step_install();
+            step_dbsetup();
             break;
         case 4:
             step_configure();
@@ -380,6 +396,7 @@ function step_check() {
         imsg($lang['error_iconv']);
     }
 
+    $conf['dbtype'] = 'mysql';
     $has_sqlite = false;
     if(function_exists('sqlite_open')) {
         // pre-select sqlite if it is available
@@ -422,15 +439,15 @@ function step_check() {
     echo '</td></tr></table>';
     
     step_prev('step_welcome');
-    if($errors == 0) step_next('step_install');
+    if($errors == 0) step_next('step_dbsetup');
 }
 
-function step_install() {
+function step_dbsetup() {
     global $state;
     global $lang;
     global $conf;
     
-    step_title($lang['step_install']);
+    step_title($lang['step_dbsetup']);
 
     $col = array();
 
@@ -470,7 +487,7 @@ function step_configure() {
     }
     html_sform_end();
 
-    step_prev('step_install');
+    step_prev('step_dbsetup');
     step_next('step_finish', $lang['finish']);
 }
 
@@ -499,7 +516,7 @@ function step_finish() {
         }
         
         // fix fmode if using sqlite!
-        if($conf['dbtype'] == 'sqlite') {
+        if(strpos($conf['dbtype'], 'sqlite') === 0) {
             fix_fmode(AB_STATEDIR.'/'.$conf['dbserver']);
         }
     }
@@ -599,9 +616,17 @@ function html_sform_line($col) {
     global $meta;
     global $lang;
 
+    $option_name = $lang[$col];
+    if(empty($option_name))
+    	$option_name = $col;
+    
+    $option_help = $lang[$col.'_help'];
+    if(empty($option_help))
+    	$option_help = "no help available";
+    $option_default = $defaults[$col];
+    
     echo "<tr>";
-
-    echo "<td style='text-align: right; vertical-align: top; padding-right: 2em;'>".$lang[$col]."</td>";
+    echo "<td style='text-align: right; vertical-align: top; padding-right: 2em;'>".$option_name."</td>";
     echo "<td style='vertical-align: top;'>";
     switch($meta[$col][0]) {
         case 'multichoice':
@@ -620,8 +645,7 @@ function html_sform_line($col) {
     }
     echo "</td>";
     echo "<td style='text-align: left; vertical-align: top; padding-left: 2em; padding-bottom:8px;'>";
-    echo $lang[$col.'_help'];
-    echo " [".$defaults[$col]."]";
+    echo $option_help . " [". $option_default . "]";
     echo "</td>";
 
     echo "</tr>";
@@ -637,9 +661,9 @@ function html_button($name='no name', $action="alert('clicked!')" ) {
     echo "</button>";
 }
 
-function html_link($name='no name', $action="alert('clicked!')" ) {
-    echo "<a href='#' onclick=\"".hsc($action).";return false;\">";
-    echo hsc($name);
+function html_link($name = 'no name', $action = "alert('clicked!')") {
+	echo "<a href='#' onclick=\"" . hsc($action) . ";return false;\">";
+	echo hsc($name);
     echo "</a>";
 }
 
@@ -718,7 +742,7 @@ function action_dispatch($action = '') {
         case 'step_check':
             $state['step'] = 2;
             break;
-        case 'step_install':
+        case 'step_dbsetup':
             $state['step'] = 3;
             break;
         case 'step_configure':
@@ -735,7 +759,7 @@ function action_dispatch($action = '') {
             exit;
             break;
         case 'create_db':
-            // db is created from within step_install()
+            // db is created from within step_dbsetup()
         case 'show':
             break;
         default:
