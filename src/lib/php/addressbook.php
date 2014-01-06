@@ -169,7 +169,8 @@ class Addressbook {
         if($CAT_ID == 0) {
             $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE ";
             foreach($search_array as $key => $value) {
-                $sql1  = "(title               LIKE $value) OR ";
+                $sql1  = "(uid                 LIKE $value) OR ";
+            	$sql1 .= "(title               LIKE $value) OR ";
                 $sql1 .= "(lastname            LIKE $value) OR ";
                 $sql1 .= "(firstname           LIKE $value) OR ";
                 $sql1 .= "(firstname2          LIKE $value) OR ";
@@ -198,7 +199,8 @@ class Addressbook {
             $sql  = "SELECT * FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
             $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") AND (";
             foreach($search_array as $key => $value) {
-                $sql1  = "(title               LIKE $value) OR ";
+                $sql1  = "(uid                 LIKE $value) OR ";
+            	$sql1 .= "(title               LIKE $value) OR ";
                 $sql1 .= "(lastname            LIKE $value) OR ";
                 $sql1 .= "(firstname           LIKE $value) OR ";
                 $sql1 .= "(firstname2          LIKE $value) OR ";

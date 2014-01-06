@@ -11,43 +11,40 @@ require_once(AB_BASEDIR.'/lib/php/init.php');
 
 class IABPrincipalBackend extends AbstractBackend {
 
-
-    /**
-     * Returns a list of principals based on a prefix.
-     *
-     * This prefix will often contain something like 'principals'. You are only
-     * expected to return principals that are in this base path.
-     *
-     * You are expected to return at least a 'uri' for every user, you can
-     * return any additional properties if you wish so. Common properties are:
-     *   {DAV:}displayname
-     *   {http://sabredav.org/ns}email-address - This is a custom SabreDAV
-     *     field that's actualy injected in a number of other properties. If
-     *     you have an email address, use this property.
-     *
-     * @param string $prefixPath
-     * @return array
-     */
-    public function getPrincipalsByPrefix($prefixPath) {
-		global $auth;
+	
+	/**
+	 * Returns a list of principals based on a prefix.
+	 *
+	 * This prefix will often contain something like 'principals'. You are only
+	 * expected to return principals that are in this base path.
+	 *
+	 * You are expected to return at least a 'uri' for every user, you can
+	 * return any additional properties if you wish so. Common properties are:
+	 * {DAV:}displayname
+	 * {http://sabredav.org/ns}email-address - This is a custom SabreDAV
+	 * field that's actualy injected in a number of other properties. If
+	 * you have an email address, use this property.
+	 *
+	 * @param string $prefixPath        	
+	 * @return array
+	 */
+	public function getPrincipalsByPrefix($prefixPath) {
+		$principals = array ();
 		
-    	$principals = array();
-    	
-    	if($prefixPath !== 'principals')
-    		return $principals;
-    	
-    	foreach($auth as $userid => $userinfo) {
-    		if(substr( $userid, 0, 1 ) === "@")
-    			continue;
-    		$principal = array (
-					'uri' => 'principals/' . $userid,
-					'{DAV:}displayname' => $userinfo ['fullname'],
-					'{http://sabredav.org/ns}email-address' => $userinfo ['fullname'] 
+		if ($prefixPath !== 'principals')
+			return $principals;
+		
+		$users = auth_get_users();
+		foreach ( $users as $userinfo ) {
+			$principal = array (
+					'uri' => 'principals/' . $userinfo['userid'],
+					'{DAV:}displayname' => $userinfo['fullname'],
+					'{http://sabredav.org/ns}email-address' => $userinfo['fullname'] 
 			);
-			$principals [] = $principal;
-    	}
-    	return $principals;
-    }
+			$principals[] = $principal;
+		}
+		return $principals;
+	}
 
     /**
      * Returns a specific principal, specified by it's path.
@@ -58,17 +55,15 @@ class IABPrincipalBackend extends AbstractBackend {
      * @return array
      */
     public function getPrincipalByPath($path) {
-    	global $auth;
-    	 
     	list($prefixPath, $userid) = DAV\URLUtil::splitPath($path);
     	
-    	if(array_key_exists($userid, $auth)) {
-    		$userinfo = $auth[$userid];
-    		$principal = array (
-    				'uri' => 'principals/' . $userid,
-    				'{DAV:}displayname' => $userinfo ['fullname'],
-    				'{http://sabredav.org/ns}email-address' => $userinfo ['fullname']
-    		);
+    	$userinfo = auth_get_userinfo($userid);
+    	if($userinfo !== null) {
+    		$principal = array(
+					'uri' => 'principals/' . $userinfo['userid'],
+					'{DAV:}displayname' => $userinfo['fullname'],
+					'{http://sabredav.org/ns}email-address' => $userinfo['fullname'] 
+			);
     		return $principal;
     	}
     }
@@ -160,12 +155,11 @@ class IABPrincipalBackend extends AbstractBackend {
     	 
     	if($prefixPath !== 'principals')
     		return $principals;
-    	 
-    	foreach($auth as $userid => $userinfo) {
-    		if(substr( $userid, 0, 1 ) === "@")
-    			continue;
+    	
+    	$users = auth_get_users();
+    	foreach($users as $userid => $userinfo) {
     		$principal = array (
-    				'uri' => 'principals/' . $userid,
+    				'uri' => 'principals/' . $userinfo['userid'],
     		);
     		$principals [] = $principal;
     	}

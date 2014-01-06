@@ -266,6 +266,10 @@ function array_to_text($array, $prefix='') {
     return $text;
 }
 
+function array_get($array, $key, $default=null) {
+	return isset($array[$key]) ? $array[$key] : $default;
+}
+
 
 /*
  * real_stripcslashes

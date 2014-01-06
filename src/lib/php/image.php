@@ -39,6 +39,7 @@ function img_delete($id) {
         $image_file = AB_IMAGEDIR.'/'.$id.'.'.$format;
         if(is_readable($image_file)) {
             unlink($image_file);
+            clearstatcache();
         }
     }
 }
@@ -49,7 +50,9 @@ function img_load($id) {
     $id = (int)$id;    
     $format = strtolower($conf['photo_format']);
     $image_file = AB_IMAGEDIR.'/'.$id.'.'.$format;
-    $image = @file_get_contents($image_file);
+    $image='';
+    if(is_readable($image_file))
+	    $image = file_get_contents($image_file);
 
     return $image;
 }
@@ -67,7 +70,7 @@ function img_display() {
     $format = strtolower($conf['photo_format']);
     $image_file = AB_IMAGEDIR.'/'.$contact->id.'.'.$format;
     if(is_readable($image_file)) {
-        $image = @file_get_contents($image_file);
+        $image = file_get_contents($image_file);
     }
 
     // now we have the image loaded in $image or no image at all
@@ -83,8 +86,7 @@ function img_display() {
         } else {
             $im_file = "images/unknown_person.gif";
         }
-
-        $image = @file_get_contents(template($im_file));
+	    $image = file_get_contents(template($im_file));
         
         header('Content-Type: image/gif');
         echo $image;
@@ -173,8 +175,10 @@ function img_convert($in_image, $type='png', $resize='') {
                     msg("Cannot convert image to $type: GD only supports gif, jpg and png", -1);
             }
 			imagedestroy($im);
-  
-            $out_image = @file_get_contents($tmp_file);
+			
+			if(is_readable($tmp_file))
+				$out_image = file_get_contents($tmp_file);
+			
 		} else {
             msg("Cannot convert image with GD: Data is not in a recognized format", -1);
 		}
@@ -183,6 +187,7 @@ function img_convert($in_image, $type='png', $resize='') {
     // remove the temporary file
     if(is_writeable($tmp_file)) {
         unlink($tmp_file);
+        clearstatcache();
     }
 
     return $out_image;

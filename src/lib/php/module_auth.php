@@ -126,7 +126,9 @@ function auth_login($userid, $password) {
     if(!$conf['auth_enabled'] || $conf['auth_allow_guest'])
     	return true;
         
-    if(array_key_exists($userid, $auth) && $auth[$userid]['password'] == md5($password)) {
+    $userinfo = auth_get_userinfo($userid);
+    $password = array_get($auth[$userid], 'password', '');
+    if($userinfo !== null && $password == md5($password)) {
         return true;
     }
     return false;
@@ -202,11 +204,29 @@ function auth_get_userinfo($userid) {
     
     if(array_key_exists($userid, $auth)) {
         $ui['userid'] = $userid;
-        $ui['fullname'] = $auth[$userid]['fullname'];
-        $ui['email']    = $auth[$userid]['email'];
+        $ui['fullname'] = array_get($auth[$userid], 'fullname', '');
+        $ui['email']    = array_get($auth[$userid], 'email', '');
+        return $ui;
+    }
+    if($userid == 'guest') {
+    	$ui['userid'] = 'guest';
+    	$ui['fullname'] = 'Guest';
+    	$ui['email'] = '';
+    	return $ui;
     }
 
-    return $ui;
+    return null;
+}
+
+function auth_get_users() {
+	$users = array();
+	foreach($auth as $userid => $dummy) {
+		if (substr($userid, 0, 1) === "@")
+			continue;
+		$userinfo = auth_get_userinfo($userid);
+		$users[$userid] = $userinfo;
+	}
+	return $users;
 }
 
 /**

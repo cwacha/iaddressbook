@@ -19,7 +19,6 @@
 //     U S E R S     //
 ///////////////////////
 // guest user - if you have activated guest access, these are the permissions
-$auth['guest']['permissions']   = array();
 $auth['guest']['groups']        = array('@guest');
 
 
@@ -36,7 +35,6 @@ $auth['guest']['groups']        = array('@guest');
 // Editor
 //
 // $auth['fred']['password']    = '72b302bf297a228a75730123efef7c41';
-// $auth['fred']['permissions'] = array( 'check' );
 // $auth['fred']['groups']      = array('@editor');
 // $auth['fred']['fullname']    = 'Fred the Geek';
 // $auth['fred']['email']       = 'fred@geeks.com';
@@ -44,7 +42,6 @@ $auth['guest']['groups']        = array('@guest');
 // Admin User
 //
 // $auth['your_admin_username']['password']    = '--fill-in-your-password--';
-// $auth['your_admin_username']['permissions'] = array();
 // $auth['your_admin_username']['groups']      = array('@admin');
 // $auth['your_admin_username']['fullname']    = 'Administrator';
 // $auth['your_admin_username']['email']       = '';
@@ -52,7 +49,6 @@ $auth['guest']['groups']        = array('@guest');
 // XML-RPC api_key=abcd
 //
 // $auth['abcd']['password']    = '';
-// $auth['abcd']['permissions'] = array();
 // $auth['abcd']['groups']      = array('@xml_client');
 
 ///////////////////////

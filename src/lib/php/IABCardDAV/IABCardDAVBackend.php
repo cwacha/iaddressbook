@@ -15,13 +15,12 @@ use iAddressbook;
     require_once(AB_BASEDIR.'/lib/php/common.php');
 
 /**
- * PDO CardDAV backend
+ * iAddressBook CardDAV backend
  *
- * This CardDAV backend uses PDO to store addressbooks
+ * This CardDAV backend uses iAddressBook to store addressbooks
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
- * @author Evert Pot (http://evertpot.com/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
+ * @copyright Copyright (C) 2007-2014 Clemens Wacha (http://iaddressbook.org/).
+ * @author Clemens Wacha
  */
 class IABCardDAVBackend extends AbstractBackend {
     
@@ -118,7 +117,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return array
      */
     public function getCards($addressBookId) {
-    	msg("getCards: $addressBookId");
+    	//msg("getCards: addressBookId=$addressBookId");
 		global $AB;
 		global $CAT;
 		
@@ -132,6 +131,7 @@ class IABCardDAVBackend extends AbstractBackend {
         
         foreach ($contactlist as $contact) {
 			$contact->image = img_load($contact->id);
+			$contact->image = '';
 			$categories = $CAT->getCategoriesForPerson($contact->id);
 			foreach ( $categories as $category ) {
 				$contact->add_category($category);
@@ -179,6 +179,10 @@ class IABCardDAVBackend extends AbstractBackend {
         	$results[] = $item;
         }
         
+        msg("getCards: addressBookId=$addressBookId numCards=" . count($results));
+        foreach($results as $value) {
+        	msg("uid=" . $value['uri'] . " ");
+        }
         return $results;
     }
 
@@ -193,7 +197,8 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * @return array
 	 */
 	public function getCard($addressBookId, $cardUri) {
-		msg("getCard: $addressBookId,    $cardUri");
+		$start_ts = microtime(true);
+		//msg("getCard: addressBookId=$addressBookId cardUri=$cardUri");
 		global $AB;
 		global $CAT;
 		$uri = basename($cardUri, '.vcf');
@@ -204,7 +209,7 @@ class IABCardDAVBackend extends AbstractBackend {
 				
 		$results = array ();
 		
-		$contact = $AB->get($uri, true);
+		$contact = $AB->get($uri, false);
 		
 		if (!$contact) {
 			// check if it is a group
@@ -224,7 +229,7 @@ class IABCardDAVBackend extends AbstractBackend {
 				$contact->add_groupmember($value);
 			}
 		}
-		
+
 		$vcarddata = contact2vcard($contact);
 		//msg("vcard: " . print_r($vcarddata, true));
 		$item = array (
@@ -235,8 +240,8 @@ class IABCardDAVBackend extends AbstractBackend {
 				'size' => strlen($vcarddata) 
 		);
 		
-		msg("result:  $addressBookId,    $cardUri, " . $contact->etag);
-		
+		$stop_ts = microtime(true);
+		msg("getCard: addressBookId=$addressBookId cardUri=$cardUri etag=" . $contact->etag . " delay_ms=" . (int)(($stop_ts - $start_ts)*1000));
 		return $item;
 	}
 
