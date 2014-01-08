@@ -27,7 +27,7 @@
 		</div>
 		<div class="separator100">&nbsp;</div>
         
-        <form method="post" action="<?php echo $PHP_SELF; ?>" name='ct_form'>
+        <form method="post" action="" name='ct_form'>
 
             <?php echo tpl_contactlist(); ?>
             
@@ -73,7 +73,7 @@
                     <?php
                         foreach($categories as $category) {
                             if(strpos($category->name(), ' __') !== 0)
- 	                           echo "<option value='addcon_$category->id' $sel >".$category->displayName()."</option> \n";
+ 	                           echo "<option value='addcon_$category->id' >".$category->displayName()."</option> \n";
                         }
                     ?>
                     </optgroup>
@@ -84,7 +84,7 @@
                             if($category->name() == ' __all__') $disp = 0;
                             if($category->name() == ' __lastimport__') $disp = 0;
                             if($CAT_ID != 0 && $category->id != $CAT_ID) $disp = 0;
-                            if($disp) echo "<option value='delcon_$category->id' $sel >".$category->displayName()."</option> \n";
+                            if($disp) echo "<option value='delcon_$category->id' >".$category->displayName()."</option> \n";
                         }
                     ?>
                     </optgroup>

@@ -3,7 +3,7 @@
     <tr>
         <td class="person_left" >
             <!-- Begin Photo -->
-            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="<?php echo $PHP_SELF; ?>?do=img&id=<?php echo $contact->id; ?>">
+            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="?do=img&id=<?php echo $contact->id; ?>">
             <!-- End Photo -->
         </td>
         <td class="person_right" >
@@ -157,17 +157,17 @@
 
 
 <!-- Begin Buttons -->
-    <form method="POST" action="<?php echo $PHP_SELF; ?>">
+    <form method="POST" action="">
         <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
         <input type="hidden" name="do" value="edit" />
         <input type="submit" value="<?php echo $lang['btn_edit']?>" class="button" style="float: right;" />
     </form>
-    <form method="POST" action="<?php echo $PHP_SELF; ?>">
+    <form method="POST" action="">
         <input type="hidden" name="do" value="delete" />
         <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
         <input type="submit" value="<?php echo $lang['btn_delete']?>" onClick="return confirm('<?php echo $contact->name() .": " . $lang['confirm_del_contact']; ?>')" class="button" style="float: right;" />
     </form>
-    <form method="post" action="<?php echo $PHP_SELF; ?>">
+    <form method="post" action="">
         <input type="hidden" name="do" value="export_vcard" />
         <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
         <input type="submit" value="<?php echo $lang['btn_vcardexport']?>" class="button" style="float: right;" />

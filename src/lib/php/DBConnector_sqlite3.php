@@ -40,6 +40,7 @@ class DBConnector_sqlite3 extends DBConnector {
 		if (!$this->initialized) {
 			try {
 				$this->connection = new SQLite3($this->url);
+				$this->connection->busyTimeout(30000);
 			} catch ( Exception $e ) {
 				$this->logmsg('Cannot open db file: "' . $this->url . '": ' . $e->getMessage(), -1);
 				return false;

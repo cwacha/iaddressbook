@@ -34,9 +34,6 @@ function db_init($config = NULL) {
 	$db_config['dbtable_ab'] = $config['dbtable_ab'];
 	$db_config['dbtable_cat'] = $config['dbtable_cat'];
 	$db_config['dbtable_catmap'] = $config['dbtable_catmap'];
-	$db_config['dbtable_truth'] = $config['dbtable_truth'];
-	$db_config['dbtable_sync'] = $config['dbtable_sync'];
-	$db_config['dbtable_action'] = $config['dbtable_action'];
 	$db_config['dbtable_users'] = $config['dbtable_users'];
 	$db_config['dbdebug'] = $config['debug_db'];
 	    
@@ -60,7 +57,7 @@ function db_open() {
     }
 
     if($db === false or empty($db_config['dbname'])) {
-        msg("Cannot connect to database: Error in database configuration.", -1);
+        msg("Cannot connect to database: Error in database configuration! dbtype=" . $db_config['dbtype'], -1);
         $db = false;
         return false;
     }

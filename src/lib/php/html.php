@@ -134,7 +134,7 @@ function html_debug(){
 function html_numberlayout($string) {
     global $conf;
     
-    if(!is_array($conf['number_layout'])) return $string;
+    if(!is_array(array_get($conf, 'number_layout', 0))) return $string;
 
     $orig = $string;
     $string = preg_replace("/[0-9]/", "#", $string);

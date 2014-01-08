@@ -23,8 +23,7 @@ db_init();
 db_open();
 
 //import variables
-$ACT = trim($_REQUEST['do']);
-if(empty($ACT)) $ACT = 'show';
+$ACT = trim(array_get($_REQUEST, 'do', 'show'));
 
 // check if user has to login
 if($ACT == 'login') {
@@ -76,22 +75,18 @@ if($ACT == 'cat_select') {
     $_SESSION['l'] = 0;
 }
 
-$QUERY = $_SESSION['q'];
-$contactlist_offset = $_SESSION['o'];
-$contactlist_letter = $_SESSION['l'];
+$QUERY = array_get($_SESSION, 'q', '');
+$contactlist_offset = array_get($_SESSION, 'o', 0);
+$contactlist_letter = array_get($_SESSION, 'l', 0);
 
-$CAT_ID = (int)$_SESSION['cat_id'];
+$CAT_ID = (int)array_get($_SESSION, 'cat_id', 0);
 
 if($ACT == 'cat_del') {
 	$_SESSION['cat_id'] = 0;
 }
 
-// remember selected person
-//if($ACT == 'show' || $ACT == 'img') {
-if(isset($_REQUEST['id'])) {
-	$_SESSION['id'] = (int)trim($_REQUEST['id']);
-}
-$ID = $_SESSION['id'];
+// remember selected person, but prefer ID from $_REQUEST
+$ID = array_get($_REQUEST, 'id', array_get($_SESSION, 'id', 0));
 
 // check if we logout
 if($ACT == 'logout') {

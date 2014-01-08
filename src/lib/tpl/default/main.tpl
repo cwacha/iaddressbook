@@ -86,7 +86,7 @@
         <tr>
             <td align="left">
                 <!-- Begin Import VCard -->
-                <form method="POST" enctype="multipart/form-data" action="<?php echo $PHP_SELF; ?>" style="float: left; padding-left: 10px;">
+                <form method="POST" enctype="multipart/form-data" action="" style="float: left; padding-left: 10px;">
                     <input type="hidden" name="do" value="import_vcard" />
                     <input type="file" name="vcard_file" value="" size="" class="button" />
                     <input type="submit" value="<?php echo $lang['btn_vcardimport']; ?>" class="button" />

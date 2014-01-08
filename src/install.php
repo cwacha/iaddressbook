@@ -38,6 +38,7 @@ function init_session_defaults() {
     $state['action'] = 'step_welcome';
     $state['step']   = 1;
     $state['db_created'] = 0;
+    $state['config_saved'] = false;
     
     $conf = $defaults;
 }
@@ -47,8 +48,8 @@ function load_session() {
     global $conf;
     
     // restore session
-    if(is_array($_SESSION['state'])) $state = $_SESSION['state'];
-    if(is_array($_SESSION['config']))  $conf = $_SESSION['config'];
+    if(isset($_SESSION['state']) && is_array($_SESSION['state'])) $state = $_SESSION['state'];
+    if(isset($_SESSION['config']) && is_array($_SESSION['config']))  $conf = $_SESSION['config'];
 }
 
 function save_session() {
@@ -67,17 +68,13 @@ function html_header() {
     global $meta;
     
     ?>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xml:lang="<?php echo $conf['lang']; ?>"
-	lang="<?php echo $conf['lang']; ?>"
-	dir="<?php echo $lang['direction']; ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>" lang="<?php echo $conf['lang']; ?>" dir="<?php echo $lang['direction']; ?>">
 <head>
 <title><?php echo $conf['title']; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <link rel="shortcut icon" href="<?php echo AB_TPL; ?>images/favicon.ico" />
-<link rel="stylesheet" media="screen" type="text/css"
-	href="<?php echo AB_TPL; ?>design.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="<?php echo AB_TPL; ?>design.css" />
 
 <script type="text/javascript" language="JavaScript">
         <!--
@@ -110,66 +107,48 @@ function html_header() {
 <body>
 
 	<form name="actions" action="" method="post">
-		<input type="hidden" name="do" value="show" /> <input type="hidden"
-			name="fmode" value="<?php echo $conf['fmode']; ?>" /> <input
-			type="hidden" name="dmode" value="<?php echo $conf['dmode']; ?>" /> <input
-			type="hidden" name="basedir" value="<?php echo $conf['basedir']; ?>" />
-		<input type="hidden" name="baseurl"
-			value="<?php echo $conf['baseurl']; ?>" /> <input type="hidden"
-			name="dbtype" value="<?php echo $conf['dbtype']; ?>" /> <input
-			type="hidden" name="dbname" value="<?php echo $conf['dbname']; ?>" />
-		<input type="hidden" name="dbserver"
-			value="<?php echo $conf['dbserver']; ?>" /> <input type="hidden"
-			name="dbuser" value="<?php echo $conf['dbuser']; ?>" /> <input
-			type="hidden" name="dbpass" value="<?php echo $conf['dbpass']; ?>" />
-		<input type="hidden" name="debug_db"
-			value="<?php echo $conf['debug_db']; ?>" /> <input type="hidden"
-			name="dbtable_ab" value="<?php echo $conf['dbtable_ab']; ?>" /> <input
-			type="hidden" name="dbtable_cat"
-			value="<?php echo $conf['dbtable_cat']; ?>" /> <input type="hidden"
-			name="dbtable_catmap" value="<?php echo $conf['dbtable_catmap']; ?>" />
-		<input type="hidden" name="dbtable_truth"
-			value="<?php echo $conf['dbtable_truth']; ?>" /> <input type="hidden"
-			name="dbtable_sync" value="<?php echo $conf['dbtable_sync']; ?>" /> <input
-			type="hidden" name="dbtable_action"
-			value="<?php echo $conf['dbtable_action']; ?>" /> <input
-			type="hidden" name="lang" value="<?php echo $conf['lang']; ?>" /> <input
-			type="hidden" name="title" value="<?php echo $conf['title']; ?>" /> <input
-			type="hidden" name="template"
-			value="<?php echo $conf['template']; ?>" /> <input type="hidden"
-			name="bdformat" value="<?php echo $conf['bdformat']; ?>" /> <input
-			type="hidden" name="dformat" value="<?php echo $conf['dformat']; ?>" />
-		<input type="hidden" name="lastfirst"
-			value="<?php echo $conf['lastfirst']; ?>" /> <input type="hidden"
-			name="photo_resize" value="<?php echo $conf['photo_resize']; ?>" /> <input
-			type="hidden" name="photo_size"
-			value="<?php echo $conf['photo_size']; ?>" /> <input type="hidden"
-			name="photo_format" value="<?php echo $conf['photo_format']; ?>" /> <input
-			type="hidden" name="map_link"
-			value="<?php echo $conf['map_link']; ?>" /> <input type="hidden"
-			name="contactlist_limit"
-			value="<?php echo $conf['contactlist_limit']; ?>" /> <input
-			type="hidden" name="bday_advance_week"
-			value="<?php echo $conf['bday_advance_week']; ?>" /> <input
-			type="hidden" name="canonical"
-			value="<?php echo $conf['canonical']; ?>" /> <input type="hidden"
-			name="auth_enabled" value="<?php echo $conf['auth_enabled']; ?>" /> <input
-			type="hidden" name="auth_allow_guest"
-			value="<?php echo $conf['auth_allow_guest']; ?>" /> <input
-			type="hidden" name="im_convert"
-			value="<?php echo $conf['im_convert']; ?>" /> <input type="hidden"
-			name="photo_enable" value="<?php echo $conf['photo_enable']; ?>" /> <input
-			type="hidden" name="session_name"
-			value="<?php echo $conf['session_name']; ?>" /> <input type="hidden"
-			name="mark_changed" value="<?php echo $conf['mark_changed']; ?>" /> <input
-			type="hidden" name="debug" value="<?php echo $conf['debug']; ?>" /> <input
-			type="hidden" name="vcard_fb_enc"
-			value="<?php echo $conf['vcard_fb_enc']; ?>" /> <input type="hidden"
-			name="ldif_base" value="<?php echo $conf['ldif_base']; ?>" /> <input
-			type="hidden" name="ldif_mozilla"
-			value="<?php echo $conf['ldif_mozilla']; ?>" /> <input type="hidden"
-			name="xmlrpc_enable" value="<?php echo $conf['xmlrpc_enable']; ?>" />
-
+		<input type="hidden" name="do" value="show" />
+		<input type="hidden" name="fmode" value="<?php echo $conf['fmode']; ?>" />
+		<input type="hidden" name="dmode" value="<?php echo $conf['dmode']; ?>" />
+		<input type="hidden" name="basedir" value="<?php echo $conf['basedir']; ?>" />
+		<input type="hidden" name="baseurl" value="<?php echo $conf['baseurl']; ?>" />
+		<input type="hidden" name="dbtype" value="<?php echo $conf['dbtype']; ?>" />
+		<input type="hidden" name="dbname" value="<?php echo $conf['dbname']; ?>" />
+		<input type="hidden" name="dbserver" value="<?php echo $conf['dbserver']; ?>" />
+		<input type="hidden" name="dbuser" value="<?php echo $conf['dbuser']; ?>" />
+		<input type="hidden" name="dbpass" value="<?php echo $conf['dbpass']; ?>" />
+		<input type="hidden" name="debug_db" value="<?php echo $conf['debug_db']; ?>" />
+		<input type="hidden" name="dbtable_ab" value="<?php echo $conf['dbtable_ab']; ?>" />
+		<input type="hidden" name="dbtable_cat" value="<?php echo $conf['dbtable_cat']; ?>" />
+		<input type="hidden" name="dbtable_catmap" value="<?php echo $conf['dbtable_catmap']; ?>" />
+		<input type="hidden" name="dbtable_truth" value="<?php echo $conf['dbtable_truth']; ?>" />
+		<input type="hidden" name="dbtable_sync" value="<?php echo $conf['dbtable_sync']; ?>" />
+		<input type="hidden" name="dbtable_action" value="<?php echo $conf['dbtable_action']; ?>" />
+		<input type="hidden" name="lang" value="<?php echo $conf['lang']; ?>" />
+		<input type="hidden" name="title" value="<?php echo $conf['title']; ?>" />
+		<input type="hidden" name="template" value="<?php echo $conf['template']; ?>" />
+		<input type="hidden" name="bdformat" value="<?php echo $conf['bdformat']; ?>" />
+		<input type="hidden" name="dformat" value="<?php echo $conf['dformat']; ?>" />
+		<input type="hidden" name="lastfirst" value="<?php echo $conf['lastfirst']; ?>" />
+		<input type="hidden" name="photo_resize" value="<?php echo $conf['photo_resize']; ?>" />
+		<input type="hidden" name="photo_size" value="<?php echo $conf['photo_size']; ?>" />
+		<input type="hidden" name="photo_format" value="<?php echo $conf['photo_format']; ?>" />
+		<input type="hidden" name="map_link" value="<?php echo $conf['map_link']; ?>" />
+		<input type="hidden" name="contactlist_limit" value="<?php echo $conf['contactlist_limit']; ?>" />
+		<input type="hidden" name="bday_advance_week" value="<?php echo $conf['bday_advance_week']; ?>" />
+		<input type="hidden" name="canonical" value="<?php echo $conf['canonical']; ?>" />
+		<input type="hidden" name="auth_enabled" value="<?php echo $conf['auth_enabled']; ?>" />
+		<input type="hidden" name="auth_allow_guest" value="<?php echo $conf['auth_allow_guest']; ?>" />
+		<input type="hidden" name="im_convert" value="<?php echo $conf['im_convert']; ?>" />
+		<input type="hidden" name="photo_enable" value="<?php echo $conf['photo_enable']; ?>" />
+		<input type="hidden" name="session_name" value="<?php echo $conf['session_name']; ?>" />
+		<input type="hidden" name="mark_changed" value="<?php echo $conf['mark_changed']; ?>" />
+		<input type="hidden" name="debug" value="<?php echo $conf['debug']; ?>" />
+		<input type="hidden" name="vcard_fb_enc" value="<?php echo $conf['vcard_fb_enc']; ?>" />
+		<input type="hidden" name="ldif_base" value="<?php echo $conf['ldif_base']; ?>" />
+		<input type="hidden" name="ldif_mozilla" value="<?php echo $conf['ldif_mozilla']; ?>" />
+		<input type="hidden" name="xmlrpc_enable" value="<?php echo $conf['xmlrpc_enable']; ?>" />
+		<input type="hidden" name="carddav_enable" value="<?php echo $conf['carddav_enable']; ?>" />
 	</form>
 
 	<div class="mainview">
@@ -616,13 +595,9 @@ function html_sform_line($col) {
     global $meta;
     global $lang;
 
-    $option_name = $lang[$col];
-    if(empty($option_name))
-    	$option_name = $col;
+    $option_name = array_get($lang, $col, $col);
     
-    $option_help = $lang[$col.'_help'];
-    if(empty($option_help))
-    	$option_help = "no help available";
+    $option_help = array_get($lang, $col.'_help', "no help available");
     $option_default = $defaults[$col];
     
     echo "<tr>";
@@ -787,68 +762,69 @@ function post_var($value, $default) {
 init_session_defaults();
 load_session();
 
-$state['action'] = post_var($_REQUEST['do'], $state['action']);
+$state['action'] = post_var(array_get($_REQUEST, 'do'), $state['action']);
 
 // process request variables
 switch($state['step']) {
     case 3:
         if(!$state['db_created']) {
-            $conf['dbtype']   = post_var($_REQUEST['dbtype'],   $conf['dbtype']);
-            $conf['dbname']   = post_var($_REQUEST['dbname'],   $conf['dbname']);
-            $conf['dbserver'] = post_var($_REQUEST['dbserver'], $conf['dbserver']);
-            $conf['dbuser']   = post_var($_REQUEST['dbuser'],   $conf['dbuser']);
-            $conf['dbpass']   = post_var($_REQUEST['dbpass'],   $conf['dbpass']);
-            $conf['debug_db'] = (int)post_var($_REQUEST['debug_db'], $conf['debug_db']);
+            $conf['dbtype']   = post_var(array_get($_REQUEST, 'dbtype'),   $conf['dbtype']);
+            $conf['dbname']   = post_var(array_get($_REQUEST, 'dbname'),   $conf['dbname']);
+            $conf['dbserver'] = post_var(array_get($_REQUEST, 'dbserver'), $conf['dbserver']);
+            $conf['dbuser']   = post_var(array_get($_REQUEST, 'dbuser'),   $conf['dbuser']);
+            $conf['dbpass']   = post_var(array_get($_REQUEST, 'dbpass'),   $conf['dbpass']);
+            $conf['debug_db'] = (int)post_var(array_get($_REQUEST, 'debug_db'), $conf['debug_db']);
 
             // TODO: fix db creation!
-            $conf['dbtable_ab']   = post_var($_REQUEST['dbtable_ab'],   $conf['dbtable_ab']);
-            $conf['dbtable_cat']   = post_var($_REQUEST['dbtable_cat'],   $conf['dbtable_cat']);
-            $conf['dbtable_catmap']   = post_var($_REQUEST['dbtable_catmap'],   $conf['dbtable_catmap']);
-            $conf['dbtable_truth']   = post_var($_REQUEST['dbtable_truth'],   $conf['dbtable_truth']);
-            $conf['dbtable_sync']   = post_var($_REQUEST['dbtable_sync'],   $conf['dbtable_sync']);
-            $conf['dbtable_action']   = post_var($_REQUEST['dbtable_action'],   $conf['dbtable_action']);
+            $conf['dbtable_ab']   = post_var(array_get($_REQUEST, 'dbtable_ab'),   $conf['dbtable_ab']);
+            $conf['dbtable_cat']   = post_var(array_get($_REQUEST, 'dbtable_cat'),   $conf['dbtable_cat']);
+            $conf['dbtable_catmap']   = post_var(array_get($_REQUEST, 'dbtable_catmap'),   $conf['dbtable_catmap']);
+            $conf['dbtable_truth']   = post_var(array_get($_REQUEST, 'dbtable_truth'),   $conf['dbtable_truth']);
+            $conf['dbtable_sync']   = post_var(array_get($_REQUEST, 'dbtable_sync'),   $conf['dbtable_sync']);
+            $conf['dbtable_action']   = post_var(array_get($_REQUEST, 'dbtable_action'),   $conf['dbtable_action']);
         }
         break;
     case 4:
-        $conf['fmode']   = (int)post_var($_REQUEST['fmode'],   $conf['fmode']);
-        $conf['dmode']   = (int)post_var($_REQUEST['dmode'],   $conf['dmode']);
-        $conf['basedir']   = post_var($_REQUEST['basedir'],   $conf['basedir']);
-        $conf['baseurl']   = post_var($_REQUEST['baseurl'],   $conf['baseurl']);
+        $conf['fmode']   = (int)post_var(array_get($_REQUEST, 'fmode'),   $conf['fmode']);
+        $conf['dmode']   = (int)post_var(array_get($_REQUEST, 'dmode'),   $conf['dmode']);
+        $conf['basedir']   = post_var(array_get($_REQUEST, 'basedir'),   $conf['basedir']);
+        $conf['baseurl']   = post_var(array_get($_REQUEST, 'baseurl'),   $conf['baseurl']);
 
-        $conf['lang']   = post_var($_REQUEST['lang'],   $conf['lang']);
-        $conf['title']   = post_var($_REQUEST['title'],   $conf['title']);
-        $conf['template']   = post_var($_REQUEST['template'],   $conf['template']);
-        $conf['bdformat']   = post_var($_REQUEST['bdformat'],   $conf['bdformat']);
-        $conf['dformat']   = post_var($_REQUEST['dformat'],   $conf['dformat']);
-        $conf['lastfirst']   = (int)post_var($_REQUEST['lastfirst'],   $conf['lastfirst']);
-        $conf['photo_resize']   = post_var($_REQUEST['photo_resize'],   $conf['photo_resize']);
-        $conf['photo_size']   = post_var($_REQUEST['photo_size'],   $conf['photo_size']);
-        $conf['photo_format']   = post_var($_REQUEST['photo_format'],   $conf['photo_format']);
-        $conf['map_link']   = post_var($_REQUEST['map_link'],   $conf['map_link']);
-        $conf['contactlist_limit']   = (int)post_var($_REQUEST['contactlist_limit'],   $conf['contactlist_limit']);
-        $conf['bday_advance_week']   = (int)post_var($_REQUEST['bday_advance_week'],   $conf['bday_advance_week']);
+        $conf['lang']   = post_var(array_get($_REQUEST, 'lang'),   $conf['lang']);
+        $conf['title']   = post_var(array_get($_REQUEST, 'title'),   $conf['title']);
+        $conf['template']   = post_var(array_get($_REQUEST, 'template'),   $conf['template']);
+        $conf['bdformat']   = post_var(array_get($_REQUEST, 'bdformat'),   $conf['bdformat']);
+        $conf['dformat']   = post_var(array_get($_REQUEST, 'dformat'),   $conf['dformat']);
+        $conf['lastfirst']   = (int)post_var(array_get($_REQUEST, 'lastfirst'),   $conf['lastfirst']);
+        $conf['photo_resize']   = post_var(array_get($_REQUEST, 'photo_resize'),   $conf['photo_resize']);
+        $conf['photo_size']   = post_var(array_get($_REQUEST, 'photo_size'),   $conf['photo_size']);
+        $conf['photo_format']   = post_var(array_get($_REQUEST, 'photo_format'),   $conf['photo_format']);
+        $conf['map_link']   = post_var(array_get($_REQUEST, 'map_link'),   $conf['map_link']);
+        $conf['contactlist_limit']   = (int)post_var(array_get($_REQUEST, 'contactlist_limit'),   $conf['contactlist_limit']);
+        $conf['bday_advance_week']   = (int)post_var(array_get($_REQUEST, 'bday_advance_week'),   $conf['bday_advance_week']);
 
-        $conf['canonical']   = (int)post_var($_REQUEST['canonical'],   $conf['canonical']);
-        $conf['auth_enabled']   = (int)post_var($_REQUEST['auth_enabled'],   $conf['auth_enabled']);
-        $conf['auth_allow_guest']   = (int)post_var($_REQUEST['auth_allow_guest'],   $conf['auth_allow_guest']);
-        $conf['im_convert']   = post_var($_REQUEST['im_convert'],   $conf['im_convert']);
-        $conf['photo_enable']   = (int)post_var($_REQUEST['photo_enable'],   $conf['photo_enable']);
-        $conf['session_name']   = post_var($_REQUEST['session_name'],   $conf['session_name']);
-        $conf['mark_changed']   = (int)post_var($_REQUEST['mark_changed'],   $conf['mark_changed']);
+        $conf['canonical']   = (int)post_var(array_get($_REQUEST, 'canonical'),   $conf['canonical']);
+        $conf['auth_enabled']   = (int)post_var(array_get($_REQUEST, 'auth_enabled'),   $conf['auth_enabled']);
+        $conf['auth_allow_guest']   = (int)post_var(array_get($_REQUEST, 'auth_allow_guest'),   $conf['auth_allow_guest']);
+        $conf['im_convert']   = post_var(array_get($_REQUEST, 'im_convert'),   $conf['im_convert']);
+        $conf['photo_enable']   = (int)post_var(array_get($_REQUEST, 'photo_enable'),   $conf['photo_enable']);
+        $conf['session_name']   = post_var(array_get($_REQUEST, 'session_name'),   $conf['session_name']);
+        $conf['mark_changed']   = (int)post_var(array_get($_REQUEST, 'mark_changed'),   $conf['mark_changed']);
 
-        $conf['debug']   = (int)post_var($_REQUEST['debug'],   $conf['debug']);
+        $conf['debug']   = (int)post_var(array_get($_REQUEST, 'debug'),   $conf['debug']);
 
-        $conf['vcard_fb_enc']   = post_var($_REQUEST['vcard_fb_enc'],   $conf['vcard_fb_enc']);
-        $conf['ldif_base']   = post_var($_REQUEST['ldif_base'],   $conf['ldif_base']);
-        $conf['ldif_mozilla']   = (int)post_var($_REQUEST['ldif_mozilla'],   $conf['ldif_mozilla']);
-        $conf['xmlrpc_enable']   = (int)post_var($_REQUEST['xmlrpc_enable'],   $conf['xmlrpc_enable']);
+        $conf['vcard_fb_enc']   = post_var(array_get($_REQUEST, 'vcard_fb_enc'),   $conf['vcard_fb_enc']);
+        $conf['ldif_base']   = post_var(array_get($_REQUEST, 'ldif_base'),   $conf['ldif_base']);
+        $conf['ldif_mozilla']   = (int)post_var(array_get($_REQUEST, 'ldif_mozilla'),   $conf['ldif_mozilla']);
+        $conf['xmlrpc_enable']   = (int)post_var(array_get($_REQUEST, 'xmlrpc_enable'),   $conf['xmlrpc_enable']);
+        $conf['carddav_enable']   = (int)post_var(array_get($_REQUEST, 'carddav_enable'),   $conf['carddav_enable']);
         break;
     default:
         break;
 }
 
 // language can be changed in every step!
-$conf['lang']   = post_var($_REQUEST['lang'],   $conf['lang']);
+$conf['lang']   = post_var(array_get($_REQUEST, 'lang'),   $conf['lang']);
 
 
 // start processing

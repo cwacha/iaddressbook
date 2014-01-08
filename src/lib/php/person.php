@@ -229,9 +229,22 @@ class Person {
     }
 
     function add_address($address) {
-        $tmp = $address['pobox'] . $address['ext_adr'] . $address['street'] . $address['city'] . $address['state'] . $address['zip'] . $address['country'];
+		$item = array (
+				'pobox' => '',
+				'ext_adr' => '',
+				'street' => '',
+				'city' => '',
+				'state' => '',
+				'zip' => '',
+				'country' => '',
+				'template' => '' 
+		);
+    	$tmp = $address['pobox'] . $address['ext_adr'] . $address['street'] . $address['city'] . $address['state'] . $address['zip'] . $address['country'];
         if(is_array($address) and !empty($tmp)) {
-            array_push($this->addresses, $address);
+        	foreach($address as $key => $value) {
+        		$item[$key] = $value;
+        	}
+            array_push($this->addresses, $item);
         }
     }
    

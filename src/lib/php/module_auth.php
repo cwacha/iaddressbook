@@ -219,6 +219,7 @@ function auth_get_userinfo($userid) {
 }
 
 function auth_get_users() {
+	global $auth;
 	$users = array();
 	foreach($auth as $userid => $dummy) {
 		if (substr($userid, 0, 1) === "@")

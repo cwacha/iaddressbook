@@ -599,7 +599,8 @@ class Contact_Vcard_Parse {
                     if($item_nr == 0) {
                         $card[$typedef][] = array(
                             'param' => $params,
-                            'value' => $value
+                            'value' => $value,
+                        	'item' => 0
                         );
                     } else {
                         //echo "item handling!<br>";

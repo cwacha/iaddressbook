@@ -1,11 +1,11 @@
-<form method="post" enctype="multipart/form-data" action="<?php echo $PHP_SELF; ?>">
+<form method="post" enctype="multipart/form-data" action="">
 
 <table width="100%">
     <tr><td style="height: 2em;"></td><td></td></tr>
     <tr>
         <td class="person_left" >
             <!-- Begin Photo -->
-            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="<?php echo $PHP_SELF; ?>?do=img&id=<?php echo $contact->id; ?>">
+            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="?do=img&id=<?php echo $contact->id; ?>">
             <!-- End Photo -->
         </td>
         <td class="person_right" >
@@ -254,7 +254,7 @@
 </form>
 
 <!-- Begin Buttons -->
-<form method="POST" action="<?php echo $PHP_SELF; ?>">
+<form method="POST" action="">
     <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
     <input type="hidden" name="do" value="show" />
     <div class="person_text" style="text-align: right;">

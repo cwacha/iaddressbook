@@ -180,9 +180,6 @@ class IABCardDAVBackend extends AbstractBackend {
         }
         
         msg("getCards: addressBookId=$addressBookId numCards=" . count($results));
-        foreach($results as $value) {
-        	msg("uid=" . $value['uri'] . " ");
-        }
         return $results;
     }
 
@@ -241,7 +238,7 @@ class IABCardDAVBackend extends AbstractBackend {
 		);
 		
 		$stop_ts = microtime(true);
-		msg("getCard: addressBookId=$addressBookId cardUri=$cardUri etag=" . $contact->etag . " delay_ms=" . (int)(($stop_ts - $start_ts)*1000));
+		//msg("getCard: addressBookId=$addressBookId cardUri=$cardUri etag=" . $contact->etag . " delay_ms=" . (int)(($stop_ts - $start_ts)*1000));
 		return $item;
 	}
 
@@ -295,7 +292,7 @@ class IABCardDAVBackend extends AbstractBackend {
 		$AB = new \Addressbook($book['id']);
         $CAT = new \Categories;        
     	
-    	msg("createCard: $cardData");
+    	//msg("createCard: $cardData");
     	$contacts = vcard2contacts($cardData);
     	    	
     	foreach ( $contacts as $contact ) {

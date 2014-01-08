@@ -63,7 +63,7 @@
     <div class="centeralign">
         <!-- <?php echo $lang['username']; ?> = demo <br> -->
         <!-- <?php echo $lang['password']; ?> = demo <br> -->
-        <form action="<?php echo $PHP_SELF; ?>" accept-charset="utf-8" method="post" name='f'>
+        <form action="" accept-charset="utf-8" method="post" name='f'>
           <fieldset>
             <legend><?php echo $lang['login']; ?></legend>
             <label class="block">

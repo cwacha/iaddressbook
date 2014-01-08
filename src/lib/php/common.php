@@ -383,7 +383,8 @@ if(!function_exists('scandir')) {
 function fix_fmode($file) {
     global $conf;
     
-    if($conf['fperm']) chmod($file, $conf['fperm']);
+    if($conf['fmode'])
+    	chmod($file, $conf['fmode']);
 }
 
 function fix_dmode($dir) {

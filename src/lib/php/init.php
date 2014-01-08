@@ -22,6 +22,13 @@
     error_reporting(E_ALL ^ E_NOTICE);
     //error_reporting(E_ALL);
 
+    //Mapping PHP errors to exceptions
+    function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+    	msg("err=$errstr errno=$errno errfile=$errfile errline=$errline");
+    }
+    set_error_handler("exception_error_handler");
+    
+    
     // define baseURL
     if(!defined('AB_BASE')) define('AB_BASE',getBaseURL());
     if(!defined('AB_URL'))  define('AB_URL',getBaseURL(true));
@@ -40,7 +47,9 @@
     // load the config file(s)
     require_once(AB_BASEDIR.'/lib/default/config.php');
     $defaults = $conf;
-    @include_once(AB_CONFDIR.'/config.php');
+    $filename = AB_CONFDIR.'/config.php';
+    if(is_readable($filename))
+    	include_once($filename);
     
     // init session
     if(!empty($conf['session_name'])) session_name($conf['session_name']);
@@ -70,10 +79,13 @@
     $defaults = array();
 
     // load the config file(s) (again...)
-    @include(AB_BASEDIR.'/lib/default/config.php');
+    include(AB_BASEDIR.'/lib/default/config.php');
     $defaults = $conf;
-    @include(AB_CONFDIR.'/config.php');
-        
+
+    $filename = AB_CONFDIR.'/config.php';
+    if(is_readable($filename))
+    	include($filename);
+    
     // load meta information
     global $meta;
     $meta = array();

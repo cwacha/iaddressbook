@@ -24,13 +24,6 @@ date_default_timezone_set('Canada/Eastern');
 // This can be for example the root / or a complete path to your server script
 $baseUri = $_SERVER['SCRIPT_NAME'];
 
-//Mapping PHP errors to exceptions
-function exception_error_handler($errno, $errstr, $errfile, $errline ) {
-    msg("err=$errstr errno=$errno errfile=$errfile errline=$errline");
-    //throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
-}
-set_error_handler("exception_error_handler");
-
 // Autoloader
 require_once 'lib/php/SabreDav/vendor/autoload.php';
 

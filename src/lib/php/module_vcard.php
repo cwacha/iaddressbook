@@ -346,33 +346,45 @@ function contact2vcard($contact) {
 function array2contact($card) {
 	global $conf;
 	$contact = new Person();
-	$contact->uid = $card['UID'][0]['value'][0][0];
-	if(is_array($card['REV'])) {
+	if(isset($card['UID']))
+		$contact->uid = $card['UID'][0]['value'][0][0];
+
+	if(isset($card['REV']) && is_array($card['REV'])) {
 		$contact->modification_ts = strtotime($card['REV'][0]['value'][0][0]);
 	}
+	if (isset($card['N'])) {
+		$contact->lastname = $card['N'][0]['value'][0][0];
+		$contact->firstname = $card['N'][0]['value'][1][0];
+		$contact->firstname2 = $card['N'][0]['value'][2][0];
+		$contact->title = $card['N'][0]['value'][3][0];
+		$contact->suffix = $card['N'][0]['value'][4][0];
+	}
+	
+	if (isset($card['NICKNAME']))
+		$contact->nickname = $card['NICKNAME'][0]['value'][0][0];
 
-	$contact->lastname = $card['N'][0]['value'][0][0];
-	$contact->firstname = $card['N'][0]['value'][1][0];
-	$contact->firstname2 = $card['N'][0]['value'][2][0];
-	$contact->title = $card['N'][0]['value'][3][0];
-	$contact->suffix = $card['N'][0]['value'][4][0];
-	$contact->nickname = $card['NICKNAME'][0]['value'][0][0];
+	if (isset($card['ORG'])) {
+		$contact->organization = $card['ORG'][0]['value'][0][0];
+		$contact->department = $card['ORG'][0]['value'][1][0];
+	}
+
+	if (isset($card['TITLE']))
+		$contact->jobtitle = $card['TITLE'][0]['value'][0][0];
 	
-	$contact->organization = $card['ORG'][0]['value'][0][0];
-	$contact->department = $card['ORG'][0]['value'][1][0];
+	if (isset($card['NOTE']))
+		$contact->note = $card['NOTE'][0]['value'][0][0];
+
+	if (isset($card['BDAY']))
+		$contact->birthdate = substr($card['BDAY'][0]['value'][0][0], 0, 10);
 	
-	$contact->jobtitle = $card['TITLE'][0]['value'][0][0];
+	if (isset($card['X-ABSHOWAS']))
+		$contact->company = ($card['X-ABSHOWAS'][0]['value'][0][0] == "COMPANY");
 	
-	$contact->note = $card['NOTE'][0]['value'][0][0];
-	$contact->birthdate = substr($card['BDAY'][0]['value'][0][0], 0, 10);
-	
-	$contact->company = ($card['X-ABSHOWAS'][0]['value'][0][0] == "COMPANY");
-	
-	if (is_array($card['EMAIL'])) {
+	if (isset($card['EMAIL']) && is_array($card['EMAIL'])) {
 		foreach ( $card['EMAIL'] as $email ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($email['param']['TYPE'])) {
+			if (isset($email['param']['TYPE']) && is_array($email['param']['TYPE'])) {
 				foreach ( $email['param']['TYPE'] as $key => $value )
 					$email['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -389,11 +401,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['TEL'])) {
+	if (isset($card['TEL']) && is_array($card['TEL'])) {
 		foreach ( $card['TEL'] as $phone ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($phone['param']['TYPE'])) {
+			if (isset($phone['param']['TYPE']) && is_array($phone['param']['TYPE'])) {
 				foreach ( $phone['param']['TYPE'] as $key => $value )
 					$phone['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -418,11 +430,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['ADR'])) {
+	if (isset($card['ADR']) && is_array($card['ADR'])) {
 		foreach ( $card['ADR'] as $address ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($address['param']['TYPE'])) {
+			if (isset($address['param']['TYPE']) && is_array($address['param']['TYPE'])) {
 				foreach ( $address['param']['TYPE'] as $key => $value )
 					$address['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -441,16 +453,18 @@ function array2contact($card) {
 			$tmp['state'] = $address['value'][4][0];
 			$tmp['zip'] = $address['value'][5][0];
 			$tmp['country'] = $address['value'][6][0];
-			$tmp['template'] = $address['X-ABADR']['value'][0][0];
+			$tmp['template'] = '';
+			if(isset($address['X-ABADR']))
+				$tmp['template'] = $address['X-ABADR']['value'][0][0];
 			$contact->add_address($tmp);
 		}
 	}
 	
-	if (is_array($card['URL'])) {
+	if (isset($card['URL']) && is_array($card['URL'])) {
 		foreach ( $card['URL'] as $url ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($url['param']['TYPE'])) {
+			if (isset($url['param']['TYPE']) && is_array($url['param']['TYPE'])) {
 				foreach ( $url['param']['TYPE'] as $key => $value )
 					$url['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -467,11 +481,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['X-ABRELATEDNAMES'])) {
+	if (isset($card['X-ABRELATEDNAMES']) && is_array($card['X-ABRELATEDNAMES'])) {
 		foreach ( $card['X-ABRELATEDNAMES'] as $rname ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($rname['param']['TYPE'])) {
+			if (isset($rname['param']['TYPE']) && is_array($rname['param']['TYPE'])) {
 				foreach ( $rname['param']['TYPE'] as $key => $value )
 					$rname['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -488,11 +502,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['X-AIM'])) {
+	if (isset($card['X-AIM']) && is_array($card['X-AIM'])) {
 		foreach ( $card['X-AIM'] as $chat ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($chat['param']['TYPE'])) {
+			if (isset($chat['param']['TYPE']) && is_array($chat['param']['TYPE'])) {
 				foreach ( $chat['param']['TYPE'] as $key => $value )
 					$chat['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -510,11 +524,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['X-ICQ'])) {
+	if (isset($card['X-ICQ']) && is_array($card['X-ICQ'])) {
 		foreach ( $card['X-ICQ'] as $chat ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($chat['param']['TYPE'])) {
+			if (isset($chat['param']['TYPE']) && is_array($chat['param']['TYPE'])) {
 				foreach ( $chat['param']['TYPE'] as $key => $value )
 					$chat['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -532,11 +546,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['X-MSN'])) {
+	if (isset($card['X-MSN']) && is_array($card['X-MSN'])) {
 		foreach ( $card['X-MSN'] as $chat ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($chat['param']['TYPE'])) {
+			if (isset($chat['param']['TYPE']) && is_array($chat['param']['TYPE'])) {
 				foreach ( $chat['param']['TYPE'] as $key => $value )
 					$chat['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -554,11 +568,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['X-JABBER'])) {
+	if (isset($card['X-JABBER']) && is_array($card['X-JABBER'])) {
 		foreach ( $card['X-JABBER'] as $chat ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($chat['param']['TYPE'])) {
+			if (isset($chat['param']['TYPE']) && is_array($chat['param']['TYPE'])) {
 				foreach ( $chat['param']['TYPE'] as $key => $value )
 					$chat['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -576,11 +590,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['X-SKYPE'])) {
+	if (isset($card['X-SKYPE']) && is_array($card['X-SKYPE'])) {
 		foreach ( $card['X-SKYPE'] as $chat ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($chat['param']['TYPE'])) {
+			if (isset($chat['param']['TYPE']) && is_array($chat['param']['TYPE'])) {
 				foreach ( $chat['param']['TYPE'] as $key => $value )
 					$chat['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -598,11 +612,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['X-YAHOO'])) {
+	if (isset($card['X-YAHOO']) && is_array($card['X-YAHOO'])) {
 		foreach ( $card['X-YAHOO'] as $chat ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($chat['param']['TYPE'])) {
+			if (isset($chat['param']['TYPE']) && is_array($chat['param']['TYPE'])) {
 				foreach ( $chat['param']['TYPE'] as $key => $value )
 					$chat['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -620,11 +634,11 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['X-IRC'])) {
+	if (isset($card['X-IRC']) && is_array($card['X-IRC'])) {
 		foreach ( $card['X-IRC'] as $chat ) {
 			$tmp = array ();
 			$tmp['label'] = 'WORK'; // default
-			if (is_array($chat['param']['TYPE'])) {
+			if (isset($chat['param']['TYPE']) && is_array($chat['param']['TYPE'])) {
 				foreach ( $chat['param']['TYPE'] as $key => $value )
 					$chat['param']['TYPE'][$key] = strtoupper($value);
 				
@@ -643,7 +657,7 @@ function array2contact($card) {
 	}
 	
 	if ($conf['photo_enable']) {
-		if (is_array($card['PHOTO'])) {
+		if (isset($card['PHOTO']) && is_array($card['PHOTO'])) {
 			$enc = strtoupper($card['PHOTO'][0]['param']['ENCODING'][0]);
 			$picture = $card['PHOTO'][0]['value'][0][0];
 			if ($enc == "BASE64" || $enc == "B") {
@@ -656,7 +670,7 @@ function array2contact($card) {
 		}
 	}
 	
-	if (is_array($card['CATEGORIES']['0']['value']['0'])) {
+	if (isset($card['CATEGORIES']) && is_array($card['CATEGORIES']['0']['value']['0'])) {
 		foreach ( $card['CATEGORIES']['0']['value']['0'] as $cat_name ) {
 			// add to corresponding categories
 			$contact->add_category(new Category($cat_name));
@@ -667,8 +681,10 @@ function array2contact($card) {
 	 * X-ADDRESSBOOKSERVER-KIND:group
 	 * X-ADDRESSBOOKSERVER-MEMBER:urn:uuid:7119696e-c552-6115-c77e-0cb34efe2b30
 	 */
-	$contact->isgroup = (strtoupper($card['X-ADDRESSBOOKSERVER-KIND'][0]['value'][0][0]) == "GROUP");
-	if (is_array($card['X-ADDRESSBOOKSERVER-MEMBER']['0']['value']['0'])) {
+	if(isset($card['X-ADDRESSBOOKSERVER-KIND']))
+		$contact->isgroup = (strtoupper($card['X-ADDRESSBOOKSERVER-KIND'][0]['value'][0][0]) == "GROUP");
+
+	if (isset($card['X-ADDRESSBOOKSERVER-MEMBER']) && is_array($card['X-ADDRESSBOOKSERVER-MEMBER']['0']['value']['0'])) {
 		foreach ( $card['X-ADDRESSBOOKSERVER-MEMBER']['0']['value']['0'] as $member ) {
 			list ($dummy1, $dummy2, $uuid) = explode(":", $member);
 			$contact->add_groupmember($uuid);

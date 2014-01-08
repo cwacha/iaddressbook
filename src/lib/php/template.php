@@ -269,7 +269,7 @@ function tpl_selectedcategory() {
 
 function tpl_catselect() {
 ?>
-            <form method="post" action="<?php echo $PHP_SELF ?>" >
+            <form method="post" action="" >
                 <input type="hidden" name="do" value="cat_select" />
                 <select name="cat_id" size="1" onChange="submit()" >
                     <?php
