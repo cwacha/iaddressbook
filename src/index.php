@@ -86,8 +86,11 @@ if($ACT == 'cat_del') {
 }
 
 // remember selected person, but prefer ID from $_REQUEST
-$ID = array_get($_REQUEST, 'id', array_get($_SESSION, 'id', 0));
-
+if(isset($_REQUEST['id']))
+	$_SESSION['id'] = (int)$_REQUEST['id'];
+	
+$ID = array_get($_SESSION, 'id', 0);
+	
 // check if we logout
 if($ACT == 'logout') {
 	auth_logout();

@@ -229,35 +229,37 @@ function act_save() {
     $contact = $AB->get($ID, true);
     if($contact == false) $contact = new Person();
 
-    $contact->title         = real_br2nl($_REQUEST['title']);
-    $contact->firstname     = real_br2nl($_REQUEST['firstname']);
-    $contact->firstname2    = real_br2nl($_REQUEST['firstname2']);
-    $contact->lastname      = real_br2nl($_REQUEST['lastname']);
-    $contact->suffix        = real_br2nl($_REQUEST['suffix']);
-    $contact->nickname      = real_br2nl($_REQUEST['nickname']);
-    $contact->phoneticfirstname = real_br2nl($_REQUEST['phoneticfirstname']);
-    $contact->phoneticlastname = real_br2nl($_REQUEST['phoneticlastname']);
+    $contact->title         = real_br2nl(array_get($_REQUEST, 'title'));
+    $contact->firstname     = real_br2nl(array_get($_REQUEST, 'firstname'));
+    $contact->firstname2    = real_br2nl(array_get($_REQUEST, 'firstname2'));
+    $contact->lastname      = real_br2nl(array_get($_REQUEST, 'lastname'));
+    $contact->suffix        = real_br2nl(array_get($_REQUEST, 'suffix'));
+    $contact->nickname      = real_br2nl(array_get($_REQUEST, 'nickname'));
+    $contact->phoneticfirstname = real_br2nl(array_get($_REQUEST, 'phoneticfirstname'));
+    $contact->phoneticlastname = real_br2nl(array_get($_REQUEST, 'phoneticlastname'));
 
-    $contact->jobtitle      = real_br2nl($_REQUEST['jobtitle']);
-    $contact->department    = real_br2nl($_REQUEST['department']);
-    $contact->organization  = real_br2nl($_REQUEST['organization']);
+    $contact->jobtitle      = real_br2nl(array_get($_REQUEST, 'jobtitle'));
+    $contact->department    = real_br2nl(array_get($_REQUEST, 'department'));
+    $contact->organization  = real_br2nl(array_get($_REQUEST, 'organization'));
 
-    if($_REQUEST['company'] == true) {
+    if(array_get($_REQUEST, 'company') == true) {
         $contact->company       = 1;
     } else {
         $contact->company       = 0;
     }
 
-    $year = intval(substr($_REQUEST['birthdate'], 0, 4));
-    $month = intval(substr($_REQUEST['birthdate'], 5, 2));
-    $day = intval(substr($_REQUEST['birthdate'], 8, 2));
+    $birthdate = array_get($_REQUEST, 'birthdate', '');
+    $year = intval(substr($birthdate, 0, 4));
+    $month = intval(substr($birthdate, 5, 2));
+    $day = intval(substr($birthdate, 8, 2));
     $contact->birthdate = sprintf("%04u-%02u-%02u", $year, $month, $day);
 
-    $contact->homepage      = real_br2nl($_REQUEST['homepage']);
-    $contact->note          = str_replace("\r", "", $_REQUEST['note']);
+    $contact->homepage      = real_br2nl(array_get($_REQUEST, 'homepage'));
+    $contact->note          = str_replace("\r", "", array_get($_REQUEST, 'note'));
     
-    settype($_REQUEST['photo_delete'], "boolean");
-    if($_REQUEST['photo_delete'] == true) {
+    $photodelete = array_get($_REQUEST, 'photo_delete', false);
+    settype($photodelete, "boolean");
+    if($photodelete == true) {
         $contact->image = NULL;
     } else if($conf['photo_enable'] && !empty($_FILES['photo_file']['tmp_name']) ) {
         //change or add picture
@@ -272,61 +274,61 @@ function act_save() {
     $contact->urls = array();
 
     foreach($_REQUEST as $key => $web_value) {
-        list($web_param, $web_id) = explode("_", $key);
+        list($web_param, $web_id) = explode("_", $key . "_");
         
         //msg("$web_param=$web_value ($web_id)");
         
         if($web_param == 'addresslabel') {
             $address = array();
-            $address['label'] = $_REQUEST['addresslabel_'.$web_id];
-            $address['street'] = real_br2nl($_REQUEST['street_'.$web_id]);
-            $address['zip'] = real_br2nl($_REQUEST['zip_'.$web_id]);
-            $address['city'] = real_br2nl($_REQUEST['city_'.$web_id]);
-            $address['state'] = real_br2nl($_REQUEST['state_'.$web_id]);
-            $address['country'] = real_br2nl($_REQUEST['country_'.$web_id]);
-            $address['template'] = real_br2nl($_REQUEST['template_'.$web_id]);
+            $address['label'] = array_get($_REQUEST, 'addresslabel_'.$web_id);
+            $address['street'] = real_br2nl(array_get($_REQUEST, 'street_'.$web_id));
+            $address['zip'] = real_br2nl(array_get($_REQUEST, 'zip_'.$web_id));
+            $address['city'] = real_br2nl(array_get($_REQUEST, 'city_'.$web_id));
+            $address['state'] = real_br2nl(array_get($_REQUEST, 'state_'.$web_id));
+            $address['country'] = real_br2nl(array_get($_REQUEST, 'country_'.$web_id));
+            $address['template'] = real_br2nl(array_get($_REQUEST, 'template_'.$web_id));
             $contact->add_address($address);
         }
 
         if($web_param == 'emaillabel') {
             $email = array();
-            $email['label'] = $_REQUEST['emaillabel_'.$web_id];
-            $email['email'] = real_br2nl($_REQUEST['email_'.$web_id]);
+            $email['label'] = array_get($_REQUEST, 'emaillabel_'.$web_id);
+            $email['email'] = real_br2nl(array_get($_REQUEST, 'email_'.$web_id));
             $contact->add_email($email);
         }
 
         if($web_param == 'phonelabel') {
             $phone = array();
-            $phone['label'] = $_REQUEST['phonelabel_'.$web_id];
-            $phone['phone'] = real_br2nl($_REQUEST['phone_'.$web_id]);
+            $phone['label'] = array_get($_REQUEST, 'phonelabel_'.$web_id);
+            $phone['phone'] = real_br2nl(array_get($_REQUEST, 'phone_'.$web_id));
             $contact->add_phone($phone);
         }
         
         if($web_param == 'chathandlelabel') {
             $chat = array();
-            $chat['label'] = $_REQUEST['chathandlelabel_'.$web_id];
-            $chat['type'] = real_br2nl($_REQUEST['chathandletype_'.$web_id]);
-            $chat['handle'] = real_br2nl($_REQUEST['chathandle_'.$web_id]);
+            $chat['label'] = array_get($_REQUEST, 'chathandlelabel_'.$web_id);
+            $chat['type'] = real_br2nl(array_get($_REQUEST, 'chathandletype_'.$web_id));
+            $chat['handle'] = real_br2nl(array_get($_REQUEST, 'chathandle_'.$web_id));
             $contact->add_chathandle($chat);
         }
 
         if($web_param == 'relatednamelabel') {
             $rname = array();
-            $rname['label'] = $_REQUEST['relatednamelabel_'.$web_id];
-            $rname['name'] = real_br2nl($_REQUEST['relatedname_'.$web_id]);
+            $rname['label'] = array_get($_REQUEST, 'relatednamelabel_'.$web_id);
+            $rname['name'] = real_br2nl(array_get($_REQUEST, 'relatedname_'.$web_id));
             $contact->add_relatedname($rname);
         }
 
         if($web_param == 'urllabel') {
             $url = array();
-            $url['label'] = $_REQUEST['urllabel_'.$web_id];
-            $url['url'] = real_br2nl($_REQUEST['url_'.$web_id]);
+            $url['label'] = array_get($_REQUEST, 'urllabel_'.$web_id);
+            $url['url'] = real_br2nl(array_get($_REQUEST, 'url_'.$web_id));
             $contact->add_url($url);
         }
     }
 
     $contact->clear_categories();
-    $new_categories = explode("\n", str_replace("\r", "", $_REQUEST['category']));
+    $new_categories = explode("\n", str_replace("\r", "", array_get($_REQUEST, 'category')));
     foreach($new_categories as $name) {
     	if( trim($name) === "")
     		continue;
@@ -437,7 +439,7 @@ function act_search_and_select() {
 function act_category_add() {
     global $CAT;
     
-    $categoryName = trim($_REQUEST['cat_name']);
+    $categoryName = trim(array_get($_REQUEST, 'cat_name'));
     $category = new Category($categoryName);
     
     $CAT->set($category);

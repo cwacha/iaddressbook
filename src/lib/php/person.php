@@ -229,23 +229,27 @@ class Person {
     }
 
     function add_address($address) {
+    	if(!is_array($address))
+    		return;
 		$item = array (
-				'pobox' => '',
-				'ext_adr' => '',
-				'street' => '',
-				'city' => '',
-				'state' => '',
-				'zip' => '',
-				'country' => '',
-				'template' => '' 
+				'label' => array_get($address, 'label', ''),
+				'pobox' => array_get($address, 'pobox', ''),
+				'ext_adr' => array_get($address, 'ext_adr', ''),
+				'street' => array_get($address, 'street', ''),
+				'city' => array_get($address, 'city', ''),
+				'state' => array_get($address, 'state', ''),
+				'zip' => array_get($address, 'zip', ''),
+				'country' => array_get($address, 'country', ''),
+				'template' => array_get($address, 'template', '')
 		);
-    	$tmp = $address['pobox'] . $address['ext_adr'] . $address['street'] . $address['city'] . $address['state'] . $address['zip'] . $address['country'];
-        if(is_array($address) and !empty($tmp)) {
-        	foreach($address as $key => $value) {
-        		$item[$key] = $value;
+        $ok = false;
+        foreach($item as $key => $value) {
+        	if($key != 'label' && !empty($value)) {
+        		$ok = true;
         	}
-            array_push($this->addresses, $item);
         }
+        if($ok == true)
+            array_push($this->addresses, $item);
     }
    
     function del_address($address) {
