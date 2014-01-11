@@ -24,7 +24,7 @@ class Addressbooks {
 		$row = array_change_key_case($row, CASE_UPPER);
 		
 		if(!array_key_exists('ID', $row)) {
-			$prefix = strtoupper($db_config['dbtable_addressbooks']) . '.';
+			$prefix = strtoupper($db_config['dbtable_abs']) . '.';
 		}
 
 		$book = array(
@@ -46,12 +46,12 @@ class Addressbooks {
 		$uri = $db->escape($uri);
 		$description = $db->escape($description);
 		
-		$sql = "INSERT INTO " . $db_config ['dbtable_addressbooks'] . "  (";
+		$sql = "INSERT INTO " . $db_config ['dbtable_abs'] . "  (";
 		$sql .= "principaluri, displayname, uri, description, ctag";
 		$sql .= ") VALUES ( ";
 		$sql .= "$principaluri, $displayname, $uri, $description, 1 );";
 		
-		$db->insert($sql);
+		$db->execute($sql);
 		$id = $db->insertId();
 		if ($id == -1) {
 			msg("DB error on createAddressbook: " . $db->lasterror(), -1);
@@ -66,7 +66,7 @@ class Addressbooks {
         
         $principaluri = $db->escape($principaluri);
         
-        $sql = "SELECT * FROM ".$db_config['dbtable_addressbooks']." WHERE principaluri=$principaluri";
+        $sql = "SELECT * FROM ".$db_config['dbtable_abs']." WHERE principaluri=$principaluri";
 		$result = $db->selectAll($sql);
 
 		foreach($result as $row) {
@@ -81,7 +81,7 @@ class Addressbooks {
 		
 		$addressbookId = $db->escape((int)$addressbookId);
 		
-		$sql = "SELECT * FROM " . $db_config ['dbtable_addressbooks'] . " WHERE id=$addressbookId";
+		$sql = "SELECT * FROM " . $db_config ['dbtable_abs'] . " WHERE id=$addressbookId";
 		$row = $db->selectOne($sql);
 		if($row) {
 			return $this->row2book($row);
@@ -361,7 +361,7 @@ class Addressbook {
 			$sql .= "$jobtitle, $department, $organization, $company, $birthdate, $note, ";
 			$sql .= "$a_line, $e_line, $p_line, $c_line, $r_line, $u_line, $mod_date );";
 			
-			$db->insert($sql);
+			$db->execute($sql);
 			$insertid = $db->insertId();
 			if ($insertid == -1) {
 				msg("DB error on set: " . $db->lasterror(), -1);
@@ -401,7 +401,7 @@ class Addressbook {
 			$sql .= "modification_ts = $mod_date ";
 			
 			$sql .= "WHERE id=$id";
-			$result = $db->update($sql);
+			$result = $db->execute($sql);
 			if (!$result) {
 				msg("DB error on set: " . $db->lasterror(), -1);
 				return false;
@@ -450,7 +450,7 @@ class Addressbook {
         $personId = $db->escape((int)$personId);
         
         $sql = "DELETE FROM ".$db_config['dbtable_ab']." WHERE id=$personId";
-        $result = $db->delete($sql);
+        $result = $db->execute($sql);
         if(!$result) {
             msg("DB error on delete: ". $db->lasterror(), -1);
             return false;
@@ -555,8 +555,8 @@ class Addressbook {
     	
         $id = $db->escape($this->addressbookId);
     	
-    	$sql = "UPDATE ".$db_config['dbtable_addressbooks']." SET ctag=ctag+1 WHERE id=$id";
-    	$db->update($sql);
+    	$sql = "UPDATE ".$db_config['dbtable_abs']." SET ctag=ctag+1 WHERE id=$id";
+    	$db->execute($sql);
     }
     
 }

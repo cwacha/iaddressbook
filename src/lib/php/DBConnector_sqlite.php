@@ -23,8 +23,9 @@ class DBConnector_sqlite extends DBConnector {
 	}
 
 	// setup system so that we can start using the DB connection
-	function init($url, $database, $user, $pass) {
-		parent::init($url, $database, $user, $pass);
+	function init($server, $dbname, $user, $pass) {
+		// only dbname will be used as the filename of the DB
+		parent::init($server, $dbname, $user, $pass);
 	}
 	
 	// clean up and close DB connection
@@ -38,10 +39,15 @@ class DBConnector_sqlite extends DBConnector {
 	// returns true if DB could be opened, false otherwise
 	function open() {
 		if(!$this->initialized) {
-			$this->connection = sqlite_open($this->url);
+			$errormsg = '';
+			@$this->connection = sqlite_open($this->dbname, 0666, $errormsg);
+			if(!is_resource($this->connection)) {
+				$this->logmsg("Failed to open DB: '" . $this->dbname . "': " . $errormsg, -1);
+				return false;
+			}
 			$this->initialized = true;
-			return true;
 		}
+		return true;
 	}
 	
 	// returns array of row with first result from SQL select, NULL otherwise 
@@ -84,11 +90,6 @@ class DBConnector_sqlite extends DBConnector {
 		return $results;
 	}
 	
-	// return true on success
-	function insert($sql) {
-		return $this->execute($sql);
-	}
-	
 	// return the insert ID of the last insert statement
 	function insertId() {
 		if(!$this->open())
@@ -96,16 +97,6 @@ class DBConnector_sqlite extends DBConnector {
 				
 		$insertId = sqlite_last_insert_rowid($this->connection);
 		return $insertId;
-	}
-	
-	// return true on success
-	function update($sql) {
-		return $this->execute($sql);
-	}
-	
-	// return true on success
-	function delete($sql) {
-		return $this->execute($sql);
 	}
 	
 	// returns true if execution of sql statement went fine
@@ -116,14 +107,24 @@ class DBConnector_sqlite extends DBConnector {
 		if($this->debug)
 			$this->logmsg("DB execute: $sql");
 		
-		return sqlite_exec($this->connection, $sql);
+		$ret = sqlite_exec($this->connection, $sql);
+		if($ret === false) {
+			$this->logmsg('Failed to execute SQL statement: "' . $sql . '": ' . $this->lasterror(), -1);
+			return false;
+		}
+		
+		return true;
 	}
 
 	// returns error string of last DB operation, empty string if no error occurred
 	function lasterror() {
+		if(!is_resource($this->connection))
+			return 'DB not open (' .$this->dbname . ')';
+
 		$errCode = sqlite_last_error($this->connection);
 		if($errCode != 0)
 			return sqlite_error_string($errCode);
+
 		return '';
 	}
 }

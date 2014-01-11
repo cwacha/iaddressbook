@@ -167,7 +167,7 @@ class Categories {
 			$sql .= "( category_id, person_id ) VALUES ( ";
 			$sql .= " $categoryId, $personId );";
 			
-			$result = $db->insert($sql);
+			$result = $db->execute($sql);
 				
 			if (!$result) {
 				msg("DB error on addMembersToCategory: " . $db->lasterror(), -1);
@@ -216,7 +216,7 @@ class Categories {
 			
 			$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
 			$sql .= "category_id=$categoryId AND person_id=$personId;";
-			$result = $db->delete($sql);
+			$result = $db->execute($sql);
 			
 			if (!$result) {
 				msg("DB error on deleteMembersFromCategory: " . $db->lasterror(), -1);
@@ -437,7 +437,7 @@ class Categories {
 
 			$sql = "INSERT INTO " . $db_config ['dbtable_cat'] . "  ";
 			$sql .= "( uid, name, modification_ts, etag ) VALUES ( $uid, $name, $mod_ts, 2 );";
-			$db->insert($sql);
+			$db->execute($sql);
 			$insertid = $db->insertId();
 			
 			if ($insertid == -1) {
@@ -456,7 +456,7 @@ class Categories {
 			$sql .= "etag=etag+1, ";
 			$sql .= "WHERE id=$id";
 			
-			$result = $db->update($sql);
+			$result = $db->execute($sql);
 			if (!$result) {
 				msg("DB error on set: " . $db->lasterror(), -1);
 				return false;
@@ -485,14 +485,14 @@ class Categories {
 		$categoryId = $db->escape(( int ) $categoryId);
 		
 		$sql = "DELETE FROM " . $db_config ['dbtable_cat'] . " WHERE id=$categoryId";
-		$result = $db->delete($sql);
+		$result = $db->execute($sql);
 		if (!$result) {
 			msg("DB error delete: " . $db->lasterror(), -1);
 			return false;
 		}
 		
 		$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE category_id=$categoryId";
-		$result = $db->delete($sql);
+		$result = $db->execute($sql);
 		if (!$result) {
 			msg("DB error on delete: " . $db->lasterror(), -1);
 			return false;
@@ -530,7 +530,7 @@ class Categories {
 		$sql .= "etag=etag+1 ";
 		$sql .= "WHERE id=$categoryId";
 			
-		$result = $db->update($sql);
+		$result = $db->execute($sql);
 		if (!$result) {
 			msg("DB error on update_etag: " . $db->lasterror(), -1);
 			return false;

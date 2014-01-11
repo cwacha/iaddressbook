@@ -23,8 +23,9 @@ class DBConnector_sqlite3 extends DBConnector {
 	}
 	
 	// setup system so that we can start using the DB connection
-	function init($url, $database, $user, $pass) {
-		parent::init($url, $database, $user, $pass);
+	function init($server, $dbname, $user, $pass) {
+		// only dbname will be used as the filename of the DB
+		parent::init($server, $dbname, $user, $pass);
 	}
 	
 	// clean up and close DB connection
@@ -39,10 +40,10 @@ class DBConnector_sqlite3 extends DBConnector {
 	function open() {
 		if (!$this->initialized) {
 			try {
-				$this->connection = new SQLite3($this->url);
+				$this->connection = new SQLite3($this->dbname);
 				$this->connection->busyTimeout(30000);
 			} catch ( Exception $e ) {
-				$this->logmsg('Cannot open db file: "' . $this->url . '": ' . $e->getMessage(), -1);
+				$this->logmsg('Failed to open DB: "' . $this->dbname . '": ' . $e->getMessage(), -1);
 				return false;
 			}
 			
@@ -97,11 +98,6 @@ class DBConnector_sqlite3 extends DBConnector {
 		return $results;
 	}
 	
-	// return true on success
-	function insert($sql) {
-		return $this->execute($sql);
-	}
-	
 	// return the insert ID of the last insert statement, -1 if insert ID cannot be queried
 	function insertId() {
 		if (!$this->open())
@@ -109,16 +105,6 @@ class DBConnector_sqlite3 extends DBConnector {
 		
 		$insertId = $this->connection->lastInsertRowID();
 		return $insertId;
-	}
-	
-	// return true on success
-	function update($sql) {
-		return $this->execute($sql);
-	}
-	
-	// return true on success
-	function delete($sql) {
-		return $this->execute($sql);
 	}
 	
 	// returns true if execution of sql statement went fine
@@ -129,15 +115,17 @@ class DBConnector_sqlite3 extends DBConnector {
 		if ($this->debug)
 			$this->logmsg("DB execute: $sql");
 		
-		$result = false;
 		try {
-			@$result = $this->connection->exec($sql);
+			@$ret = $this->connection->exec($sql);
 		} catch ( Exception $e ) {
-			$this->logmsg('Failed executing SQL statement: "' . $sql . '": ' . $e->getMessage(), -1);
+			$this->logmsg('Failed to execute SQL statement: "' . $sql . '": ' . $e->getMessage(), -1);
 			return false;
 		}
-		
-		return $result;
+		if($ret === false) {
+			$this->logmsg('Failed to execute SQL statement: "' . $sql . '": ' . $this->lasterror(), -1);
+			return false;
+		}
+		return true;
 	}
 	
 	// returns error string of last DB operation, empty string if no error occurred

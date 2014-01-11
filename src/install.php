@@ -118,12 +118,10 @@ function html_header() {
 		<input type="hidden" name="dbuser" value="<?php echo $conf['dbuser']; ?>" />
 		<input type="hidden" name="dbpass" value="<?php echo $conf['dbpass']; ?>" />
 		<input type="hidden" name="debug_db" value="<?php echo $conf['debug_db']; ?>" />
+		<input type="hidden" name="dbtable_abs" value="<?php echo $conf['dbtable_abs']; ?>" />
 		<input type="hidden" name="dbtable_ab" value="<?php echo $conf['dbtable_ab']; ?>" />
 		<input type="hidden" name="dbtable_cat" value="<?php echo $conf['dbtable_cat']; ?>" />
 		<input type="hidden" name="dbtable_catmap" value="<?php echo $conf['dbtable_catmap']; ?>" />
-		<input type="hidden" name="dbtable_truth" value="<?php echo $conf['dbtable_truth']; ?>" />
-		<input type="hidden" name="dbtable_sync" value="<?php echo $conf['dbtable_sync']; ?>" />
-		<input type="hidden" name="dbtable_action" value="<?php echo $conf['dbtable_action']; ?>" />
 		<input type="hidden" name="lang" value="<?php echo $conf['lang']; ?>" />
 		<input type="hidden" name="title" value="<?php echo $conf['title']; ?>" />
 		<input type="hidden" name="template" value="<?php echo $conf['template']; ?>" />
@@ -380,14 +378,14 @@ function step_check() {
     if(function_exists('sqlite_open')) {
         // pre-select sqlite if it is available
         $conf['dbtype'] = 'sqlite';
-        $conf['dbserver'] = 'addressbook.sqlite';
+        $conf['dbname'] = 'addressbook.sqlite';
         imsg(str_replace('$1', sqlite_libversion(), $lang['info_sqlite']), 1);
         $has_sqlite = true;
     }
     if(class_exists('SQLite3')) {
     	// pre-select sqlite3 if it is available
         $conf['dbtype'] = 'sqlite3';
-        $conf['dbserver'] = 'addressbook.sqlite';
+        $conf['dbname'] = 'addressbook.sqlite';
         $version = SQLite3::version();
         imsg(str_replace('$1', $version['versionString'], $lang['info_sqlite3']), 1);
         $has_sqlite = true;
@@ -435,11 +433,10 @@ function step_dbsetup() {
     html_sform_begin();
     html_sform_line('dbtype');
     html_sform_line('dbname');
-    html_sform_line('dbserver');
-    html_sform_line('dbuser');
-    html_sform_line('dbpass');
-    html_sform_line('debug_db');
-    html_sform_end();
+	html_sform_line('dbserver');
+	html_sform_line('dbuser');
+	html_sform_line('dbpass');
+	html_sform_end();
         
     if(!$state['db_created']) {
         echo "&nbsp;<p>";
@@ -453,20 +450,29 @@ function step_dbsetup() {
 function step_configure() {
     global $defaults;
     global $lang;
-    
-    step_title($lang['step_configure']);
-
-    html_sform_begin();
-    foreach($defaults as $key => $value) {
-        if(!in_array($key, array('dbtype', 'dbname', 'dbserver', 'dbuser', 'dbpass',
-            'dbtable_ab', 'dbtable_cat', 'dbtable_catmap', 'dbtable_truth', 'dbtable_sync',
-            'dbtable_action', 'dbtable_users', 'debug', 'debug_db'))) {
-            html_sform_line($key);
-        }
-    }
-    html_sform_end();
-
-    step_prev('step_dbsetup');
+	step_title($lang['step_configure']);
+	
+	html_sform_begin();
+	foreach ( $defaults as $key => $value ) {
+		if (!in_array($key, array (
+				'dbtype',
+				'dbname',
+				'dbserver',
+				'dbuser',
+				'dbpass',
+				'dbtable_abs',
+				'dbtable_ab',
+				'dbtable_cat',
+				'dbtable_catmap',
+				'debug',
+				'debug_db' 
+		))) {
+			html_sform_line($key);
+		}
+	}
+	html_sform_end();
+	
+	step_prev('step_dbsetup');
     step_next('step_finish', $lang['finish']);
 }
 
@@ -496,7 +502,7 @@ function step_finish() {
         
         // fix fmode if using sqlite!
         if(strpos($conf['dbtype'], 'sqlite') === 0) {
-            fix_fmode(AB_STATEDIR.'/'.$conf['dbserver']);
+            fix_fmode(AB_STATEDIR.'/'.$conf['dbname']);
         }
     }
     
@@ -569,7 +575,7 @@ function setup_db() {
     global $state;
     global $conf;
     global $lang;
-
+    
     db_init($conf);
     db_open();
     if(db_createtables()) {
@@ -776,12 +782,10 @@ switch($state['step']) {
             $conf['debug_db'] = (int)post_var(array_get($_REQUEST, 'debug_db'), $conf['debug_db']);
 
             // TODO: fix db creation!
+            $conf['dbtable_abs']  = post_var(array_get($_REQUEST, 'dbtable_abs'),   $conf['dbtable_abs']);
             $conf['dbtable_ab']   = post_var(array_get($_REQUEST, 'dbtable_ab'),   $conf['dbtable_ab']);
             $conf['dbtable_cat']   = post_var(array_get($_REQUEST, 'dbtable_cat'),   $conf['dbtable_cat']);
             $conf['dbtable_catmap']   = post_var(array_get($_REQUEST, 'dbtable_catmap'),   $conf['dbtable_catmap']);
-            $conf['dbtable_truth']   = post_var(array_get($_REQUEST, 'dbtable_truth'),   $conf['dbtable_truth']);
-            $conf['dbtable_sync']   = post_var(array_get($_REQUEST, 'dbtable_sync'),   $conf['dbtable_sync']);
-            $conf['dbtable_action']   = post_var(array_get($_REQUEST, 'dbtable_action'),   $conf['dbtable_action']);
         }
         break;
     case 4:

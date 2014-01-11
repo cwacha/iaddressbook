@@ -1,5 +1,6 @@
 #!/bin/sh
-
+SVNBASEDIR=..
+REVISION=`svn info -R $SVNBASEDIR 2>/dev/null | grep "Last Changed Rev" | awk '{print $4}' | sort -nr | head -1`
 
 all() {
 	clean && import && pkg
@@ -17,19 +18,21 @@ import() {
 	rm -rf BUILD/var/state/*
 	rm -rf BUILD/var/images/*
 	rm -rf BUILD/var/import/*
-    chmod 777 BUILD/conf
-    chmod 777 BUILD/var/state
-    chmod 777 BUILD/var/images
+	chmod 777 BUILD/conf
+	chmod 777 BUILD/var/state
+	chmod 777 BUILD/var/images
 	chmod 777 BUILD/var/import
+	#touch BUILD/iaddressbook-$VERSION-$REVISION-manifest
 }
 
 pkg() {
 	echo "##### packaging"
-	VERSION=`head -1 BUILD/VERSION | sed 's/[ \t]/_/g'`
+	VERSION=`head -1 BUILD/VERSION | sed 's/[ 	]/_/g'`
+	
 	PKG=iaddressbook-$VERSION
 	mv BUILD $PKG
-	tar cfz $PKG.tar.gz $PKG
-	zip -r $PKG.zip $PKG >/dev/null
+	tar cfz $PKG-$REVISION.tar.gz $PKG
+	zip -r $PKG-$REVISION.zip $PKG >/dev/null
 }
 
 clean() {

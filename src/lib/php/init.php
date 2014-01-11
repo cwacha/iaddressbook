@@ -19,12 +19,12 @@
     
     // set up error reporting to sane values
     @ini_set('display_errors', 'On');
-    error_reporting(E_ALL ^ E_NOTICE);
-    //error_reporting(E_ALL);
+    error_reporting(E_ALL);
 
     //Mapping PHP errors to exceptions
     function exception_error_handler($errno, $errstr, $errfile, $errline ) {
-    	msg("err=$errstr errno=$errno errfile=$errfile errline=$errline");
+    	if(error_reporting() != 0)
+	    	msg("err=$errstr errno=$errno errfile=$errfile errline=$errline");
     }
     set_error_handler("exception_error_handler");
     

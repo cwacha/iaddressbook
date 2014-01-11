@@ -30,11 +30,10 @@ function db_init($config = NULL) {
 	$db_config['dbserver'] = $config['dbserver'];
 	$db_config['dbuser'] = $config['dbuser'];
 	$db_config['dbpass'] = $config['dbpass'];
-	$db_config['dbtable_addressbooks'] = $config['dbtable_addressbooks'];
+	$db_config['dbtable_abs'] = $config['dbtable_abs'];
 	$db_config['dbtable_ab'] = $config['dbtable_ab'];
 	$db_config['dbtable_cat'] = $config['dbtable_cat'];
 	$db_config['dbtable_catmap'] = $config['dbtable_catmap'];
-	$db_config['dbtable_users'] = $config['dbtable_users'];
 	$db_config['dbdebug'] = $config['debug_db'];
 	    
     $db = false;
@@ -45,11 +44,11 @@ function db_open() {
     global $db;
     
     if($db_config['dbtype'] == 'sqlite') {
-    	$db_config['dbserver'] = AB_STATEDIR.'/'.$db_config['dbserver'];
+    	$db_config['dbname'] = AB_STATEDIR.'/'.$db_config['dbname'];
     	$db = new DBConnector_sqlite();
     }
     if($db_config['dbtype'] == 'sqlite3') {
-    	$db_config['dbserver'] = AB_STATEDIR.'/'.$db_config['dbserver'];
+    	$db_config['dbname'] = AB_STATEDIR.'/'.$db_config['dbname'];
     	$db = new DBConnector_sqlite3();
     }
     if($db_config['dbtype'] == 'mysql') {
@@ -83,7 +82,8 @@ function db_createtables() {
     global $db;
     global $db_config;
     
-    if(!$db) return false;
+    if(!$db)
+    	return false;
     
     $filename = AB_SQLDIR.'/'.$db_config['dbtype'].'.sql';
     $queries = file_get_contents($filename);
@@ -98,11 +98,12 @@ function db_createtables() {
     
     foreach($queries as $sql) {
         $sql = trim($sql);
-        if(empty($sql)) continue;
+        if(empty($sql))
+        	continue;
         $result = $db->execute($sql);
         if(!$result) {
             $errors++;
-            msg("Error creating db: ". $db->lasterror(), -1);
+            //msg("Error creating db: ". $db->lasterror(), -1);
         }
     }
     

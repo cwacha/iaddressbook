@@ -151,11 +151,12 @@ $lang['basedir']              = 'Base directory';
 $lang['baseurl']              = 'Base URL';
 
 $lang['dbtype']               = 'Type';
-$lang['dbname']               = 'Name';
-$lang['dbserver']             = 'Server/DB file';
+$lang['dbname']               = 'DB Name';
+$lang['dbserver']             = 'Server';
 $lang['dbuser']               = 'Username';
 $lang['dbpass']               = 'Password';
 
+$lang['dbtable_abs']          = 'DB table';
 $lang['dbtable_ab']           = 'DB table';
 $lang['dbtable_cat']          = 'DB table';
 $lang['dbtable_catmap']       = 'DB table';
@@ -199,11 +200,12 @@ $lang['basedir_help']           = 'Relative dir to serveroot - blank for autodet
 $lang['baseurl_help']           = 'URL to server including protocol - blank for autodetect';
 
 $lang['dbtype_help']            = 'Database type: mysql, sqlite, sqlite3';
-$lang['dbname_help']            = 'The name of the database';
-$lang['dbserver_help']          = 'MySQL: Server to connect to<br/>SQLite: Database file<br/>';
+$lang['dbname_help']            = 'The name of the database (or filename for SQLite)';
+$lang['dbserver_help']          = 'Server to connect to';
 $lang['dbuser_help']            = 'Username to connect to server';
 $lang['dbpass_help']            = 'Cleartext password to connect to server';
 
+$lang['dbtable_abs_help']       = 'Table inside database for all addressbooks';
 $lang['dbtable_ab_help']        = 'Table inside database for addressbook entries';
 $lang['dbtable_cat_help']       = 'Table inside database for categories';
 $lang['dbtable_catmap_help']    = 'Table inside database for mapping contacts to categories';

@@ -14,8 +14,8 @@ require_once(AB_BASEDIR.'/lib/php/include.php');
 class DBConnector {
 	
 	var $dbtype;
-	var $database;
-	var $url;
+	var $dbname;
+	var $server;
 	var $user;
 	var $pass;
 	var $debug;
@@ -26,9 +26,9 @@ class DBConnector {
 	}
 	
 	// setup system so that we can start using the DB connection
-	function init($url, $database, $user, $pass) {
-		$this->url = $url;
-		$this->database = $database;
+	function init($server, $dbname, $user, $pass) {
+		$this->server = $server;
+		$this->dbname = $dbname;
 		$this->user = $user;
 		$this->pass = $pass;
 	}
@@ -51,26 +51,11 @@ class DBConnector {
 		return $results;
 	}
 
-	// return true on success
-	function insert($sql) {
-		return $this->execute($sql);
-	}
-
 	// return the insert ID of the last insert statement
 	function insertId() {
 		return -1;
 	}
-	
-	// returns number of rows updated or 0 on error
-	function update($sql) {
-		return $this->execute($sql);
-	}
-	
-	// returns number of rows deleted or 0 on error
-	function delete($sql) {
-		return $this->execute($sql);
-	}
-	
+		
 	// returns true if execution of sql statement went fine
 	function execute($sql) {
 		return false;
