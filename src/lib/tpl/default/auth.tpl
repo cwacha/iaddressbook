@@ -68,7 +68,7 @@
             <legend><?php echo $lang['login']; ?></legend>
             <label class="block">
                 <span><?php echo $lang['username']; ?></span>
-                <input type="text" name="u" value="<?php echo $_REQUEST['u']; ?>" class="edit" />
+                <input type="text" name="u" value="<?php echo array_get($_REQUEST, 'u'); ?>" class="edit" />
             </label><br />
             <label class="block">
                 <span><?php echo $lang['password']; ?></span>
