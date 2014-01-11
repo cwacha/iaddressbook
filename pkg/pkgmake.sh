@@ -18,6 +18,11 @@ import() {
 	rm -rf BUILD/var/state/*
 	rm -rf BUILD/var/images/*
 	rm -rf BUILD/var/import/*
+
+	rm -rf BUILD/lib/php/SabreDAV/docs
+	rm -rf BUILD/lib/php/SabreDAV/examples
+	rm -rf BUILD/lib/php/SabreDAV/tests
+	rm -rf BUILD/lib/php/SabreDAV/bin
 	chmod 777 BUILD/conf
 	chmod 777 BUILD/var/state
 	chmod 777 BUILD/var/images

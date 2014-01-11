@@ -25,11 +25,11 @@ date_default_timezone_set('Canada/Eastern');
 $baseUri = $_SERVER['SCRIPT_NAME'];
 
 // Autoloader
-require_once 'lib/php/SabreDav/vendor/autoload.php';
+require_once(AB_BASEDIR.'/lib/php/SabreDAV/vendor/autoload.php');
 
-require_once 'lib/php/IABCardDAV/IABAuthenticator.php';
-require_once 'lib/php/IABCardDAV/IABPrincipalBackend.php';
-require_once 'lib/php/IABCardDAV/IABCardDAVBackend.php';
+require_once(AB_BASEDIR.'/lib/php/IABCardDAV/IABAuthenticator.php');
+require_once(AB_BASEDIR.'/lib/php/IABCardDAV/IABPrincipalBackend.php');
+require_once(AB_BASEDIR.'/lib/php/IABCardDAV/IABCardDAVBackend.php');
 
 // Backends
 $authBackend      = new Sabre\DAV\Auth\Backend\IABAuthenticator();
