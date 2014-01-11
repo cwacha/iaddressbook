@@ -39,7 +39,7 @@ class IABPrincipalBackend extends AbstractBackend {
 			$principal = array (
 					'uri' => 'principals/' . $userinfo['userid'],
 					'{DAV:}displayname' => $userinfo['fullname'],
-					'{http://sabredav.org/ns}email-address' => $userinfo['fullname'] 
+					'{http://sabredav.org/ns}email-address' => $userinfo['email'] 
 			);
 			$principals[] = $principal;
 		}
@@ -62,7 +62,7 @@ class IABPrincipalBackend extends AbstractBackend {
     		$principal = array(
 					'uri' => 'principals/' . $userinfo['userid'],
 					'{DAV:}displayname' => $userinfo['fullname'],
-					'{http://sabredav.org/ns}email-address' => $userinfo['fullname'] 
+					'{http://sabredav.org/ns}email-address' => $userinfo['email'] 
 			);
     		return $principal;
     	}

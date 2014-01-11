@@ -45,7 +45,6 @@ if($conf['auth_enabled']) {
     }
 }
 
-
 // contact list offset
 if($ACT == 'select_offset') {
     if(isset($_REQUEST['o'])) {

@@ -49,16 +49,16 @@ function auth_check($force_login = false) {
     
     // authentication enabled
 
-    if($_SESSION['authorized']) {
+    if(array_get($_SESSION, 'authorized', false)) {
         // the user is already logged in
         $userinfo = auth_get_userinfo($_SESSION['username']);
-        $userinfo['logged_in']   = 1;        
+        $userinfo['logged_in']   = 1;
         return;
     }
 
-    $auth_login = $_REQUEST['u'];
-    $auth_pass  = $_REQUEST['p'];
-    $sticky     = $_REQUEST['r'] ? true: false;
+    $auth_login = array_get($_REQUEST, 'u');
+    $auth_pass  = array_get($_REQUEST, 'p');
+    $sticky     = array_get($_REQUEST, 'r', false) ? true: false;
 
     // read cookie information
     if(empty($auth_login) and isset($_COOKIE[AB_COOKIE])) {
@@ -123,14 +123,29 @@ function auth_login($userid, $password) {
     global $auth;
     global $conf;
     
-    if(!$conf['auth_enabled'] || $conf['auth_allow_guest'])
+    if(!$conf['auth_enabled'])
     	return true;
-        
-    $userinfo = auth_get_userinfo($userid);
-    $password = array_get($auth[$userid], 'password', '');
-    if($userinfo !== null && $password == md5($password)) {
+
+    $userinfo = array_get($auth, $userid);
+    if($userid == 'guest' && $conf['auth_allow_guest']) {
+    	$password = 'guest';
+    	$userinfo = array(
+    		'password' => '084e0343a0486ff05530df6c705c8bb4'
+    	);
+    }
+    
+    if(!is_array($userinfo)) {
+    	//msg("login action=failed user=$userid");
+    	return false;
+    }
+     
+    $setpw = array_get($userinfo, 'password');
+    if($setpw == md5((string)$password)) {
+    	//msg("login action=success user=$userid");
         return true;
     }
+    
+    //msg("login action=failed user=$userid");
     return false;
 }
 
@@ -144,6 +159,7 @@ function auth_login($userid, $password) {
  *
  */
 function auth_logout() {
+	msg("logout!");
 
     $_SESSION = array();
     $_SESSION['authorized'] = 0;
@@ -182,18 +198,20 @@ function auth_verify_action($userid, $action) {
         return true;
     }
 
-    if(array_key_exists($userid, $auth)) {
-        $permission = $auth[$userid]['permissions'];
-        if( !empty($permission) && in_array($action, permission) ) return true;
-    }
-    
-    if(is_array($auth[$userid]['groups'])) {
-        foreach($auth[$userid]['groups'] as $group) {
-            if( in_array($action, $auth[$group]['permissions']) ) return true;
-        }
-    }
-    
-    msg($lang['action_not_allowed'] . " ($action)", -1);
+    $userinfo = auth_get_userinfo($userid);    
+    if(!is_array($userinfo))
+    	return false;
+
+    $groups = array_get($userinfo, 'groups');
+	if (!is_array($groups))
+		return false;
+	
+	foreach ( $groups as $group ) {
+		if (in_array($action, $auth[$group]['permissions']))
+			return true;
+	}
+	
+	msg($lang['action_not_allowed'] . " ($action)", -1);
     
     return false;
 }
@@ -202,17 +220,19 @@ function auth_get_userinfo($userid) {
     global $auth;
     $ui = array();
     
-    if(array_key_exists($userid, $auth)) {
-        $ui['userid'] = $userid;
-        $ui['fullname'] = array_get($auth[$userid], 'fullname', '');
-        $ui['email']    = array_get($auth[$userid], 'email', '');
-        return $ui;
-    }
     if($userid == 'guest') {
     	$ui['userid'] = 'guest';
     	$ui['fullname'] = 'Guest';
     	$ui['email'] = '';
+        $ui['groups'] = array('@guest');
     	return $ui;
+    }
+    if(array_key_exists($userid, $auth)) {
+        $ui['userid'] = $userid;
+        $ui['fullname'] = array_get($auth[$userid], 'fullname', '');
+        $ui['email']    = array_get($auth[$userid], 'email', '');
+        $ui['groups']   = array_get($auth[$userid], 'groups', array());
+        return $ui;
     }
 
     return null;
@@ -220,14 +240,20 @@ function auth_get_userinfo($userid) {
 
 function auth_get_users() {
 	global $auth;
+	global $conf;
 	$users = array();
+
+    if(!$conf['auth_enabled'] || $conf['auth_allow_guest'])
+    	$users['guest'] = auth_get_userinfo('guest');
+	
 	foreach($auth as $userid => $dummy) {
 		if (substr($userid, 0, 1) === "@")
 			continue;
 		$userinfo = auth_get_userinfo($userid);
 		$users[$userid] = $userinfo;
 	}
-	return $users;
+
+    return $users;
 }
 
 /**

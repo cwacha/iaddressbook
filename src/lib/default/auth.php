@@ -18,10 +18,6 @@
 ///////////////////////
 //     U S E R S     //
 ///////////////////////
-// guest user - if you have activated guest access, these are the permissions
-$auth['guest']['groups']        = array('@guest');
-
-
 // This is an example user with
 // username = fred
 // password = banana

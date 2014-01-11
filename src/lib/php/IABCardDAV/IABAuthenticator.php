@@ -29,7 +29,7 @@ class IABAuthenticator extends AbstractBasic {
 	public function authenticate(DAV\Server $server, $realm) {
 		global $conf;
 		
-		if (!$conf ['auth_enabled'] || $conf ['auth_allow_guest']) {
+		if (!$conf ['auth_enabled']) {
 			$this->currentUser = 'guest';
 			return true;
 		}
