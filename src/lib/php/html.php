@@ -82,6 +82,12 @@ function html_debug(){
     print('AB_IMPORTDIR='.AB_IMPORTDIR.'<br/>');
     print('AB_STATEDIR='.AB_STATEDIR.'<br/>');
     print '</pre>';
+
+    print '<b>URL Settings:</b><pre>';
+    print('AB_BASE='.AB_BASE.'<br/>');
+    print('AB_URL='.AB_URL.'<br/>');
+    print('AB_COOKIE='.AB_COOKIE.'<br/>');
+    print '</pre>';
     
     print '<b>$_SERVER:</b><pre>';
     print_r($_SERVER);

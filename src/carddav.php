@@ -17,9 +17,6 @@ if(!$conf['carddav_enable']) {
 	exit();
 }
 
-// settings
-date_default_timezone_set('Canada/Eastern');
-
 // Make sure this setting is turned on and reflect the root url for your WebDAV server.
 // This can be for example the root / or a complete path to your server script
 $baseUri = $_SERVER['SCRIPT_NAME'];

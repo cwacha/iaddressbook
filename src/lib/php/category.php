@@ -119,7 +119,8 @@ class Categories {
 		$sql = "SELECT c.* FROM " . $db_config ['dbtable_cat'] . " c, " . $db_config ['dbtable_catmap'] . " cm ";
 		$sql .= "WHERE c.id=cm.category_id AND ";
 		$sql .= "( cm.person_id = $personId ) AND ( c.name NOT LIKE ' __all__' ) ";
-		$sql .= " LIMIT $limit";
+		$sql .= "ORDER BY c.name ";
+		$sql .= "LIMIT $limit";
 		
 		$result = $db->selectAll($sql);
 		

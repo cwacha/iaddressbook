@@ -21,18 +21,18 @@ class Addressbooks {
 	function row2book($row) {
 		global $db_config;
 		$prefix = '';
-		$row = array_change_key_case($row, CASE_UPPER);
+		$row = array_change_key_case($row, CASE_LOWER);
 		
-		if(!array_key_exists('ID', $row)) {
-			$prefix = strtoupper($db_config['dbtable_abs']) . '.';
+		if(!array_key_exists('id', $row)) {
+			$prefix = strtolower($db_config['dbtable_abs']) . '.';
 		}
 
 		$book = array(
-				'id' => (int)$row[$prefix . 'ID'],
-				'displayname' => $row[$prefix . 'DISPLAYNAME'],
-				'uri' => $row[$prefix . 'URI'],
-				'description' => $row[$prefix . 'DESCRIPTION'],
-				'ctag' => (int)$row[$prefix . 'CTAG']
+				'id' => (int)$row[$prefix . 'id'],
+				'displayname' => $row[$prefix . 'displayname'],
+				'uri' => $row[$prefix . 'uri'],
+				'description' => $row[$prefix . 'description'],
+				'ctag' => (int)$row[$prefix . 'ctag']
 		);
 		return $book;
 	}
@@ -111,7 +111,7 @@ class Addressbook {
         $row = array_change_key_case($row, CASE_LOWER);
         
         if(!array_key_exists('id', $row)) {
-            $prefix = strtoupper($db_config['dbtable_ab']) . '.';
+            $prefix = strtolower($db_config['dbtable_ab']) . '.';
         }
         
         $contact->id = (int)$row[$prefix . 'id'];

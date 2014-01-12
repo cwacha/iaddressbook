@@ -13,6 +13,7 @@
     /**
     * Initialize some defaults
     */
+    date_default_timezone_set('UTC');
     
     global $VERSION; 
     $VERSION = file_get_contents(AB_BASEDIR.'/VERSION');

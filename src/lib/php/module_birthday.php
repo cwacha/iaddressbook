@@ -19,7 +19,6 @@ function collect_birthdays() {
     global $AB;
     if(!$db) return array();
     $upcoming = array();
-    date_default_timezone_set('UTC');
     
     $thismonth = date('n');
     //$thismonth = 12;
