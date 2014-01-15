@@ -1,0 +1,15 @@
+## make sure nobody gets the htaccess files
+<Files ~ "^[\._]ht">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</Files>
+
+# Example rewrite settings for iOS 6
+RewriteEngine on
+#
+RewriteBase /
+#RewriteBase /~user/iab
+
+RewriteRule ^.well-known/carddav$ carddav.php [R]
+

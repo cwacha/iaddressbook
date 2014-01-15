@@ -147,6 +147,7 @@ class DigestAuth extends AbstractAuth {
             // We need to make sure we support this qop value
             if (!($this->qop & self::QOP_AUTH)) return false;
         }
+
         $A2 = md5($A2);
 
         $validResponse = md5("{$this->A1}:{$this->digestParts['nonce']}:{$this->digestParts['nc']}:{$this->digestParts['cnonce']}:{$this->digestParts['qop']}:{$A2}");

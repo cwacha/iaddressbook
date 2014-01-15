@@ -142,7 +142,7 @@ class IABCardDAVBackend extends AbstractBackend {
             $item['uri'] = $contact->uid;
             $item['lastmodified'] = $contact->modification_ts;
             //$item['carddata'] = $vcarddata;
-            $item['etag'] = $contact->etag;
+            $item['etag'] = (string)$contact->etag;
             $item['size'] = strlen($vcarddata);
             
             $results[] = $item;
@@ -173,7 +173,7 @@ class IABCardDAVBackend extends AbstractBackend {
         	$item['uri'] = $contact->uid;
         	$item['lastmodified'] = $contact->modification_ts;
         	//$item['carddata'] = $vcarddata;
-        	$item['etag'] = $contact->etag;
+        	$item['etag'] = (string)$contact->etag;
         	$item['size'] = strlen($vcarddata);
         
         	$results[] = $item;
@@ -233,7 +233,7 @@ class IABCardDAVBackend extends AbstractBackend {
 				'uri' => $cardUri,
 				'lastmodified' => $contact->modification_ts,
 				'carddata' => $vcarddata,
-				'etag' => $contact->etag,
+				'etag' => (string)$contact->etag,
 				'size' => strlen($vcarddata) 
 		);
 		
@@ -345,25 +345,25 @@ class IABCardDAVBackend extends AbstractBackend {
     	$book = $this->catalog->getAddressBookForId($addressBookId);
 		$AB = new \Addressbook($book['id']);
         $CAT = new \Categories;        
-    			
-		$contacts = vcard2contacts($vcard_string);
-		
+
+		$contacts = vcard2contacts($cardData);
+
 		foreach ( $contacts as $contact ) {
-    		if($contact->isgroup) {
-    			$category = $CAT->get($contact->uid);
-    			if(!$category) {
-	    			$category = new \Category($contact->name());
-    				$category->uid = $contact->uid;
-    			}
-    			$category->id = $CAT->set($category);
-    			$CAT->setMembersForCategory($category->id, $contact->get_groupmembers());
-    		} else {
-	    		$person_id = $AB->set($contact);
-    		}
+			if ($contact->isgroup) {
+				$category = $CAT->get($contact->uid);
+				if (!$category) {
+					$category = new \Category($contact->name());
+					$category->uid = $contact->uid;
+				}
+				$category->id = $CAT->set($category);
+				$CAT->setMembersForCategory($category->id, $contact->get_groupmembers());
+			} else {
+				$person_id = $AB->set($contact);
+			}
 		}
-    	
-    	return null;
-    }
+		
+		return null;
+	}
 
 	/**
 	 * Deletes a card

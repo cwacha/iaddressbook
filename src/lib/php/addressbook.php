@@ -300,6 +300,27 @@ class Addressbook {
 		return $contact;        
     }
     
+    function getIdFromUID($uid) {
+    	global $db;
+    	global $db_config;
+    	if (!$db or !is_string($uid) or empty($uid))
+    		return 0;
+    		
+    	// quote db specific characters
+    	$uid = $db->escape(strtolower($uid));
+    	$sql = "SELECT id FROM " . $db_config ['dbtable_ab'] . " WHERE uid=$uid LIMIT 1";
+    	$row = $db->selectOne($sql);
+    	if (!$row)
+    		return 0;
+    	
+    	if(is_object($row))
+    		$row = get_object_vars($row);
+    	
+    	$row = array_change_key_case($row, CASE_LOWER);
+    	    	
+    	return (int)$row['id'];
+    }
+    
    
     function set($contact) {
         global $db;
@@ -316,6 +337,9 @@ class Addressbook {
 
 		if (empty($contact->uid))
 			$contact->uid = generate_uuid();
+		else {
+			$contact->id = $this->getIdFromUID($contact->uid);
+		}
 		
 		// Input validation
 		$id = $db->escape(( int ) $contact->id);
@@ -410,7 +434,9 @@ class Addressbook {
 
 		if($conf['mark_changed']) {
 			//since the contact is new or has changed, add it to the "changed" category!
-			$contact->add_category(new Category(' __changed__'));
+			$change_cat = new Category(' __changed__');
+			$contact->del_category_by_name($change_cat->displayName());
+			$contact->add_category($change_cat);
 		}
 		
 		$CAT->setCategoriesForPerson($contact->id, $contact->get_categories());

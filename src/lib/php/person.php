@@ -375,6 +375,7 @@ class Person {
 			if ($cat->name() == $category->name())
 				return;
 		}
+		//msg("adding category: ". $category->name() .", " .$category->displayName());
 		$this->categories [] = $category;
 	}
     
