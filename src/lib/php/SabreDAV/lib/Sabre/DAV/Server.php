@@ -1941,7 +1941,7 @@ class Server {
                 foreach($ifMatch as $ifMatchItem) {
 
                     // Stripping any extra spaces
-                    $ifMatchItem = trim($ifMatchItem,' ');
+                    $ifMatchItem = trim($ifMatchItem,' "');
 
                     $etag = $node->getETag();
                     if ($etag===$ifMatchItem) {
