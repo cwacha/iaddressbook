@@ -302,6 +302,7 @@ class IABCardDAVBackend extends AbstractBackend {
 					$category = new \Category($contact->name());
 					$category->uid = $contact->uid;
 				}
+				$category->name = $contact->name();
 				$category->id = $CAT->set($category);
 				$CAT->setMembersForCategory($category->id, $contact->get_groupmembers());
 			} else {
@@ -355,6 +356,7 @@ class IABCardDAVBackend extends AbstractBackend {
 					$category = new \Category($contact->name());
 					$category->uid = $contact->uid;
 				}
+				$category->name = $contact->name();
 				$category->id = $CAT->set($category);
 				$CAT->setMembersForCategory($category->id, $contact->get_groupmembers());
 			} else {

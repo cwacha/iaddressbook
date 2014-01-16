@@ -363,6 +363,7 @@ class Categories {
 				unset($old_members[$oldMemberId]);
 			}
 		}
+		$memberUUIDs = array_flip($memberUUIDs);
 		
 		// remove old elements
 		$this->deleteMembersFromCategory($category->id, $old_members);
@@ -432,7 +433,7 @@ class Categories {
 		$uid = $db->escape($category->uid);
 		$name = $db->escape($category->name);
 		
-		if ($id == 0) {
+		if ($category->id == 0) {
 			// insert
 			$mod_ts = (int)$category->modification_ts;
 
@@ -445,16 +446,16 @@ class Categories {
 				msg("DB error on set: " . $db->lasterror(), -1);
 				return false;
 			}
-			$id = $insertid;
+			$category->id = $insertid;
 		} else {
 			// update
 			$mod_ts = time();
 			
 			$sql = "UPDATE " . $db_config ['dbtable_cat'] . " SET ";
 			
-			$sql .= "uid=$uid, name=$name ";
+			$sql .= "uid=$uid, name=$name, ";
 			$sql .= "modification_ts=$mod_ts, ";
-			$sql .= "etag=etag+1, ";
+			$sql .= "etag=etag+1 ";
 			$sql .= "WHERE id=$id";
 			
 			$result = $db->execute($sql);
@@ -465,7 +466,7 @@ class Categories {
 		}
 		$AB->update_ctag();
 		
-		return $id;
+		return $category->id;
 	}
 
 	function delete($categoryId) {
