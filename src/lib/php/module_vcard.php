@@ -421,6 +421,8 @@ function array2contact($card) {
 					$tmp['label'] = 'PAGER';
 				if (in_array('FAX', $phone['param']['TYPE']))
 					$tmp['label'] .= ' FAX';
+				if (in_array('IPHONE', $phone['param']['TYPE']))
+					$tmp['label'] = 'iPhone';
 			}
 			if (!empty($phone['X-ABLABEL']))
 				$tmp['label'] = $phone['X-ABLABEL']['value'][0][0];
