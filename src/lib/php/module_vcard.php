@@ -48,7 +48,7 @@ function import_vcards($vcard_string) {
 	$error = 0;
 	$imported = 0;
 	$person_id = false;
-	
+		
 	$contacts = vcard2contacts($vcard_string);
 	
 	$lastImportName = ' __lastimport__';
@@ -133,7 +133,7 @@ function export_vcards($vcardData, $filename = 'Contacts.vcf') {
 	header("Content-Disposition: attachment; filename=\"$filename\"");
 	header("Connection: close");
 	header("Content-Type: text/x-vCard; name=\"$filename\"");
-	echo $vcarddata;
+	echo $vcardData;
 	exit();
 }
 
@@ -346,10 +346,10 @@ function contact2vcard($contact) {
 function array2contact($card) {
 	global $conf;
 	$contact = new Person();
-	if(isset($card['UID']))
-		$contact->uid = $card['UID'][0]['value'][0][0];
 
-	if(isset($card['REV']) && is_array($card['REV'])) {
+	if (isset($card['UID']))
+		$contact->uid = $card['UID'][0]['value'][0][0];
+	if (isset($card['REV']) && is_array($card['REV'])) {
 		$contact->modification_ts = strtotime($card['REV'][0]['value'][0][0]);
 	}
 	if (isset($card['N'])) {

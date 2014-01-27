@@ -206,7 +206,7 @@ class IABCardDAVBackend extends AbstractBackend {
 				
 		$results = array ();
 		
-		$contact = $AB->get($uri, false);
+		$contact = $AB->get($uri, true);
 		
 		if (!$contact) {
 			// check if it is a group
@@ -238,7 +238,7 @@ class IABCardDAVBackend extends AbstractBackend {
 		);
 		
 		$stop_ts = microtime(true);
-		//msg("getCard: addressBookId=$addressBookId cardUri=$cardUri etag=" . $contact->etag . " delay_ms=" . (int)(($stop_ts - $start_ts)*1000));
+		msg("getCard: addressBookId=$addressBookId cardUri=$cardUri etag=" . $contact->etag . " delay_ms=" . (int)(($stop_ts - $start_ts)*1000));
 		return $item;
 	}
 

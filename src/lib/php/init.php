@@ -103,9 +103,22 @@
     require_once(AB_LANGDIR.'/en/lang.php');
     @include_once(AB_LANGDIR.'/'.$conf['lang'].'/lang.php');
     $_SESSION['lang'] = $conf['lang'];
-        
+
+    
+    //configure mobile template
+	if(isset($_REQUEST['mobile']))
+		$_SESSION['mobile'] = (bool)$_REQUEST['mobile'];
+
+    if(isset($_SESSION['mobile'])) {
+    	$conf['mobile'] = (bool)$_SESSION['mobile'];
+    	if($conf['mobile'] && strpos($conf['template'], '-mobile') === false)
+    		$conf['template'] .= '-mobile';
+    }
+    
     // define Template baseURL
-    if(!defined('AB_TPL')) define('AB_TPL', AB_BASE.'lib/tpl/'.$conf['template'].'/');
+    if(!defined('AB_TPL')) {
+    	define('AB_TPL', AB_BASE.'lib/tpl/'.$conf['template'].'/');
+    }
     
     // make session rewrites XHTML compliant
     @ini_set('arg_separator.output', '&amp;');    
