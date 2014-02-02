@@ -30,27 +30,11 @@
     <script type="text/javascript">
     <!--
     window.onload = function () {
-        mobileRedirect();
         applesearch.init('<?php echo AB_TPL; ?>applesearch/');
         applesearch.onChange('srch_fld','srch_clear');
         document.search.q.focus(); 
         document.search.q.select();
     }
-
-    function mobileRedirect() {
-    	var mobileUAs= [ "iPhone", "iPod", "Android", "Blackberry", "Series60" ];
-    	ua = navigator.userAgent;
-    	for (var i = 0; i < mobileUAs.length; i++) {
-    		if(!ua.match(mobileUAs[i], 'i'))
-    			continue;
-    		
-			if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-				alert("redirect!");
-				window.location = "<?php echo AB_URL; ?>?mobile=1";
-			}
-    	}
-    }
-
     -->
     </script>
 </head>

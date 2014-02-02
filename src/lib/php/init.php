@@ -31,6 +31,8 @@
     
     
     // define baseURL
+    //AB_BASE = /uri
+    //AB_URL  = http://www.example.com:80/uri
     if(!defined('AB_BASE')) define('AB_BASE',getBaseURL());
     if(!defined('AB_URL'))  define('AB_URL',getBaseURL(true));
     
@@ -109,10 +111,20 @@
 	if(isset($_REQUEST['mobile']))
 		$_SESSION['mobile'] = (bool)$_REQUEST['mobile'];
 
-    if(isset($_SESSION['mobile'])) {
-    	$conf['mobile'] = (bool)$_SESSION['mobile'];
-    	if($conf['mobile'] && strpos($conf['template'], '-mobile') === false)
-    		$conf['template'] .= '-mobile';
+	// initial redirect to mobile template
+	if(!isset($_SESSION['mobile'])) {
+		$_SESSION['mobile'] = false;
+		if(isMobileClient())
+			$_SESSION['mobile'] = true;
+	}
+	
+    if($_SESSION['mobile']) {
+    	if(strpos($conf['template'], '-mobile') === false) {
+    		$mobileTemplate = $conf['template'] . '-mobile';
+    		$mobileTemplateDir = AB_BASEDIR.'/lib/tpl/'.$mobileTemplate.'/';
+    		if(is_dir($mobileTemplateDir))
+    			$conf['template'] = $mobileTemplate;
+    	}
     }
     
     // define Template baseURL
@@ -248,6 +260,18 @@ function remove_magic_quotes(&$array) {
         if($port) $port = ':'.$port;
         
         return $proto.$host.$port.$dir;
+    }
+    
+    function isMobileClient() {
+    	$mobileAgents = array("iPhone", "iPod", "Android", "Blackberry", "Series60" );
+    	$userAgent = $_SERVER['HTTP_USER_AGENT'];
+    	foreach($mobileAgents as $agent) {
+    		if( strpos($userAgent, $agent) === false) {
+    			continue;
+    		}
+    		return true;
+    	}
+    	return false;
     }
 
 
