@@ -15,34 +15,3 @@
 /doc
 /pkg
 
-# New Folder Layout for iAddressbook
-
-/src
-	# code
-	/lib
-		/applescript
-		/php
-		/default
-            auth.php
-            config.php
-        /sql
-            *.sql
-		/lang
-		/tpl
-	index.php
-	install.php
-	xmlrpc.php
-
-	# config
-	/conf
-        auth.php
-        config.php
-
-	# var
-	/var
-		/import
-		/state
-            addressbook.sqlite
-		/images
-/doc
-/pkg
