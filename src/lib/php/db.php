@@ -87,6 +87,7 @@ function db_createtables() {
     if(!$db)
     	return false;
     
+    // TODO: how to prevent the error message when this query fails during install?
     $sql = "SELECT id from " . $db_config['dbtable_abs'] . " LIMIT 1";
     if($db->execute($sql) === true)
     	return true;
