@@ -23,6 +23,7 @@ import() {
 	rm -rf BUILD/lib/php/SabreDAV/examples
 	rm -rf BUILD/lib/php/SabreDAV/tests
 	rm -rf BUILD/lib/php/SabreDAV/bin
+	rm -rf BUILD/lib/php/SabreDAV/composer*
 	chmod 777 BUILD/conf
 	chmod 777 BUILD/var/state
 	chmod 777 BUILD/var/images
