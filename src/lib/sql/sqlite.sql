@@ -1,6 +1,6 @@
 CREATE TABLE addressbooks (
     id INTEGER PRIMARY KEY ASC,
-    principaluri TEXT,
+    userid TEXT,
     displayname TEXT,
     uri TEXT,
     description TEXT,

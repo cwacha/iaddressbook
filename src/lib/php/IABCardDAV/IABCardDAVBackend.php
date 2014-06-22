@@ -40,7 +40,8 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * @return array
 	 */
 	public function getAddressBooksForUser($principalUri) {
-		$books = $this->catalog->getAddressBooksForUser($principalUri);
+		list($prefixPath, $userid) = DAV\URLUtil::splitPath($principalUri);
+		$books = $this->catalog->getAddressBooksForUser($userid);
     	$addressBooks = array();
 		foreach($books as $book) {
 	        $addressBooks[] = array(
@@ -54,7 +55,7 @@ class IABCardDAVBackend extends AbstractBackend {
                                 new CardDAV\Property\SupportedAddressData(),
                                 );
 		}
-    	error_log("getAddressBooksForUser: $principalUri, " . $book['ctag']);
+    	msg("getAddressBooksForUser: $principalUri, " . $book['ctag']);
 		return $addressBooks;
     }
 
@@ -212,7 +213,7 @@ class IABCardDAVBackend extends AbstractBackend {
 			// check if it is a group
 			$category = $CAT->get($uri);
 			if(!$category) {
-				error_log("not found:     $uri");
+				msg("not found:     $uri");
 				return false;
 			}
 			$contact = new \Person();
@@ -394,7 +395,7 @@ class IABCardDAVBackend extends AbstractBackend {
 		if ($category)
 			return $CAT->delete($category->id);
 		
-		error_log("not found:     $uri");
+		msg("not found:     $uri");
 		return false;
 	}
 }

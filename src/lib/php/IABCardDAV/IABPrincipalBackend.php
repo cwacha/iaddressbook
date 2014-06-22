@@ -10,7 +10,12 @@ require_once(AB_BASEDIR.'/lib/php/include.php');
 require_once(AB_BASEDIR.'/lib/php/init.php');
 
 class IABPrincipalBackend extends AbstractBackend {
-
+	protected $principalBasePath;
+	
+	public function __construct() {
+		$this->principalBasePath = 'principals';
+	}
+	
 	
 	/**
 	 * Returns a list of principals based on a prefix.
@@ -31,13 +36,13 @@ class IABPrincipalBackend extends AbstractBackend {
 	public function getPrincipalsByPrefix($prefixPath) {
 		$principals = array ();
 		
-		if ($prefixPath !== 'principals')
+		if ($prefixPath !== $this->principalBasePath)
 			return $principals;
 		
 		$users = auth_get_users();
 		foreach ( $users as $userinfo ) {
 			$principal = array (
-					'uri' => 'principals/' . $userinfo['userid'],
+					'uri' => $this->principalBasePath . '/' . $userinfo['userid'],
 					'{DAV:}displayname' => $userinfo['fullname'],
 					'{http://sabredav.org/ns}email-address' => $userinfo['email'] 
 			);
@@ -57,15 +62,19 @@ class IABPrincipalBackend extends AbstractBackend {
     public function getPrincipalByPath($path) {
     	list($prefixPath, $userid) = DAV\URLUtil::splitPath($path);
     	
+    	$principal = array();
+    	if ($prefixPath !== $this->principalBasePath)
+    		return $principal;
+    	 
     	$userinfo = auth_get_userinfo($userid);
     	if($userinfo !== null) {
     		$principal = array(
-					'uri' => 'principals/' . $userinfo['userid'],
+					'uri' => $this->principalBasePath . '/' . $userinfo['userid'],
 					'{DAV:}displayname' => $userinfo['fullname'],
 					'{http://sabredav.org/ns}email-address' => $userinfo['email'] 
 			);
-    		return $principal;
     	}
+    	return $principal;
     }
 
     /**
@@ -153,13 +162,13 @@ class IABPrincipalBackend extends AbstractBackend {
     	
     	$principals = array();
     	 
-    	if($prefixPath !== 'principals')
+    	if ($prefixPath !== $this->principalBasePath)
     		return $principals;
     	
     	$users = auth_get_users();
     	foreach($users as $userid => $userinfo) {
     		$principal = array (
-    				'uri' => 'principals/' . $userinfo['userid'],
+    				'uri' => $this->principalBasePath . '/' . $userinfo['userid'],
     		);
     		$principals [] = $principal;
     	}

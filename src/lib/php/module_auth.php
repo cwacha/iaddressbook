@@ -229,7 +229,7 @@ function auth_get_userinfo($userid) {
     }
     if(array_key_exists($userid, $auth)) {
         $ui['userid'] = $userid;
-        $ui['fullname'] = array_get($auth[$userid], 'fullname', '');
+        $ui['fullname'] = array_get($auth[$userid], 'fullname', $userid);
         $ui['email']    = array_get($auth[$userid], 'email', '');
         $ui['groups']   = array_get($auth[$userid], 'groups', array());
         return $ui;

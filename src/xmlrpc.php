@@ -17,6 +17,9 @@ require_once(AB_BASEDIR.'/lib/php/common.php');
 
 global $conf;
 
+global $XMLRPC_VERSION;
+$XMLRPC_VERSION = '3.0';
+
 if(!$conf['xmlrpc_enable']) {
     $response = xml_error('XML-RPC api disabled');
     echo $response->serialize();
@@ -42,6 +45,14 @@ function convert_iso8601($date) {
 	$ss = sprintf("%02u", $ss);
 	
 	return "$y-$m-$d $hh:$mm:$ss";
+}
+
+function xml_login($action, $params) {
+	$api_key = XML_RPC_decode($params->getParam(0));
+    if(auth_verify_action($api_key, $action)) {
+        return true;
+    }
+	return false;
 }
 
 function xml_reply($retval, $contents = null, $errormsg = null) {
@@ -70,25 +81,24 @@ function xml_success($results = null) {
 }
 
 function version($params) {
-    $api_key = XML_RPC_decode($params->getParam(0));
-    
-    if(!auth_verify_action($api_key, 'xml_version')) {
-        return xml_error('access denied');
-    }
+	global $XMLRPC_VERSION;
+	
+    if(!xml_login('xml_version', $params))
+    	return xml_error('access denied');
 
-    return xml_success(get_version());
+    return xml_success((string)$XMLRPC_VERSION);
 }
 
 function get_contact($params) {
     global $AB;
     
-    $api_key = XML_RPC_decode($params->getParam(0));
+    if(!xml_login('xml_get_contact', $params))
+    	return xml_error('access denied');
+    
     $id = XML_RPC_decode($params->getParam(1));
 
-    if(!auth_verify_action($api_key, 'xml_get_contact')) {
-        return xml_error('access denied');
-    }
-
+    if(is_numeric($id))
+    	$id = (int)$id;
     $contact = $AB->get($id);
 
     if(empty($contact)) {
@@ -104,16 +114,14 @@ function get_contacts($params) {
     global $AB;
     global $CAT;
     
+    if(!xml_login('xml_get_contacts', $params))
+    	return xml_error('access denied');
+    
     $results = array();
     
-    $api_key = XML_RPC_decode($params->getParam(0));
     $query = XML_RPC_decode($params->getParam(1));
     $limit = XML_RPC_decode($params->getParam(2));
     $offset = XML_RPC_decode($params->getParam(3));
-
-    if(!auth_verify_action($api_key, 'xml_get_contacts')) {
-        return xml_error('access denied');
-    }
 
     $contactlist = array();
     if(empty($query)) {
@@ -132,14 +140,12 @@ function get_contacts($params) {
 
 function set_contact($params) {
     global $AB;
-
-    $api_key = XML_RPC_decode($params->getParam(0));
+    
+    if(!xml_login('xml_set_contact', $params))
+    	return xml_error('access denied');
+    
     $contact_array = XML_RPC_decode($params->getParam(1));
 
-    if(!auth_verify_action($api_key, 'xml_set_contact')) {
-        return xml_error('access denied');
-    }
-    
     $contact = new Person;
     $contact->set_array($contact_array);
     
@@ -152,12 +158,10 @@ function count_contacts($params) {
     global $AB;
     $contactlist = array();
     
-    $api_key = XML_RPC_decode($params->getParam(0));
+    if(!xml_login('xml_count_contacts', $params))
+    	return xml_error('access denied');
+    
     $query = XML_RPC_decode($params->getParam(1));
-
-    if(!auth_verify_action($api_key, 'xml_count_contacts')) {
-        return xml_error('access denied');
-    }
 
     if(empty($query)) {
         $contactlist = $AB->getall();
@@ -207,25 +211,23 @@ function delete_contact($params) {
     global $AB;
     global $CAT;
 
-    $api_key = XML_RPC_decode($params->getParam(0));
+    if(!xml_login('xml_delete_contact', $params))
+    	return xml_error('access denied');
+    
     $id = XML_RPC_decode($params->getParam(1));
-
-    if(!auth_verify_action($api_key, 'xml_delete_contact')) {
-        return xml_error('access denied');
-    }
-
+    
+    if(is_numeric($id))
+    	$id = (int)$id;
     $AB->delete($id);
 
     return xml_success(msg_text());
 }
 
 function import_vcard($params) {
-    $api_key = XML_RPC_decode($params->getParam(0));
+    if(!xml_login('xml_import_vcard', $params))
+    	return xml_error('access denied');
+	
     $vcard = XML_RPC_decode($params->getParam(1));
-
-    if(!auth_verify_action($api_key, 'xml_import_vcard')) {
-        return xml_error('access denied');
-    }
 
     act_importvcard($vcard);
     
@@ -236,32 +238,24 @@ function export_vcard($params) {
     global $CAT;
     global $AB;
     $contacts_selected = array();
-    $vcard_list = '';
 
-    $api_key = XML_RPC_decode($params->getParam(0));
+    if(!xml_login('xml_export_vcard', $params))
+    	return xml_error('access denied');
+    
     $id_list = XML_RPC_decode($params->getParam(1));
-
-    if(!auth_verify_action($api_key, 'xml_export_vcard')) {
-        return xml_error('access denied');
-    }
 
     $contactlist = $AB->getall();
     
+    $vcarddata = '';
     foreach($id_list as $id) {
-        if(array_key_exists($id, $contactlist)) {
-            $contacts_selected[$id] = $contactlist[$id];
-        }
+    	if(is_numeric($id))
+    		$id = (int)$id;
+    	$contact = $AB->get($id, true);
+    	if($contact)
+	    	$vcarddata .= contact2vcard($contact);
     }
 
-    foreach ($contacts_selected as $contact) {
-    	// FIXME: category handling and vcard has changed....
-        $contact->image = img_load($contact->id);
-        $categories = $CAT->find($contact->id);
-        $vcard = contact2vcard($contact, $categories);
-        $vcard_list .= $vcard['vcard'];
-    }
-
-    return xml_success($vcard_list);
+    return xml_success($vcarddata);
 }
 
 /*
@@ -271,12 +265,20 @@ function export_vcard($params) {
 db_init();
 db_open();
 
-$AB = new Addressbook;
+$ABcatalog = new Addressbooks();
+$books = $ABcatalog->getAddressBooksForUser('whatever');
+$bookId = -1;
+if(!empty($books)) {
+	$bookId = $books[0]['id'];
+}
+
+$AB = new Addressbook($bookId);
 $CAT = new Categories;
 
 /*
  * Establish the dispatch map and XML_RPC server instance.
  */
+// signature help: return type, input param1, input param2 etc.
 $server = new XML_RPC_Server(
     array(
         'version' => array(
@@ -286,7 +288,10 @@ $server = new XML_RPC_Server(
         ),
         'get_contact' => array(
             'function' => 'get_contact',
-            'signature' => array( array('struct', 'string', 'int') ),
+            'signature' => array(
+            					array('struct', 'string', 'int'),
+        						array('struct', 'string', 'string')
+            			),
             'docstring' => '@params: api_key, contact id; @return: contact'
         ),
         'get_contacts' => array(
@@ -313,7 +318,10 @@ $server = new XML_RPC_Server(
 */
         'delete_contact' => array(
             'function' => 'delete_contact',
-            'signature' => array( array('int', 'string', 'int') ),
+            'signature' => array(
+            					array('int', 'string', 'int'),
+            					array('int', 'string', 'string')
+            ),
             'docstring' => '@params: api_key, contact id; @return: 1 if success'
         ),
         'import_vcard' => array(
@@ -326,20 +334,6 @@ $server = new XML_RPC_Server(
             'signature' => array( array('string', 'string', 'array') ),
             'docstring' => '@params: api_key, contact ids; @return: vcards as string'
         ),
-        /*
-        'sync.start_sync' => array(
-            'function' => 'start_sync'
-        ),
-        'sync.push_changes' => array(
-            'function' => 'push_changes'
-        ),
-        'sync.pull_changes' => array(
-            'function' => 'pull_changes'
-        ),
-        'sync.finish_sync' => array(
-            'function' => 'finish_sync'
-        ),
-        */
     ),
     1  // serviceNow
 );

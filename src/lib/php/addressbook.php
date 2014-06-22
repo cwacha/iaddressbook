@@ -29,6 +29,7 @@ class Addressbooks {
 
 		$book = array(
 				'id' => (int)$row[$prefix . 'id'],
+				'userid' => $row[$prefix . 'userid'],
 				'displayname' => $row[$prefix . 'displayname'],
 				'uri' => $row[$prefix . 'uri'],
 				'description' => $row[$prefix . 'description'],
@@ -37,19 +38,19 @@ class Addressbooks {
 		return $book;
 	}
 
-	function createAddressbook($principaluri, $displayname = 'default', $uri = 'default', $description = '') {
+	function createAddressbook($userid, $displayname = 'default', $uri = 'default', $description = '') {
 		global $db;
 		global $db_config;
 		
-		$principaluri = $db->escape($principaluri);
+		$userid = $db->escape($userid);
 		$displayname = $db->escape($displayname);
 		$uri = $db->escape($uri);
 		$description = $db->escape($description);
 		
 		$sql = "INSERT INTO " . $db_config ['dbtable_abs'] . "  (";
-		$sql .= "principaluri, displayname, uri, description, ctag";
+		$sql .= "userid, displayname, uri, description, ctag";
 		$sql .= ") VALUES ( ";
-		$sql .= "$principaluri, $displayname, $uri, $description, 1 );";
+		$sql .= "$userid, $displayname, $uri, $description, 1 );";
 		
 		$db->execute($sql);
 		$id = $db->insertId();
@@ -59,15 +60,19 @@ class Addressbooks {
 		return $id;
 	}
 
-	function getAddressBooksForUser($principaluri) {
+	function getAddressBooksForUser($userid) {
         global $db;
         global $db_config;
         $books = array();
         
-        $principaluri = $db->escape($principaluri);
+        $userid = $db->escape($userid);
         
-        $sql = "SELECT * FROM ".$db_config['dbtable_abs']." WHERE principaluri=$principaluri";
-		$result = $db->selectAll($sql);
+        //this is the correct query
+        //$sql = "SELECT * FROM ".$db_config['dbtable_abs']." WHERE userid=$userid";
+        
+        // but for now, keep sharing all addressbooks for everyone... 
+        $sql = "SELECT * FROM ".$db_config['dbtable_abs'];
+        $result = $db->selectAll($sql);
 
 		foreach($result as $row) {
 			$books[] = $this->row2book($row);
@@ -146,7 +151,7 @@ class Addressbook {
         return $contact;
     }
    
-    function find($searchstring, $limit = 1000, $offset = 0) {
+    function find($searchstring, $limit = 0, $offset = 0) {
         global $db;
         global $db_config;
         global $CAT;
@@ -165,6 +170,11 @@ class Addressbook {
             $search_array[$key] = $value;
         }
         $selected = $db->escape($CAT_ID);
+        
+        $limits = '';
+        if($limit > 0) {
+        	$limits = "LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        }
         
         if($CAT_ID == 0) {
             $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." WHERE ";
@@ -194,7 +204,7 @@ class Addressbook {
             }
             $sql = substr($sql, 0, -5);
             
-            $sql .= " ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
+            $sql .= " ORDER BY lastname ASC $limits";
         } else {
             $sql  = "SELECT * FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
             $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") AND (";
@@ -224,7 +234,7 @@ class Addressbook {
             }
             $sql = substr($sql, 0, -5);
             
-            $sql .= ") ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
+            $sql .= ") ORDER BY lastname ASC $limits";
         }
         $result = $db->selectAll($sql);
 		foreach ( $result as $row ) {
@@ -235,7 +245,7 @@ class Addressbook {
         return $contactlist;
     }
     
-    function getall($limit = 1000, $offset = 0) {
+    function getall($limit = 0, $offset = 0) {
         global $db;
         global $db_config;
         //global $CAT;
@@ -247,15 +257,20 @@ class Addressbook {
         
         $selected = $db->escape($CAT_ID);
         
+        $limits = '';
+        if($limit > 0) {
+        	$limits = "LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        }
+                
         if($CAT_ID == 0) {
-            $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
+            $sql  = "SELECT * FROM ".$db_config['dbtable_ab']." ORDER BY lastname ASC $limits";
         } else {
             $sql_select  = $db_config['dbtable_ab'].".*, ";
             $sql_select .= $db_config['dbtable_catmap'].".category_id ";
             
             $sql  = "SELECT ".$sql_select." FROM ".$db_config['dbtable_catmap'].", ".$db_config['dbtable_ab']." WHERE (";
             $sql .= $db_config['dbtable_catmap'].".person_id = ".$db_config['dbtable_ab'].".id AND ".$db_config['dbtable_catmap'].".category_id = ".$selected.") ";
-            $sql .= " ORDER BY lastname ASC LIMIT $limit OFFSET $offset";
+            $sql .= " ORDER BY lastname ASC $limits";
         }
         
         $result = $db->selectAll($sql);

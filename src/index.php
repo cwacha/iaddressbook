@@ -124,19 +124,17 @@ $contactlist_limit = $conf['contactlist_limit'];
 $contact = false;               // the contact
 $categories = array();          // all categories
 
-$principaluri = 'principals/' . $userinfo['userid'];
 $ABcatalog = new Addressbooks();
-$books = $ABcatalog->getAddressBooksForUser($principaluri);
+$books = $ABcatalog->getAddressBooksForUser($userinfo['userid']);
 $bookId = -1;
 if(empty($books)) {
-	$bookId = $ABcatalog->createAddressbook($principaluri);
+	$bookId = $ABcatalog->createAddressbook($userinfo['userid']);
 } else {
 	$bookId = $books[0]['id'];
 }
 
 $AB = new Addressbook($bookId);
 $CAT = new Categories();
-//$CAT->selected = $CAT_ID;
 
 //do the work
 act_dispatch();

@@ -82,7 +82,7 @@ class Categories {
 	}
 	
 	// returns array of all categories, empty array else
-	function getAllCategories($limit = 1000) {
+	function getAllCategories($limit = 0, $offset = 0) {
 		global $db;
 		global $db_config;
 		$categories = array ();
@@ -90,7 +90,12 @@ class Categories {
 		if (!$db)
 			return $categories;
 				
-		$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " ORDER BY name ASC LIMIT $limit";
+		$limits = '';
+		if($limit > 0) {
+			$limits = "LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+		}
+		
+		$sql = "SELECT * FROM " . $db_config ['dbtable_cat'] . " ORDER BY name ASC $limits";
 		
 		$result = $db->selectAll($sql);
 		
@@ -105,7 +110,7 @@ class Categories {
 	}
 	
 	// return array of categories for person, empty array otherwise
-	function getCategoriesForPerson($personId, $limit = 1000) {
+	function getCategoriesForPerson($personId, $limit = 0, $offset = 0) {
 		global $db;
 		global $db_config;
 		if (!$db)
@@ -116,11 +121,15 @@ class Categories {
 		// quote db specific characters
 		$personId = $db->escape(( int ) $personId);
 		
+		$limits = '';
+		if($limit > 0) {
+			$limits = "LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+		}
+		
 		$sql = "SELECT c.* FROM " . $db_config ['dbtable_cat'] . " c, " . $db_config ['dbtable_catmap'] . " cm ";
 		$sql .= "WHERE c.id=cm.category_id AND ";
 		$sql .= "( cm.person_id = $personId ) AND ( c.name NOT LIKE ' __all__' ) ";
-		$sql .= "ORDER BY c.name ";
-		$sql .= "LIMIT $limit";
+		$sql .= "ORDER BY c.name $limits";
 		
 		$result = $db->selectAll($sql);
 		

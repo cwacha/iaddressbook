@@ -47,6 +47,7 @@ class IABAuthenticator extends AbstractBasic {
 		// Authenticates the user
 		if (!$this->validateUserPass($userpass[0],$userpass[1])) {
 			$auth->requireLogin();
+			msg("login invalid");
 			throw new DAV\Exception\NotAuthenticated('Username or password does not match');
 		}
 		$this->currentUser = $userpass[0];

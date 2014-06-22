@@ -65,8 +65,10 @@ function db_open() {
     if($db_config['dbdebug']) $db->debug = true;    
         
     if($db_config['dbtype'] == 'mysql') {
-        $db->execute("SET NAMES 'utf8'");
+        @$db->execute("SET NAMES 'utf8'");
     }
+    
+    //db_createtables();
     
     return true;
 }
@@ -84,6 +86,10 @@ function db_createtables() {
     
     if(!$db)
     	return false;
+    
+    $sql = "SELECT id from " . $db_config['dbtable_abs'] . " LIMIT 1";
+    if($db->execute($sql) === true)
+    	return true;
     
     $filename = AB_SQLDIR.'/'.$db_config['dbtype'].'.sql';
     $queries = file_get_contents($filename);
