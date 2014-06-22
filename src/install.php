@@ -338,6 +338,7 @@ function step_check() {
             // check popen()
             $pipe = popen($conf['im_convert']." -version", "r");
             if(is_resource($pipe)) {
+            	$output = '';
                 while(!feof($pipe)) $output .= fread($pipe, 8192);
                 pclose($pipe);
                 imsg(str_replace('$1', $conf['im_convert'], $lang['info_im']), 1);

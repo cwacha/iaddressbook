@@ -1,49 +1,49 @@
 CREATE TABLE addressbooks (
-    id INTEGER PRIMARY KEY ASC,
-    userid TEXT,
-    displayname TEXT,
-    uri TEXT,
-    description TEXT,
+    id INTEGER PRIMARY KEY,
+    userid TEXT NOT NULL,
+    displayname TEXT NOT NULL,
+    uri TEXT NOT NULL,
+    description TEXT NOT NULL,
 	ctag INTEGER
 );
 
 CREATE TABLE addressbook (
     id INTEGER PRIMARY KEY,
-    uid varchar(255) NOT NULL,
-    title varchar(255) NOT NULL,
-    firstname varchar(255) NOT NULL,
-    firstname2 varchar(255) NOT NULL,
-    lastname varchar(255) NOT NULL,
-    suffix varchar(255) NOT NULL,
-    nickname varchar(255) NOT NULL,
-    phoneticfirstname varchar(255) NOT NULL,
-    phoneticlastname varchar(255) NOT NULL,
-    jobtitle varchar(255) NOT NULL,
-    department varchar(255) NOT NULL,
-    organization varchar(255) NOT NULL,
+    uid TEXT NOT NULL,
+    title TEXT NOT NULL,
+    firstname TEXT NOT NULL,
+    firstname2 TEXT NOT NULL,
+    lastname TEXT NOT NULL,
+    suffix TEXT NOT NULL,
+    nickname TEXT NOT NULL,
+    phoneticfirstname TEXT NOT NULL,
+    phoneticlastname TEXT NOT NULL,
+    jobtitle TEXT NOT NULL,
+    department TEXT NOT NULL,
+    organization TEXT NOT NULL,
     company INTEGER NOT NULL default 0,
-    birthdate varchar(255) NOT NULL,
-    note text NOT NULL,
-    addresses text NOT NULL,
-    emails text NOT NULL,
-    phones text NOT NULL,
-    chathandles text NOT NULL,
-    relatednames text NOT NULL,
-    urls text NOT NULL,
+    birthdate TEXT NOT NULL,
+    note TEXT NOT NULL,
+    addresses TEXT NOT NULL,
+    emails TEXT NOT NULL,
+    phones TEXT NOT NULL,
+    chathandles TEXT NOT NULL,
+    relatednames TEXT NOT NULL,
+    urls TEXT NOT NULL,
     modification_ts INTEGER NOT NULL default 0,
     etag INTEGER NOT NULL default 1
 );
 
 CREATE TABLE addressbook_cat (
     id INTEGER PRIMARY KEY,
-    uid varchar(255) NOT NULL,
-    name varchar(255) NOT NULL,
+    uid TEXT NOT NULL,
+    name TEXT NOT NULL,
     modification_ts INTEGER NOT NULL default 0,
     etag INTEGER NOT NULL default 1
 );
 
 CREATE TABLE addressbook_catmap (
     id INTEGER PRIMARY KEY,
-    category_id int unsigned NOT NULL,
-    person_id int unsigned NOT NULL
+    category_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL
 );
