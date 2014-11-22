@@ -1,6 +1,7 @@
 #!/bin/sh
 SVNBASEDIR=..
-REVISION=`svn info -R $SVNBASEDIR 2>/dev/null | grep "Last Changed Rev" | awk '{print $4}' | sort -nr | head -1`
+REV=`svn info -R $SVNBASEDIR 2>/dev/null | grep "Last Changed Rev" | awk '{print $4}' | sort -nr | head -1`
+SVN_REVISION=${SVN_REVISION:-$REV}
 
 all() {
 	clean && import && pkg
@@ -28,17 +29,18 @@ import() {
 	chmod 777 BUILD/var/state
 	chmod 777 BUILD/var/images
 	chmod 777 BUILD/var/import
-	#touch BUILD/iaddressbook-$VERSION-$REVISION-manifest
+	echo "`head -1 BUILD/VERSION`-$SVN_REVISION" >> BUILD/VERSION
+	#touch BUILD/iaddressbook-$VERSION-$SVN_REVISION-manifest
 }
 
 pkg() {
 	echo "##### packaging"
-	VERSION=`head -1 BUILD/VERSION | sed 's/[ 	]/_/g'`
+	VERSION=`head -1 BUILD/VERSION | sed 's/-.*//;s/[ 	]/_/g'`
 	
 	PKG=iaddressbook-$VERSION
 	mv BUILD $PKG
-	tar cfz $PKG-$REVISION.tar.gz $PKG
-	zip -r $PKG-$REVISION.zip $PKG >/dev/null
+	tar cfz $PKG-$SVN_REVISION.tar.gz $PKG
+	zip -r $PKG-$SVN_REVISION.zip $PKG >/dev/null
 }
 
 clean() {
@@ -47,23 +49,16 @@ clean() {
 	rm -rf iaddressbook-*
 }
 
-usage() {
+if [ $# -eq 0 ]; then
 	echo "Usage: $0 <action>"
 	echo
 	echo "ACTIONS:"
 	declare -F | awk '{print "   "$3}' | grep -v usage
-}
-
-if [ $# -eq 0 ]; then
-	usage
 	exit
 fi
 
 action="$1"
 shift
-# eclipse support
-[ "$action" = incremental ] && action=all
-[ "$action" = full ] && action=all
 
 declare -F "$action" >/dev/null
 [ $? -ne 0 ] && echo "no such action: $action" && exit 1
