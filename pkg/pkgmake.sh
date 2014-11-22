@@ -29,7 +29,7 @@ import() {
 	chmod 777 BUILD/var/state
 	chmod 777 BUILD/var/images
 	chmod 777 BUILD/var/import
-	echo "`head -1 BUILD/VERSION`-$SVN_REVISION" >> BUILD/VERSION
+	echo "`head -1 BUILD/VERSION`-$SVN_REVISION" > BUILD/VERSION
 	#touch BUILD/iaddressbook-$VERSION-$SVN_REVISION-manifest
 }
 
