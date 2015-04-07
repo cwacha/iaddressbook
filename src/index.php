@@ -20,7 +20,12 @@ if(!file_exists(AB_CONFDIR.'/config.php')) {
 }
 
 db_init();
-db_open();
+if(!db_open()) {
+	msg("DB connection failed. Stop.", -1);
+	header('Content-Type: text/html; charset=utf-8');
+	print msg_text();
+	exit();
+}
 
 //import variables
 $ACT = trim(array_get($_REQUEST, 'do', 'show'));

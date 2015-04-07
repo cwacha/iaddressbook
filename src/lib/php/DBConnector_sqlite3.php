@@ -26,6 +26,10 @@ class DBConnector_sqlite3 extends DBConnector {
 	function init($server, $dbname, $user, $pass) {
 		// only dbname will be used as the filename of the DB
 		parent::init($server, $dbname, $user, $pass);
+
+		if(!class_exists('SQLite3')) {
+			throw new Exception("This PHP installation does not support SQLite 3");
+		}
 	}
 	
 	// clean up and close DB connection

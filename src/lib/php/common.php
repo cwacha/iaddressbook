@@ -224,6 +224,7 @@ function msg_text() {
   global $MSG;
   if(!isset($MSG)) return '';
 
+  $ret = '';
   foreach($MSG as $msg){
     $ret .= $msg['lvl']. ": ".$msg['msg'] . "\n";
   }

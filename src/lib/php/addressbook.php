@@ -26,7 +26,7 @@ class Addressbooks {
 		if(!array_key_exists('id', $row)) {
 			$prefix = strtolower($db_config['dbtable_abs']) . '.';
 		}
-		msg("test: ". $row[$prefix . 'userid']);
+
 		$book = array(
 				'id' => (int)$row[$prefix . 'id'],
 				'userid' => $row[$prefix . 'userid'],

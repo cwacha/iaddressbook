@@ -61,13 +61,19 @@ function db_open() {
         return false;
     }
         
-    $db->init($db_config['dbserver'], $db_config['dbname'], $db_config['dbuser'], $db_config['dbpass']);
-    if($db_config['dbdebug']) $db->debug = true;    
-        
-    if($db_config['dbtype'] == 'mysql') {
-        @$db->execute("SET NAMES 'utf8'");
+    try {
+	    $db->init($db_config['dbserver'], $db_config['dbname'], $db_config['dbuser'], $db_config['dbpass']);
+	    if($db_config['dbdebug']) $db->debug = true;    
+	        
+	    if($db_config['dbtype'] == 'mysql') {
+	        @$db->execute("SET NAMES 'utf8'");
+	    }
+    } catch (Exception $e) {
+    	msg("Cannot setup DB connection! Exception: " . $e->getMessage(), -1);
+    	return false;
     }
     
+    // the tables will be created from install.php (its not required to repeat on every call)
     //db_createtables();
     
     return true;

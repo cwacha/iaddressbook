@@ -10,7 +10,6 @@
 if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
 require_once(AB_BASEDIR.'/lib/php/include.php');
 
-
 class DBConnector_sqlite extends DBConnector {
 
 	var $connection;
@@ -26,6 +25,10 @@ class DBConnector_sqlite extends DBConnector {
 	function init($server, $dbname, $user, $pass) {
 		// only dbname will be used as the filename of the DB
 		parent::init($server, $dbname, $user, $pass);
+		
+		if(!function_exists('sqlite_open')) {
+			throw new Exception("This PHP installation does not support SQLite 2");
+		}
 	}
 	
 	// clean up and close DB connection
