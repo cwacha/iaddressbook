@@ -9,9 +9,11 @@
     if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
     require_once(AB_BASEDIR.'/lib/php/include.php');
     require_once(AB_BASEDIR.'/lib/php/DBConnector.php');
-    require_once(AB_BASEDIR.'/lib/php/DBConnector_sqlite.php');
+    require_once(AB_BASEDIR.'/lib/php/DBConnector_pdo_sqlite3.php');
+    require_once(AB_BASEDIR.'/lib/php/DBConnector_pdo_mysql.php');
+    require_once(AB_BASEDIR.'/lib/php/DBConnector_sqlite2.php');
     require_once(AB_BASEDIR.'/lib/php/DBConnector_sqlite3.php');
-
+    
 function db_msg($msg, $newline=true) {
     msg($msg, -1);
 }
@@ -43,16 +45,20 @@ function db_open() {
     global $db_config;
     global $db;
     
-    if($db_config['dbtype'] == 'sqlite') {
+    if($db_config['dbtype'] == 'sqlite2') {
     	$db_config['dbname'] = AB_STATEDIR.'/'.$db_config['dbname'];
-    	$db = new DBConnector_sqlite();
+    	$db = new DBConnector_sqlite2();
     }
     if($db_config['dbtype'] == 'sqlite3') {
     	$db_config['dbname'] = AB_STATEDIR.'/'.$db_config['dbname'];
     	$db = new DBConnector_sqlite3();
     }
-    if($db_config['dbtype'] == 'mysql') {
-    	$db = new DBConnector_mysql();
+    if($db_config['dbtype'] == 'pdo_sqlite3') {
+    	$db_config['dbname'] = AB_STATEDIR.'/'.$db_config['dbname'];
+    	$db = new DBConnector_pdo_sqlite3();
+    }
+    if($db_config['dbtype'] == 'pdo_mysql') {
+    	$db = new DBConnector_pdo_mysql();
     }
 
     if($db === false or empty($db_config['dbname'])) {
@@ -93,9 +99,8 @@ function db_createtables() {
     if(!$db)
     	return false;
     
-    // TODO: how to prevent the error message when this query fails during install?
     $sql = "SELECT id from " . $db_config['dbtable_abs'] . " LIMIT 1";
-    if($db->execute($sql) === true)
+    if($db->execute($sql, false) === true)
     	return true;
     
     $filename = AB_SQLDIR.'/'.$db_config['dbtype'].'.sql';

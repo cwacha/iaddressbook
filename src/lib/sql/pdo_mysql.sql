@@ -1,5 +1,16 @@
+CREATE TABLE addressbooks (
+    id int unsigned NOT NULL auto_increment,
+    userid varchar(255) NOT NULL,
+    displayname varchar(255) NOT NULL,
+    uri varchar(255) NOT NULL,
+    description varchar(255) NOT NULL,
+	ctag int NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE addressbook (
     id int unsigned NOT NULL auto_increment,
+    uid varchar(255) NOT NULL,
     title varchar(255) NOT NULL,
     firstname varchar(255) NOT NULL,
     firstname2 varchar(255) NOT NULL,
@@ -21,14 +32,16 @@ CREATE TABLE addressbook (
     relatednames text NOT NULL,
     urls text NOT NULL,
     modification_ts INTEGER NOT NULL default 0,
+    etag int NOT NULL default 1,
     PRIMARY KEY (id)
 ) COLLATE utf8_general_ci;
 
 CREATE TABLE addressbook_cat (
     id int unsigned NOT NULL auto_increment,
+    uid varchar(255) NOT NULL,
     name varchar(255) NOT NULL,
-    type int unsigned NOT NULL,
-    query text NOT NULL,
+    modification_ts int NOT NULL default 0,
+    etag int NOT NULL default 1,
     PRIMARY KEY (id)
 ) COLLATE utf8_general_ci;
 
@@ -38,5 +51,3 @@ CREATE TABLE addressbook_catmap (
     person_id int unsigned NOT NULL,
     PRIMARY KEY (id)
 ) COLLATE utf8_general_ci;
-
-

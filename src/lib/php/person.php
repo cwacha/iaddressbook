@@ -453,7 +453,7 @@ class Person {
             
             foreach ($lines as $line) {
                 $new = array();
-                list($label, $pobox, $ext_adr, $street, $city, $state, $zip, $country, $code) = $this->split_and_unescape($line);
+                list($label, $pobox, $ext_adr, $street, $city, $state, $zip, $country, $code) = $this->split_and_unescape($line, 9);
                 
                 $new['label'] = $label;
                 $new['pobox'] = $pobox;
@@ -490,7 +490,7 @@ class Person {
             
             foreach ($lines as $line) {
                 $new = array();
-                list($label, $email) = $this->split_and_unescape($line);
+                list($label, $email) = $this->split_and_unescape($line, 2);
                 
                 $new['label'] = $label;
                 $new['email'] = $email;
@@ -520,7 +520,7 @@ class Person {
             
             foreach ($lines as $line) {
                 $new = array();
-                list($label, $phone) = $this->split_and_unescape($line);
+                list($label, $phone) = $this->split_and_unescape($line, 2);
                 
                 $new['label'] = $label;
                 $new['phone'] = $phone;
@@ -551,7 +551,7 @@ class Person {
             
             foreach ($lines as $line) {
                 $new = array();
-                list($label, $handle, $type) = $this->split_and_unescape($line);
+                list($label, $handle, $type) = $this->split_and_unescape($line, 3);
                 
                 $new['label'] = $label;
                 $new['handle'] = $handle;
@@ -582,7 +582,7 @@ class Person {
             
             foreach ($lines as $line) {
                 $new = array();
-                list($label, $url) = $this->split_and_unescape($line);
+                list($label, $url) = $this->split_and_unescape($line, 2);
                 
                 $new['label'] = $label;
                 $new['url'] = $url;
@@ -622,7 +622,7 @@ class Person {
         }
     }
 
-    function split_and_unescape($string) {
+    function split_and_unescape($string, $trim_number = 0) {
         // we use these double-backs (\\) because they get converted
         // to single-backs (\) by preg_split.  the quad-backs (\\\\) end
         // up as as double-backs (\\), which is what preg_split requires
@@ -635,6 +635,10 @@ class Person {
             $tmp[$key] = real_stripcslashes($value, ";n\\");
         }
         
+        if($trim_number > 0) {
+        	while(count($tmp) < $trim_number)
+        		$tmp[] = "";
+        }
         return $tmp;
     }
     

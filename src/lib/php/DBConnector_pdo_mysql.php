@@ -11,12 +11,12 @@ if (!defined('AB_BASEDIR'))
 
 require_once (AB_BASEDIR . '/lib/php/include.php');
 
-class DBConnector_sqlite3 extends DBConnector {
+class DBConnector_pdo_mysql extends DBConnector {
 	var $connection;
 	var $initialized;
 
-	function DBConnector_sqlite3() {
-		$this->dbtype = 'sqlite3';
+	function DBConnector_pdo_mysql() {
+		$this->dbtype = 'pdo_mysql';
 		$this->connection = NULL;
 		$this->initialized = false;
 		//$this->debug = true;
@@ -27,15 +27,21 @@ class DBConnector_sqlite3 extends DBConnector {
 		// only dbname will be used as the filename of the DB
 		parent::init($server, $dbname, $user, $pass);
 
-		if(!class_exists('SQLite3')) {
-			throw new Exception("This PHP installation does not support SQLite 3");
+		try {
+			if(class_exists('PDO')) {
+				$drivers = PDO::getAvailableDrivers();
+				if(array_search('mysql', $drivers) === FALSE)
+					throw new Exception();
+			}
+		} catch (Exception $e) {
+			throw new Exception("This PHP installation does not support PDO MySQL");
 		}
 	}
 	
 	// clean up and close DB connection
 	function destroy() {
 		if ($this->initialized && !empty($this->connection)) {
-			$this->connection->close();
+			$this->connection = NULL;
 			$this->initialized = false;
 		}
 	}
@@ -44,8 +50,9 @@ class DBConnector_sqlite3 extends DBConnector {
 	function open() {
 		if (!$this->initialized) {
 			try {
-				$this->connection = new SQLite3($this->dbname);
-				$this->connection->busyTimeout(30000);
+				$this->connection = new PDO('mysql:host='.$this->server.';dbname='.$this->dbname, $this->user, $this->pass);
+				$this->connection->setAttribute(PDO::ATTR_TIMEOUT, 30);
+				$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch ( Exception $e ) {
 				$this->logmsg('Failed to open DB: "' . $this->dbname . '": ' . $e->getMessage(), -1);
 				return false;
@@ -67,7 +74,13 @@ class DBConnector_sqlite3 extends DBConnector {
 			$this->logmsg("DB selectOne: $sql");
 
 		try {
-			$result = $this->connection->querySingle($sql, true);
+			$rst = $this->connection->query($sql);
+			if (!$rst) {
+				msg("DB error during selectOne: " . $this->lasterror());
+				return NULL;
+			}
+			
+			$result = $rst->fetch(PDO::FETCH_ASSOC);
 		} catch ( Exception $e ) {
 			$this->logmsg('Failed executing SQL statement: "' . $sql . '": ' . $e->getMessage(), -1);
 			return NULL;
@@ -88,17 +101,13 @@ class DBConnector_sqlite3 extends DBConnector {
 		
 		try {
 			$rst = $this->connection->query($sql);
-			if(!$rst)
-				return $results;
-			
-			while ( $row = $rst->fetchArray(SQLITE3_ASSOC) ) {
+			while ( $row = $rst->fetch(PDO::FETCH_ASSOC) ) {
 				$results [] = $row;
 			}
 		} catch ( Exception $e ) {
 			$this->logmsg('Failed executing SQL statement: "' . $sql . '": ' . $e->getMessage(), -1);
-			return NULL;
 		}
-		
+			
 		return $results;
 	}
 	
@@ -107,7 +116,7 @@ class DBConnector_sqlite3 extends DBConnector {
 		if (!$this->open())
 			return -1;
 		
-		$insertId = $this->connection->lastInsertRowID();
+		$insertId = $this->connection->lastInsertId();
 		return $insertId;
 	}
 	
@@ -139,7 +148,8 @@ class DBConnector_sqlite3 extends DBConnector {
 		if (!$this->open())
 			return '';
 		
-		return $this->connection->lastErrorMsg();
+		$errmsg = $this->connection->errorInfo()[2]; 
+		return $errmsg != NULL ? $errmsg : '';
 	}
 }
 

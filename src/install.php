@@ -374,11 +374,11 @@ function step_check() {
         imsg($lang['error_iconv']);
     }
 
-    $conf['dbtype'] = 'mysql';
+    $conf['dbtype'] = 'pdo_mysql';
     $has_sqlite = false;
     if(function_exists('sqlite_open')) {
         // pre-select sqlite if it is available
-        $conf['dbtype'] = 'sqlite';
+        $conf['dbtype'] = 'sqlite2';
         $conf['dbname'] = 'addressbook.sqlite';
         imsg(str_replace('$1', sqlite_libversion(), $lang['info_sqlite']), 1);
         $has_sqlite = true;
@@ -390,6 +390,18 @@ function step_check() {
         $version = SQLite3::version();
         imsg(str_replace('$1', $version['versionString'], $lang['info_sqlite3']), 1);
         $has_sqlite = true;
+    }
+    try {
+    	$dummy = new PDO('sqlite::memory:');
+    	$version = $dummy->getAttribute(PDO::ATTR_SERVER_VERSION);
+    	unset($dummy);
+    	// pre-select sqlite3-pdo if it is available
+    	$conf['dbtype'] = 'pdo_sqlite3';
+    	$conf['dbname'] = 'addressbook.sqlite';
+    	imsg(str_replace('$1', $version, $lang['info_sqlite3_pdo']), 1);
+    	$has_sqlite_pdo = true;
+    } catch (Exception $e) {
+    	imsg("pdo not here: " . $e->getMessage());
     }
     if (!$has_sqlite) {
         imsg($lang['error_sqlite']);

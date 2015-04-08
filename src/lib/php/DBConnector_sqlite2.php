@@ -10,13 +10,13 @@
 if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
 require_once(AB_BASEDIR.'/lib/php/include.php');
 
-class DBConnector_sqlite extends DBConnector {
+class DBConnector_sqlite2 extends DBConnector {
 
 	var $connection;
 	var $initialized;
 	
-	function DBConnector_sqlite() {
-		$this->dbtype = 'sqlite';
+	function DBConnector_sqlite2() {
+		$this->dbtype = 'sqlite2';
 		$this->connection = NULL;
 		$this->initialized = false;
 	}
@@ -63,7 +63,7 @@ class DBConnector_sqlite extends DBConnector {
 		
 		$rst = sqlite_query($this->connection, $sql);
 		if (!$rst) {
-			msg("DB error during selectOne: " . $this->lasterror());
+			$this->logmsg("DB error during selectOne: " . $this->lasterror());
 			return NULL;
 		}
 		
@@ -87,7 +87,7 @@ class DBConnector_sqlite extends DBConnector {
 				$results [] = $row;
 			}
 		} else {
-			msg("DB error during selectAll: " . $this->lasterror());
+			$this->logmsg("DB error during selectAll: " . $this->lasterror());
 		}
 
 		return $results;
@@ -103,7 +103,7 @@ class DBConnector_sqlite extends DBConnector {
 	}
 	
 	// returns true if execution of sql statement went fine
-	function execute($sql) {
+	function execute($sql, $report_errors = true) {
 		if(!$this->open())
 			return false;
 				
@@ -112,7 +112,8 @@ class DBConnector_sqlite extends DBConnector {
 		
 		$ret = sqlite_exec($this->connection, $sql);
 		if($ret === false) {
-			$this->logmsg('Failed to execute SQL statement: "' . $sql . '": ' . $this->lasterror(), -1);
+			if($report_errors)
+				$this->logmsg('Failed to execute SQL statement: "' . $sql . '": ' . $this->lasterror(), -1);
 			return false;
 		}
 		

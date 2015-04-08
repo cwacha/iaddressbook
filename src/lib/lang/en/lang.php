@@ -313,6 +313,7 @@ $lang['info_iconv']              = 'iconv available (version $1)';
 $lang['error_iconv']             = 'iconv not available. vCards must be encoded in UTF-8 to be imported properly';
 $lang['info_sqlite']             = 'SQLite2 available (version $1)';
 $lang['info_sqlite3']            = 'SQLite3 available (version $1)';
+$lang['info_sqlite3_pdo']        = 'PDO SQLite3 available (version $1)';
 $lang['error_sqlite']            = 'SQLite2 or 3 not available';
 $lang['error_total']             = '$1 problem found!';
 $lang['errors_total']            = '$1 problems found!';

@@ -57,7 +57,8 @@ class DBConnector {
 	}
 		
 	// returns true if execution of sql statement went fine
-	function execute($sql) {
+	// set second parameter to false to suppress error messages
+	function execute($sql, $report_errors = true) {
 		return false;
 	}
 	
