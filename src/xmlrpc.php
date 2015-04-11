@@ -10,7 +10,7 @@ if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/'));
 require_once(AB_BASEDIR.'/lib/php/include.php');
 require_once(AB_BASEDIR.'/lib/php/init.php');
 require_once(AB_BASEDIR.'/lib/php/db.php');
-require_once(AB_BASEDIR.'/lib/php/XML/Server.php');
+require_once(AB_BASEDIR.'/lib/php/XML/RPC/Server.php');
 require_once(AB_BASEDIR.'/lib/php/module_vcard.php');
 require_once(AB_BASEDIR.'/lib/php/module_auth.php');
 require_once(AB_BASEDIR.'/lib/php/common.php');
@@ -30,21 +30,8 @@ if(!$conf['xmlrpc_enable']) {
  * Declare the functions, etc.
  */
 
-function convert_iso8601($date) {
-	$y  = intval(substr($date, 0, 4));
-	$m  = intval(substr($date, 4, 2));
-	$d  = intval(substr($date, 6, 2));
-	$hh = intval(substr($date, 9, 2));
-	$mm = intval(substr($date, 12, 2));
-	$ss = intval(substr($date, 15, 2));
-	
-	$m = sprintf("%02u", $m);
-	$d = sprintf("%02u", $d);
-	$hh = sprintf("%02u", $hh);
-	$mm = sprintf("%02u", $mm);
-	$ss = sprintf("%02u", $ss);
-	
-	return "$y-$m-$d $hh:$mm:$ss";
+function xml_logmsg($message, $level=0) {
+	msg($message, $level);
 }
 
 function xml_login($action, $params) {
@@ -86,6 +73,7 @@ function version($params) {
     if(!xml_login('xml_version', $params))
     	return xml_error('access denied');
 
+    xml_logmsg("xmlrpc version: version=$XMLRPC_VERSION");
     return xml_success((string)$XMLRPC_VERSION);
 }
 
@@ -107,6 +95,7 @@ function get_contact($params) {
     
     $person = $contact->get_array();
 
+    xml_logmsg("xmlrpc get_contact: id=$id");
     return xml_success($person);
 }
 
@@ -135,6 +124,8 @@ function get_contacts($params) {
 
         $results[] = $person;
     }
+    
+    xml_logmsg("xmlrpc get_contacts: query='$query' limit=$limit offset=$offset num_cards=" . count($results));
     return xml_success($results);
 }
 
@@ -151,6 +142,7 @@ function set_contact($params) {
     
     $id = $AB->set($contact);
 
+    xml_logmsg("xmlrpc set_contact: id=$id");
     return xml_success($id);
 }
 
@@ -171,41 +163,9 @@ function count_contacts($params) {
 
     $result = count($contactlist);
     
+    xml_logmsg("xmlrpc count_contacts: num_cards=" . count($result));
     return xml_success($result);
 }
-
-/*
-function search_email($params) {
-    global $AB;
-    $contactlist = array();
-    $results = array();
-
-    $api_key = XML_RPC_decode($params->getParam(0));
-    $query = XML_RPC_decode($params->getParam(1));
-
-    if(!auth_verify_action($api_key, 'xml_search_email')) {
-        return xml_error('access denied');
-    }
-
-    if(empty($query)) {
-        $contactlist = $AB->getall();
-    } else {
-        $contactlist = $AB->find($query);
-    }
-
-    foreach($contactlist as $contact) {
-        $person = array();
-        $person['name'] = $contact->name();
-        
-        foreach($contact->emails as $key => $value) {
-            $person['email'] = $value['email'];
-            $results[] = $person;
-        }
-    }
-    
-    return xml_success($results);
-}
-*/
 
 function delete_contact($params) {
     global $AB;
@@ -220,6 +180,7 @@ function delete_contact($params) {
     	$id = (int)$id;
     $AB->delete($id);
 
+    xml_logmsg("xmlrpc delete_contact: id=$id");
     return xml_success(msg_text());
 }
 
@@ -231,6 +192,7 @@ function import_vcard($params) {
 
     act_importvcard($vcard);
     
+    xml_logmsg("xmlrpc import_vcard");
     return xml_success(msg_text());
 }
 
@@ -255,6 +217,7 @@ function export_vcard($params) {
 	    	$vcarddata .= contact2vcard($contact);
     }
 
+    xml_logmsg("xmlrpc export_vcard");
     return xml_success($vcarddata);
 }
 
@@ -309,13 +272,6 @@ $server = new XML_RPC_Server(
             'signature' => array( array('int', 'string', 'string') ),
             'docstring' => '@params: api_key, search_string; @return: number of id\'s'
         ),  
-/*      
-        'search_email' => array(
-            'function' => 'search_email',
-            'signature' => array( array('struct', 'string', 'string') ),
-            'docstring' => '@params: api_key, search_string; @return: array of e-mail name pairs'
-        ),
-*/
         'delete_contact' => array(
             'function' => 'delete_contact',
             'signature' => array(
