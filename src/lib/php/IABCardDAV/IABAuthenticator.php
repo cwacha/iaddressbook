@@ -41,7 +41,7 @@ class IABAuthenticator extends AbstractBasic {
 		$userpass = $auth->getUserPass();
 		if (!$userpass) {
 			$auth->requireLogin();
-			throw new DAV\Exception\NotAuthenticated('No basic authentication headers were found (you might need to turn off FastCGI)');
+			throw new DAV\Exception\NotAuthenticated('No basic authentication headers were found (you might need to turn off FastCGI and use PHP as Apache module)');
 		}
 	
 		// Authenticates the user
