@@ -3,7 +3,7 @@
     <tr>
         <td class="person_left" >
             <!-- Begin Photo -->
-            <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="?do=img&id=<?php echo $contact->id; ?>">
+            <img class="person_photo" <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="?do=img&id=<?php echo $contact->id; ?>">
             <!-- End Photo -->
         </td>
         <td class="person_right" >
