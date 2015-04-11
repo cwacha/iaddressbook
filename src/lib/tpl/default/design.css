@@ -167,10 +167,12 @@ hr {
 	padding: 0;
 	width: 128px;
 	height: 128px;
+	/*
 	-webkit-border-radius: 100%;
 	-khtml-border-radius: 100%;
 	-moz-border-radius: 100%;
 	border-radius: 100%;
+	*/
 }
 
 .person_right .person_name {

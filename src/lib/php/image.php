@@ -82,13 +82,13 @@ function img_display() {
     } else {
         // display unknown image
         if($contact->company == true) {
-            $im_file = "images/unknown_company.gif";
+            $im_file = "images/unknown_company.png";
         } else {
-            $im_file = "images/unknown_person.gif";
+            $im_file = "images/unknown_person.png";
         }
 	    $image = file_get_contents(template($im_file));
         
-        header('Content-Type: image/gif');
+        header('Content-Type: image/png');
         echo $image;
     }
 
