@@ -102,7 +102,7 @@ function img_convert($in_image, $type='png', $resize='') {
     
     $out_image = '';
     $type = strtolower($type);
-    $tmp_file = AB_IMAGEDIR.'/tmp.xxx';
+    $tmp_file = AB_IMAGEDIR.'/tmp-'.rand(10000,99999).'.xxx';
 
     if(!empty($conf['im_convert']) and is_readable($conf['im_convert'])) {
 
@@ -136,13 +136,12 @@ function img_convert($in_image, $type='png', $resize='') {
 				
 		$im = @imagecreatefromstring($in_image);
 		if($im !== false) {
-            imagepng($im, $tmp_file);
-
             // Resize if necessary
             if(!empty($resize)) {
                 $width  = $resize;
                 $height = $resize;
-                list($width_orig, $height_orig) = getimagesize($tmp_file);
+                $width_orig = imagesx($im);
+                $height_orig = imagesy($im);
                 
                 $ratio_orig = $width_orig/$height_orig;
                 if ($width/$height > $ratio_orig) {
