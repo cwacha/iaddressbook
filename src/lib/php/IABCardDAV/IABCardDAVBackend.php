@@ -71,7 +71,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @see Sabre\DAV\IProperties::updateProperties
      * @return bool|array
      */
-    public function updateAddressBook($addressBookId, array $mutations) {
+    public function updateAddressBook($addressBookId, \Sabre\DAV\PropPatch $propPatch) {
     	msg("updateAddressBook: $addressBookId");
     	return true;
     }
@@ -118,7 +118,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return array
      */
     public function getCards($addressBookId) {
-    	//msg("getCards: addressBookId=$addressBookId");
+    	msg("getCards: addressBookId=$addressBookId");
 		global $AB;
 		global $CAT;
 		
@@ -131,53 +131,15 @@ class IABCardDAVBackend extends AbstractBackend {
         $contactlist = $AB->getall();
         
         foreach ($contactlist as $contact) {
-			$contact->image = img_load($contact->id);
-			$contact->image = '';
-			$categories = $CAT->getCategoriesForPerson($contact->id);
-			foreach ( $categories as $category ) {
-				$contact->add_category($category);
-			}
-			$vcarddata = contact2vcard($contact);
-            
-            $item = array();
-            $item['uri'] = $contact->uid;
-            $item['lastmodified'] = $contact->modification_ts;
-            //$item['carddata'] = $vcarddata;
-            $item['etag'] = (string)$contact->etag;
-            $item['size'] = strlen($vcarddata);
-            
-            $results[] = $item;
+            $results[] = $this->getCard($addressBookId, $contact->uid);
         }
         
         // now repeat for all the categories
         $categories = $CAT->getAllCategories();
-        
         foreach ($categories as $category) {
-        	if(strpos($category->name(), ' __') === 0)
-        		continue;
-        	
-        	// check if it is a group
-			$contact = new \Person();
-			$contact->isgroup = true;
-			$contact->uid = $category->uid;
-			$contact->modification_ts = $category->modification_ts;
-			$contact->etag = $category->etag;
-			$contact->lastname = $category->name();
-			$members = $CAT->getMembersForCategory($category->id);
-			foreach($members as $key => $value) {
-				$contact->add_groupmember($value);
-			}
-				
-			$vcarddata = contact2vcard($contact);
-        
-        	$item = array();
-        	$item['uri'] = $contact->uid;
-        	$item['lastmodified'] = $contact->modification_ts;
-        	//$item['carddata'] = $vcarddata;
-        	$item['etag'] = (string)$contact->etag;
-        	$item['size'] = strlen($vcarddata);
-        
-        	$results[] = $item;
+            if(strpos($category->name(), ' __') === 0)
+                continue;
+            $results[] = $this->getCard($addressBookId, $category->uid);
         }
         
         msg("getCards: addressBookId=$addressBookId numCards=" . count($results));
@@ -196,7 +158,7 @@ class IABCardDAVBackend extends AbstractBackend {
 	 */
 	public function getCard($addressBookId, $cardUri) {
 		$start_ts = microtime(true);
-		//msg("getCard: addressBookId=$addressBookId cardUri=$cardUri");
+		msg("getCard: addressBookId=$addressBookId cardUri=$cardUri");
 		global $AB;
 		global $CAT;
 		$uri = basename($cardUri, '.vcf');
@@ -205,7 +167,7 @@ class IABCardDAVBackend extends AbstractBackend {
 		$AB = new \Addressbook($book['id']);
         $CAT = new \Categories;        
 				
-		$results = array ();
+		$results = array();
 		
 		$contact = $AB->get($uri, true);
 		
@@ -242,6 +204,28 @@ class IABCardDAVBackend extends AbstractBackend {
 		msg("getCard: addressBookId=$addressBookId cardUri=$cardUri etag=" . $contact->etag . " delay_ms=" . (int)(($stop_ts - $start_ts)*1000));
 		return $item;
 	}
+
+    /**
+     * Returns a list of cards.
+     *
+     * This method should work identical to getCard, but instead return all the
+     * cards in the list as an array.
+     *
+     * If the backend supports this, it may allow for some speed-ups.
+     *
+     * @param mixed $addressBookId
+     * @param array $uris
+     * @return array
+     */
+    function getMultipleCards($addressBookId, array $uris) {
+        msg("getMultipleCards: $addressBookId, uris=" . count($uris));
+        $results = array();
+        foreach($uris as $cardUri) {
+            $card = $this->getCard($addressBookId, $cardUri);
+            $results[] = $card;
+        }
+        return $results;
+    }
 
     /**
      * Creates a new card.

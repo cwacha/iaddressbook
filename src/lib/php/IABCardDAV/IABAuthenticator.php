@@ -2,8 +2,8 @@
 
 namespace Sabre\DAV\Auth\Backend;
 
-use Sabre\HTTP;
 use Sabre\DAV;
+use Sabre\HTTP;
 
 if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/../../..');
 require_once(AB_BASEDIR.'/lib/php/include.php');
@@ -34,11 +34,8 @@ class IABAuthenticator extends AbstractBasic {
 			return true;
 		}
 
-		$auth = new HTTP\BasicAuth();
-		$auth->setHTTPRequest($server->httpRequest);
-		$auth->setHTTPResponse($server->httpResponse);
-		$auth->setRealm($realm);
-		$userpass = $auth->getUserPass();
+        $auth = new HTTP\Auth\Basic($realm, $server->httpRequest, $server->httpResponse);
+        $userpass = $auth->getCredentials($server->httpRequest);
 		if (!$userpass) {
 			$auth->requireLogin();
 			throw new DAV\Exception\NotAuthenticated('No basic authentication headers were found (you might need to turn off FastCGI and use PHP as Apache module)');
