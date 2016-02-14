@@ -40,7 +40,7 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * @return array
 	 */
 	public function getAddressBooksForUser($principalUri) {
-		list($prefixPath, $userid) = DAV\URLUtil::splitPath($principalUri);
+		list($prefixPath, $userid) = \Sabre\HTTP\URLUtil::splitPath($principalUri);
 		$books = $this->catalog->getAddressBooksForUser($userid);
     	$addressBooks = array();
 		foreach($books as $book) {
@@ -51,8 +51,7 @@ class IABCardDAVBackend extends AbstractBackend {
                                 '{DAV:}displayname' => $book['displayname'],
                                 '{' . CardDAV\Plugin::NS_CARDDAV . '}addressbook-description' => $book['description'],
                                 '{http://calendarserver.org/ns/}getctag' => $book['ctag'],
-                                '{' . CardDAV\Plugin::NS_CARDDAV . '}supported-address-data' =>
-                                new CardDAV\Property\SupportedAddressData(),
+                                '{http://sabredav.org/ns}sync-token' => $book['ctag'] ? $book['ctag'] : '0',
                                 );
 		}
     	msg("getAddressBooksForUser: $principalUri, " . $book['ctag']);

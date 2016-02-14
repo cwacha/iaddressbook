@@ -60,7 +60,7 @@ class IABPrincipalBackend extends AbstractBackend {
      * @return array
      */
     public function getPrincipalByPath($path) {
-    	list($prefixPath, $userid) = DAV\URLUtil::splitPath($path);
+    	list($prefixPath, $userid) = \Sabre\HTTP\URLUtil::splitPath($path);
     	
     	$principal = array();
     	if ($prefixPath !== $this->principalBasePath)

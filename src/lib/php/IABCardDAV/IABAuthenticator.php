@@ -4,6 +4,8 @@ namespace Sabre\DAV\Auth\Backend;
 
 use Sabre\DAV;
 use Sabre\HTTP;
+use Sabre\HTTP\RequestInterface;
+use Sabre\HTTP\ResponseInterface;
 
 if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/../../..');
 require_once(AB_BASEDIR.'/lib/php/include.php');
@@ -22,32 +24,60 @@ class IABAuthenticator extends AbstractBasic {
      * @param string $password
      * @return bool
      */
-	public function validateUserPass($username, $password) {
+	function validateUserPass($username, $password) {
 		return auth_login($username, $password);
 	}
 
-	public function authenticate(DAV\Server $server, $realm) {
+    /**
+     * When this method is called, the backend must check if authentication was
+     * successful.
+     *
+     * The returned value must be one of the following
+     *
+     * [true, "principals/username"]
+     * [false, "reason for failure"]
+     *
+     * If authentication was successful, it's expected that the authentication
+     * backend returns a so-called principal url.
+     *
+     * Examples of a principal url:
+     *
+     * principals/admin
+     * principals/user1
+     * principals/users/joe
+     * principals/uid/123457
+     *
+     * If you don't use WebDAV ACL (RFC3744) we recommend that you simply
+     * return a string such as:
+     *
+     * principals/users/[username]
+     *
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     * @return array
+     */
+    function check(RequestInterface $request, ResponseInterface $response) {
 		global $conf;
 		
 		if (!$conf ['auth_enabled']) {
-			$this->currentUser = 'guest';
-			return true;
+			return [true, $this->principalPrefix . 'guest'];
 		}
 
-        $auth = new HTTP\Auth\Basic($realm, $server->httpRequest, $server->httpResponse);
-        $userpass = $auth->getCredentials($server->httpRequest);
-		if (!$userpass) {
-			$auth->requireLogin();
-			throw new DAV\Exception\NotAuthenticated('No basic authentication headers were found (you might need to turn off FastCGI and use PHP as Apache module)');
-		}
-	
-		// Authenticates the user
-		if (!$this->validateUserPass($userpass[0],$userpass[1])) {
-			$auth->requireLogin();
-			throw new DAV\Exception\NotAuthenticated('Username or password invalid');
-		}
-		$this->currentUser = $userpass[0];
-		return true;
-	}
+        $auth = new HTTP\Auth\Basic(
+            $this->realm,
+            $request,
+            $response
+        );
+
+        $userpass = $auth->getCredentials();
+        if (!$userpass) {
+            return [false, "No 'Authorization: Basic' header found. Either the client didn't send one, or the server is misconfigured (you might need to turn off FastCGI and use PHP as Apache module)."];
+        }
+        if (!$this->validateUserPass($userpass[0], $userpass[1])) {
+            return [false, "Username or password invalid"];
+        }
+        return [true, $this->principalPrefix . $userpass[0]];
+
+    }
 	
 }
