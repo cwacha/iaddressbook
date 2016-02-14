@@ -21,7 +21,7 @@ add_ftpcmd() {
 	FTP_COMMANDS="$FTP_COMMANDS$@$LF"
 }
 
-ftp_open() {
+ftp_parseurl() {
 	add_ftpcmd "open $FTP_TARGET"
 	add_ftpcmd "user $FTP_USER $FTP_PASS"
 	add_ftpcmd "binary"
@@ -31,13 +31,14 @@ ftp_open() {
 }
 
 ftp_commit() {
+	echo "Starting upload."
 	add_ftpcmd "bye"
 
 	#echo "$FTP_COMMANDS"
 	echo "$FTP_COMMANDS" | ftp -n | tee ftp.log
-	ERRORS=`grep -v "Directory not empty" ftp.log | wc -l`
+	ERRORS=`grep -v "Directory not empty" ftp.log | grep -v "File exists" | wc -l`
 	[ $ERRORS -eq 0 ] && echo "FTP transfer successfully completed."
-	[ $ERRORS -ne 0 ] && echo "FTP transfer failed."
+	[ $ERRORS -ne 0 ] && echo "FTP transfer completed with errors."
 
 	rm ftp.log
 	return $ERRORS 
@@ -52,6 +53,7 @@ ftp_putfile() {
 }
 
 ftp_putdir() {
+	echo "Scanning directory: $1"
 	local_dir="$1"
 	basepath=`dirname $local_dir`/
 
@@ -81,10 +83,11 @@ usage() {
 parse_url "$1"
 shift
 
-ftp_open
+ftp_parseurl
 for opt in "$@"; do
 	[ -f "$opt" ] && ftp_putfile "$opt"
 	[ -d "$opt" ] && ftp_putdir "$opt"
 done
+echo "Scanning complete."
 ftp_commit
 
