@@ -63,6 +63,9 @@ class IABAuthenticator extends AbstractBasic {
 			return [true, $this->principalPrefix . 'guest'];
 		}
 
+		// workaround fast_cgi Basic Auth functionality
+		list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+
         $auth = new HTTP\Auth\Basic(
             $this->realm,
             $request,
@@ -71,7 +74,7 @@ class IABAuthenticator extends AbstractBasic {
 
         $userpass = $auth->getCredentials();
         if (!$userpass) {
-            return [false, "No 'Authorization: Basic' header found. Either the client didn't send one, or the server is misconfigured (you might need to turn off FastCGI and use PHP as Apache module)."];
+            return [false, "No 'Authorization: Basic' header found. Either the client didn't send one, or the server is misconfigured (you might need to turn off FastCGI and use PHP as Apache module or use 'RewriteEngine on' and 'RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]).' in .htaccess"];
         }
         if (!$this->validateUserPass($userpass[0], $userpass[1])) {
             return [false, "Username or password invalid"];

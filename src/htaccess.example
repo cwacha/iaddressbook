@@ -13,3 +13,5 @@ RewriteBase /
 
 RewriteRule ^.well-known/carddav$ carddav.php [R]
 
+# workaround fast_cgi HTTP Basic Auth functionality
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
