@@ -15,11 +15,15 @@ class DBConnector_pdo_sqlite3 extends DBConnector {
 	var $connection;
 	var $initialized;
 
-	function DBConnector_pdo_sqlite3() {
+	function __construct() {
 		$this->dbtype = 'pdo_sqlite3';
 		$this->connection = NULL;
 		$this->initialized = false;
 		//$this->debug = true;
+	}
+
+	function DBConnector_pdo_sqlite3() {
+		$this->__construct();
 	}
 	
 	// setup system so that we can start using the DB connection

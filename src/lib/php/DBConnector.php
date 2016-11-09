@@ -20,11 +20,15 @@ class DBConnector {
 	var $pass;
 	var $debug;
 
-	function DBConnector() {
+	function __construct() {
 		$this->dbtype = 'none';
 		$this->debug = false;
 	}
-	
+
+	function DBConnector() {
+		$this->__construct();
+	}
+
 	// setup system so that we can start using the DB connection
 	function init($server, $dbname, $user, $pass) {
 		$this->server = $server;

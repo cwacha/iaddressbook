@@ -15,10 +15,14 @@ class DBConnector_sqlite2 extends DBConnector {
 	var $connection;
 	var $initialized;
 	
-	function DBConnector_sqlite2() {
+	function __construct() {
 		$this->dbtype = 'sqlite2';
 		$this->connection = NULL;
 		$this->initialized = false;
+	}
+
+	function DBConnector_sqlite2() {
+		$this->__construct();
 	}
 
 	// setup system so that we can start using the DB connection

@@ -48,7 +48,7 @@ class Person {
     var $isgroup;  // boolean that is true when this entry is a GROUP (required for CARDDAV)
     var $groupmembers; // members of the group as list of UIDs (for carddav...)
 
-    function Person() {
+    function __construct() {
         $this->company = 0;
         $this->birthdate = '0000-00-00';
 
@@ -68,6 +68,10 @@ class Person {
 
         $this->isgroup = false;
         $this->groupmembers = array();
+    }
+
+    function Person() {
+        $this->__construct();
     }
     
     function get_array() {

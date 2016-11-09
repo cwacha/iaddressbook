@@ -18,12 +18,16 @@ class Category {
 	var $modification_ts; // unix timestamp
 	var $etag;
 
-	function Category($name = '') {
+	function __construct($name = '') {
 		$this->id = 0;
 		$this->uid = '';
 		$this->name = $name;
 		$this->modification_ts = time();
 		$this->etag = 0;
+	}
+
+	function Category($name = '') {
+		$this->__construct($name);
 	}
 
 	public function name() {
@@ -51,7 +55,11 @@ class Category {
 }
 class Categories {
 
+	function __construct($config = NULL) {
+	}
+
 	function Categories($config = NULL) {
+		$this->__construct($config);
 	}
 
 	function row2category($row) {

@@ -15,7 +15,11 @@ require_once (AB_BASEDIR . '/lib/php/common.php');
 
 class Addressbooks {
 
+	function __construct() {
+	}
+
 	function Addressbooks() {
+		$this->__construct();
 	}
 	
 	function row2book($row) {
@@ -100,8 +104,12 @@ class Addressbook {
     
 	var $addressbookId;
 	
-    function Addressbook($id=-1) {
+	function __construct($id=-1) {
     	$this->addressbookId = $id;
+	}
+
+    function Addressbook($id=-1) {
+    	$this->__construct($id);
     }
     
     function row2contact($row) {
