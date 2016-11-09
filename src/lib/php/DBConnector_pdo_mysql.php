@@ -15,11 +15,15 @@ class DBConnector_pdo_mysql extends DBConnector {
 	var $connection;
 	var $initialized;
 
-	function DBConnector_pdo_mysql() {
+	function __construct() {
 		$this->dbtype = 'pdo_mysql';
 		$this->connection = NULL;
 		$this->initialized = false;
 		//$this->debug = true;
+	}
+
+	function DBConnector_pdo_mysql() {
+		$this->__construct();
 	}
 	
 	// setup system so that we can start using the DB connection
