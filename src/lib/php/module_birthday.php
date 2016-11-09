@@ -23,6 +23,8 @@ function collect_birthdays() {
     $thismonth = date('n');
     //$thismonth = 12;
     $nextmonth = ($thismonth + 1) % 12;
+    if($nextmonth == 0)
+        $nextmonth = 12;
     
     $thism = $db->escape(sprintf('%%-%02d-%%', $thismonth));
     $nextm = $db->escape(sprintf('%%-%02d-%%', $nextmonth));
@@ -76,14 +78,14 @@ function tpl_birthday() {
         
         if($days < 0) continue;
         
-        if($months > 0) {
-            $n = $months;
-            if($months == 1) $trans_text = $lang['bday_month'];
-            else             $trans_text = $lang['bday_months'];
-        } else if($weeks > 0) {
-            $n = $weeks;
-            if($weeks == 1)  $trans_text = $lang['bday_week'];
-            else             $trans_text = $lang['bday_weeks'];
+        if($days > 30) {
+            $n = floor($days/30);
+            if($days > 60)   $trans_text = $lang['bday_months'];
+            else             $trans_text = $lang['bday_month'];
+        } else if($days > 6) {
+            $n = floor($days/7);
+            if($days > 13)   $trans_text = $lang['bday_weeks'];
+            else             $trans_text = $lang['bday_week'];
         } else if($days > 0) {
             $n = $days;
             if($days == 1)   $trans_text = $lang['bday_day'];
