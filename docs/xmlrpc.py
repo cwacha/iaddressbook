@@ -3,7 +3,7 @@
 import xmlrpclib
 import pprint
 
-url = 'http://domain.com/iaddressbook/xmlrpc.php'
+url = 'http://localhost/~cwacha/iab/src/xmlrpc.php'
 api_key='abcd'
 
 proxy = xmlrpclib.ServerProxy(url)
