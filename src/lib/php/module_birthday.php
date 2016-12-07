@@ -35,16 +35,32 @@ function collect_birthdays() {
 	
     $result = $db->selectAll($sql);
     
+    $now = time();
     if($result !== false) {
         foreach($result as $row) {
             $contact = $AB->row2contact($row);
+
+            // if we are in december and the persons birthday is in january
+            // we have to add 1 to his year
+            if(date('n', $now) == 12 and date('n', strtotime($contact->birthdate)) == 1) {
+                $bd_year = date('Y', $now) + 1;
+            } else {
+                $bd_year = date('Y', $now);
+            }        
+            $contact->birthday = $bd_year . nice_date('-$mm-$dd', $contact->birthdate);
+
             $upcoming[] = $contact;
         }
     } else {
         // not found
         msg("DB error on birthday collect: ".$db->lasterror(), -1);
     }
-    
+
+    // sort by actual birthday
+    usort($upcoming, function($a, $b) {
+        return $a->birthday > $b->birthday;
+    });
+
     return $upcoming;
 }
 
@@ -59,20 +75,12 @@ function tpl_birthday() {
         $now = time();
         //$now = strtotime('2011-12-30');
         
-        // if we are in december and the persons birthday is in january
-        // we have to add 1 to his year
-        if(date('n', $now) == 12 and date('n', strtotime($contact->birthdate)) == 1) {
-            $bd_year = date('Y', $now) + 1;
-        } else {
-            $bd_year = date('Y', $now);
-        }        
-        $birthday = strtotime( $bd_year . nice_date('-$mm-$dd', $contact->birthdate) );
-        
+        $bd_year = date('Y', strtotime($contact->birthday));
         $age    = $bd_year - nice_date('$YYYY', $contact->birthdate);
         
-        $days   = datediff('d', $now, $birthday, true) + 1;
-        $weeks  = datediff('ww', $now, $birthday, true);
-        $months = datediff('m', $now, $birthday, true);
+        $days   = datediff('d', $now, strtotime($contact->birthday), true) + 1;
+        $weeks  = datediff('ww', $now, strtotime($contact->birthday), true);
+        $months = datediff('m', $now, strtotime($contact->birthday), true);
 
         if($weeks > $conf['bday_advance_week']) continue;
         
