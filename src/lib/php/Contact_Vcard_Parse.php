@@ -964,6 +964,8 @@ class Contact_Vcard_Parse {
         foreach ($tmp as $val) {
             $list[] = array($val);
         }
+        if(count($list) < 2)
+            $list[] = array("");
         
         return $list;
     }
