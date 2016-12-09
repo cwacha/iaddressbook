@@ -120,7 +120,7 @@ class DBConnector_pdo_mysql extends DBConnector {
 		if (!$this->open())
 			return -1;
 		
-		$insertId = $this->connection->lastInsertId();
+		$insertId = intval($this->connection->lastInsertId());
 		return $insertId;
 	}
 	
