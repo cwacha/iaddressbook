@@ -21,18 +21,18 @@ Installing the address book consists of four steps:
 
 The easiest way to upgrade is to use the vCard export feature to get all your contacts
 and then import these contacts into a new installation. You won't lose any data as the
-vCard export preserves all fields!
+vCard export preserves all fields.
 
 Follow these steps and you should be on the safe side:
 
   - Export all your contacts using the vCard export.
   - Install the addressbook as described in the installation chapter.
   - Import your vCard into the new addressbook. Use the "folder import" feature if you
-    have a lot of contacts.
+    have multiple vCard files that you want to import all at once.
   - If everything works as expected, remove the old installation and rename/move your
     new installation to the old place.
 
 The changelog can be found at: http://iaddressbook.org/changelog
 
-December 7th, 2013
+December 19th, 2017
 

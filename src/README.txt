@@ -1,8 +1,6 @@
 
                              PHP iAddressbook
 
-                               Version 2.0.1
-
 ---
 http://iaddressbook.org/
 
@@ -18,4 +16,4 @@ Enjoy!
     Clemens Wacha                   <clemens@wacha.ch>
 
 
-December 7th, 2013
+December 19th, 2017
