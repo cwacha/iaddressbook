@@ -1,6 +1,9 @@
 #!/bin/sh
+
+TMP=`pwd`; cd `dirname $0`; BASEDIR=`pwd`; cd $TMP
+
 SVNBASEDIR=..
-REV=`svn info -R $SVNBASEDIR 2>/dev/null | grep "Last Changed Rev" | awk '{print $4}' | sort -nr | head -1`
+REV=`svn info -R $BASEDIR/$SVNBASEDIR 2>/dev/null | grep "Last Changed Rev" | awk '{print $4}' | sort -nr | head -1`
 SVN_REVISION=${SVN_REVISION:-$REV}
 
 all() {
@@ -49,6 +52,21 @@ clean() {
 	rm -rf iaddressbook-*
 }
 
+deploy() {
+	echo "##### deploying"
+	
+	if [ ! -f .deploy-urls ]; then
+		echo "Creating empty file .deploy-urls ..."
+		echo "# ftp://user:pass@www.domain.com/subdomain/folder" > .deploy-urls  
+	fi
+	
+	IFS="
+"
+	for line in `grep -v "^#" .deploy-urls`; do
+		$BASEDIR/ftp_upload.sh $line iaddressbook-*/*
+	done
+}
+
 if [ $# -eq 0 ]; then
 	echo "Usage: $0 <action>"
 	echo
@@ -62,6 +80,8 @@ shift
 
 declare -F "$action" >/dev/null
 [ $? -ne 0 ] && echo "no such action: $action" && exit 1
+
+cd $BASEDIR
 
 $action $*
 echo "##### done"

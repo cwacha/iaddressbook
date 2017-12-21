@@ -1,18 +1,32 @@
 #!/bin/sh
 
-#FTP_TARGET=${FTP_TARGET:-example.com}
-#FTP_USER=${FTP_USER:-guest}
-#FTP_PASS=${FTP_PASS:-password}
-#FTP_TARGETDIR=${FTP_TARGETDIR:-httpdocs}
-
 FTP_DMODE=${FTP_DMODE:-0777}
 FTP_FMODE=${FTP_FMODE:-0666}
 
 parse_url() {
-	read FTP_USER FTP_PASS FTP_TARGET FTP_TARGETDIR << EOF
-		`echo "$1" | sed -n 's/ftp:\/\/\([^:]*\):\([^@]*\)@\([^\/]*\)\/\(.*\)/\1 \2 \3 \4/p'`
-EOF
-	[ -z "$FTP_TARGET" ] && echo "ERROR: no target host specified" && usage && exit 1
+	URL=`echo "$1" | sed -n 's/\(ftp:..\)\{0,1\}\(.*\)/\2/p'`
+	URI=`echo "$URL " | sed 's/\// /' | cut -d" " -f2`
+	UHOST=`echo "$URL " | sed 's/\// /' | cut -d" " -f1`
+
+	UPASS=`echo "$UHOST@" | cut -d@ -f1`
+	HOST=`echo "$UHOST@" | cut -d@ -f2`
+	[ -z "$HOST" ] && HOST=$UPASS && UPASS=
+
+	PORT=`echo "$HOST:" | cut -d: -f2`
+	HOST=`echo "$HOST:" | cut -d: -f1`
+	[ -z "$PORT" ] && PORT=21
+
+	USER=`echo "$UPASS:" | cut -d: -f1`
+	PASS=`echo "$UPASS:" | cut -d: -f2`
+
+	FTP_USER=$USER
+	FTP_PASS=$PASS
+	FTP_HOST=$HOST
+	FTP_URI=$URI
+	FTP_PORT=$PORT
+	
+	#echo "user=$FTP_USER pass=$FTP_PASS host=$FTP_HOST port=$FTP_PORT uri=$FTP_URI"
+	[ -z "$FTP_HOST" ] && echo "ERROR: no target host specified" && usage && exit 1
 }
 
 add_ftpcmd() {
@@ -21,27 +35,42 @@ add_ftpcmd() {
 	FTP_COMMANDS="$FTP_COMMANDS$@$LF"
 }
 
-ftp_parseurl() {
-	add_ftpcmd "open $FTP_TARGET"
+ftp_tryconnect() {
+	add_ftpcmd "open $FTP_HOST $FTP_PORT"
+	add_ftpcmd "user $FTP_USER $FTP_PASS"
+	add_ftpcmd "bye"
+
+	run_ftp
+}
+
+ftp_connect() {
+	add_ftpcmd "open $FTP_HOST $FTP_PORT"
 	add_ftpcmd "user $FTP_USER $FTP_PASS"
 	add_ftpcmd "binary"
 	#add_ftpcmd "verbose"
 	#add_ftpcmd "debug 9"
-	[ -n "$FTP_TARGETDIR" ] && add_ftpcmd "cd $FTP_TARGETDIR"
+	[ -n "$FTP_URI" ] && add_ftpcmd "cd $FTP_URI"
 }
 
 ftp_commit() {
-	echo "Starting upload."
 	add_ftpcmd "bye"
 
-	#echo "$FTP_COMMANDS"
-	echo "$FTP_COMMANDS" | ftp -n | tee ftp.log
-	ERRORS=`grep -v "Directory not empty" ftp.log | grep -v "File exists" | wc -l`
+	run_ftp
+
+	ERRORS=$?
 	[ $ERRORS -eq 0 ] && echo "FTP transfer successfully completed."
 	[ $ERRORS -ne 0 ] && echo "FTP transfer completed with errors."
 
-	rm ftp.log
 	return $ERRORS 
+}
+
+run_ftp() {
+	#echo "$FTP_COMMANDS"
+	echo "$FTP_COMMANDS" | ftp -n | tee ftp.log
+	ERRORS=`grep -v "Directory not empty" ftp.log | grep -v "File exists" | wc -l`
+	
+	rm ftp.log
+	return $ERRORS
 }
 
 ftp_putfile() {
@@ -83,7 +112,10 @@ usage() {
 parse_url "$1"
 shift
 
-ftp_parseurl
+echo "Starting upload: user=$FTP_USER pass=***** host=$FTP_HOST port=$FTP_PORT uri=$FTP_URI"
+ftp_tryconnect || exit 1
+
+ftp_connect
 for opt in "$@"; do
 	[ -f "$opt" ] && ftp_putfile "$opt"
 	[ -d "$opt" ] && ftp_putdir "$opt"
