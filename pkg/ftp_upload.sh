@@ -68,7 +68,8 @@ run_ftp() {
 	#echo "$FTP_COMMANDS"
 	echo "$FTP_COMMANDS" | ftp -n | tee ftp.log
 	ERRORS=`grep -v "Directory not empty" ftp.log | grep -v "File exists" | wc -l`
-	
+
+	FTP_COMMANDS=	
 	rm ftp.log
 	return $ERRORS
 }
