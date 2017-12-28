@@ -177,13 +177,13 @@ class Categories {
 			$etag_updates[$categoryId] = true; 
 
 			// Input validation
-			$personId = $db->escape(( int ) $personId);
-			$categoryId = $db->escape(( int ) $categoryId);
+			$personId_esc = $db->escape(( int ) $personId);
+			$categoryId_esc = $db->escape(( int ) $categoryId);
 			
 			// insert
 			$sql = "INSERT INTO " . $db_config ['dbtable_catmap'] . "  ";
 			$sql .= "( category_id, person_id ) VALUES ( ";
-			$sql .= " $categoryId, $personId );";
+			$sql .= " $categoryId_esc, $personId_esc );";
 			
 			$result = $db->execute($sql);
 				
@@ -229,11 +229,11 @@ class Categories {
 			$etag_updates[$categoryId] = true; 
 
 			// Input validation
-			$personId = $db->escape(( int ) $personId);
-			$categoryId = $db->escape(( int ) $categoryId);
+			$personId_esc = $db->escape(( int ) $personId);
+			$categoryId_esc = $db->escape(( int ) $categoryId);
 			
 			$sql = "DELETE FROM " . $db_config ['dbtable_catmap'] . " WHERE ";
-			$sql .= "category_id=$categoryId AND person_id=$personId;";
+			$sql .= "category_id=$categoryId_esc AND person_id=$personId_esc;";
 			$result = $db->execute($sql);
 			
 			if (!$result) {
