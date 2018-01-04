@@ -38,7 +38,7 @@ class DBConnector_pdo_sqlite3 extends DBConnector {
 					throw new Exception();
 			}
 		} catch (Exception $e) {
-			throw new Exception("This PHP installation does not support PDO MySQL");
+			throw new Exception("This PHP installation does not support PDO SQLite3.");
 		}
 	}
 	
@@ -152,7 +152,9 @@ class DBConnector_pdo_sqlite3 extends DBConnector {
 		if (!$this->open())
 			return '';
 		
-		$errmsg = $this->connection->errorInfo()[2]; 
+		$errmsg = $this->connection->errorInfo();
+		if(is_array($errmsg))
+			$errmsg = $errmsg[2];
 		return $errmsg != NULL ? $errmsg : '';
 	}
 }

@@ -31,7 +31,7 @@ class DBConnector_sqlite2 extends DBConnector {
 		parent::init($server, $dbname, $user, $pass);
 		
 		if(!function_exists('sqlite_open')) {
-			throw new Exception("This PHP installation does not support SQLite 2");
+			throw new Exception("This PHP installation does not support native SQLite 2 (using sqlite_*).");
 		}
 	}
 	

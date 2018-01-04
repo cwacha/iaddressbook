@@ -32,7 +32,7 @@ class DBConnector_sqlite3 extends DBConnector {
 		parent::init($server, $dbname, $user, $pass);
 
 		if(!class_exists('SQLite3')) {
-			throw new Exception("This PHP installation does not support SQLite 3");
+			throw new Exception("This PHP installation does not support native SQLite 3 (using SQLite3(...)).");
 		}
 	}
 	
