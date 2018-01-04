@@ -442,6 +442,9 @@ class Categories {
 		if (!is_object($category))
 			return false;
 
+		if(empty(trim($category->name)))
+			return false;
+
 		if (empty($category->uid))
 			$category->uid = generate_uuid();
 		
@@ -499,6 +502,9 @@ class Categories {
 				return false;
 			$categoryId = $category->id;
 		}
+
+		if($categoryId == 0)
+			return false;
 		
 		// quote db specific characters
 		$categoryId = $db->escape(( int ) $categoryId);
