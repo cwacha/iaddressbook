@@ -23,21 +23,21 @@
     $webapp = "index.php";
 
     function doPost($request) {
-        global $ID;
-        global $ACT;
-        global $AB;
-        global $QUERY;
-        global $contact;
-        global $lang;
-        global $conf;
-        global $CAT;
-        global $CAT_ID;
-        global $categories;
-        global $contactlist;
-        global $contactlist_offset;
-        global $contactlist_limit;
-        global $contactlist_letter;
-        global $securitycontroller;
+        global $ID;                 // ID of current selected contact or 0 if no contact is selected
+        global $ACT;                // Action that should be executed (e.g. show)
+        global $AB;                 // Addressbook class
+        global $QUERY;              // Currently active search
+        global $contact;            // Current selected contact class, or false if no contact selected
+        global $lang;               // language array
+        global $conf;               // configuration array
+        global $CAT;                // Category class
+        global $CAT_ID;             // Current selected category ID or 0 if no category is selected (all)
+        global $categories;         // FIXME: array for all categories, but seems to be used only locally (remove?)
+        global $contactlist;        // array of all contacts (gets filled by act_search)
+        global $contactlist_offset; // offset int for contact display
+        global $contactlist_limit;  // int of max displayed contacts (per page)
+        global $contactlist_letter; // selected letter from ABC for contact list
+        global $securitycontroller; // class for authentication and authorization
 
         //session_start(); // session already started in init.php
         

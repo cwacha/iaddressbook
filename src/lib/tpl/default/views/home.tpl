@@ -3,6 +3,7 @@
     <!-- Category List -->
     <?php tpl_include('categorylist.tpl'); ?>
   </div>
+  <!-- Category Buttons -->
   <div class='sidebar-footer'>
     <div class='items'>
       <div class='btn-group float-right' role='group'>
@@ -15,6 +16,7 @@
     <!-- Contact List -->
     <?php tpl_include('contactlist.tpl'); ?>
   </div>
+  <!-- Contact Buttons -->
   <div class='sidebar2-footer'>
     <div class='items'>
       <div class='btn-group float-right' role='group'>
@@ -22,8 +24,8 @@
         <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_action('delete_many', '<?php echo $lang['confirm_del_contacts']; ?>');" data-toggle="tooltip" title="Delete contacts"><span class='glyphicon glyphicon-minus' /></a>
       </div>
       <div class='btn-group float-right pr-2' role='group'>
-          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:$('#select_category_modal').modal('toggle');" data-toggle="tooltip" title="Add contacts to category"><span class='glyphicon glyphicon-arrow-left' /></a>
-          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_action('cat_del_contacts', '<?php echo $lang['confirm_cat_remove_contacts']; ?>');" data-toggle="tooltip" title="Remove contacts from category"><span class='glyphicon glyphicon-arrow-right' /></a>
+          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:$('#select_category_modal').modal('toggle');" data-toggle="tooltip" title="Add contacts to category"><span class='glyphicon glyphicon-tag' /></a>
+          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_action('cat_del_contacts', '<?php echo $lang['confirm_cat_remove_contacts']; ?>');" data-toggle="tooltip" title="Remove contacts from category"><span class='glyphicon glyphicon-remove' /></a>
       </div>
     </div>
   </div>
@@ -43,7 +45,7 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Dialog Create Category -->
 <div class="modal fade" id="create_category_modal" tabindex="-1" role="dialog" aria-labelledby="create_category_modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -66,7 +68,7 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Dialog Add Contacts to Category -->
 <div class="modal fade" id="select_category_modal" tabindex="-1" role="dialog" aria-labelledby="select_category_modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -76,8 +78,8 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method='post' action='' name='cat_add_form'>
-        <input type='hidden' name='do' value='cat_add' />
+      <form method='post' action='' name='cat_add_contacts_form'>
+        <input type='hidden' name='do' value='cat_add_contacts' />
         <div class="modal-body">
           <?php foreach($categories as $category) { 
             msg("category: " . $category->name());
