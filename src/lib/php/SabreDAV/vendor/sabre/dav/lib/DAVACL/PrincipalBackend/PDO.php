@@ -11,7 +11,7 @@ use Sabre\HTTP\URLUtil;
  *
  *
  * This backend assumes all principals are in a single collection. The default collection
- * is 'principals/', but this can be overriden.
+ * is 'principals/', but this can be overridden.
  *
  * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
@@ -65,7 +65,7 @@ class PDO extends AbstractBackend implements CreatePrincipalSupport {
     /**
      * Sets up the backend.
      *
-     * @param PDO $pdo
+     * @param \PDO $pdo
      */
     function __construct(\PDO $pdo) {
 
@@ -171,7 +171,7 @@ class PDO extends AbstractBackend implements CreatePrincipalSupport {
      * Calling the handle method is like telling the PropPatch object "I
      * promise I can handle updating this property".
      *
-     * Read the PropPatch documenation for more info and examples.
+     * Read the PropPatch documentation for more info and examples.
      *
      * @param string $path
      * @param DAV\PropPatch $propPatch
@@ -300,14 +300,14 @@ class PDO extends AbstractBackend implements CreatePrincipalSupport {
         $value = null;
         $scheme = null;
         list($scheme, $value) = explode(":", $uri, 2);
-        if ($value == null) return null;
+        if (empty($value)) return null;
 
         $uri = null;
         switch ($scheme){
             case "mailto":
                 $query = 'SELECT uri FROM ' . $this->tableName . ' WHERE lower(email)=lower(?)';
                 $stmt = $this->pdo->prepare($query);
-                $stmt->execute([ $value ]);
+                $stmt->execute([$value]);
             
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                     // Checking if the principal is in the prefix

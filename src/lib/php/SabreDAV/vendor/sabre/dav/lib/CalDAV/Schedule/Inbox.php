@@ -2,10 +2,10 @@
 
 namespace Sabre\CalDAV\Schedule;
 
-use Sabre\DAV;
 use Sabre\CalDAV;
-use Sabre\DAVACL;
 use Sabre\CalDAV\Backend;
+use Sabre\DAV;
+use Sabre\DAVACL;
 use Sabre\VObject;
 
 /**
@@ -16,6 +16,8 @@ use Sabre\VObject;
  * @license http://sabre.io/license/ Modified BSD License
  */
 class Inbox extends DAV\Collection implements IInbox {
+
+    use DAVACL\ACLTrait;
 
     /**
      * CalDAV backend
@@ -81,7 +83,7 @@ class Inbox extends DAV\Collection implements IInbox {
      * Data will either be supplied as a stream resource, or in certain cases
      * as a string. Keep in mind that you may have to support either.
      *
-     * After succesful creation of the file, you may choose to return the ETag
+     * After successful creation of the file, you may choose to return the ETag
      * of the new file here.
      *
      * The returned ETag must be surrounded by double-quotes (The quotes should
@@ -115,19 +117,6 @@ class Inbox extends DAV\Collection implements IInbox {
     function getOwner() {
 
         return $this->principalUri;
-
-    }
-
-    /**
-     * Returns a group principal
-     *
-     * This must be a url to a principal, or null if there's no owner
-     *
-     * @return string|null
-     */
-    function getGroup() {
-
-        return null;
 
     }
 
@@ -167,58 +156,11 @@ class Inbox extends DAV\Collection implements IInbox {
                 'protected' => true,
             ],
             [
-                'privilege' => '{' . CalDAV\Plugin::NS_CALDAV . '}schedule-deliver-invite',
-                'principal' => '{DAV:}authenticated',
-                'protected' => true,
-            ],
-            [
-                'privilege' => '{' . CalDAV\Plugin::NS_CALDAV . '}schedule-deliver-reply',
+                'privilege' => '{' . CalDAV\Plugin::NS_CALDAV . '}schedule-deliver',
                 'principal' => '{DAV:}authenticated',
                 'protected' => true,
             ],
         ];
-
-    }
-
-    /**
-     * Updates the ACL
-     *
-     * This method will receive a list of new ACE's.
-     *
-     * @param array $acl
-     * @return void
-     */
-    function setACL(array $acl) {
-
-        throw new DAV\Exception\MethodNotAllowed('You\'re not allowed to update the ACL');
-
-    }
-
-    /**
-     * Returns the list of supported privileges for this node.
-     *
-     * The returned data structure is a list of nested privileges.
-     * See Sabre\DAVACL\Plugin::getDefaultSupportedPrivilegeSet for a simple
-     * standard structure.
-     *
-     * If null is returned from this method, the default privilege set is used,
-     * which is fine for most common usecases.
-     *
-     * @return array|null
-     */
-    function getSupportedPrivilegeSet() {
-
-        $ns = '{' . CalDAV\Plugin::NS_CALDAV . '}';
-
-        $default = DAVACL\Plugin::getDefaultSupportedPrivilegeSet();
-        $default['aggregates'][] = [
-            'privilege'  => $ns . 'schedule-deliver',
-            'aggregates' => [
-               ['privilege' => $ns . 'schedule-deliver-invite'],
-               ['privilege' => $ns . 'schedule-deliver-reply'],
-            ],
-        ];
-        return $default;
 
     }
 

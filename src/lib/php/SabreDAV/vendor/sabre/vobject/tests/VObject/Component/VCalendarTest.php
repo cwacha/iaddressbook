@@ -5,7 +5,9 @@ namespace Sabre\VObject\Component;
 use DateTimeZone;
 use Sabre\VObject;
 
-class VCalendarTest extends VObject\TestCase {
+class VCalendarTest extends \PHPUnit_Framework_TestCase {
+
+    use VObject\PHPUnitAssertions;
 
     /**
      * @dataProvider expandData
@@ -25,7 +27,7 @@ class VCalendarTest extends VObject\TestCase {
         // This will normalize the output
         $output = VObject\Reader::read($output)->serialize();
 
-        $this->assertVObjEquals($output, $vcal->serialize());
+        $this->assertVObjectEqualsVObject($output, $vcal->serialize());
 
     }
 
@@ -99,6 +101,8 @@ DTSTART:20111203T120102Z
 END:VEVENT
 END:VCALENDAR
 ';
+
+        $tests[] = [$input, $output];
 
         // Removing timezone info from sub-components. See Issue #278
         $input = 'BEGIN:VCALENDAR
@@ -289,6 +293,7 @@ END:VEVENT
 BEGIN:VEVENT
 UID:bla3
 DTSTART;VALUE=DATE:20141112
+RECURRENCE-ID;VALUE=DATE:20141112
 END:VEVENT
 BEGIN:VEVENT
 UID:bla3
@@ -572,6 +577,55 @@ END:VCALENDAR
         $vcal = VObject\Reader::read($input);
 
         $result = $vcal->getBaseComponent();
+        $this->assertNull($result);
+
+    }
+
+    function testGetBaseComponentWithFilter() {
+
+        $input = 'BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:foo
+METHOD:REQUEST
+BEGIN:VEVENT
+SUMMARY:test
+DTSTART;VALUE=DATE:20111202
+UID:foo
+DTSTAMP:20140122T234434Z
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20111202
+UID:foo
+DTSTAMP:20140122T234434Z
+RECURRENCE-ID;VALUE=DATE:20111202
+END:VEVENT
+END:VCALENDAR
+';
+
+        $vcal = VObject\Reader::read($input);
+
+        $result = $vcal->getBaseComponent('VEVENT');
+        $this->assertEquals('test', $result->SUMMARY->getValue());
+
+    }
+
+    function testGetBaseComponentWithFilterNoResult() {
+
+        $input = 'BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:foo
+METHOD:REQUEST
+BEGIN:VTODO
+SUMMARY:test
+UID:foo
+DTSTAMP:20140122T234434Z
+END:VTODO
+END:VCALENDAR
+';
+
+        $vcal = VObject\Reader::read($input);
+
+        $result = $vcal->getBaseComponent('VEVENT');
         $this->assertNull($result);
 
     }

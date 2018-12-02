@@ -2,8 +2,8 @@
 
 namespace Sabre\DAV\Auth\Backend;
 
-use Sabre\HTTP;
 use Sabre\DAV;
+use Sabre\HTTP;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
 
@@ -155,7 +155,13 @@ abstract class AbstractDigest implements BackendInterface {
             $response
         );
         $auth->init();
+
+        $oldStatus = $response->getStatus() ?: 200;
         $auth->requireLogin();
+
+        // Preventing the digest utility from modifying the http status code,
+        // this should be handled by the main plugin.
+        $response->setStatus($oldStatus);
 
     }
 
