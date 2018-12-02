@@ -32,11 +32,12 @@ class DBConnector_pdo_sqlite3 extends DBConnector {
 		parent::init($server, $dbname, $user, $pass);
 
 		try {
-			if(class_exists('PDO')) {
-				$drivers = PDO::getAvailableDrivers();
-				if(array_search('sqlite', $drivers) === FALSE)
-					throw new Exception();
-			}
+			if(!class_exists('PDO'))
+				throw new Exception();
+
+			$drivers = PDO::getAvailableDrivers();
+			if(array_search('sqlite', $drivers) === FALSE)
+				throw new Exception();
 		} catch (Exception $e) {
 			throw new Exception("This PHP installation does not support PDO SQLite3.");
 		}

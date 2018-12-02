@@ -1,13 +1,15 @@
-    <tr>
-        <td class="person_left">
+    <div class="row">
+        <div class="col person_left">
             <div class="person_labels"><?php echo $lang['label_phones']; ?></div>
-        </td>
-        <td></td>
-    </tr>
-    <tr id="phonelabel_template1" style="display: none;">
-        <td class="person_left">
-            <div class="person_labels">
-                <select name="phonelabel_" size="1" class="text" onchange="custom_phonelabel(this);">
+        </div>
+        <div class="col"></div>
+        <div class="col-1"></div>
+    </div>
+
+    <div class="row" id="phonelabel_template1" style="display: none;">
+        <div class="col person_left">
+            <div class="form-group">
+                <select name="phonelabel_" size="1" class="form-control" onchange="custom_phonelabel(this);">
                     <option value="HOME" selected ><?php echo tpl_label("HOME"); ?></option>
                     <option value="CELL" ><?php echo tpl_label("CELL"); ?></option>
                     <option value="WORK" ><?php echo tpl_label("WORK"); ?></option>
@@ -20,17 +22,21 @@
                     <option value='CUSTOM' ><?php echo tpl_label("CUSTOM"); ?></option>
                 </select>
             </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="phone_" value="" class="text" />
-                <a href="#" onclick="add_phonelabel('HOME');return false;"><img src="<?php echo AB_TPL; ?>images/plus.gif"></a>
-                <a href="#" onclick="del_phonelabel(this);return false;"><img src="<?php echo AB_TPL; ?>images/minus.gif"></a>
+        </div>
+        <div class="col person_right">
+            <div class="form-group">
+                <input type="text" name="phone_" value="" class="form-control form-control-sm" />
             </div>
-        </td>
-    </tr>
+        </div>
+        <div class="col-1 pl-0">
+            <div class="btn-group" role="group">
+                <a href="#" onclick="add_phonelabel('HOME');return false;" class="btn btn-success btn-sm">+</a>
+                <a href="#" onclick="del_phonelabel(this);return false;" class="btn btn-danger btn-sm">-</a>
+            </div>
+        </div>
+    </div>
     
-    <tr id="phonelabel_position"><td></td><td></td></tr>
+    <div class="row" id="phonelabel_position"></div>
 
     
 

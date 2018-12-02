@@ -6,12 +6,9 @@
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
 
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-    require_once(AB_BASEDIR.'/lib/php/include.php');
-    require_once(AB_BASEDIR.'/lib/php/blowfish.php');
-    require_once(AB_BASEDIR.'/lib/php/common.php');
     require_once(AB_BASEDIR.'/lib/php/template.php');
 
+    /*
     // prepare authentication array
     global $auth;
     $auth = array();
@@ -27,7 +24,208 @@
     $userinfo = array();
     $userinfo = auth_get_userinfo('guest');
     $userinfo['logged_in']   = 0;
+*/
 
+class SecurityController {
+    private $authenticator = null;
+    private $authorizer = null;
+
+    private function __construct() {
+    }
+
+    /*
+    function SecurityController() {
+        $this->__construct();
+    }
+    */
+
+    public static function getInstance() {
+        static $instance = null;
+        if($instance == null) {
+            $instance = new SecurityController();
+        }
+        return $instance;
+    } 
+
+    function init() {
+        global $conf;
+
+        $authenticator_plugin = array_get($conf, 'authenticator_plugin', 'authenticator_default');
+        include_once(AB_BASEDIR.'/lib/php/auth/'.$authenticator_plugin.'.php');
+        $this->authenticator = new Authenticator();
+        $this->authenticator->init();
+
+        $authorizer_plugin = array_get($conf, 'authorizer_plugin', 'authorizer_default');
+        include_once(AB_BASEDIR.'/lib/php/auth/'.$authorizer_plugin.'.php');
+        $this->authorizer = new Authorizer();
+        $this->authorizer->init();
+    }
+
+    function authenticate($request) {
+        // authenticating
+        $accountid = $this->authenticator->authenticate($request);
+        if ($accountid == null) {
+            //log.warn(SAT, "[action=\"login\" account=\"null\" result=\"failed\"] Authentication failed");
+            return null;
+        }
+
+        return $accountid;
+    }
+
+    // return true if account has permission, false else
+    function authorize($accountid, $permission) {
+        return $this->authorizer->authorize($accountid, $permission);
+    }
+
+    function get_account($accountid) {
+        $account = $this->authenticator->get_account($accountid);
+        if($account == null)
+            return null;
+        $roles = $this->authorizer->get_roles($accountid);
+        $permissions = $this->authorizer->get_permissions($accountid);
+        $account['roles'] = $roles;
+        $account['permissions'] = $permissions;
+
+        return $account;
+    }
+
+    function get_accounts() {
+        $a = $this->authenticator->get_accounts();
+        $accounts = array();
+        foreach($a as $accountid => $dummy) {
+            $accounts[$accountid] = $this->get_account($accountid);
+        }
+        return $accounts;
+    }
+
+    function get_roles() {
+        return $this->authorizer->get_roles();
+    }
+
+    function do_action($request, $action) {
+        switch($action) {
+            case 'account_save':
+                $this->account_save($request);
+                break;
+            case 'account_password':
+                $this->account_password($request);
+                break;
+            case 'account_mypassword':
+                $this->account_mypassword($request);
+                break;
+            case 'account_delete':
+                $this->account_delete($request);
+                break;
+            case 'role_save':
+                $this->role_save($request);
+                break;
+            case 'role_delete':
+                $this->role_delete($request);
+                break;
+            default:
+        }
+    }
+
+    function account_save($request) {
+        global $_SESSION;
+
+        $accountid = $request['accountid'];
+        $fullname = $request['fullname'];
+        $email = $request['email'];
+        $roles = $request['roles'];
+
+        $account = $this->authenticator->get_account($accountid);
+        if($account == null) {
+            $account = array();
+            $account['fullname'] = '';
+            $account['email'] = '';
+            $account['password'] = '';
+        }
+        $account['fullname'] = $fullname;
+        $account['email'] = $email;
+
+        $this->authenticator->set_account($accountid, $account);
+        $this->authenticator->save_accounts();
+        $this->authorizer->set_roles($accountid, $roles);
+        $this->authorizer->save_access();
+        
+        $_SESSION['viewname'] = '/admin/accounts';
+    }
+
+    function account_password($request) {
+        global $_SESSION;
+
+        $accountid = $request['accountid'];
+        $password = $request['password'];
+
+        $account = $this->authenticator->get_account($accountid);
+        if($account == null) {
+            $account = array();
+            $account['fullname'] = '';
+            $account['email'] = '';
+            $account['password'] = '';
+        }
+        $account['password'] = $password;
+
+        $this->authenticator->set_account($accountid, $account);
+        $this->authenticator->save_accounts();
+        
+        $_SESSION['viewname'] = '/admin/accounts';
+    }
+
+    function account_mypassword($request) {
+        global $_SESSION;
+
+        $accountid = $_SESSION['accountid'];
+        $password = $request['password'];
+
+        $account = $this->authenticator->get_account($accountid);
+        if($account == null)
+            return;
+        $account['password'] = $password;
+
+        $this->authenticator->set_account($accountid, $account);
+        $this->authenticator->save_accounts();
+        
+        $_SESSION['viewname'] = '/profile';        
+    }
+
+    function account_delete($request) {
+        global $_SESSION;
+
+        $accountid = $request['accountid'];
+
+        $this->authenticator->set_account($accountid, null);
+        $this->authenticator->save_accounts();
+        $this->authorizer->set_roles($accountid, null);
+        $this->authorizer->save_access();
+        
+        $_SESSION['viewname'] = '/admin/accounts';        
+    }
+
+    function role_save($request) {
+        global $_SESSION;
+
+        $roleid = $request['roleid'];
+        $permissions = $request['permissions'];
+
+        $this->authorizer->set_role_permissions($roleid, $permissions);
+        $this->authorizer->save_roles();
+        
+        $_SESSION['viewname'] = '/admin/roles';
+    }
+
+    function role_delete($request) {
+        global $_SESSION;
+
+        $roleid = $request['roleid'];
+        $this->authorizer->set_role_permissions($roleid, null);
+        $this->authorizer->save_roles();
+
+        $_SESSION['viewname'] = '/admin/roles';
+    }
+
+}
 /**
  * Checks if a user is authenticated (and has a valid session cookie)
  *
@@ -39,6 +237,7 @@
  *
  * @return  if user is logged in or guest access is granted. does not return otherwise.
  */
+/*
 function auth_check($force_login = false) {
     global $conf;
     global $lang;
@@ -108,7 +307,7 @@ function auth_check($force_login = false) {
     tpl_include('auth.tpl');
     exit();
 }
-
+*/
 /**
  * Checks username and password
  *
@@ -119,6 +318,7 @@ function auth_check($force_login = false) {
  *
  * @return  boolean
  */
+/*
 function auth_login($userid, $password) {
     global $auth;
     global $conf;
@@ -148,7 +348,7 @@ function auth_login($userid, $password) {
     //msg("login action=failed user=$userid");
     return false;
 }
-
+*/
 
 /**
  * Log Out
@@ -158,6 +358,7 @@ function auth_login($userid, $password) {
  * @author  Clemens Wacha <clemens.wacha@gmx.net>
  *
  */
+/*
 function auth_logout() {
 	msg("logout!");
 
@@ -173,7 +374,7 @@ function auth_logout() {
     header("Location: ". AB_URL);
     exit();
 }
-
+*/
 
 /**
  * Checks permissions
@@ -186,6 +387,7 @@ function auth_logout() {
  * @param   action
  * @return  boolean isAllowed 
  */
+/*
 function auth_verify_action($userid, $action) {
     global $conf;
     global $lang;
@@ -237,51 +439,104 @@ function auth_get_userinfo($userid) {
 
     return null;
 }
-
-function auth_get_users() {
+*/
+/**
+ * Get all Accounts (except guest user)
+ * This function returns an array of accountinfo arrays with all configured accounts
+ * Array key is the accountid. An accountinfo array looks as follows:
+ * accountinfo: (
+ *  [accountid] => 'fred'
+ *  [fullname] => 'Fred the Geek'
+ *  [email] => 'fred@geeks.com'
+ *  [groups] => array('@editor')
+ * )
+ *
+ * @author  Clemens Wacha <clemens.wacha@gmx.net>
+ *
+ * @return  array of accountinfo arrays
+ */
+/*
+function auth_get_accounts() {
 	global $auth;
 	global $conf;
-	$users = array();
+	$accounts = array();
 
-    if(!$conf['auth_enabled'] || $conf['auth_allow_guest'])
-    	$users['guest'] = auth_get_userinfo('guest');
-	
-	foreach($auth as $userid => $dummy) {
-		if (substr($userid, 0, 1) === "@")
+	foreach($auth as $accountid => $dummy) {
+		if (substr($accountid, 0, 1) === "@")
 			continue;
-		$userinfo = auth_get_userinfo($userid);
-		$users[$userid] = $userinfo;
+		$accountinfo = auth_get_userinfo($accountid);
+		$accounts[$accountid] = $accountinfo;
 	}
 
-    return $users;
+    return $accounts;
+}
+*/
+/**
+ * Get all Roles
+ * This function returns an array of roleinfo arrays with all configured roles
+ * Array key is the roleid. A roleinfo array looks as follows:
+ * roleinfo: (
+ *  [roleid] => '@editor'
+ *  [permissions] => array('show', 'img', 'search', ...)
+ * )
+ *
+ * @author  Clemens Wacha <clemens.wacha@gmx.net>
+ *
+ * @return  array of roleinfo arrays
+ */
+/*
+function auth_get_roles() {
+    global $auth;
+    global $conf;
+    $roles = array();
+
+    foreach($auth as $roleid => $dummy) {
+        if (substr($roleid, 0, 1) !== "@")
+            continue;
+        $roleinfo = array();
+        $roleinfo['roleid'] = $roleid;
+        $roleinfo['permissions'] = array_get($auth[$roleid], 'permissions', array());;
+        $roles[$roleid] = $roleinfo;
+    }
+
+    return $roles;
 }
 
-/**
- * Creates a random key to encrypt the password in cookies
- *
- * This function tries to read the password for encrypting
- * cookies from $conf['metadir'].'/_htcookiesalt'
- * if no such file is found a random key is created and
- * and stored in this file.
- *
- * @author  Andreas Gohr <andi@splitbrain.org>
- *
- * @return  string
- */
-function auth_cookiesalt(){
-    global $conf;
-    $file = AB_STATEDIR."/_htcookiesalt";
-    $salt = @file($file);
-    if(empty($salt)){
-        $salt = uniqid(rand(), true);
-        $fd = fopen($file, "w");
-        if(!$fd) return $salt;
-        fwrite($fd, $salt);
-        fclose($fd);
-        fix_fmode($file);
+function auth_save_user($userinfo) {
+    global $auth;
+
+    if(!is_array($userinfo)) {
+        return false;
     }
-    return $salt;
+
+    $userid = $userinfo['userid'];
+    if(!array_key_exists($userid, $auth)) {
+        $auth[$userid] = array();
+    }
+    $auth[$userid]['fullname'] = $userinfo['fullname'];
+    $auth[$userid]['email'] = $userinfo['email'];
+    $auth[$userid]['groups'] = $userinfo['groups'];
+    $auth[$userid]['password'] = md5($userinfo['password']);
+
+    auth_save($auth);
 }
+
+function auth_save_group($groupinfo) {
+    global $auth;
+
+    if(!is_array($groupinfo)) {
+        return false;
+    }
+
+    $groupid = $groupinfo['groupid'];
+    if(!array_key_exists($groupid, $auth)) {
+        $auth[$groupid] = array();
+    }
+    $auth[$groupid]['permissions'] = $groupinfo['permissions'];
+
+    auth_save($auth);
+}
+*/
 
 
 ?>

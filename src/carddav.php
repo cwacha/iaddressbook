@@ -6,9 +6,11 @@
  * 
  */
 
-if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/'));
+if(!defined('AB_BASEDIR')) define('AB_BASEDIR',__DIR__);
 require_once(AB_BASEDIR.'/lib/php/include.php');
+require_once(AB_BASEDIR.'/lib/php/common.php');
 require_once(AB_BASEDIR.'/lib/php/init.php');
+require_once(AB_BASEDIR.'/lib/php/module_auth.php');
 
 global $conf;
 
@@ -48,6 +50,9 @@ $server->addPlugin(new Sabre\DAV\Auth\Plugin($authBackend,'iAddressBook'));
 $server->addPlugin(new Sabre\DAV\Browser\Plugin());
 $server->addPlugin(new Sabre\CardDAV\Plugin());
 $server->addPlugin(new Sabre\DAVACL\Plugin());
+
+$securitycontroller = SecurityController::getInstance();
+$securitycontroller->init();
 
 // And off we go!
 $server->exec();

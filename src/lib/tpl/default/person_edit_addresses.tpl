@@ -1,14 +1,15 @@
-    <tr>
-        <td class="person_left">
+    <div class="row">
+        <div class="col person_left">
             <div class="person_labels"><?php echo $lang['label_addresses']; ?></div>
-        </td>
-        <td></td>
-    </tr>
+        </div>
+        <div class="col"></div>
+        <div class="col-1"></div>
+    </div>
 
-    <tr id="addresslabel_template1" style="display: none;">
-        <td class="person_left">
-            <div class="person_labels" style="height: 20px;">
-                <select name="addresslabel_" size="1" class="text" onchange="custom_addresslabel(this);">
+    <div class="row" id="addresslabel_template1" style="display: none;">
+        <div class="col person_left">
+            <div class="form-group">
+                <select name="addresslabel_" size="1" class="form-control" onchange="custom_addresslabel(this);">
                     <option value='HOME' selected ><?php echo tpl_label('HOME'); ?></option>
                     <option value='WORK' ><?php echo tpl_label('WORK'); ?></option>
                     <option value='_$!<Other>!$_' ><?php echo tpl_label('_$!<Other>!$_'); ?></option>
@@ -16,40 +17,39 @@
                     <option value='CUSTOM' ><?php echo tpl_label("CUSTOM"); ?></option>
                 </select>
             </div>
-            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_street']; ?></div>
-            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_zip']; ?></div>
-            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_city']; ?></div>
-            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_state']; ?></div>
-            <div class="person_labels" style="height: 20px;"><?php echo $lang['label_country']; ?></div>
-        </td>
-        <td class="person_right">
-            <div class="person_text" style="height: 20px;">
+        </div>
+        <div class="col pb-4">
                 <input type="hidden" name="template_" value='' class="text" />
-                &nbsp;
+            <div class="form-group" >
+                <input type="text" name="street_" placeholder="<?php echo $lang['label_street']; ?>" value='' class="form-control form-control-sm" />
             </div>
-            <div class="person_text" style="height: 20px;">
-                <input type="text" name="street_" value='' class="text" />
-                <a href="#" onclick="add_addresslabel('HOME');return false;"><img src="<?php echo AB_TPL; ?>images/plus.gif"></a>
-                <a href="#" onclick="del_addresslabel(this);return false;"><img src="<?php echo AB_TPL; ?>images/minus.gif"></a>
+            <div class="form-group" >
+                <input type="text" name="zip_" placeholder="<?php echo $lang['label_zip']; ?>" value='' class="form-control form-control-sm" size="10" />
             </div>
-            <div class="person_text" style="height: 20px;">
-                <input type="text" name="zip_" value='' class="text" size="10" />
+            <div class="form-group" >
+                <input type="text" name="city_" placeholder="<?php echo $lang['label_city']; ?>" value='' class="form-control form-control-sm" />
             </div>
-            <div class="person_text" style="height: 20px;">
-                <input type="text" name="city_" value='' class="text" />
+            <div class="form-group" >
+                <input type="text" name="state_" placeholder="<?php echo $lang['label_state']; ?>" value='' class="form-control form-control-sm" />
             </div>
-            <div class="person_text" style="height: 20px;">
-                <input type="text" name="state_" value='' class="text" />
+            <div class="form-group" >
+                <input type="text" name="country_" placeholder="<?php echo $lang['label_country']; ?>" value='' class="form-control form-control-sm" />
             </div>
-            <div class="person_text" style="height: 20px;">
-                <input type="text" name="country_" value='' class="text" />
-            </div>
-        </td>
-    </tr>
+        </div>
+        <div class="col-1 pl-0">
+            <div class="btn-group" role="group">
+                <a href="#" onclick="add_addresslabel('HOME');return false;" class="btn btn-success btn-sm">+</a>
+                <a href="#" onclick="del_addresslabel(this);return false;" class="btn btn-danger btn-sm">-</a>
+            </div>            
+        </div>
+    </div>
 
-    <tr id="addresslabel_position"><td></td><td></td></tr>
-    
-    <tr><td style="height: 1em;"></td><td></td></tr>
+    <div class="row" id="addresslabel_position">
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+
+    <div class="row pb-4" ></div>
     
 <script type="text/javascript">
 var addresslabel_counter = 0;

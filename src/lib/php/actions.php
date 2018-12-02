@@ -6,13 +6,10 @@
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
 
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-    require_once(AB_BASEDIR.'/lib/php/include.php');
     require_once(AB_BASEDIR.'/lib/php/addressbook.php');
     require_once(AB_BASEDIR.'/lib/php/category.php');
     require_once(AB_BASEDIR.'/lib/php/template.php');
     require_once(AB_BASEDIR.'/lib/php/image.php');
-    require_once(AB_BASEDIR.'/lib/php/common.php');
     require_once(AB_BASEDIR.'/lib/php/module_vcard.php');
     require_once(AB_BASEDIR.'/lib/php/module_csv.php');
     require_once(AB_BASEDIR.'/lib/php/module_ldif.php');
@@ -23,15 +20,17 @@
  *
  * @author Clemens Wacha <clemens.wacha@gmx.net>
  */
-function act_dispatch(){
-    global $ACT;
+function act_dispatch($request, $action) {
     global $QUERY;
     global $ID;
     global $lang;
     global $conf;
 
-    switch($ACT) {
-        
+  //msg("test info");
+  //msg("test success", 1);
+  //msg("test error", -1);
+
+    switch($action) {
         case 'search':
             if(empty($QUERY)) {
                 act_search();
@@ -133,6 +132,11 @@ function act_dispatch(){
         
         case 'check':
             act_check();
+
+        case 'config_save':
+            act_config_save($request);
+            $_SESSION['viewname'] = '/admin';
+            break;
         
         case 'edit':
         case 'select_offset':
@@ -146,8 +150,8 @@ function act_dispatch(){
     act_hsc_everything();
     
     //call template FIXME: all needed vars available?
-    header('Content-Type: text/html; charset=utf-8');
-    tpl_include('main.tpl');
+    //header('Content-Type: text/html; charset=utf-8');
+    //tpl_include('main.tpl');
 }
 
 function act_check() {
@@ -249,10 +253,14 @@ function act_save() {
     }
 
     $birthdate = array_get($_REQUEST, 'birthdate', '');
-    $year = intval(substr($birthdate, 0, 4));
-    $month = intval(substr($birthdate, 5, 2));
-    $day = intval(substr($birthdate, 8, 2));
-    $contact->birthdate = sprintf("%04u-%02u-%02u", $year, $month, $day);
+    if(strlen($birthdate) == 10) {
+        $year = intval(substr($birthdate, 0, 4));
+        $month = intval(substr($birthdate, 5, 2));
+        $day = intval(substr($birthdate, 8, 2));
+        $contact->birthdate = sprintf("%04u-%02u-%02u", $year, $month, $day);
+    } else {
+        $contact->birthdate = '';
+    }
 
     $contact->homepage      = real_br2nl(array_get($_REQUEST, 'homepage'));
     $contact->note          = str_replace("\r", "", array_get($_REQUEST, 'note'));
@@ -495,7 +503,9 @@ function act_category_addcontacts() {
 
 function act_category_delcontacts() {
 	global $CAT;
-	$cat_id = ( int ) trim($_REQUEST ['cat_id']);
+    global $CAT_ID;
+
+    $cat_id = $CAT_ID;
 	$category = $CAT->get($cat_id);
 	if (!$category)
 		return;
@@ -507,6 +517,100 @@ function act_category_delcontacts() {
 		}
 	}
 	$CAT->deleteMembersFromCategory($category->id, $members);
+}
+
+function act_config_save($request) {
+    global $conf;
+    global $defaults;
+
+    $config = array();
+    $config['fmode']             = (int)array_get($request, 'fmode', $defaults['fmode']);
+    $config['dmode']             = (int)array_get($request, 'dmode', $defaults['dmode']);
+    $config['basedir']           = array_get($request, 'basedir', $defaults['basedir']);
+    $config['baseurl']           = array_get($request, 'baseurl', $defaults['baseurl']);
+
+    $config['dbtype']            = array_get($request, 'dbtype', $conf['dbtype']);
+    $config['dbname']            = array_get($request, 'dbname', $conf['dbname']);
+    $config['dbserver']          = array_get($request, 'dbserver', $conf['dbserver']);
+    $config['dbuser']            = array_get($request, 'dbuser', $conf['dbuser']);
+    $config['dbpass']            = array_get($request, 'dbpass', $conf['dbpass']);
+    $config['dbtable_abs']       = array_get($request, 'dbtable_abs', $conf['dbtable_abs']);
+    $config['dbtable_ab']        = array_get($request, 'dbtable_ab', $conf['dbtable_ab']);
+    $config['dbtable_cat']       = array_get($request, 'dbtable_cat', $conf['dbtable_cat']);
+    $config['dbtable_catmap']    = array_get($request, 'dbtable_catmap', $conf['dbtable_catmap']);
+
+    $config['lang']              = array_get($request, 'lang', $defaults['lang']);
+    $config['title']             = array_get($request, 'title', $defaults['title']);
+    $config['template']          = array_get($request, 'template', $defaults['template']);
+    $config['bdformat']          = array_get($request, 'bdformat', $defaults['bdformat']);
+    $config['dformat']           = array_get($request, 'dformat', $defaults['dformat']);
+    $config['lastfirst']         = (int)array_get($request, 'lastfirst', 0);
+    $config['photo_resize']      = array_get($request, 'photo_resize', $defaults['photo_resize']);
+    $config['photo_size']        = array_get($request, 'photo_size', $defaults['photo_size']);
+    $config['photo_format']      = array_get($request, 'photo_format', $defaults['photo_format']);
+    $config['map_link']          = array_get($request, 'map_link', $defaults['map_link']);
+    $config['contactlist_limit'] = (int)array_get($request, 'contactlist_limit', $defaults['contactlist_limit']);
+    $config['contactlist_abc']   = (int)array_get($request, 'contactlist_abc', 0);
+    $config['bday_advance_week'] = (int)array_get($request, 'bday_advance_week', $defaults['bday_advance_week']);
+
+    $config['canonical']         = (int)array_get($request, 'canonical', 0);
+    $config['auth_enabled']      = (int)array_get($request, 'auth_enabled', 0);
+    $config['auth_allow_guest']  = (int)array_get($request, 'auth_allow_guest', 0);
+    $config['im_convert']        = array_get($request, 'im_convert', $defaults['im_convert']);
+    $config['photo_enable']      = (int)array_get($request, 'photo_enable', 0);
+    $config['session_name']      = array_get($request, 'session_name', $defaults['session_name']);
+    $config['session_lifetime_min'] = array_get($request, 'session_lifetime_min', $defaults['session_lifetime_min']);
+    $config['mark_changed']      = (int)array_get($request, 'mark_changed', 0);
+
+    $config['debug']             = (int)array_get($request, 'debug', 0);
+    $config['debug_db']          = (int)array_get($request, 'debug_db', 0);
+
+    $config['vcard_fb_enc']      = array_get($request, 'vcard_fb_enc', $defaults['vcard_fb_enc']);
+    $config['ldif_base']         = array_get($request, 'ldif_base', $defaults['ldif_base']);
+    $config['ldif_mozilla']      = (int)array_get($request, 'ldif_mozilla', 0);
+    $config['xmlrpc_enable']     = (int)array_get($request, 'xmlrpc_enable', 0);
+    $config['carddav_enable']    = (int)array_get($request, 'carddav_enable', 0);
+
+    $filename = AB_CONFDIR.'/config.php';
+
+    $new_config = array();
+    foreach($config as $key => $value) {
+        if(!array_key_exists($key, $defaults) || $config[$key] != $defaults[$key]) {
+            $new_config[$key] = $value;
+        }
+    }
+    if(empty($new_config)) {
+        unlink($filename);
+        return true;
+    }
+
+    $header = array();
+    $header[] = "/**";
+    $header[] = " * This is the AddressBook's config file";
+    $header[] = " * This is a piece of PHP code so PHP syntax applies!";
+    $header[] = " *";
+    $header[] = " * Automatically generated file. Do not modify!";
+    $header[] = " */\n\n";
+
+    $fd = fopen($filename, "w");
+    if(!$fd) {
+        msg("Error writing $type.php to file $filename", -1);
+        return false;
+    }
+    fwrite($fd, "<?php\n\n");
+    
+    foreach($header as $line) {
+        fwrite($fd, $line . "\n");
+    }
+
+    $data = array_to_text($new_config, '$conf');
+    fwrite($fd, $data);
+
+    fwrite($fd, "\n\n?>");
+    fclose($fd);
+    fix_fmode($filename);
+
+    return true;
 }
 
 function act_hsc_everything() {

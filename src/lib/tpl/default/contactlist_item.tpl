@@ -1,10 +1,15 @@
-<div class="contactlist_item<?php echo $color; ?>">
-    <?php if($contact->company == true) { 
+<?php
+    $selected = "";
+    if($ID == $contact_entry->id)
+        $selected = "_selected";
+?>
+<div class="contactlist_item<?php echo $selected; ?>" onClick='javascript:select_contact(<?php echo $contact_entry->id; ?>);'>
+    <?php if($contact_entry->company == true) { 
         $small_image = "images/company_small.png";
     } else {
         $small_image = "images/person_small.png";
     }; ?>
-    <input type="checkbox" name="ct_<?php echo $contact->id; ?>" value="<?php echo $contact->id; ?>" style='margin-left: 5px;'>
+    <input type="checkbox" name="ct_<?php echo $contact_entry->id; ?>" value="<?php echo $contact_entry->id; ?>" onclick='javascript:event.stopPropagation();'>
     <img src="<?php echo AB_TPL.$small_image; ?>" >
-    <a href='?id=<?php echo $contact->id; ?>'><?php echo $contact->name(); ?> </a><br>
+    <a role="button"><?php echo $contact_entry->name(); ?> </a>
 </div>

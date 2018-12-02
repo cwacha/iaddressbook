@@ -392,6 +392,8 @@ function step_check() {
         $has_sqlite = true;
     }
     try {
+        if(!class_exists('PDO'))
+            throw new Exception('PDO not supported');
     	$dummy = new PDO('sqlite::memory:');
     	$version = $dummy->getAttribute(PDO::ATTR_SERVER_VERSION);
     	unset($dummy);

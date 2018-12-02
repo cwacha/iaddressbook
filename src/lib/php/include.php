@@ -15,5 +15,4 @@
     if(!defined('AB_IMPORTDIR')) define('AB_IMPORTDIR',AB_BASEDIR.'/var/import');
     if(!defined('AB_STATEDIR')) define('AB_STATEDIR',AB_BASEDIR.'/var/state');
 
-    require_once(AB_BASEDIR.'/lib/default/config.php');
 ?>

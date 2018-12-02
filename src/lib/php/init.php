@@ -6,9 +6,6 @@
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
 
-	if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-    require_once(AB_BASEDIR.'/lib/php/include.php');
-    require_once(AB_BASEDIR.'/lib/php/common.php');
 
     /**
     * Initialize some defaults
@@ -62,6 +59,16 @@
         session_set_cookie_params(0, AB_BASE);
         session_start();
     }
+
+    // invalidate session if older than timeout
+    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $conf['session_lifetime_min'] * 60)) {
+        msg("session timed out!");
+        session_unset();     // unset $_SESSION variable for the run-time 
+        session_destroy();   // destroy session data in storage
+        session_start();
+    }
+    $_SESSION['last_activity'] = time();
+
 
     // set register_globals to off
     if (ini_get('register_globals')) {
@@ -205,74 +212,93 @@ function remove_magic_quotes(&$array) {
  * @author Andreas Gohr <andi@splitbrain.org>
  */
 
-    function getBaseURL($abs=false){
-        global $conf;
-        //if canonical url enabled always return absolute
-        if($conf['canonical']) $abs = true;
-        
-        if($conf['basedir']){
-            $dir = $conf['basedir'].'/';
-        }elseif($_SERVER['SCRIPT_NAME']){
-            $dir = dirname($_SERVER['SCRIPT_NAME']).'/';
-        }elseif($_SERVER['DOCUMENT_ROOT'] && $_SERVER['SCRIPT_FILENAME']){
-            $dir = preg_replace ('/^'.preg_quote($_SERVER['DOCUMENT_ROOT'],'/').'/','',
-                                 $_SERVER['SCRIPT_FILENAME']);
-            $dir = dirname('/'.$dir).'/';
-        }else{
-            $dir = dirname($_SERVER['PHP_SELF']).'/';
-        }
-        
-        $dir = str_replace('\\','/',$dir); #bugfix for weird WIN behaviour
-        $dir = preg_replace('#//+#','/',$dir);
-        
-        //handle script in lib/exe dir
-        $dir = preg_replace('!lib/exe/$!','',$dir);
-        
-        //finish here for relative URLs
-        if(!$abs) return $dir;
-        
-        //use config option if available
-        if($conf['baseurl']) return $conf['baseurl'].$dir;
-        
-        //split hostheader into host and port
-        list($host, $port) = explode(':', $_SERVER['HTTP_HOST'] . ':');
-        if(!$port)  $port = $_SERVER['SERVER_PORT'];
-        if(!$port)  $port = 80;
-        
-        // see if HTTPS is enabled - apache leaves this empty when not available,
-        // IIS sets it to 'off', 'false' and 'disabled' are just guessing
-        
-        $proto = 'http://';
-        if(array_key_exists('HTTPS', $_SERVER)) {
-            if (preg_match('/^(|off|false|disabled)$/i',$_SERVER['HTTPS'])){
-                $proto = 'http://';
-                if ($port == '80') {
-                    $port='';
-                }
-            } else {
-                $proto = 'https://';
-                if ($port == '443') {
-                    $port='';
-                }
-            }
-        }
-        
-        if($port) $port = ':'.$port;
-        
-        return $proto.$host.$port.$dir;
+function getBaseURL($abs=false){
+    global $conf;
+    //if canonical url enabled always return absolute
+    if($conf['canonical']) $abs = true;
+    
+    if($conf['basedir']){
+        $dir = $conf['basedir'].'/';
+    }elseif($_SERVER['SCRIPT_NAME']){
+        $dir = dirname($_SERVER['SCRIPT_NAME']).'/';
+    }elseif($_SERVER['DOCUMENT_ROOT'] && $_SERVER['SCRIPT_FILENAME']){
+        $dir = preg_replace ('/^'.preg_quote($_SERVER['DOCUMENT_ROOT'],'/').'/','',
+                             $_SERVER['SCRIPT_FILENAME']);
+        $dir = dirname('/'.$dir).'/';
+    }else{
+        $dir = dirname($_SERVER['PHP_SELF']).'/';
     }
     
-    function isMobileClient() {
-    	$mobileAgents = array("iPhone", "iPod", "Android", "Blackberry", "Series60" );
-    	$userAgent = $_SERVER['HTTP_USER_AGENT'];
-    	foreach($mobileAgents as $agent) {
-    		if( strpos($userAgent, $agent) === false) {
-    			continue;
-    		}
-    		return true;
-    	}
-    	return false;
+    $dir = str_replace('\\','/',$dir); #bugfix for weird WIN behaviour
+    $dir = preg_replace('#//+#','/',$dir);
+    
+    //handle script in lib/exe dir
+    $dir = preg_replace('!lib/exe/$!','',$dir);
+    
+    //finish here for relative URLs
+    if(!$abs) return $dir;
+    
+    //use config option if available
+    if($conf['baseurl']) return $conf['baseurl'].$dir;
+    
+    //split hostheader into host and port
+    list($host, $port) = explode(':', $_SERVER['HTTP_HOST'] . ':');
+    if(!$port)  $port = $_SERVER['SERVER_PORT'];
+    if(!$port)  $port = 80;
+    
+    // see if HTTPS is enabled - apache leaves this empty when not available,
+    // IIS sets it to 'off', 'false' and 'disabled' are just guessing
+    
+    $proto = 'http://';
+    if(array_key_exists('HTTPS', $_SERVER)) {
+        if (preg_match('/^(|off|false|disabled)$/i',$_SERVER['HTTPS'])){
+            $proto = 'http://';
+            if ($port == '80') {
+                $port='';
+            }
+        } else {
+            $proto = 'https://';
+            if ($port == '443') {
+                $port='';
+            }
+        }
     }
+    
+    if($port) $port = ':'.$port;
+    
+    return $proto.$host.$port.$dir;
+}
 
+function isMobileClient() {
+	$mobileAgents = array("iPhone", "iPod", "Android", "Blackberry", "Series60" );
+	$userAgent = $_SERVER['HTTP_USER_AGENT'];
+	foreach($mobileAgents as $agent) {
+		if( strpos($userAgent, $agent) === false) {
+			continue;
+		}
+		return true;
+	}
+	return false;
+}
+
+function getWebAppURI() {
+    global $webapp;
+    $baseuri = getBaseURL();
+    $webappuri = $baseuri . $webapp;
+    /*
+    $request_uri = strtolower($_SERVER['REQUEST_URI']);
+
+    $prefix = $baseuri;
+    if (substr($request_uri, 0, strlen($prefix)) == $prefix)
+        $request_uri = substr($request_uri, strlen($prefix));
+    
+    $prefix = $webapp;
+    if (substr($request_uri, 0, strlen($prefix)) == $prefix)
+        $webappuri = $baseuri . $webapp;
+    */
+
+    $webappuri = preg_replace("/\/$/", "", $webappuri);
+    return $webappuri;
+}
 
 ?>

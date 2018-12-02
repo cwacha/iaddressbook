@@ -1,14 +1,15 @@
-    <tr>
-        <td class="person_left">
+    <div class="row">
+        <div class="col person_left">
             <div class="person_labels"><?php echo $lang['label_urls']; ?></div>
-        </td>
-        <td></td>
-    </tr>
+        </div>
+        <div class="col"></div>
+        <div class="col-1"></div>
+    </div>
 
-    <tr id="urllabel_template1" style="display: none;">
-        <td class="person_left">
-            <div class="person_labels">
-                <select name="urllabel_" size="1" class="text" onchange="custom_urllabel(this);">
+    <div class="row" id="urllabel_template1" style="display: none;">
+        <div class="col person_left">
+            <div class="form-group">
+                <select name="urllabel_" size="1" class="form-control" onchange="custom_urllabel(this);">
                     <option value='_$!<HomePage>!$_' selected ><?php echo tpl_label('_$!<HomePage>!$_'); ?></option>
                     <option value='HOME' selected ><?php echo tpl_label('HOME'); ?></option>
                     <option value='WORK' ><?php echo tpl_label('WORK'); ?></option>
@@ -17,17 +18,21 @@
                     <option value='CUSTOM' ><?php echo tpl_label("CUSTOM"); ?></option>
                 </select>
             </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="url_" value="" class="text" />
-                <a href="#" onclick="add_urllabel('HOME');return false;"><img src="<?php echo AB_TPL; ?>images/plus.gif"></a>
-                <a href="#" onclick="del_urllabel(this);return false;"><img src="<?php echo AB_TPL; ?>images/minus.gif"></a>
+        </div>
+        <div class="col person_right">
+            <div class="form-group">
+                <input type="text" name="url_" value="" class="form-control form-control-sm" />
             </div>
-        </td>
-    </tr>
+        </div>
+        <div class="col-1 pl-0">
+            <div class="btn-group" role="group">
+                <a href="#" onclick="add_urllabel('HOME');return false;" class="btn btn-success btn-sm">+</a>
+                <a href="#" onclick="del_urllabel(this);return false;" class="btn btn-danger btn-sm">-</a>
+            </div>
+        </div>
+    </div>
 
-    <tr id="urllabel_position"><td></td><td></td></tr>
+    <div class="row" id="urllabel_position"></div>
 
 
 <script type="text/javascript">

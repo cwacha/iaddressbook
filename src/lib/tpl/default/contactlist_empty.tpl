@@ -1,5 +1,5 @@
-<div class="person_smalltext" style="text-align: center;" >
-    <div style="height: 0.5em;"></div>
-    <?php echo $lang['no_contacts']; ?>
-    <div style="height: 0.5em;"></div>
+<div class="text-center pt-1 pb-1">
+	<small>
+	    <?php echo $lang['no_contacts']; ?>
+	</small>
 </div>

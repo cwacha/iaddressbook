@@ -7,9 +7,6 @@ use Sabre\DAV;
 use iAddressbook;
     
     
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/../../..');
-    require_once(AB_BASEDIR.'/lib/php/include.php');
-    require_once(AB_BASEDIR.'/lib/php/init.php');
     require_once(AB_BASEDIR.'/lib/php/db.php');
     require_once(AB_BASEDIR.'/lib/php/module_vcard.php');
     require_once(AB_BASEDIR.'/lib/php/common.php');

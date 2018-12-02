@@ -60,6 +60,7 @@ $conf['map_link']    = 'http://maps.google.com/maps?f=q&hl=en&q=$zip,+$street,+$
                                                  // $pobox - P.O. Box
                                                  // $ext_adr - Extended address
 $conf['contactlist_limit'] = 25;                 // maximum number of contacts to display in contactlist
+$conf['contactlist_abc'] = true;                 // show the ABC picker in contactlist
 $conf['bday_advance_week'] = 2;                  // display upcoming birthdays in the next XX weeks (default 2, max 4)
 
 // Advanced Options
@@ -71,9 +72,10 @@ $conf['im_convert']  = '/usr/bin/convert';       // path to ImageMagicks convert
 $conf['photo_enable'] = 1;                       // enable photo usage (disable, if you are using sqlite 2.x)
 $conf['session_name'] = '';                      // override session name if you have more than one addressbook on your server
                                                  // only use alphanumeric characters (0-9, a-z, A-Z). No dots, does not consist of numbers only!
+$conf['session_lifetime_min'] = 10;              // session lifetime in minutes. Re-login required after a longer inactivity
 $conf['mark_changed'] = 1;                       // every contact that is added or modified will be automatically added to a new category called "modified contacts"
 $conf['debug'] = 0;                              // enable debug mode: use ?do=debug to show debug information
-$conf['debug_db']       = 0;					 // enable database debugging 
+$conf['debug_db']       = 0;                     // enable database debugging 
 
 // Import / Export
 

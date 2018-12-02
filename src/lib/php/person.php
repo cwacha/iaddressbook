@@ -50,7 +50,7 @@ class Person {
 
     function __construct() {
         $this->company = 0;
-        $this->birthdate = '0000-00-00';
+        $this->birthdate = '';
 
         $this->addresses = array();
         $this->emails = array();
@@ -216,7 +216,7 @@ class Person {
         if(!is_string($this->organization)) $this->organization = '';
         if(!is_string($this->note)) $this->note = '';
         
-        if(!is_string($this->birthdate) or empty($this->birthdate) or strlen($this->birthdate) != 10) $this->birthdate = '0000-00-00';
+        if(!is_string($this->birthdate) or strlen($this->birthdate) != 10) $this->birthdate = '';
         
         if(!is_bool($this->company)) $this->company = (bool)$this->company;
         

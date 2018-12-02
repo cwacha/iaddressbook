@@ -1,234 +1,173 @@
-<form method="post" enctype="multipart/form-data" action="">
+<form method="post" enctype="multipart/form-data" action="" name="person_edit">
 
-<table width="100%">
-    <tr><td style="height: 2em;"></td><td></td></tr>
-    <tr>
-        <td class="person_left" >
+<div class="container pt-4">
+    <div class="row">
+        <div class="col person_left">
             <!-- Begin Photo -->
             <img <?php if(!empty($conf['photo_size'])) echo "width='".$conf['photo_size']."'"; ?> src="?do=img&id=<?php echo $contact->id; ?>">
             <!-- End Photo -->
-        </td>
-        <td class="person_right" >
-            <div class="person_text">
-                <!-- Begin Photo Edit -->
-                <?php echo $lang['label_photoremove']; ?> <input type="checkbox" name="photo_delete" /><br><br>
-                <?php echo $lang['label_photochange']; ?> <input type="file" name="photo_file" value="" /><br>
-                <!-- End Photo Edit -->
+        </div>
+        <div class="col person_right" >
+            <!-- Begin Photo Edit -->
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="photo_delete" id="photoedit1"/>
+                <label class="form-check-label" for="photoedit1"><?php echo $lang['label_photoremove']; ?></label>
             </div>
-        </td>
-    </tr>
+            <div class="form-group">
+                <label for="photofile1"><?php echo $lang['label_photochange']; ?></label>
+                <input type="file" class="form-control-file" name="photo_file" id="photofile1" />
+            </div>
+            <!-- End Photo Edit -->
+        </div>
+        <div class="col-1"></div>
+    </div>
     
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
     
     <!-- Begin Name / Company -->
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_title']; ?>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col person_right">
+            <fieldset class="input-group-vertical">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="title" placeholder="<?php echo $lang['label_title']; ?>" value="<?php echo $contact->title; ?>">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="firstname" placeholder="<?php echo $lang['label_firstname']; ?>" value="<?php echo $contact->firstname; ?>" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="firstname2" placeholder="<?php echo $lang['label_firstname2']; ?>" value="<?php echo $contact->firstname2; ?>" />
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control form-control-sm" name="lastname" placeholder="<?php echo $lang['label_lastname']; ?>" value="<?php echo $contact->lastname; ?>" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="suffix" placeholder="<?php echo $lang['label_suffix']; ?>" value="<?php echo $contact->suffix; ?>" />
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-1"></div>
+    </div>
+    <div class="row">
+        <div class="col"></div>
+       <div class="col person_right">
+            <div class="form-group">
+                <input type="text" class="form-control form-control-sm" name="nickname" placeholder="<?php echo $lang['label_nickname']; ?>" value="<?php echo $contact->nickname; ?>" />
             </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="title" value="<?php echo $contact->title; ?>" class="text" />
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_firstname']; ?>
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="firstname" value="<?php echo $contact->firstname; ?>" class="text" />
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_firstname2']; ?>
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="firstname2" value="<?php echo $contact->firstname2; ?>" class="text" />
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_lastname']; ?>
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="lastname" value="<?php echo $contact->lastname; ?>" class="text" />
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_suffix']; ?>
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="suffix" value="<?php echo $contact->suffix; ?>" class="text" />
-            </div>
-        </td>
-    </tr>
-    
-    <tr><td style="height: 1em;"></td><td></td></tr>
-    
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_nickname']; ?>
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="nickname" value="<?php echo $contact->nickname; ?>" class="text" />
-            </div>
-        </td>
-    </tr>
+        </div>
+        <div class="col-1"></div>
+    </div>
 
-    <tr><td style="height: 1em;"></td><td></td></tr>
-
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_jobtitle']; ?>
-            </div>
-        </td>
-        <td class="person_right">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col person_right">
+            <fieldset class="input-group-vertical">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="jobtitle" placeholder="<?php echo $lang['label_jobtitle']; ?>" value="<?php echo $contact->jobtitle; ?>" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="department" placeholder="<?php echo $lang['label_department']; ?>" value="<?php echo $contact->department; ?>" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="organization" placeholder="<?php echo $lang['label_organization']; ?>" value="<?php echo $contact->organization; ?>" />
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-1"></div>
+    </div>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col form-check person_right">
             <div class="person_text">
-                <input type="text" name="jobtitle" value="<?php echo $contact->jobtitle; ?>" class="text" />
+                <input type="checkbox" class="form-check-input" name="company" <?php if($contact->company == true) echo "checked"; ?> id="company1" />
+                <label class="form-check-label" for="company1"><?php echo $lang['label_isorganization']; ?></label>
             </div>
-        </td>
-    </tr>
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_department']; ?>
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="department" value="<?php echo $contact->department; ?>" class="text" />
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_organization']; ?>
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="organization" value="<?php echo $contact->organization; ?>" class="text" />
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td class="person_left">
-            <div class="person_labels">
-                <?php echo $lang['label_isorganization']; ?>
-            </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="checkbox" name="company" <?php if($contact->company == true) echo "checked"; ?> class="text" />
-            </div>
-        </td>
-    </tr>    
+        </div>
+        <div class="col-1"></div>
+    </div>    
     <!-- End Name / Company -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
 
     <!-- Begin Phones -->
     <?php tpl_include('person_edit_phones.tpl'); ?>
     <!-- End Phones -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
 
     <!-- Begin Emails -->
     <?php tpl_include('person_edit_emails.tpl'); ?>
     <!-- End Emails -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
 
     <!-- Begin URLs -->
     <?php tpl_include('person_edit_urls.tpl'); ?>
     <!-- End URLs -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
 
     <!-- Begin Birthday -->
-    <tr>
-        <td class="person_left">
+    <div class="row">
+        <div class="col person_left">
             <div class="person_labels">
                 <?php echo $lang['label_birthday']; ?>
             </div>
-        </td>
-        <td class="person_right">
+        </div>
+        <div class="col person_right">
             <div class="person_text">
-                <input type="text" name="birthdate" value="<?php echo $contact->birthdate; ?>" class="text" />
-                (YYYY-MM-DD)
+                <input type="text" name="birthdate" placeholder="YYYY-MM-DD" value="<?php echo $contact->birthdate; ?>" class="form-control form-control-sm" />
             </div>
-        </td>
-    </tr>
+        </div>
+        <div class="col-1"></div>
+    </div>
     <!-- End Birthday -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
 
     <!-- Begin Relatednames -->
     <?php tpl_include('person_edit_relatednames.tpl'); ?>
     <!-- End Relatednames -->
 
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
 
     <!-- Begin Chathandles -->
     <?php tpl_include('person_edit_chathandles.tpl'); ?>
     <!-- End Chathandles -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
 
     <!-- Begin Addresses -->
     <?php tpl_include('person_edit_addresses.tpl'); ?>
     <!-- End Addresses -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
     
     <!-- Begin Notes -->
-    <tr>
-        <td class="person_left">
+    <div class="row">
+        <div class="col person_left">
             <div class="person_labels"><?php echo $lang['label_notes']?></div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <textarea name="note" rows="5" cols="50" class="text"><?php echo $contact->note; ?></textarea>
+        </div>
+        <div class="col person_right">
+            <div class="form-group">
+                <textarea name="note" rows="5" cols="50" class="form-control"><?php echo $contact->note; ?></textarea>
             </div>
-        </td>
-    </tr>
+        </div>
+        <div class="col-1"></div>
+    </div>
     <!-- End Notes -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
 
     <!-- Begin Categories -->
-    <tr>
-        <td class="person_left">
+    <div class="row">
+        <div class="col person_left">
             <div class="person_labels"><?php echo $lang['category']?></div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <textarea name="category" rows="5" cols="50" class="text"><?php
+        </div>
+        <div class="col person_right">
+            <div class="form-group">
+                <textarea name="category" rows="5" cols="50" placeholder="<?php echo $lang['category']?>" class="form-control"><?php
                     $categories = $contact->get_categories();
                     foreach($categories as $category) {
                     	if(strpos($category->name(), ' __') === 0)
@@ -237,29 +176,33 @@
                     }
 				?></textarea>
             </div>
-        </td>
-    </tr>
+        </div>
+        <div class="col-1"></div>
+    </div>
     <!-- End Categories -->
 
-    <tr><td style="height: 2em;"></td><td></td></tr>
+    <div class="row pb-4" ></div>
     
-</table>
-
-<div class="separator100"></div>
-
+</div>
 
     <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
-    <input type="hidden" name="do" value="save" />
-    <input type="submit" value="<?php echo $lang['btn_save']?>" class="button" style="float: left;" />
+    <input type="hidden" name="do" value="" />
 </form>
 
 <!-- Begin Buttons -->
-<form method="POST" action="">
-    <input type="hidden" name="id" value="<?php echo $contact->id; ?>" />
-    <input type="hidden" name="do" value="show" />
-    <div class="person_text" style="text-align: right;">
-    <input type="submit" value="<?php echo $lang['btn_cancel']?>" class="button" style="float: right;" />
-    </div>
-</form>
+<div class="btn-group float-right pb-4" role="group">
+    <button type="button" class="btn btn-primary btn-sm" onclick="javascript:person_action('save');"><?php echo $lang['btn_save']?></button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="javascript:person_action('show');"><?php echo $lang['btn_cancel']?></button>
+</div>
+
+<script type="text/javascript">
+function person_action(act, confirmation) {
+    if(confirmation) {
+        if(!confirm(confirmation)) return;
+    }
+    document.person_edit.elements["do"].value = act;
+    document.person_edit.submit();
+}
+</script>
 <!-- End Buttons -->
 

@@ -6,10 +6,7 @@
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
 
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-    require_once(AB_BASEDIR.'/lib/php/include.php');
     require_once(AB_BASEDIR.'/lib/php/html.php');
-    require_once(AB_BASEDIR.'/lib/php/common.php');
 
 
 /**
@@ -43,6 +40,8 @@ function ptln($string,$intend=0){
 function template($tpl){
     global $conf;
 
+    if(substr($tpl, 0, strlen(AB_TPLDIR)) === AB_TPLDIR)
+        return $tpl;
     if(@is_readable(AB_TPLDIR.'/'.$conf['template'].'/'.$tpl))
         return AB_TPLDIR.'/'.$conf['template'].'/'.$tpl;
 
@@ -57,47 +56,35 @@ function tpl_include($file) {
     global $contact;
     global $lang;
     global $conf;
-    global $userinfo;
     global $CAT;
     global $CAT_ID;
     global $categories;
-
-    include(template($file));
-}
-
-function tpl_showcontactlist() {
     global $contactlist;
     global $contactlist_offset;
     global $contactlist_limit;
     global $contactlist_letter;
-    global $lang;
-    global $conf;
-    global $CAT;
-    global $CAT_ID;
-    global $categories;
 
-    include(template('contactlist.tpl'));
+    include(template($file));
 }
 
+// deprecated
+function tpl_showcontactlist() {
+    tpl_include('contactlist.tpl');
+}
+
+// deprecated
 function tpl_showperson() {
-    global $ID;
     global $ACT;
-    global $AB;
-    global $CAT;
-    global $CAT_ID;
     global $contact;
-    global $lang;
-    global $conf;
-    global $categories;
     
     if(is_object($contact)) {
         if($ACT == 'edit' or $ACT == 'new') {
-            include(template('person_edit.tpl'));
+            tpl_include('person_edit.tpl');
         } else {
-            include(template('person.tpl'));
+            tpl_include('person.tpl');
         }
     } else {
-        include(template('person_empty.tpl'));
+        tpl_include('person_empty.tpl');
     }
 }
 
@@ -105,12 +92,8 @@ function tpl_contactlist() {
     global $contactlist;
     global $contactlist_offset;
     global $contactlist_limit;
-    global $contactlist_letter;
-    global $lang;
-    global $conf;
     $color = 1;
     $i = 0;
-    
 
     foreach($contactlist as $contact) {
         $i++;
@@ -121,10 +104,11 @@ function tpl_contactlist() {
     }
     
     if(count($contactlist) < 1) {
-        include(template('contactlist_empty.tpl'));
+        tpl_include('contactlist_empty.tpl');
     }
 }
 
+// deprecated
 function tpl_addresses($limit = 0) {
     global $ID;
     global $lang;
@@ -141,6 +125,7 @@ function tpl_addresses($limit = 0) {
     }
 }
 
+// deprecated
 function tpl_phones($limit = 0) {
     global $ID;
     global $contact;
@@ -155,6 +140,7 @@ function tpl_phones($limit = 0) {
     }
 }
 
+// deprecated
 function tpl_emails($limit = 0) {
     global $ID;
     global $contact;
@@ -169,6 +155,7 @@ function tpl_emails($limit = 0) {
     }
 }
 
+// deprecated
 function tpl_chathandles($limit = 0) {
     global $ID;
     global $contact;
@@ -183,6 +170,7 @@ function tpl_chathandles($limit = 0) {
     }
 }
 
+// deprecated
 function tpl_urls($limit = 0) {
     global $ID;
     global $contact;
@@ -197,6 +185,7 @@ function tpl_urls($limit = 0) {
     }
 }
 
+// deprecated
 function tpl_relatednames($limit = 0) {
     global $ID;
     global $contact;
@@ -243,18 +232,21 @@ function tpl_label($string) {
     return $string;
 }
 
+// deprecated
 function tpl_categorylist() {
-    global $categorylist;
+    global $categories;
     global $lang;
     global $conf;
+    global $CAT_ID;
     $color = 1;
 
-    foreach($categorylist as $category) {
+    foreach($categories as $category) {
         include(template('categorylist_item.tpl'));
         $color = 3 - $color;
     }
 }
 
+// deprecated
 function tpl_selectedcategory() {
     global $CAT;
     global $CAT_ID;
@@ -267,6 +259,7 @@ function tpl_selectedcategory() {
 }
 
 
+// deprecated
 function tpl_catselect() {
 ?>
             <form method="post" action="" >

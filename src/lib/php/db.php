@@ -7,7 +7,6 @@
      */
 
     if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-    require_once(AB_BASEDIR.'/lib/php/include.php');
     require_once(AB_BASEDIR.'/lib/php/DBConnector.php');
     require_once(AB_BASEDIR.'/lib/php/DBConnector_pdo_sqlite3.php');
     require_once(AB_BASEDIR.'/lib/php/DBConnector_pdo_mysql.php');

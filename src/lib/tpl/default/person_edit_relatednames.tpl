@@ -1,14 +1,15 @@
-    <tr>
-        <td class="person_left">
+    <div class="row">
+        <div class="col person_left">
             <div class="person_labels"><?php echo $lang['label_relatednames']; ?></div>
-        </td>
-        <td></td>
-    </tr>
+        </div>
+        <div class="col"></div>
+        <div class="col-1"></div>
+    </div>
     
-    <tr id="relatedlabel_template1" style="display: none;">
-        <td class="person_left">
-            <div class="person_labels">
-                <select name="relatednamelabel_" size="1" class="text" onchange="custom_relatedlabel(this);">
+    <div class="row" id="relatedlabel_template1" style="display: none;">
+        <div class="col person_left">
+            <div class="form-group">
+                <select name="relatednamelabel_" size="1" class="form-control" onchange="custom_relatedlabel(this);">
                     <option value='_$!<Father>!$_' ><?php echo tpl_label('_$!<Father>!$_'); ?></option>
                     <option value='_$!<Mother>!$_' ><?php echo tpl_label('_$!<Mother>!$_'); ?></option>
                     <option value='_$!<Parent>!$_' ><?php echo tpl_label('_$!<Parent>!$_'); ?></option>
@@ -25,18 +26,22 @@
                     <option value='CUSTOM' ><?php echo tpl_label("CUSTOM"); ?></option>
                 </select>
             </div>
-        </td>
-        <td class="person_right">
-            <div class="person_text">
-                <input type="text" name="relatedname_" value="" class="text" />
-                <a href="#" onclick="add_relatedlabel('_$!<Friend>!$_');return false;"><img src="<?php echo AB_TPL; ?>images/plus.gif"></a>
-                <a href="#" onclick="del_relatedlabel(this);return false;"><img src="<?php echo AB_TPL; ?>images/minus.gif"></a>
+        </div>
+        <div class="col person_right">
+            <div class="form-group">
+                <input type="text" name="relatedname_" value="" class="form-control form-control-sm" />
             </div>
-        </td>
-    </tr>
+        </div>
+        <div class="col-1 pl-0">
+            <div class="btn-group" role="group">
+                <a href="#" onclick="add_relatedlabel('_$!<Friend>!$_');return false;" class="btn btn-success btn-sm">+</a>
+                <a href="#" onclick="del_relatedlabel(this);return false;" class="btn btn-danger btn-sm">-</a>
+            </div>
+        </div>
+    </div>
 
-    <tr id="relatedlabel_position"><td></td><td></td></tr>
-    
+    <div class="row" id="relatedlabel_position"></div>
+
 
 <script type="text/javascript">
 var relatedlabel_counter = 0;

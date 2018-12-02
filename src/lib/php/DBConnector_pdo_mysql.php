@@ -32,11 +32,12 @@ class DBConnector_pdo_mysql extends DBConnector {
 		parent::init($server, $dbname, $user, $pass);
 
 		try {
-			if(class_exists('PDO')) {
-				$drivers = PDO::getAvailableDrivers();
-				if(array_search('mysql', $drivers) === FALSE)
-					throw new Exception();
-			}
+			if(!class_exists('PDO'))
+				throw new Exception();
+
+			$drivers = PDO::getAvailableDrivers();
+			if(array_search('mysql', $drivers) === FALSE)
+				throw new Exception();
 		} catch (Exception $e) {
 			throw new Exception("This PHP installation does not support PDO MySQL.");
 		}

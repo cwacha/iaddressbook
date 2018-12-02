@@ -6,8 +6,6 @@
      * @author     Clemens Wacha <clemens.wacha@gmx.net>
      */
 
-    if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-    require_once(AB_BASEDIR.'/lib/php/include.php');
 
 function get_version() {
     global $VERSION;
@@ -191,6 +189,9 @@ function msg($message, $lvl=0){
     $errors[0]  = 'info';
     $errors[1]  = 'success';
 
+    if(!isset($MSG)) $MSG = array();
+    $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
+/*
     if(!headers_sent()) {
         if(!isset($MSG)) $MSG = array();
         $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
@@ -203,6 +204,7 @@ function msg($message, $lvl=0){
             print "ERROR($lvl) $message";
         }
     }
+*/
     error_log("[" . $errors[$lvl] . "] " . $message);
 }
 
@@ -232,6 +234,19 @@ function msg_text() {
   return $ret;
 }
 
+function msg_json() {
+  global $MSG;
+
+  $ret = array();
+  if(isset($MSG)) {
+    foreach($MSG as $msg){
+      $ret[] = array("type" => $msg['lvl'], "msg" => $msg['msg']);
+    }    
+  }
+  
+  return json_encode($ret);
+}
+
 
 /*
  * array_to_text
@@ -244,7 +259,7 @@ function msg_text() {
 function array_to_text($array, $prefix='') {
     $text = '';
     
-    if(empty($prefix)) $prefix = '$lang';
+    if(empty($prefix)) $prefix = '$array';
     
     foreach($array as $key => $value) {
         if(gettype($value) == 'string') {

@@ -1,44 +1,57 @@
+<h4><?php echo $lang['contacts']; ?></h4>
+
+<?php if($conf['contactlist_abc'] == true) { ?>
+    <p class="pl-2 pr-2 small text-center">
+        <?php echo tpl_abc(); ?>
+    </p>
+<?php } ?>
+
+<div class="contactlist_item">
+    <div class="text-muted">
+        <input type='checkbox' name="selectall" onClick="select_all('ct_form', this.checked)" />
+        <?php echo $lang['category_all']; ?>
+    </div>
+</div>
+<form method="post" action="" name='ct_form'>
+    <?php
+        global $contact_entry;
+
+        $i = 0;
+        foreach($contactlist as $contact_entry) {
+            $i++;
+            if($i <= $contactlist_offset) continue;
+            if($contactlist_limit > 0 and ($i > $contactlist_offset + $contactlist_limit)) continue;
+            include(template('contactlist_item.tpl'));
+        }
+        
+        if(count($contactlist) < 1) {
+            tpl_include('contactlist_empty.tpl');
+        }
+    ?>
+
+    <p class="mt-2 text-muted text-center">
+        <?php echo count($contactlist); ?> <?php echo $lang['contacts']; ?>
+    </p>
+
+    <p class="pl-2 pr-2 small">
+        <?php echo tpl_pageselect(); ?>
+    </p>
+
+    <input type="hidden" name="do" value="" />
+    <input type="hidden" name="cat_id" value="" />
+    <input type="hidden" name="l" value="" />
+    <input type="hidden" name="o" value="" />
+</form>
+
+
 <td class="contactlist_td">
     <div class="contactlist">
-        <div class="panel">
-            <table class="header">
-                <tr class="header_tr">
-                    <td class="endcap"><img src="<?php echo AB_TPL; ?>images/split1_left.gif"></td>
-                    <td class="middle"><?php echo $lang['contacts']; ?> (<?php echo count($contactlist); ?>)</td>
-                    <td class="endcap"><img src="<?php echo AB_TPL; ?>images/split1_right.gif"></td>
-                </tr>
-            </table>
-        </div>
-                
-        <!-- Letter Filter Begin -->
-        <div style="height: 0.5em;"></div>
-        
-        <div class="person_smalltext" style="text-align: center; padding-left: 10px; padding-right: 10px;" >
-            <?php echo tpl_abc(); ?>
-        </div>
-        
-        <div style="height: 0.5em;"></div>
-        <!-- Letter Filter End -->
-        
-        <input type='checkbox' name="selectall" onClick="select_all('ct_form', this.checked)" style="float: left; margin-left: 5px; margin-top: 7px;"/>
-        <div class="person_smalltext" style="margin-top: 5px;">
-            <?php echo $lang['category']; ?>
-            <?php echo tpl_catselect(); ?>
-		</div>
-		<div class="separator100">&nbsp;</div>
-        
-        <form method="post" action="" name='ct_form'>
+                                
+        <form method="post" action="" name='ctold_form'>
 
-            <?php echo tpl_contactlist(); ?>
             
             <div class="separator100">&nbsp;</div>
             
-            <!-- Navigation Begin -->
-            <div class="person_smalltext">
-                <div style="text-align: center;" >
-                    <?php echo tpl_pageselect(); ?>
-                </div>
-            </div>
             
             <div style="height: 0.5em;"></div>
             
@@ -46,14 +59,6 @@
 
             <div class="person_smalltext">
                 
-                <!-- Contacts Section Begin -->
-                <?php echo $lang['contacts']; ?>
-                <div class="separator100">&nbsp;</div>
-                <div style="float: left;"> <a href="javascript:do_action('new')"><?php echo $lang['create_contact']; ?></a> </div>
-                <div style="float: right;"> <a href="javascript:do_action('delete_many', '<?php echo $lang['confirm_del_contacts']; ?>')"><?php echo $lang['delete_contacts']; ?></a> </div>
-
-                <div style="height: 3em;"></div>
-                <!-- Contacts Section End -->
 
                 <!-- Category Section Begin -->
                 <?php echo $lang['category']; ?>
@@ -89,26 +94,11 @@
                     ?>
                     </optgroup>
                 </select>
-                
-                <div style="height: 2.2em;"></div>
-                
-                <div style="float: left; margin-right: 5px;"> <a href="javascript:do_action('cat_add')"><?php echo $lang['cat_add']; ?></a> </div>
-                <input type="text" name="cat_name" class="text" style="float: right;" onkeypress="CheckEnter(event);" />
-                
+                                
                 <div style="height: 3em;"></div>
                 <!-- Category Section End -->
 
                 <!-- Import Section Begin -->
-                <?php echo $lang['import_export']; ?>
-                <div class="separator100">&nbsp;</div>
-                <div style="float: left;"> <a href="javascript:do_action('export_vcard_cat')"><?php echo $lang['export_vcard']; ?></a> </div>
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('export_csv_cat')"><?php echo $lang['export_csv']; ?></a> </div>
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('export_ldif_cat')"><?php echo $lang['export_ldif']; ?></a> </div>
-                <div style="height: 1.5em;"></div>
-                <div style="float: left;"> <a href="javascript:do_action('import_folder')"><?php echo $lang['import_folder']; ?></a> </div>
-                <div style="height: 3em;"></div>
                 <!-- Import Section End -->
                 
                 
@@ -172,4 +162,17 @@ function CheckEnter(evt) {
     do_action('cat_add');
     return false;
 }
+
+    function select_contact(id) {
+        document.select_contact_form.elements['id'].value = id;
+        document.select_contact_form.submit();
+    }
+    function check_contact(id) {
+        event.stopPropagation();
+    }
 </script>
+
+<form method='post' action='' name='select_contact_form'>
+    <input type='hidden' name='do' value='show' />
+    <input type='hidden' name='id' value='' />
+</form>

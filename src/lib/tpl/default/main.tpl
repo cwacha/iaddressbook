@@ -1,3 +1,4 @@
+<!doctype html>
 <?php
 
 /**
@@ -10,142 +11,181 @@
  * always be the very first line of a document.
  *
  * @link   http://iaddressbook.org
- * @author Clemens Wacha (clemens.wacha@gmx.net)
+ * @author Clemens Wacha (clemens@wacha.ch)
  */
 
 ?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>"
- lang="<?php echo $conf['lang']; ?>" dir="<?php echo $lang['direction']; ?>">
-<head>
+<html lang="<?php echo $conf['lang']; ?>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="<?php echo AB_TPL; ?>images/favicon.ico">
+
     <title><?php echo $conf['title']; ?></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <link rel="shortcut icon" href="<?php echo AB_TPL; ?>images/favicon.ico" />
-    <link rel="stylesheet" media="screen" type="text/css" href="<?php echo AB_TPL; ?>design.css" />
+    <!-- Bootstrap core JavaScript -->
+    <script src="<?php echo AB_TPL; ?>js/jquery-3.3.1.min.js"></script>
+    <script src="<?php echo AB_TPL; ?>js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo AB_TPL; ?>js/jquery.growl.js"></script>
+    <script src="<?php echo AB_TPL; ?>js/helpers.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="<?php echo AB_TPL; ?>applesearch/default.css" id="default"  />
-	<link rel="stylesheet" type="text/css" href="<?php echo AB_TPL; ?>applesearch/dummy.css" id="dummy_css"  />
-	<script type="text/javascript" src="<?php echo AB_TPL; ?>applesearch/applesearch.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="<?php echo AB_TPL; ?>css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="<?php echo AB_TPL; ?>css/glyphicons.css" rel="stylesheet">
+    <link href="<?php echo AB_TPL; ?>css/jquery.growl.css" rel="stylesheet">   
+    <link href="<?php echo AB_TPL; ?>css/dashboard.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="<?php echo $baseuri ?>">
+          <img src="<?php echo AB_TPL; ?>images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          <?php echo $conf['title']; ?>
+        </a>
+        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="<?php echo $baseuri ?>">Contacts</a>
+            </li>
+            <?php
+              if($_SESSION['authorized'] && in_array('/export', $_SESSION['account']['permissions'])) {
+            ?>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo $webappuri ?>/export"><?php echo $lang['import_export']; ?></a>
+              </li>
+            <?php
+              }
+  
+              if($_SESSION['authorized'] && in_array('/admin', $_SESSION['account']['permissions'])) {
+            ?>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo $webappuri ?>/admin">Admin</a>
+              </li>
+            <?php
+              }
+            ?>
+          </ul>
+
+          <!-- Search Box -->
+          <?php
+            if($_SESSION['authorized'] && in_array('search', $_SESSION['account']['permissions'])) {
+          ?>
+            <form class="form-inline mt-2 mt-md-0">
+              <input class="form-control mr-sm-2" type="text" name="q" value="<?php echo $QUERY; ?>" placeholder="<?php echo $lang['btn_search']; ?>" />
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><?php echo $lang['btn_search']; ?></button>
+              <input type="hidden" name="do" value="search" />
+              <input type="hidden" name="id" value="<?php echo $ID; ?>" />
+            </form>
+          <?php
+            }
+          ?>
+
+          <!-- User Profile -->
+          <?php
+            if($_SESSION['authorized']) {
+          ?>
+            <ul class="navbar-nav navbar-right ml-sm-2">
+              <li class="dropdown">
+                <a href="javascript:void(0)" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                  <span class="glyphicon glyphicon-user"></span><span class="caret"></span>
+                  <?php echo $_SESSION['account']['fullname']; ?>
+              </a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a class="dropdown-item" href="<?php echo $webappuri ?>/profile">Profile</a></li>
+                  <li class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="<?php echo $webappuri ?>/?do=logout">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+          <?php
+            }
+          ?>
+          <ul class="navbar-nav navbar-right ml-sm-2">
+            <li class="dropdown">
+              <a class="nav-link" data-toggle="modal" data-target="#notification_modal">
+                <span class="glyphicon glyphicon-list"></span><span id="notification_badge" class="invisible badge badge-danger">0</span>
+              </a>
+          </ul>
+
+        </div>
+      </nav>
+    </header>
+
+    <div class="container-fluid" role="main">
+      <?php
+        include($viewdocument);
+      ?>
+    </div>
+
+    <div class="container-fluid pt-5">
+      <?php
+        if(array_get($conf, 'debug', false) == true)
+          include($tpldir . '/views/internal/debug.tpl');
+      ?>
+    </div>
+
+    <!-- Notification Modal -->
+
+    <div class="invisible">
+      <div class="alert alert-danger" role="alert" id="infobox_template_error" ></div>
+      <div class="alert alert-warning" role="alert" id="infobox_template_warning"></div>
+      <div class="alert alert-info" role="alert" id="infobox_template_info"></div>
+      <div class="alert alert-success" role="alert" id="infobox_template_success"></div>
+    </div>
+
+    <div class="modal fade" id="notification_modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="notification_modal_label">Notifications</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="infobox"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script type="text/javascript">
-    <!--
-    window.onload = function () {
-        applesearch.init('<?php echo AB_TPL; ?>applesearch/');
-        applesearch.onChange('srch_fld','srch_clear');
-        document.search.q.focus(); 
-        document.search.q.select();
-    }
-    -->
+      var infobox = new MessageBox("infobox");
+
+      $(document).ready( function () {
+
+        infobox.clear();
+      
+        var messages = <?php echo msg_json(); ?>;
+        //notify("error", "test error");
+        //notify("warning", "test warning");
+        //notify("success", "test success");
+        //notify("info", "test info");
+        for(msg in messages) {
+          var o = messages[msg];
+          notify(o.type, o.msg);
+        };
+
+        if(infobox.length() > 0) {
+          $("#notification_badge").html(infobox.length());
+          $("#notification_badge").removeClass("invisible");
+        }
+      } );
+
+      function notify(type, message) {
+        infobox.log(type, message);
+        var title = type[0].toUpperCase() + type.substr(1);
+        $.growl.error({title: title, message: message, style: type, duration: 8000 });        
+      }
     </script>
-</head>
-
-<body>
-
-<?php echo html_msgarea(); ?>
-
-<div class="mainview">
-    <!-- Begin Logo -->
-    <table width="100%">
-        <tr>
-            <td>
-                <div class="logo">
-                    <a href='<?php echo AB_URL; ?>?do=reset'>
-                    <img src="<?php echo AB_TPL; ?>images/logo.png">
-                    </a>
-                </div>
-            </td>
-            <td>
-                <div class="title"><?php echo $conf['title']; ?></div>
-            </td>
-            <td align="right" valign="top">
-                <div class="login_box">
-                    <?php if($conf['auth_enabled']) {
-                            if($userinfo['logged_in'] == true) {
-                                echo "<div class='person_smalltext'>" . $lang['logged_in_as'] . " " . $userinfo['fullname'] . "</div>";
-                                echo "<a href='?do=logout'>". $lang['btn_logout'] ."</a>";
-                            } else {
-                                echo "<a href='?do=login'>". $lang['btn_login'] ."</a>";
-                            }
-                        }
-					?>
-                </div>
-        
-                <div class="birthday_box">
-                    <div class="birthday_title"><?php echo $lang['birthdays']; ?></div>
-                    <div class="birthday_text"><?php tpl_birthday(); ?></div>
-                </div>                
-            </td>
-        </tr>
-    </table>
-    <!-- End Logo -->
-
-    <div style="height: 30px;" ></div>
-    
-    <!-- Begin Menu --> 
-    <table border="0" width="100%">
-        <tr>
-            <td align="left">
-                <!-- Begin Import VCard -->
-                <form method="POST" enctype="multipart/form-data" action="" style="float: left; padding-left: 10px;">
-                    <input type="hidden" name="do" value="import_vcard" />
-                    <input type="file" name="vcard_file" value="" size="" class="button" />
-                    <input type="submit" value="<?php echo $lang['btn_vcardimport']; ?>" class="button" />
-                </form>
-                <!-- End Import VCard -->
-            </td>
-            <td align="right" style="padding-right: 10px;" >
-                <?php tpl_include('search.tpl'); ?>
-            </td>
-        </tr>
-    </table>
-    <!-- End Menu --> 
-
-    <!-- Begin Main --> 
-    <table border="0" cellspacing="0" cellpadding="0" width="100%">
-     <tr>
-        <td width="10"></td>
-        
-        <!-- Begin Contact List -->
-        <?php tpl_showcontactlist(); ?>
-        <!-- End Contact List -->
-        
-        <td width="50"></td>
-        
-        <!-- Begin Person View -->
-        <td class="personview">
-            <div class="personview">
-                <div class="panel">
-                    <table class="header">
-                        <tr class="header_tr">
-                            <td class="endcap"><img src="<?php echo AB_TPL; ?>images/split1_left.gif"></td>
-                            <td class="middle"> </td>
-                            <td class='endcap'><img src="<?php echo AB_TPL; ?>images/split1_right.gif"></td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <?php tpl_showperson(); ?>
-                
-                <br>
-            </div>
-        </td>
-        <!-- End Person View -->
-        
-        <td width="10"></td>
-
-     </tr>
-    </table>
-    <!-- End Main --> 
-
-    <!-- Begin Footer --> 
-    <div class="separator">&nbsp;</div>
-    <div class="footer">
-        <a href='http://iaddressbook.org/'>PHP iAddressbook <?php echo get_version(); ?></a>
-    </div>
-    <!-- End Footer --> 
-
-</div>
-
-
-</body>
+  </body>
 </html>

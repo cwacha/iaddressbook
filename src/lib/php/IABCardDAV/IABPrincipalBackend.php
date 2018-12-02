@@ -5,15 +5,14 @@ namespace Sabre\DAVACL\PrincipalBackend;
 use Sabre\DAV;
 use Sabre\DAVACL;
 
-if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__)).'/../../..');
-require_once(AB_BASEDIR.'/lib/php/include.php');
-require_once(AB_BASEDIR.'/lib/php/init.php');
 
 class IABPrincipalBackend extends AbstractBackend {
 	protected $principalBasePath;
+    private $sc = null;
 	
 	public function __construct() {
 		$this->principalBasePath = 'principals';
+        $this->sc = \SecurityController::getInstance();
 	}
 	
 	
@@ -39,12 +38,12 @@ class IABPrincipalBackend extends AbstractBackend {
 		if ($prefixPath !== $this->principalBasePath)
 			return $principals;
 		
-		$users = auth_get_users();
-		foreach ( $users as $userinfo ) {
+		$accounts = $this->sc->get_accounts();
+		foreach ( $accounts as $accountid => $account ) {
 			$principal = array (
-					'uri' => $this->principalBasePath . '/' . $userinfo['userid'],
-					'{DAV:}displayname' => $userinfo['fullname'],
-					'{http://sabredav.org/ns}email-address' => $userinfo['email'] 
+					'uri' => $this->principalBasePath . '/' . $accountid,
+					'{DAV:}displayname' => $account['fullname'],
+					'{http://sabredav.org/ns}email-address' => $account['email'] 
 			);
 			$principals[] = $principal;
 		}
@@ -66,12 +65,12 @@ class IABPrincipalBackend extends AbstractBackend {
     	if ($prefixPath !== $this->principalBasePath)
     		return $principal;
     	 
-    	$userinfo = auth_get_userinfo($userid);
-    	if($userinfo !== null) {
+        $account = $this->sc->get_account($userid);
+    	if($account !== null) {
     		$principal = array(
-					'uri' => $this->principalBasePath . '/' . $userinfo['userid'],
-					'{DAV:}displayname' => $userinfo['fullname'],
-					'{http://sabredav.org/ns}email-address' => $userinfo['email'] 
+					'uri' => $this->principalBasePath . '/' . $userid,
+					'{DAV:}displayname' => $account['fullname'],
+					'{http://sabredav.org/ns}email-address' => $account['email'] 
 			);
     	}
     	return $principal;
@@ -165,10 +164,10 @@ class IABPrincipalBackend extends AbstractBackend {
     	if ($prefixPath !== $this->principalBasePath)
     		return $principals;
     	
-    	$users = auth_get_users();
-    	foreach($users as $userid => $userinfo) {
+        $accounts = $this->sc->get_accounts();
+    	foreach($accounts as $accountid => $account) {
     		$principal = array (
-    				'uri' => $this->principalBasePath . '/' . $userinfo['userid'],
+    				'uri' => $this->principalBasePath . '/' . $accountid,
     		);
     		$principals [] = $principal;
     	}
