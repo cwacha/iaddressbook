@@ -376,10 +376,14 @@ function act_delete_many() {
 
     foreach($_REQUEST as $key => $value) {
         if(strpos($key, 'ct_') === 0) {
-            $AB->delete((int)$value);
+            if(is_array($value)) {
+                foreach($value as $val)
+                    $AB->delete((int)$val);
+            } else {
+                $AB->delete((int)$value);
+            }
         }
     }
-
 }
 
 function act_search() {
@@ -499,6 +503,7 @@ function act_category_addcontacts() {
 		}
 	}
 	$CAT->addMembersToCategory($category->id, $members);
+    msg(strtr("Added $1 contacts to category $2", array("$1" => count($members), "$2" => $category->name())));
 }
 
 function act_category_delcontacts() {
@@ -513,7 +518,12 @@ function act_category_delcontacts() {
 	$members = array ();
 	foreach ( $_REQUEST as $key => $value ) {
 		if (strpos($key, 'ct_') === 0) {
-			$members [] = ( int ) $value;
+            if(is_array($value)) {
+                foreach($value as $val)
+                    $members [] = ( int ) $val;
+            } else {
+                $members [] = ( int ) $value;
+            }
 		}
 	}
 	$CAT->deleteMembersFromCategory($category->id, $members);

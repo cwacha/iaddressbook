@@ -43,125 +43,25 @@
     <input type="hidden" name="o" value="" />
 </form>
 
-
-<td class="contactlist_td">
-    <div class="contactlist">
-                                
-        <form method="post" action="" name='ctold_form'>
-
-            
-            <div class="separator100">&nbsp;</div>
-            
-            
-            <div style="height: 0.5em;"></div>
-            
-            <!-- Navigation End -->
-
-            <div class="person_smalltext">
-                
-
-                <!-- Category Section Begin -->
-                <?php echo $lang['category']; ?>
-                <div class="separator100">&nbsp;</div>
-
-                <select name="cat_menu" size="1" style="float: right;" onChange="cat_menu_change()">
-                    <option value='' selected><?php echo $lang['select_action']; ?></option>
-                    <?php
-                        foreach($categories as $category) {
-                            if($category->id == $CAT_ID) {
-                                if($category->name() != ' __all__')
-	                                echo "<option value='catdel_$category->id' >".$lang['cat_delete']." ".$category->displayName()."</option>";
-                            }
-                        }
-                    ?>
-                    <optgroup label="<?php echo $lang['cat_add_to']; ?>">
-                    <?php
-                        foreach($categories as $category) {
-                            if(strpos($category->name(), ' __') !== 0)
- 	                           echo "<option value='addcon_$category->id' >".$category->displayName()."</option> \n";
-                        }
-                    ?>
-                    </optgroup>
-                    <optgroup label="<?php echo $lang['cat_delete_from']; ?>">
-                    <?php
-                        foreach($categories as $category) {
-                            $disp = 1;
-                            if($category->name() == ' __all__') $disp = 0;
-                            if($category->name() == ' __lastimport__') $disp = 0;
-                            if($CAT_ID != 0 && $category->id != $CAT_ID) $disp = 0;
-                            if($disp) echo "<option value='delcon_$category->id' >".$category->displayName()."</option> \n";
-                        }
-                    ?>
-                    </optgroup>
-                </select>
-                                
-                <div style="height: 3em;"></div>
-                <!-- Category Section End -->
-
-                <!-- Import Section Begin -->
-                <!-- Import Section End -->
-                
-                
-                <input type="hidden" name="do" value="" />
-                <input type="hidden" name="cat_id" value="" />
-                <input type="hidden" name="l" value="" />
-                <input type="hidden" name="o" value="" />
-            </div>    
-        </form>
-        
-    </div>
-</td>
-
 <script type="text/javascript">
-function select_all(formname, checkvalue) {
-    var theForm = this.document.forms[formname], z = 0;
-    for(z=0; z<theForm.length;z++) {
-        if(theForm[z].type == 'checkbox' && theForm[z].name != 'checkall') {
-            theForm[z].checked = !theForm[z].checked;
+    function select_all(formname, checkvalue) {
+        var theForm = this.document.forms[formname], z = 0;
+        for(z=0; z<theForm.length;z++) {
+            if(theForm[z].type == 'checkbox' && theForm[z].name != 'checkall') {
+                theForm[z].checked = !theForm[z].checked;
+            }
         }
     }
-}
-function select_l(letter) {
-    document.ct_form.elements["do"].value = 'select_letter';
-    document.ct_form.elements["l"].value = letter;
-    document.ct_form.submit();
-}
-function select_o(offset) {
-	document.ct_form.elements["do"].value = 'select_offset';
-	document.ct_form.elements["o"].value = offset;
-	document.ct_form.submit();
-}
-function do_action(act, confirmation) {
-    if(confirmation) {
-        if(!confirm(confirmation)) return;
+    function select_l(letter) {
+        document.ct_form.elements["do"].value = 'select_letter';
+        document.ct_form.elements["l"].value = letter;
+        document.ct_form.submit();
     }
-    document.ct_form.elements["do"].value = act;
-    document.ct_form.submit();
-}
-function cat_menu_change() {
-    var options = document.ct_form.cat_menu.options;
-    for (var i=0; i < options.length; i++) {
-        if (options[i].selected) {
-            var o = options[i].value.split("_");
-            var action = o[0];
-            var id = o[1];
-            //alert("action: " + action + " id: " + id);
-            document.ct_form.elements["cat_id"].value = id;
-            if(action == "catdel") do_action('cat_del', '<?php echo $lang['confirm_cat_delete']; ?>');
-            if(action == "addcon") do_action('cat_add_contacts');
-            if(action == "delcon") do_action('cat_del_contacts', '<?php echo $lang['confirm_cat_remove_contacts']; ?>');
-        }
+    function select_o(offset) {
+    	document.ct_form.elements["do"].value = 'select_offset';
+    	document.ct_form.elements["o"].value = offset;
+    	document.ct_form.submit();
     }
-}
-function CheckEnter(evt) {
-    var keyCode = (evt.charCode)? evt.charCode:((evt.which)? evt.which:evt.keyCode);
-    if (keyCode != 13) {
-        return true;
-    }
-    // Enter has been hit:
-    do_action('cat_add');
-    return false;
-}
 
     function select_contact(id) {
         document.select_contact_form.elements['id'].value = id;
