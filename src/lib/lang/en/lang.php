@@ -214,6 +214,7 @@ $lang['photo_size']           = 'Photo size';
 $lang['photo_format']         = 'Photo format';
 $lang['map_link']             = 'Map link';
 $lang['contactlist_limit']    = 'Contactlist limit';
+$lang['contactlist_abc']      = 'Contactlist ABC Picker';
 $lang['bday_advance_week']    = 'Birthday lookup';
 
 $lang['canonical']            = 'Canonical URLs';
@@ -222,6 +223,7 @@ $lang['auth_allow_guest']     = 'Allow guest access';
 $lang['im_convert']           = 'ImageMagick\'s convert';
 $lang['photo_enable']         = 'Use Photos';
 $lang['session_name']         = 'Session name';
+$lang['session_lifetime_min'] = 'Session Lifetime';
 
 $lang['mark_changed']         = 'Mark contacts';
 $lang['debug']                = 'Debugging';
@@ -251,9 +253,9 @@ $lang['dbtable_ab_help']        = 'Table inside database for addressbook entries
 $lang['dbtable_cat_help']       = 'Table inside database for categories';
 $lang['dbtable_catmap_help']    = 'Table inside database for mapping contacts to categories';
 
-$lang['lang_help']              = 'Language';
+$lang['lang_help']              = 'Language. Strings that are not translated will be displayed in english';
 $lang['title_help']             = 'What to show in the title';
-$lang['template_help']          = 'Page Template';
+$lang['template_help']          = 'Page Template. Custom templates can be added to a folder in ./lib/tpl directory';
 $lang['bdformat_help']          = 'Date format for birthday<br>
                                     $d - Day<br>
                                     $dd - Day (incl. leading zero)<br>
@@ -263,7 +265,7 @@ $lang['bdformat_help']          = 'Date format for birthday<br>
                                     $YYYY - Year (4-digit)<br>';
 
 $lang['dformat_help']           = 'Date format as accepted by PHPs date() function';
-$lang['lastfirst_help']         = 'Sort ortder for contact list: Lastname, Firstname if true; Firstname Lastname else';
+$lang['lastfirst_help']         = 'Sort order for contact list: Lastname, Firstname if true; Firstname Lastname else';
 $lang['photo_resize_help']      = 'Max. photo size on manual photo import - blank to disable resizing';
 $lang['photo_size_help']        = 'Max. height of photo display size in default template';
 $lang['photo_format_help']      = 'Image format to be used for contact photos and vCard Exports';
@@ -276,15 +278,17 @@ $lang['map_link_help']          = 'Sets the map link to be used for addresses.<b
                                     $pobox - P.O. Box<br>
                                     $ext_adr - Extended address<br>';
 $lang['contactlist_limit_help'] = 'Max. number of contacts to display in contactlist';
+$lang['contactlist_abc_help']   = 'Show ABC picker at top of contactlist';
 $lang['bday_advance_week_help'] = 'Display upcoming birthdays in the next XX weeks (max 4)';
 
 $lang['canonical_help']         = 'Should all URLs use full canonical http://... style?';
-$lang['auth_enabled_help']      = 'Authentication - login and password can be set in conf/auth.php';
-$lang['auth_allow_guest_help']  = 'Allow guest access (no login required) - the permissions for guest can be conficured in conf/auth.php';
+$lang['auth_enabled_help']      = 'Authentication - ensure to setup accounts first in Admin/Accounts menu';
+$lang['auth_allow_guest_help']  = 'Allow guest access (no login required) - the permissions for guest can be configured in Admin/Accounts menu';
 $lang['im_convert_help']        = 'Path to ImageMagick\'s convert';
 $lang['photo_enable_help']      = 'Enable contact photos';
 $lang['session_name_help']      = 'override session name (useful if you have more than one instance of the addressbook on your server)
                                     (only use alphanumeric characters (0-9, a-z, A-Z). No dots, must not consist of numbers only!)';
+$lang['session_lifetime_min_help'] = 'Set Session lifetime (in minutes) before it times out';
 
 $lang['mark_changed_help']      = 'Every contact that is added or modified will be automatically added to a new category called "modified contacts" (helps manual syncing)';
 $lang['debug_help']             = 'Enable debug mode: use ?do=debug to show debug information';
