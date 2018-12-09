@@ -31,6 +31,47 @@ $lang['confirm_cat_remove_contacts'] = 'Do you want to remove the selected conta
 $lang['confirm_cat_delete']   = 'Do you want to delete this category?';
 
 
+// Menus
+$lang['admin']                = 'Admin';
+$lang['profile']              = 'Profile';
+$lang['logout']               = 'Logout';
+$lang['notifications']        = 'Notifications';
+
+$lang['account']              = 'Account';
+$lang['accounts']             = 'Accounts';
+$lang['account_id']           = 'Account ID';
+$lang['account_add']          = 'Add Account';
+$lang['account_edit']         = 'Edit Account';
+$lang['account_my']           = 'My Account';
+$lang['account_password']     = 'Account Password';
+$lang['account_password_msg'] = 'To disable a password set it to "!".';
+
+$lang['password_change']      = 'Change Password';
+$lang['password_my']          = 'My Password';
+$lang['password_show']        = 'Show Password';
+$lang['password_confirm']     = 'Confirm Password';
+$lang['password_very_weak']   = 'Very Weak';
+
+$lang['roles']                = 'Roles';
+$lang['role_id']              = 'Role ID';
+$lang['role_add']             = 'Add Role';
+$lang['role_edit']            = 'Edit Role';
+
+$lang['permissions']          = 'Permissions';
+
+$lang['configuration']        = 'Configuration';
+
+$lang['fullname']             = 'Fullname';
+$lang['email']                = 'E-Mail';
+
+$lang['cancel']               = 'Cancel';
+$lang['edit']                 = 'Edit';
+$lang['save']                 = 'Save';
+
+$lang['logged_out_msg']       = 'You are now logged out.';
+
+
+
 // General Text
 $lang['contacts']             = 'Contacts';
 $lang['no_contacts']          = 'no contacts';
@@ -43,19 +84,19 @@ $lang['action_not_allowed']   = 'You have no permission to execute the action';
 $lang['logged_in_as']         = 'Logged in as';
 $lang['category']             = 'Category';
 $lang['category_all']         = 'All';
-$lang['cat_add_to']           = 'add to';
-$lang['cat_delete_from']      = 'remove from';
-$lang['cat_add']              = 'create category';
-$lang['cat_delete']           = 'delete category';
+$lang['cat_add_contacts']     = 'Add Contacts to Category';
+$lang['cat_delete_contacts']  = 'Remove Contacts from Category';
+$lang['cat_add']              = 'Create Category';
+$lang['cat_delete']           = 'Delete Category';
 $lang['cat_lastimport']       = 'Last Import';
 $lang['cat_changed']          = 'Modified Contacts';
-$lang['delete_contacts']      = 'delete contact(s)';
+$lang['delete_contacts']      = 'Delete contact(s)';
 $lang['import_export']        = 'Import/Export';
-$lang['export_vcard']         = 'export as vCard(s)';
-$lang['export_csv']           = 'export CSV file';
-$lang['export_ldif']          = 'export LDIF file';
-$lang['import_folder']        = 'import from folder';
-$lang['create_contact']       = 'new contact';
+$lang['export_vcard']         = 'Export as vCard(s)';
+$lang['export_csv']           = 'Export CSV file';
+$lang['export_ldif']          = 'Export LDIF file';
+$lang['import_folder']        = 'Import from Folder';
+$lang['create_contact']       = 'New contact';
 $lang['map']                  = 'Map';
 $lang['select_action']        = 'select action...';
 $lang['installation']         = 'PHP AddressBook Installation';

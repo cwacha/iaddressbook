@@ -63,12 +63,11 @@ function save_session() {
 
 function html_header() {
     global $conf;
-    global $lang;
     global $state;
     global $meta;
     
     ?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>" lang="<?php echo $conf['lang']; ?>" dir="<?php echo $lang['direction']; ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang']; ?>" lang="<?php echo $conf['lang']; ?>" dir="<?php echo lang('direction'); ?>">
 <head>
 <title><?php echo $conf['title']; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -161,10 +160,10 @@ function html_header() {
 					</div>
 				</td>
 				<td>
-					<div class="title"><?php echo $lang['installation']; ?></div>
+					<div class="title"><?php echo lang('installation'); ?></div>
 				</td>
 				<td>
-                    <?php echo $lang['lang']; ?>:<br />
+                    <?php echo lang('lang'); ?>:<br />
                     <?php html_select($conf['lang'], $meta['lang']['_choices'], "do_set('lang',this.value);do_action('show');"); ?>
                 </td>
 			</tr>
@@ -193,7 +192,6 @@ function html_footer() {
 
 function html_install_step() {
     global $state;
-    global $lang;
     
     $step = $state['step'];
     $step_max = 5;
@@ -212,19 +210,19 @@ function html_install_step() {
         echo "<div style='font-size: 20%;'>";
         switch ($t) {
             case 1:
-                echo $lang['step_welcome'];
+                echo lang('step_welcome');
                 break;
             case 2:
-                echo $lang['step_check'];
+                echo lang('step_check');
                 break;
             case 3:
-                echo $lang['step_dbsetup'];
+                echo lang('step_dbsetup');
                 break;
             case 4:
-                echo $lang['step_configure'];
+                echo lang('step_configure');
                 break;
             case 5:
-                echo $lang['step_finish'];
+                echo lang('step_finish');
                 break;
             default:
                 break;
@@ -262,20 +260,16 @@ function act_content() {
 }
 
 function step_prev($target='prev', $title='Back') {
-    global $lang;
-
     if(empty($title) || empty($target)) return;
-    if($title == 'Back') $title = $lang['back'];
+    if($title == 'Back') $title = lang('back');
     echo '<div style="height: 50px; margin: 0 auto; font-size: 250%; padding-top: 50px; float:left;">';
     html_link($title, "do_action('".hsc($target)."')");
     echo '</div>';    
 }
 
-function step_next($target='next', $title='Next') {
-    global $lang;
-    
+function step_next($target='next', $title='Next') {    
     if(empty($title) || empty($target)) return;
-    if($title == 'Next') $title = $lang['next'];
+    if($title == 'Next') $title = lang('next');
     echo '<div style="height: 50px; margin: 0 auto; font-size: 250%; padding-top: 50px; float:right;">';
     html_link($title, "do_action('".hsc($target)."')");
     echo '</div>';
@@ -285,15 +279,13 @@ function step_title($title) {
     echo "<h1><b>$title</b></h1>";
 }
 
-function step_welcome() {
-    global $lang;
-    
-    step_title($lang['step_welcome']);
+function step_welcome() {    
+    step_title(lang('step_welcome');
 
-    echo $lang['welcome_message'];
+    echo lang('welcome_message');
     
-    step_title($lang['step_prerequisites']);
-    echo $lang['welcome_prerequisites'];
+    step_title(lang('step_prerequisites'));
+    echo lang('welcome_prerequisites');
 
     step_prev('');
     step_next('step_check');
@@ -302,32 +294,31 @@ function step_welcome() {
 function step_check() {
     global $VERSION;
     global $conf;
-    global $lang;
     global $state;
     $errors = 0;
     
-    step_title($lang['step_check']);
+    step_title(lang('step_check');
 
     echo '<table border="0"><tr><td width="45%">';
-    step_title($lang['step_tests']);
+    step_title(lang('step_tests'));
     echo '<div>';
     
     if(!is_writable(AB_STATEDIR)) {
-        imsg(str_replace('$1', AB_STATEDIR, $lang['error_statefolder']), -1);
+        imsg(str_replace('$1', AB_STATEDIR, lang('error_statefolder')), -1);
         $errors++;
     }
     
     if(!is_writable(AB_IMAGEDIR)) {
-        imsg(str_replace('$1', AB_IMAGEDIR, $lang['error_imagefolder']), -1);
+        imsg(str_replace('$1', AB_IMAGEDIR, lang('error_imagefolder')), -1);
         $errors++;
     }
     
     if(!is_writable(AB_IMPORTDIR)) {
-        imsg(str_replace('$1', AB_IMPORTDIR, $lang['error_importfolder']), 0);
+        imsg(str_replace('$1', AB_IMPORTDIR, lang('error_importfolder')), 0);
     }
     
     if(!is_writeable(AB_CONFDIR)) {
-        imsg(str_replace('$1', AB_CONFDIR, $lang['error_conffolder']), -1);
+        imsg(str_replace('$1', AB_CONFDIR, lang('error_conffolder')), -1);
         $errors++;
     }
     
@@ -341,37 +332,37 @@ function step_check() {
             	$output = '';
                 while(!feof($pipe)) $output .= fread($pipe, 8192);
                 pclose($pipe);
-                imsg(str_replace('$1', $conf['im_convert'], $lang['info_im']), 1);
-                imsg(str_replace('$1', $output, $lang['info_im_version']), 1);
+                imsg(str_replace('$1', $conf['im_convert'], lang('info_im')), 1);
+                imsg(str_replace('$1', $output, lang('info_im_version')), 1);
                 $use_im = 1;
             } else {
-                imsg(str_replace('$1', $conf['im_convert'], $lang['error_im']), 0);
+                imsg(str_replace('$1', $conf['im_convert'], lang('error_im')), 0);
             }
         } else {
-            imsg(str_replace('$1', $conf['im_convert'], $lang['error_im2']), 0);
+            imsg(str_replace('$1', $conf['im_convert'], lang('error_im2')), 0);
         }
     }
     
     if(function_exists('gd_info')) {
         $gd = gd_info();
-        imsg(str_replace('$1', $gd['GD Version'], $lang['info_gd']), 1);
+        imsg(str_replace('$1', $gd['GD Version'], lang('info_gd')), 1);
         $use_gd = 1;
     }
     
     if($use_im == 1 || $use_gd == 1) {
         if($use_im == 1) {
-            imsg($lang['info_usingim'], 1);
+            imsg(lang('info_usingim'), 1);
         } else {
-            imsg($lang['info_usinggd'], 1);
+            imsg(lang('info_usinggd'), 1);
         }
     } else {
-        imsg($lang['error_usingimgd'], 1);
+        imsg(lang('error_usingimgd'), 1);
     }
 
     if(function_exists('iconv')) {
-        imsg(str_replace('$1', ICONV_VERSION, $lang['info_iconv']), 1);
+        imsg(str_replace('$1', ICONV_VERSION, lang('info_iconv')), 1);
     } else {
-        imsg($lang['error_iconv']);
+        imsg(lang('error_iconv'));
     }
 
     $conf['dbtype'] = 'pdo_mysql';
@@ -380,7 +371,7 @@ function step_check() {
         // pre-select sqlite if it is available
         $conf['dbtype'] = 'sqlite2';
         $conf['dbname'] = 'addressbook.sqlite';
-        imsg(str_replace('$1', sqlite_libversion(), $lang['info_sqlite']), 1);
+        imsg(str_replace('$1', sqlite_libversion(), lang('info_sqlite')), 1);
         $has_sqlite = true;
     }
     if(class_exists('SQLite3')) {
@@ -388,7 +379,7 @@ function step_check() {
         $conf['dbtype'] = 'sqlite3';
         $conf['dbname'] = 'addressbook.sqlite';
         $version = SQLite3::version();
-        imsg(str_replace('$1', $version['versionString'], $lang['info_sqlite3']), 1);
+        imsg(str_replace('$1', $version['versionString'], lang('info_sqlite3')), 1);
         $has_sqlite = true;
     }
     try {
@@ -400,32 +391,32 @@ function step_check() {
     	// pre-select sqlite3-pdo if it is available
     	$conf['dbtype'] = 'pdo_sqlite3';
     	$conf['dbname'] = 'addressbook.sqlite';
-    	imsg(str_replace('$1', $version, $lang['info_sqlite3_pdo']), 1);
+    	imsg(str_replace('$1', $version, lang('info_sqlite3_pdo')), 1);
     	$has_sqlite_pdo = true;
     } catch (Exception $e) {
     	imsg("pdo not here: " . $e->getMessage());
     }
     if (!$has_sqlite) {
-        imsg($lang['error_sqlite']);
+        imsg(lang('error_sqlite'));
     }
     
     echo "&nbsp;<p>";
-    html_button($lang['retry'], "do_action('show')");
+    html_button(lang('retry'), "do_action('show')");
             
     echo '</div>';
     echo '</td><td width="10%"></td><td style="vertical-align: top;">';
 
-    step_title($lang['step_results']);
+    step_title(lang('step_results'));
 
     if($errors > 0) {
         if($errors > 1) {
-            imsg(str_replace('$1', $errors, $lang['errors_total']), -1);
+            imsg(str_replace('$1', $errors, lang('errors_total')), -1);
         } else {
-            imsg(str_replace('$1', $errors, $lang['error_total']), -1);
+            imsg(str_replace('$1', $errors, lang('error_total')), -1);
         }
-        imsg($lang['configure_errors'], -1);
+        imsg(lang('configure_errors'), -1);
     } else {
-        imsg($lang['configure_ok'], 1);
+        imsg(lang('configure_ok'), 1);
     }
 
     echo '</td></tr></table>';
@@ -436,10 +427,9 @@ function step_check() {
 
 function step_dbsetup() {
     global $state;
-    global $lang;
     global $conf;
     
-    step_title($lang['step_dbsetup']);
+    step_title(lang('step_dbsetup'));
 
     $col = array();
 
@@ -455,7 +445,7 @@ function step_dbsetup() {
         
     if(!$state['db_created']) {
         echo "&nbsp;<p>";
-        html_button($lang['install_createdb'], "do_action('create_db')");
+        html_button(lang('install_createdb'), "do_action('create_db')");
     }
 
     step_prev('step_check');
@@ -464,8 +454,7 @@ function step_dbsetup() {
 
 function step_configure() {
     global $defaults;
-    global $lang;
-	step_title($lang['step_configure']);
+	step_title(lang('step_configure'));
 	
 	html_sform_begin();
 	foreach ( $defaults as $key => $value ) {
@@ -488,16 +477,15 @@ function step_configure() {
 	html_sform_end();
 	
 	step_prev('step_dbsetup');
-    step_next('step_finish', $lang['finish']);
+    step_next('step_finish', lang('finish'));
 }
 
 function step_finish() {
     global $defaults;
     global $conf;
     global $state;
-    global $lang;
     
-    step_title($lang['step_finish']);
+    step_title(lang('step_finish'));
         
     // save config file (only add vars that are not on default value)
     $new_config = array();
@@ -523,30 +511,26 @@ function step_finish() {
     
     if(!$state['config_saved']) {
         echo "&nbsp;<p>";
-        html_button($lang['retry'], "do_action('step_finish')");
+        html_button(lang('retry'), "do_action('step_finish')");
         step_prev('step_configure');
         step_next('');
     } else {
-        echo $lang['finish_message'];
+        echo lang('finish_message');
         //step_prev('step_configure');
-        step_next('open_addressbook', $lang['step_open_ab']);    
+        step_next('open_addressbook', lang('step_open_ab'));    
     }
     
 }
 
-function step_disabled() {
-    global $lang;
-    
-    step_title($lang['step_disabled']);
+function step_disabled() {    
+    step_title(lang('step_disabled'));
 
-    echo $lang['disabled_message'];
+    echo lang('disabled_message');
     
-    step_next('open_addressbook', $lang['step_open_ab']);        
+    step_next('open_addressbook', lang('step_open_ab'));
 }
 
-function save_config($config, $filename = 'config.php', $overwrite = 0) {
-    global $lang;
-    
+function save_config($config, $filename = 'config.php', $overwrite = 0) {    
     if(!is_array($config) || empty($filename)) {
         imsg("Internal error while saving configuration: no array given or filename empty ($filename)", -1);
         return false;
@@ -561,12 +545,12 @@ function save_config($config, $filename = 'config.php', $overwrite = 0) {
 
     $file = AB_CONFDIR.'/'.$filename;
     if(!$overwrite && file_exists($filename)) {
-        imsg(str_replace('$1', $file, $lang['error_saveconfig2']), -1);
+        imsg(str_replace('$1', $file, lang('error_saveconfig2')), -1);
         return false;
     }
     $fd = fopen($file, "w");
     if(!$fd) {
-        imsg(str_replace('$1', $file, $lang['error_saveconfig']), -1);
+        imsg(str_replace('$1', $file, lang('error_saveconfig')), -1);
         return false;
     }
     fwrite($fd, "<?php\n\n");
@@ -582,20 +566,19 @@ function save_config($config, $filename = 'config.php', $overwrite = 0) {
     fclose($fd);
     fix_fmode($file);
 
-    imsg($lang['info_saveconfig'], 1);
+    imsg(lang('info_saveconfig'), 1);
     return true;
 }
 
 function setup_db() {
     global $state;
     global $conf;
-    global $lang;
     
     db_init($conf);
     db_open();
     if(db_createtables()) {
-        imsg($lang['info_db1'], 1);
-        imsg($lang['info_db2'], 1); 
+        imsg(lang('info_db1'), 1);
+        imsg(lang('info_db2'), 1); 
         $state['db_created'] = 1;
         $conf['debug_db'] = 0;
     }

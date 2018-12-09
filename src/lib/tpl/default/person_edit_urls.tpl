@@ -1,6 +1,6 @@
     <div class="row">
         <div class="col person_left">
-            <div class="person_labels"><?php echo $lang['label_urls']; ?></div>
+            <div class="person_labels"><?php echo lang('label_urls'); ?></div>
         </div>
         <div class="col"></div>
         <div class="col-1"></div>
@@ -82,7 +82,7 @@ function del_urllabel(object) {
 function custom_urllabel(object) {
     if(object.options[object.selectedIndex].value == 'CUSTOM') {
         // get custom label
-        var label = prompt("<?php echo $lang['label_customprompt']; ?>", "");
+        var label = prompt("<?php echo lang('label_customprompt'); ?>", "");
         
         // add custom label to options
         if(label) {

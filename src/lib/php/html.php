@@ -50,7 +50,6 @@ function html_msgarea($msg_array = null) {
  */
 function html_debug(){
     global $conf;
-    global $lang;
     global $auth;
     //remove sensitive data
     $cnf = $conf;
@@ -108,7 +107,7 @@ function html_debug(){
     print '</pre>';
     
     print '<b>encoding:</b><pre>';
-    print $lang['encoding'];
+    print lang('encoding');
     print '</pre>';
     
     if($auth){

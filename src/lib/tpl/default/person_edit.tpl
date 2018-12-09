@@ -11,10 +11,10 @@
             <!-- Begin Photo Edit -->
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="photo_delete" id="photoedit1"/>
-                <label class="form-check-label" for="photoedit1"><?php echo $lang['label_photoremove']; ?></label>
+                <label class="form-check-label" for="photoedit1"><?php echo lang('label_photoremove'); ?></label>
             </div>
             <div class="form-group">
-                <label for="photofile1"><?php echo $lang['label_photochange']; ?></label>
+                <label for="photofile1"><?php echo lang('label_photochange'); ?></label>
                 <input type="file" class="form-control-file" name="photo_file" id="photofile1" />
             </div>
             <!-- End Photo Edit -->
@@ -30,19 +30,19 @@
         <div class="col person_right">
             <fieldset class="input-group-vertical">
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-sm" name="title" placeholder="<?php echo $lang['label_title']; ?>" value="<?php echo $contact->title; ?>">
+                    <input type="text" class="form-control form-control-sm" name="title" placeholder="<?php echo lang('label_title'); ?>" value="<?php echo $contact->title; ?>">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-sm" name="firstname" placeholder="<?php echo $lang['label_firstname']; ?>" value="<?php echo $contact->firstname; ?>" />
+                    <input type="text" class="form-control form-control-sm" name="firstname" placeholder="<?php echo lang('label_firstname'); ?>" value="<?php echo $contact->firstname; ?>" />
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-sm" name="firstname2" placeholder="<?php echo $lang['label_firstname2']; ?>" value="<?php echo $contact->firstname2; ?>" />
+                    <input type="text" class="form-control form-control-sm" name="firstname2" placeholder="<?php echo lang('label_firstname2'); ?>" value="<?php echo $contact->firstname2; ?>" />
                 </div>
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-sm" name="lastname" placeholder="<?php echo $lang['label_lastname']; ?>" value="<?php echo $contact->lastname; ?>" />
+                  <input type="text" class="form-control form-control-sm" name="lastname" placeholder="<?php echo lang('label_lastname'); ?>" value="<?php echo $contact->lastname; ?>" />
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-sm" name="suffix" placeholder="<?php echo $lang['label_suffix']; ?>" value="<?php echo $contact->suffix; ?>" />
+                    <input type="text" class="form-control form-control-sm" name="suffix" placeholder="<?php echo lang('label_suffix'); ?>" value="<?php echo $contact->suffix; ?>" />
                 </div>
             </fieldset>
         </div>
@@ -52,7 +52,7 @@
         <div class="col"></div>
        <div class="col person_right">
             <div class="form-group">
-                <input type="text" class="form-control form-control-sm" name="nickname" placeholder="<?php echo $lang['label_nickname']; ?>" value="<?php echo $contact->nickname; ?>" />
+                <input type="text" class="form-control form-control-sm" name="nickname" placeholder="<?php echo lang('label_nickname'); ?>" value="<?php echo $contact->nickname; ?>" />
             </div>
         </div>
         <div class="col-1"></div>
@@ -63,13 +63,13 @@
         <div class="col person_right">
             <fieldset class="input-group-vertical">
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-sm" name="jobtitle" placeholder="<?php echo $lang['label_jobtitle']; ?>" value="<?php echo $contact->jobtitle; ?>" />
+                    <input type="text" class="form-control form-control-sm" name="jobtitle" placeholder="<?php echo lang('label_jobtitle'); ?>" value="<?php echo $contact->jobtitle; ?>" />
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-sm" name="department" placeholder="<?php echo $lang['label_department']; ?>" value="<?php echo $contact->department; ?>" />
+                    <input type="text" class="form-control form-control-sm" name="department" placeholder="<?php echo lang('label_department'); ?>" value="<?php echo $contact->department; ?>" />
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-sm" name="organization" placeholder="<?php echo $lang['label_organization']; ?>" value="<?php echo $contact->organization; ?>" />
+                    <input type="text" class="form-control form-control-sm" name="organization" placeholder="<?php echo lang('label_organization'); ?>" value="<?php echo $contact->organization; ?>" />
                 </div>
             </fieldset>
         </div>
@@ -80,7 +80,7 @@
         <div class="col form-check person_right">
             <div class="person_text">
                 <input type="checkbox" class="form-check-input" name="company" <?php if($contact->company == true) echo "checked"; ?> id="company1" />
-                <label class="form-check-label" for="company1"><?php echo $lang['label_isorganization']; ?></label>
+                <label class="form-check-label" for="company1"><?php echo lang('label_isorganization'); ?></label>
             </div>
         </div>
         <div class="col-1"></div>
@@ -111,7 +111,7 @@
     <div class="row">
         <div class="col person_left">
             <div class="person_labels">
-                <?php echo $lang['label_birthday']; ?>
+                <?php echo lang('label_birthday'); ?>
             </div>
         </div>
         <div class="col person_right">
@@ -147,7 +147,7 @@
     <!-- Begin Notes -->
     <div class="row">
         <div class="col person_left">
-            <div class="person_labels"><?php echo $lang['label_notes']?></div>
+            <div class="person_labels"><?php echo lang('label_notes');?></div>
         </div>
         <div class="col person_right">
             <div class="form-group">
@@ -163,11 +163,11 @@
     <!-- Begin Categories -->
     <div class="row">
         <div class="col person_left">
-            <div class="person_labels"><?php echo $lang['category']?></div>
+            <div class="person_labels"><?php echo lang('category');?></div>
         </div>
         <div class="col person_right">
             <div class="form-group">
-                <textarea name="category" rows="5" cols="50" placeholder="<?php echo $lang['category']?>" class="form-control"><?php
+                <textarea name="category" rows="5" cols="50" placeholder="<?php echo lang('category');?>" class="form-control"><?php
                     $categories = $contact->get_categories();
                     foreach($categories as $category) {
                     	if(strpos($category->name(), ' __') === 0)
@@ -191,8 +191,8 @@
 
 <!-- Begin Buttons -->
 <div class="btn-group float-right pb-4" role="group">
-    <button type="button" class="btn btn-primary btn-sm" onclick="javascript:person_action('save');"><?php echo $lang['btn_save']?></button>
-    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="javascript:person_action('show');"><?php echo $lang['btn_cancel']?></button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="javascript:person_action('save');"><?php echo lang('btn_save');?></button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="javascript:person_action('show');"><?php echo lang('btn_cancel');?></button>
 </div>
 
 <script type="text/javascript">

@@ -4,7 +4,7 @@
             <?php echo tpl_label($address['label']); ?><br>
             
             <small>
-                <?php if(map_link($address)) echo "<a href='".map_link($address)."' target='_blank' >". $lang['map'] ."</a>"; ?>
+                <?php if(map_link($address)) echo "<a href='".map_link($address)."' target='_blank' >". lang('map') ."</a>"; ?>
             </small>
         </div>
     </div>

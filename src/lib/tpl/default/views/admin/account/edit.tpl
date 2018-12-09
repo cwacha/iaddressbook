@@ -13,7 +13,7 @@
 <div class="row">
     <div class="col pt-4">
 
-        <h2>Edit Account</h2>
+        <h2><?php echo lang('account_edit'); ?></h2>
         <div class="col-4">
             <form method="post" onsubmit="return validate()">
                 <div id="account_edit_messages"></div>
@@ -29,7 +29,7 @@
                     </div>
                 </fieldset>
                 <div class="form-group">
-                    <label for="account_roles">Roles</label>
+                    <label for="account_roles"><?php echo lang('roles'); ?></label>
                     <select multiple class="form-control" name="roles[]" id="account_roles" size="10" required>
                         <?php
                             foreach($roles as $roleid => $dummy) {
@@ -42,8 +42,8 @@
                     </select>
                 </div>
                 <input type='hidden' name='do' value='account_save' />
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/accounts">Cancel</a>
+                <button type="submit" class="btn btn-primary"><?php echo lang('save'); ?></button>
+                <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/accounts"><?php echo lang('cancel'); ?></a>
 
             </form>
         </div>

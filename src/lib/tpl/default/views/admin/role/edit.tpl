@@ -10,17 +10,17 @@
 ?>
 <div class="row">
     <div class="col pt-4 pb-4">
-        <h2>Edit Role</h2>
+        <h2><?php echo lang('role_edit'); ?></h2>
         <div class="col-4">
             <form method="post">
                 <div id="role_edit_messages"></div>
                 <fieldset class="input-group-vertical">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="roleid" placeholder="Role ID" value="<?php echo $roleid ?>" <?php echo $editable ?> >
+                        <input type="text" class="form-control" name="roleid" placeholder="<?php echo lang('role_id'); ?>" value="<?php echo $roleid ?>" <?php echo $editable ?> >
                     </div>
                 </fieldset>
                 <div class="form-group">
-                    <label for="role_permissions">Permissions</label>
+                    <label for="role_permissions"><?php echo lang('permissions'); ?></label>
                     <select multiple class="form-control" name="permissions[]" size="25" required>
                         <?php
                             foreach($roles['all'] as $dummy => $permission) {
@@ -34,8 +34,8 @@
                 </div>
                 <input type='hidden' name='do' value='role_save' />
                 <button type="submit" class="btn btn-primary">Save</button>
-				<a role="button" class="btn btn-danger" href="javascript:do_action('role_delete', '<?php echo $roleid .": " . $lang['confirm_del_contact']; ?>');"><?php echo $lang['btn_delete']?></a>
-                <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/roles">Cancel</a>
+				<a role="button" class="btn btn-danger" href="javascript:do_action('role_delete', '<?php echo $roleid .": " . lang('confirm_del_contact'); ?>');"><?php echo lang('btn_delete');?></a>
+                <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/roles"><?php echo lang('cancel'); ?></a>
             </form>
         </div>
     </div>

@@ -66,7 +66,6 @@ function collect_birthdays() {
 
 function tpl_birthday() {
     global $conf;
-    global $lang;
     $num_bdays = 0;
     
     $people = collect_birthdays();
@@ -88,20 +87,20 @@ function tpl_birthday() {
         
         if($days > 30) {
             $n = floor($days/30);
-            if($days > 60)   $trans_text = $lang['bday_months'];
-            else             $trans_text = $lang['bday_month'];
+            if($days > 60)   $trans_text = lang('bday_months');
+            else             $trans_text = lang('bday_month');
         } else if($days > 6) {
             $n = floor($days/7);
-            if($days > 13)   $trans_text = $lang['bday_weeks'];
-            else             $trans_text = $lang['bday_week'];
+            if($days > 13)   $trans_text = lang('bday_weeks');
+            else             $trans_text = lang('bday_week');
         } else if($days > 0) {
             $n = $days;
-            if($days == 1)   $trans_text = $lang['bday_day'];
-            else if($days == 2) $trans_text = $lang['bday_day2'];
-            else             $trans_text = $lang['bday_days'];
+            if($days == 1)   $trans_text = lang('bday_day');
+            else if($days == 2) $trans_text = lang('bday_day2');
+            else             $trans_text = lang('bday_days');
         } else {
             // birthday today!
-            $trans_text = $lang['bday_today'];
+            $trans_text = lang('bday_today');
         }
         
         eval("\$text = \"$trans_text\";");
@@ -114,7 +113,7 @@ function tpl_birthday() {
     }
     
     if($num_bdays == 0) {
-        echo $lang['bday_none']."<br/>";
+        echo lang('bday_none')."<br/>";
     }
 }
 

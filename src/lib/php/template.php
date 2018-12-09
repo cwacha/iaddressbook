@@ -54,7 +54,6 @@ function tpl_include($file) {
     global $AB;
     global $QUERY;
     global $contact;
-    global $lang;
     global $conf;
     global $CAT;
     global $CAT_ID;
@@ -65,27 +64,6 @@ function tpl_include($file) {
     global $contactlist_letter;
 
     include(template($file));
-}
-
-// deprecated
-function tpl_showcontactlist() {
-    tpl_include('contactlist.tpl');
-}
-
-// deprecated
-function tpl_showperson() {
-    global $ACT;
-    global $contact;
-    
-    if(is_object($contact)) {
-        if($ACT == 'edit' or $ACT == 'new') {
-            tpl_include('person_edit.tpl');
-        } else {
-            tpl_include('person.tpl');
-        }
-    } else {
-        tpl_include('person_empty.tpl');
-    }
 }
 
 function tpl_contactlist() {
@@ -108,175 +86,34 @@ function tpl_contactlist() {
     }
 }
 
-// deprecated
-function tpl_addresses($limit = 0) {
-    global $ID;
-    global $lang;
-    global $conf;
-    global $contact;
-    $color = 1;
-    $count = 0;
-    
-    foreach($contact->addresses as $address) {
-        if($limit > 0 and $count >= $limit) break;
-        include(template('address.tpl'));
-        $color = 3 - $color;
-        $count++;
-    }
-}
+function tpl_label($string) {    
+    if(strtoupper($string) == 'WORK') return lang('label_work');
+    if(strtoupper($string) == 'HOME') return lang('label_home');
 
-// deprecated
-function tpl_phones($limit = 0) {
-    global $ID;
-    global $contact;
-    $color = 1;
-    $count = 0;
-    
-    foreach($contact->phones as $phone) {
-        if($limit > 0 and $count >= $limit) break;
-        include(template('phone.tpl'));
-        $color = 3 - $color;
-        $count++;
-    }
-}
-
-// deprecated
-function tpl_emails($limit = 0) {
-    global $ID;
-    global $contact;
-    $color = 1;
-    $count = 0;
-    
-    foreach($contact->emails as $email) {
-        if($limit > 0 and $count >= $limit) break;
-        include(template('email.tpl'));
-        $color = 3 - $color;
-        $count++;
-    }
-}
-
-// deprecated
-function tpl_chathandles($limit = 0) {
-    global $ID;
-    global $contact;
-    $color = 1;
-    $count = 0;
-    
-    foreach($contact->chathandles as $chathandle) {
-        if($limit > 0 and $count >= $limit) break;
-        include(template('chathandle.tpl'));
-        $color = 3 - $color;
-        $count++;
-    }
-}
-
-// deprecated
-function tpl_urls($limit = 0) {
-    global $ID;
-    global $contact;
-    $color = 1;
-    $count = 0;
-    
-    foreach($contact->urls as $url) {
-        if($limit > 0 and $count >= $limit) break;
-        include(template('url.tpl'));
-        $color = 3 - $color;
-        $count++;
-    }
-}
-
-// deprecated
-function tpl_relatednames($limit = 0) {
-    global $ID;
-    global $contact;
-    $color = 1;
-    $count = 0;
-    
-    foreach($contact->relatednames as $rname) {
-        if($limit > 0 and $count >= $limit) break;
-        include(template('relatedname.tpl'));
-        $color = 3 - $color;
-        $count++;
-    }
-}
-
-function tpl_label($string) {
-    global $lang;
-    
-    if(strtoupper($string) == 'WORK') return $lang['label_work'];
-    if(strtoupper($string) == 'HOME') return $lang['label_home'];
-
-    if(strtoupper($string) == 'CELL') return $lang['label_cell'];
-    if(strtoupper($string) == 'PAGER') return $lang['label_pager'];
-    if(strtoupper($string) == 'MAIN') return $lang['label_main'];
-    if(strtoupper($string) == 'WORK FAX') return $lang['label_workfax'];
-    if(strtoupper($string) == 'HOME FAX') return $lang['label_homefax'];
+    if(strtoupper($string) == 'CELL') return lang('label_cell');
+    if(strtoupper($string) == 'PAGER') return lang('label_pager');
+    if(strtoupper($string) == 'MAIN') return lang('label_main');
+    if(strtoupper($string) == 'WORK FAX') return lang('label_workfax');
+    if(strtoupper($string) == 'HOME FAX') return lang('label_homefax');
     
     if(strtoupper($string) == 'JABBER') return 'Jabber';
     if(strtoupper($string) == 'SKYPE') return 'Skype';
     if(strtoupper($string) == 'YAHOO') return 'Yahoo';
     
-    if(strtoupper($string) == 'CUSTOM') return $lang['label_custom'];
+    if(strtoupper($string) == 'CUSTOM') return lang('label_custom');
 
     // catch OS X AddressBook specific labels
     preg_match('_\$\!\<(.*)\>\!\$_', $string,  $match);
     if(!empty($match)) {
         $ab_label = strtolower($match[1]);
-        return $lang['label_'.$ab_label];
+        return lang('label_'.$ab_label);
         //echo "<pre>";
         //print_r($match);
         //echo "</pre>";
     }
-//    if(strtoupper($string) == '_$!<OTHER>!$_') return $lang['label_other'];  // cwacha: was hani da füren seich gmacht? scho im preg_match, oder?
+//    if(strtoupper($string) == '_$!<OTHER>!$_') return lang('label_other');  // cwacha: was hani da füren seich gmacht? scho im preg_match, oder?
     
     return $string;
-}
-
-// deprecated
-function tpl_categorylist() {
-    global $categories;
-    global $lang;
-    global $conf;
-    global $CAT_ID;
-    $color = 1;
-
-    foreach($categories as $category) {
-        include(template('categorylist_item.tpl'));
-        $color = 3 - $color;
-    }
-}
-
-// deprecated
-function tpl_selectedcategory() {
-    global $CAT;
-    global $CAT_ID;
-    global $lang;
-    
-    $category = $CAT->get($CAT_ID);
-    
-    if(is_object($category)) return $category->name;
-    return $lang['category_all'];
-}
-
-
-// deprecated
-function tpl_catselect() {
-?>
-            <form method="post" action="" >
-                <input type="hidden" name="do" value="cat_select" />
-                <select name="cat_id" size="1" onChange="submit()" >
-                    <?php
-                        global $categories;
-                        global $CAT_ID;
-                        
-                        foreach($categories as $category) {
-                            $category->id == $CAT_ID? $sel = 'selected' : $sel = '';
-                            echo "<option value='".$category->id."' $sel >".$category->displayName()."</option> \n";
-                        }
-                    ?>
-                </select>
-            </form>
-<?php
 }
 
 function tpl_abc() {

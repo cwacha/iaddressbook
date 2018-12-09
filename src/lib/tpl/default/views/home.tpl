@@ -7,8 +7,8 @@
   <div class='sidebar-footer'>
     <div class='items'>
       <div class='btn-group float-right' role='group'>
-          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:$('#create_category_modal').modal('toggle');" data-toggle="tooltip" title="Create category" ><span class='glyphicon glyphicon-plus' /></a>
-        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_post({'do': 'cat_del'}, '<?php echo $lang['confirm_cat_delete']; ?>');" data-toggle="tooltip" title="Delete category"><span class='glyphicon glyphicon-minus' /></a>
+          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:$('#create_category_modal').modal('toggle');" data-toggle="tooltip" title="<?php echo lang('cat_add'); ?>" ><span class='glyphicon glyphicon-plus' /></a>
+        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_post({'do': 'cat_del'}, '<?php echo lang('confirm_cat_delete'); ?>');" data-toggle="tooltip" title="<?php echo lang('cat_delete');?>"><span class='glyphicon glyphicon-minus' /></a>
       </div>
     </div>
   </div>
@@ -20,12 +20,12 @@
   <div class='sidebar2-footer'>
     <div class='items'>
       <div class='btn-group float-right' role='group'>
-        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_post({'do': 'new'});" data-toggle="tooltip" title="Create contact"><span class='glyphicon glyphicon-plus' /></a>
-        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_delete_many('<?php echo $lang['confirm_del_contacts']; ?>');" data-toggle="tooltip" title="Delete contacts"><span class='glyphicon glyphicon-minus' /></a>
+        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_post({'do': 'new'});" data-toggle="tooltip" title="<?php echo lang('create_contact');?>"><span class='glyphicon glyphicon-plus' /></a>
+        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_delete_many('<?php echo lang('confirm_del_contacts'); ?>');" data-toggle="tooltip" title="<?php echo lang('delete_contacts');?>"><span class='glyphicon glyphicon-minus' /></a>
       </div>
       <div class='btn-group float-right pr-2' role='group'>
-          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:$('#select_category_modal').modal('toggle');" data-toggle="tooltip" title="Add contacts to category"><span class='glyphicon glyphicon-tag' /></a>
-          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_cat_del_contacts('<?php echo $lang['confirm_cat_remove_contacts']; ?>');" data-toggle="tooltip" title="Remove contacts from category"><span class='glyphicon glyphicon-remove' /></a>
+          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:$('#select_category_modal').modal('toggle');" data-toggle="tooltip" title="<?php echo lang('cat_add_contacts');?>"><span class='glyphicon glyphicon-tag' /></a>
+          <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_cat_del_contacts('<?php echo lang('confirm_cat_remove_contacts'); ?>');" data-toggle="tooltip" title="<?php echo lang('cat_delete_contacts');?>"><span class='glyphicon glyphicon-remove' /></a>
       </div>
     </div>
   </div>
@@ -50,7 +50,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="create_category_modal_label"><?php echo $lang['cat_add']; ?></h5>
+        <h5 class="modal-title" id="create_category_modal_label"><?php echo lang('cat_add'); ?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -58,10 +58,10 @@
       <form method='post' action='' name='cat_add_form'>
         <input type='hidden' name='do' value='cat_add' />
         <div class="modal-body">
-          <input type='text' name='cat_name' class='form-control' value='' placeholder='<?php echo $lang['category']; ?>'/>
+          <input type='text' name='cat_name' class='form-control' value='' placeholder='<?php echo lang('category'); ?>'/>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary"><?php echo $lang['cat_add']; ?></button>
+          <button type="submit" class="btn btn-primary"><?php echo lang('cat_add'); ?></button>
         </div>
       </form>
     </div>
@@ -73,7 +73,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="select_category_modal_label"><?php echo $lang['cat_add']; ?></h5>
+        <h5 class="modal-title" id="select_category_modal_label"><?php echo lang('cat_add_contacts'); ?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -91,7 +91,7 @@
           </select>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary"><?php echo $lang['cat_add']; ?></button>
+          <button type="submit" class="btn btn-primary"><?php echo lang('cat_add_contacts'); ?></button>
         </div>
 
       </form>

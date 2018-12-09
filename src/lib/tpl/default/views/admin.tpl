@@ -1,14 +1,14 @@
 <div class="row">
     <div class="col pt-4">
-        <h2>Admin</h2>
+        <h2><?php echo lang('admin'); ?></h2>
         <p>
-            <a href="<?php echo $webappuri ?>/admin/accounts">Accounts</a>
+            <a href="<?php echo $webappuri ?>/admin/accounts"><?php echo lang('accounts'); ?></a>
         </p>
         <p>
-            <a href="<?php echo $webappuri ?>/admin/roles">Roles</a>
+            <a href="<?php echo $webappuri ?>/admin/roles"><?php echo lang('roles'); ?></a>
         </p>
         <p>
-            <a href="<?php echo $webappuri ?>/admin/config">Configuration</a>
+            <a href="<?php echo $webappuri ?>/admin/config"><?php echo lang('configuration'); ?></a>
         </p>
     </div>
 </div>

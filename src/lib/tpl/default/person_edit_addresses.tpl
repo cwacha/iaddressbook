@@ -1,6 +1,6 @@
     <div class="row">
         <div class="col person_left">
-            <div class="person_labels"><?php echo $lang['label_addresses']; ?></div>
+            <div class="person_labels"><?php echo lang('label_addresses'); ?></div>
         </div>
         <div class="col"></div>
         <div class="col-1"></div>
@@ -21,19 +21,19 @@
         <div class="col pb-4">
                 <input type="hidden" name="template_" value='' class="text" />
             <div class="form-group" >
-                <input type="text" name="street_" placeholder="<?php echo $lang['label_street']; ?>" value='' class="form-control form-control-sm" />
+                <input type="text" name="street_" placeholder="<?php echo lang('label_street'); ?>" value='' class="form-control form-control-sm" />
             </div>
             <div class="form-group" >
-                <input type="text" name="zip_" placeholder="<?php echo $lang['label_zip']; ?>" value='' class="form-control form-control-sm" size="10" />
+                <input type="text" name="zip_" placeholder="<?php echo lang('label_zip'); ?>" value='' class="form-control form-control-sm" size="10" />
             </div>
             <div class="form-group" >
-                <input type="text" name="city_" placeholder="<?php echo $lang['label_city']; ?>" value='' class="form-control form-control-sm" />
+                <input type="text" name="city_" placeholder="<?php echo lang('label_city'); ?>" value='' class="form-control form-control-sm" />
             </div>
             <div class="form-group" >
-                <input type="text" name="state_" placeholder="<?php echo $lang['label_state']; ?>" value='' class="form-control form-control-sm" />
+                <input type="text" name="state_" placeholder="<?php echo lang('label_state'); ?>" value='' class="form-control form-control-sm" />
             </div>
             <div class="form-group" >
-                <input type="text" name="country_" placeholder="<?php echo $lang['label_country']; ?>" value='' class="form-control form-control-sm" />
+                <input type="text" name="country_" placeholder="<?php echo lang('label_country'); ?>" value='' class="form-control form-control-sm" />
             </div>
         </div>
         <div class="col-1 pl-0">
@@ -106,7 +106,7 @@ function del_addresslabel(object) {
 function custom_addresslabel(object) {
     if(object.options[object.selectedIndex].value == 'CUSTOM') {
         // get custom label
-        var label = prompt("<?php echo $lang['label_customprompt']; ?>", "");
+        var label = prompt("<?php echo lang('label_customprompt'); ?>", "");
         
         // add custom label to options
         if(label) {

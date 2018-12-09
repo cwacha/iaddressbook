@@ -23,7 +23,6 @@
 function act_dispatch($request, $action) {
     global $QUERY;
     global $ID;
-    global $lang;
     global $conf;
 
   //msg("test info");
@@ -148,10 +147,6 @@ function act_dispatch($request, $action) {
     }
     
     act_hsc_everything();
-    
-    //call template FIXME: all needed vars available?
-    //header('Content-Type: text/html; charset=utf-8');
-    //tpl_include('main.tpl');
 }
 
 function act_check() {
@@ -394,7 +389,6 @@ function act_search() {
     global $ID;
     global $CAT;
     global $categories;
-    global $lang;
 
     if(!isset($QUERY)) {
         $contactlist = $AB->getall();
@@ -403,8 +397,8 @@ function act_search() {
     }
 
     // load sort rules
-    $sort_rules_from = explode(',', $lang['sort_rules_from']);
-    $sort_rules_to   = explode(',', $lang['sort_rules_to']);
+    $sort_rules_from = explode(',', lang('sort_rules_from'));
+    $sort_rules_to   = explode(',', lang('sort_rules_to'));
 
     if(isset($contactlist_letter) and $contactlist_letter != 'A-Z') {
         $contactlist_letter = strtoupper($contactlist_letter{0});
@@ -479,14 +473,14 @@ function act_category_del_empty() {
         
         if(count($contacts) == 0) {
             // remove the category
-            msg("Deleting empty category: ". $category->displayName());
+            msg(lang('cat_del_empty') .": ". $category->displayName());
             $CAT->delete($category->id);
 			$i++;
         }
     }
     $CAT_ID = 0;
 	
-	msg("$i categories deleted.");
+	msg(strstr(lang('cat_del_empty_done'), array("$1" => $i)));
 }
 
 function act_category_addcontacts() {
@@ -503,7 +497,7 @@ function act_category_addcontacts() {
 		}
 	}
 	$CAT->addMembersToCategory($category->id, $members);
-    msg(strtr("Added $1 contacts to category $2", array("$1" => count($members), "$2" => $category->name())));
+    msg(strtr(lang('cat_add_contacts_done'), array("$1" => count($members), "$2" => $category->name())));
 }
 
 function act_category_delcontacts() {

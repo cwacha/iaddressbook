@@ -13,6 +13,13 @@ function get_version() {
     return $VERSION;
 }
 
+function lang($key) {
+    global $lang;
+    if(array_key_exists($key, $lang))
+      return $lang[$key];
+    return $key;
+}
+
 /*
  *    use like:
  *    $fmt = "$d. $month $YYYY";
@@ -28,7 +35,7 @@ function nice_date($format_string, $iso_date) {
     $mm    = sprintf("%02u", $m);
     $dd    = sprintf("%02u", $d);
     
-    $month = $lang['month'][$m];
+    $month = lang('month')[$m];
 
     eval("\$ret = \"$format_string\";");
 

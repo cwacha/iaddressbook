@@ -34,15 +34,13 @@ class Category {
 		return $this->name;
 	}
 
-	function displayName() {
-		global $lang;
-		
+	function displayName() {		
 		if ($this->name == ' __all__')
-			return $lang ['category_all'];
+			return lang('category_all');
 		if ($this->name == ' __lastimport__')
-			return $lang ['cat_lastimport'];
+			return lang('cat_lastimport');
 		if ($this->name == ' __changed__')
-			return $lang ['cat_changed'];
+			return lang('cat_changed');
 		
 		return $this->name;
 	}
@@ -63,7 +61,6 @@ class Categories {
 	}
 
 	function row2category($row) {
-		global $lang;
 		global $db_config;
 		
 		$category = new Category();
@@ -565,8 +562,6 @@ class Categories {
 	}
 
 	function sort($categories) {
-		global $lang;
-
 		// $categories is an array of category
 		$sorted_names = array ();
 		$sorted = array ();
@@ -580,8 +575,8 @@ class Categories {
 		}
 			
 		// load sort rules
-		$sort_rules_from = explode(',', $lang ['sort_rules_from']);
-		$sort_rules_to = explode(',', $lang ['sort_rules_to']);
+		$sort_rules_from = explode(',', lang('sort_rules_from'));
+		$sort_rules_to = explode(',', lang('sort_rules_to'));
 		
 		foreach ( $categories as $cat ) {
 			$sorted_names [$cat->id] = str_replace($sort_rules_from, $sort_rules_to, strtoupper($cat->name()));

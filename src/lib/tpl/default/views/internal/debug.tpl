@@ -46,8 +46,6 @@ $contactlist: (very large)<?php // echo print_r($contactlist, true) ?><br/>
 
 $conf: <?php echo print_r($conf, true) ?><br/>
 
-$lang: <?php echo print_r($lang, true) ?><br/>
-
         </code>
     </pre>
 </div>

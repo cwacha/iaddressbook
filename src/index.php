@@ -28,7 +28,6 @@
         global $AB;                 // Addressbook class
         global $QUERY;              // Currently active search
         global $contact;            // Current selected contact class, or false if no contact selected
-        global $lang;               // language array
         global $conf;               // configuration array
         global $CAT;                // Category class
         global $CAT_ID;             // Current selected category ID or 0 if no category is selected (all)
@@ -59,13 +58,13 @@
         if($conf['auth_enabled']) {
             // test permission for action
             if(!$securitycontroller->authorize($_SESSION['accountid'], $ACT)) {
-                msg($lang['action_not_allowed'] . " ($ACT)", -1);
+                msg(lang('action_not_allowed') . " ($ACT)", -1);
                 // user is not allowed to execute $ACT, change to 'show'
                 $ACT = 'show';
             }
             // test permission for view
             if(!$securitycontroller->authorize($_SESSION['accountid'], $_SESSION['viewname'])) {
-                msg($lang['action_not_allowed'] . " (".$_SESSION['viewname'].")", -1);
+                msg(lang('action_not_allowed') . " (".$_SESSION['viewname'].")", -1);
                 // user is not allowed to view $ACT, change to '/home'
                 $_SESSION['viewname'] = '/home';
             }
@@ -181,7 +180,6 @@
         global $AB;
         global $QUERY;
         global $contact;
-        global $lang;
         global $CAT;
         global $CAT_ID;
         global $categories;
@@ -224,7 +222,6 @@
     function login($request) {
         global $_SESSION;
         global $conf;
-        global $lang;
         global $securitycontroller;
 
         if($conf['auth_enabled'] == false) {
@@ -262,7 +259,7 @@
             unset($_SESSION['account']);
             if($action == 'login') {
                 // wrong username or wrong password supplied
-                msg($lang['wrong_userpass'], -1);
+                msg(lang('wrong_userpass'), -1);
             }
             render('/login', $request);
             return false;

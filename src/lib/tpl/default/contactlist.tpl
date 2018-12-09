@@ -1,4 +1,4 @@
-<h4><?php echo $lang['contacts']; ?></h4>
+<h4><?php echo lang('contacts'); ?></h4>
 
 <?php if($conf['contactlist_abc'] == true) { ?>
     <p class="pl-2 pr-2 small text-center">
@@ -9,7 +9,7 @@
 <div class="contactlist_item">
     <div class="text-muted">
         <input type='checkbox' name="selectall" onClick="select_all('ct_form', this.checked)" />
-        <?php echo $lang['category_all']; ?>
+        <?php echo lang('category_all'); ?>
     </div>
 </div>
 <form method="post" action="" name='ct_form'>
@@ -30,7 +30,7 @@
     ?>
 
     <p class="mt-2 text-muted text-center">
-        <?php echo count($contactlist); ?> <?php echo $lang['contacts']; ?>
+        <?php echo count($contactlist); ?> <?php echo lang('contacts'); ?>
     </p>
 
     <p class="pl-2 pr-2 small">

@@ -53,26 +53,27 @@
 
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="<?php echo $baseuri ?>">Contacts</a>
-            </li>
+            <?php
+              if($_SESSION['authorized'] && in_array('/home', $_SESSION['account']['permissions'])) {
+            ?>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo $baseuri ?>"><?php echo lang('contacts'); ?></a>
+              </li>
+            <?php } ?>
             <?php
               if($_SESSION['authorized'] && in_array('/export', $_SESSION['account']['permissions'])) {
             ?>
               <li class="nav-item">
-                <a class="nav-link" href="<?php echo $webappuri ?>/export"><?php echo $lang['import_export']; ?></a>
+                <a class="nav-link" href="<?php echo $webappuri ?>/export"><?php echo lang('import_export'); ?></a>
               </li>
+            <?php } ?>
             <?php
-              }
-  
               if($_SESSION['authorized'] && in_array('/admin', $_SESSION['account']['permissions'])) {
             ?>
               <li class="nav-item">
-                <a class="nav-link" href="<?php echo $webappuri ?>/admin">Admin</a>
+                <a class="nav-link" href="<?php echo $webappuri ?>/admin"><?php echo lang('admin'); ?></a>
               </li>
-            <?php
-              }
-            ?>
+            <?php } ?>
           </ul>
 
           <!-- Search Box -->
@@ -80,14 +81,12 @@
             if($_SESSION['authorized'] && in_array('search', $_SESSION['account']['permissions'])) {
           ?>
             <form class="form-inline mt-2 mt-md-0">
-              <input class="form-control mr-sm-2" type="text" name="q" value="<?php echo $QUERY; ?>" placeholder="<?php echo $lang['btn_search']; ?>" />
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><?php echo $lang['btn_search']; ?></button>
+              <input class="form-control mr-sm-2" type="text" name="q" value="<?php echo $QUERY; ?>" placeholder="<?php echo lang('btn_search'); ?>" />
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><?php echo lang('btn_search'); ?></button>
               <input type="hidden" name="do" value="search" />
               <input type="hidden" name="id" value="<?php echo $ID; ?>" />
             </form>
-          <?php
-            }
-          ?>
+          <?php } ?>
 
           <!-- User Profile -->
           <?php
@@ -100,15 +99,13 @@
                   <?php echo $_SESSION['account']['fullname']; ?>
               </a>
                 <ul class="dropdown-menu" role="menu">
-                  <li><a class="dropdown-item" href="<?php echo $webappuri ?>/profile">Profile</a></li>
+                  <li><a class="dropdown-item" href="<?php echo $webappuri ?>/profile"><?php echo lang('profile');?></a></li>
                   <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="<?php echo $webappuri ?>/?do=logout">Logout</a></li>
+                  <li><a class="dropdown-item" href="<?php echo $webappuri ?>/?do=logout"><?php echo lang('logout');?></a></li>
                 </ul>
               </li>
             </ul>
-          <?php
-            }
-          ?>
+          <?php } ?>
           <ul class="navbar-nav navbar-right ml-sm-2">
             <li class="dropdown">
               <a class="nav-link" data-toggle="modal" data-target="#notification_modal">
@@ -146,7 +143,7 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="notification_modal_label">Notifications</h5>
+            <h5 class="modal-title" id="notification_modal_label"><?php echo lang('notifications');?></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>

@@ -1,4 +1,4 @@
-<h4><?php echo $lang['category']; ?></h4>
+<h4><?php echo lang('category'); ?></h4>
 
 <form method='post' action='' name='cat_select_form'>
 	<input type='hidden' name='do' value='cat_select' />

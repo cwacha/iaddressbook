@@ -79,7 +79,7 @@
         
         <div class="col person_left">
             <div class="person_labels">
-                <?php echo $lang['label_birthday']; ?>
+                <?php echo lang('label_birthday'); ?>
             </div>
         </div>
         <div class="col person_right">
@@ -120,7 +120,7 @@
     <?php if(!empty($contact->note)) { ?>
     <div class="row">
         <div class="col person_left">
-            <div class="person_labels"><?php echo $lang['label_notes']?></div>
+            <div class="person_labels"><?php echo lang('label_notes');?></div>
         </div>
         <div class="col person_right">
             <div class="person_text">
@@ -138,7 +138,7 @@
             $contact_categories = $contact->get_categories();
             if(!empty($contact_categories)) {
         ?><div class="col person_left">
-                <div class="person_labels"><?php echo $lang['category']?></div>
+                <div class="person_labels"><?php echo lang('category');?></div>
             </div>
             <div class="col person_right">
                 <div class="person_text">
@@ -158,14 +158,14 @@
 
 
 <small class="text-muted float-right pb-4">
-    <?php echo $contact->uid . ' &mdash; ' . $lang['label_updated'] . date($conf['dformat'], $contact->modification_ts); ?>
+    <?php echo $contact->uid . ' &mdash; ' . lang('label_updated') . date($conf['dformat'], $contact->modification_ts); ?>
 </small>
 
 <!-- Begin Buttons -->
 <div class="btn-group float-right pb-4" role="group">
-    <button type="button" class="btn btn-outline-primary btn-sm" onclick="javascript:person_action('edit');"><?php echo $lang['btn_edit']?></button>
-    <button type="button" class="btn btn-outline-primary btn-sm" onclick="javascript:person_action('export_vcard');"><?php echo $lang['btn_vcardexport']?></button>
-    <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript:person_action('delete', '<?php echo $contact->name() .": " . $lang['confirm_del_contact']; ?>');"><?php echo $lang['btn_delete']?></button>
+    <button type="button" class="btn btn-outline-primary btn-sm" onclick="javascript:person_action('edit');"><?php echo lang('btn_edit');?></button>
+    <button type="button" class="btn btn-outline-primary btn-sm" onclick="javascript:person_action('export_vcard');"><?php echo lang('btn_vcardexport');?></button>
+    <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript:person_action('delete', '<?php echo $contact->name() .": " . lang('confirm_del_contact'); ?>');"><?php echo lang('btn_delete');?></button>
 </div>
 
 <form method="post" action="" name="person_buttons">

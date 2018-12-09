@@ -574,16 +574,14 @@ class Addressbook {
 		return false;
     }
     
-    function sort($contactlist) {
-        global $lang;
-        
+    function sort($contactlist) {        
         //$contactlist is an array of persons
         $sorted_names = array();
         $sorted = array();
 
         // load sort rules
-        $sort_rules_from = explode(',', $lang['sort_rules_from']);
-        $sort_rules_to   = explode(',', $lang['sort_rules_to']);
+        $sort_rules_from = explode(',', lang('sort_rules_from'));
+        $sort_rules_to   = explode(',', lang('sort_rules_to'));
         
         if(is_array($contactlist)) {
             foreach($contactlist as $contact) {

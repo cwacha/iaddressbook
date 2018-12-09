@@ -11,35 +11,35 @@
 ?>
 <div class="row">
     <div class="col pt-4">
-        <h2>Account Password</h2>
+        <h2><?php echo lang('account_password'); ?></h2>
         <div class="col-4 pb-3">
-            <small>To disable a password set it to "!".</small>
+            <small><?php echo lang('account_password_msg'); ?></small>
         </div>
         <div class="col-4">
             <form method="post" onsubmit="return validate()">
                 <div id="account_password_messages"></div>
                 <fieldset class="input-group-vertical">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="accountid" placeholder="Account ID" value="<?php echo $accountid ?>" readonly>
+                        <input type="text" class="form-control" name="accountid" placeholder="<?php echo lang('account_id'); ?>" value="<?php echo $accountid ?>" readonly>
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" onkeyup="calc();" required>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="<?php echo lang('password'); ?>" onkeyup="calc();" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm Password" required>
+                        <input type="password" class="form-control" name="password2" id="password2" placeholder="<?php echo lang('password_confirm'); ?>" required>
                     </div>
                 </fieldset>
                 <div class="form-check pb-3">
                     <input type="checkbox" id="showpassword" class="form-check-input" onchange="toggle_password()">
-                    <label class="form-check-label" for="showpassword">Show Password</label>
+                    <label class="form-check-label" for="showpassword"><?php echo lang('password_show'); ?></label>
                 </div>
 				<div class="progress">
 					<div id="progress" class="progress-bar progress-bar-danger" role="progressbar"></div>
 				</div>
-				<div class="pb-4" id="quality">very weak</div>
+				<div class="pb-4" id="quality"><?php echo lang('password_very_weak'); ?></div>
                 <input type='hidden' name='do' value='account_password' />
                 <button type="submit" class="btn btn-primary">Save</button>
-                <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/accounts">Cancel</a>
+                <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/accounts"><?php echo lang('cancel'); ?></a>
             </form>
         </div>
     </div>

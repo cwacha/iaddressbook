@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col pt-4">
-            <h2><?php echo $lang['import_export']; ?></h2>
+            <h2><?php echo lang('import_export'); ?></h2>
         </div>
     </div>
     <form method="post" enctype="multipart/form-data">
@@ -11,28 +11,28 @@
                 <input type="file" class="form-control" id="file1" name="vcard_file" >
             </div>
             <div class="col-auto">
-                <input type="submit" class="btn btn-primary" value="<?php echo $lang['btn_vcardimport']; ?>" >
+                <input type="submit" class="btn btn-primary" value="<?php echo lang('btn_vcardimport'); ?>" >
             </div>
         </div>
     </form>
     <div class="row">
         <div class="col pt-4">
             <p>
-                <a href="javascript:do_action('import_folder')"><?php echo $lang['import_folder']; ?></a>
+                <a href="javascript:do_action('import_folder')"><?php echo lang('import_folder'); ?></a>
             </p>
         </div>
     </div>
     <div class="row">
         <div class="col pt-4">
-            <h2><?php echo $lang['import_export']; ?></h2>
+            <h2><?php echo lang('import_export'); ?></h2>
             <p>
-                <a href="javascript:do_action('export_vcard_cat')"><?php echo $lang['export_vcard']; ?></a>
+                <a href="javascript:do_action('export_vcard_cat')"><?php echo lang('export_vcard'); ?></a>
             </p>
             <p>
-                <a href="javascript:do_action('export_csv_cat')"><?php echo $lang['export_csv']; ?></a>
+                <a href="javascript:do_action('export_csv_cat')"><?php echo lang('export_csv'); ?></a>
             </p>
             <p>
-                <a href="javascript:do_action('export_ldif_cat')"><?php echo $lang['export_ldif']; ?></a>
+                <a href="javascript:do_action('export_ldif_cat')"><?php echo lang('export_ldif'); ?></a>
             </p>
         </div>
     </div>

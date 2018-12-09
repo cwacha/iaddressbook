@@ -155,7 +155,6 @@ class Person {
     
     function name($lastfirst = NULL) {
         global $conf;
-        global $lang;
         
         $ret = "";
         
@@ -196,7 +195,7 @@ class Person {
         }
         
         if(empty($ret)) {
-            $ret = $lang['no_name'];
+            $ret = lang('no_name');
         }
         
         return $ret;

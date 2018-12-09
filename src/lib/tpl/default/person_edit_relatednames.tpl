@@ -1,6 +1,6 @@
     <div class="row">
         <div class="col person_left">
-            <div class="person_labels"><?php echo $lang['label_relatednames']; ?></div>
+            <div class="person_labels"><?php echo lang('label_relatednames'); ?></div>
         </div>
         <div class="col"></div>
         <div class="col-1"></div>
@@ -90,7 +90,7 @@ function del_relatedlabel(object) {
 function custom_relatedlabel(object) {
     if(object.options[object.selectedIndex].value == 'CUSTOM') {
         // get custom label
-        var label = prompt("<?php echo $lang['label_customprompt']; ?>", "");
+        var label = prompt("<?php echo lang('label_customprompt'); ?>", "");
         
         // add custom label to options
         if(label) {

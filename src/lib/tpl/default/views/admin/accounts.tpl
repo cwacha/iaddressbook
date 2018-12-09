@@ -3,10 +3,10 @@
 ?>
 <div class="row">
     <div class="col pt-4">
-        <h2>Accounts</h2>
+        <h2><?php echo lang('accounts'); ?></h2>
         <table class="table table-hover" id="accounttable">
             <thead>
-                <tr><th>Account ID</th><th>Fullname</th><th>E-mail</th><th>Roles</th></tr>
+                <tr><th><?php echo lang('account_id'); ?></th><th><?php echo lang('fullname'); ?></th><th><?php echo lang('email'); ?></th><th><?php echo lang('roles'); ?></th></tr>
             </thead>
             <tbody>
                 <?php
@@ -19,8 +19,8 @@
         </table>
 
         <!-- Begin Buttons -->
-        <a role="button" class="btn btn-primary" href="<?php echo $webappuri ?>/admin/account/edit">Add Account</a>
-        <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin">Cancel</a>
+        <a role="button" class="btn btn-primary" href="<?php echo $webappuri ?>/admin/account/edit"><?php echo lang('account_add'); ?></a>
+        <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin"><?php echo lang('cancel'); ?></a>
     </div>
 </div>
 

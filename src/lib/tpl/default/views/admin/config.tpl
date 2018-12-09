@@ -4,12 +4,13 @@
 		<div id="config_table"></div>
 
 	    <!-- Begin Buttons -->
-        <button type="submit" class="btn btn-primary"><?php echo $lang['btn_save']?></button>
-	    <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin"><?php echo $lang['btn_cancel']?></a>
+        <button type="submit" class="btn btn-primary"><?php echo lang('btn_save');?></button>
+	    <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin"><?php echo lang('btn_cancel');?></a>
 	</form>
 </div>
 
 <script>
+    <?php global $lang; ?>
 	$(document).ready(function() {
 		// revert octdec() for fmode and dmode
 		<?php 
