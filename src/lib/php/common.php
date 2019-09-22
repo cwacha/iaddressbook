@@ -23,7 +23,7 @@ function lang($key) {
 /*
  *    use like:
  *    $fmt = "$d. $month $YYYY";
- *    $date_string = nice_date("2006-03-01", $fmt);
+ *    $date_string = nice_date($fmt, "2006-03-01");
  */
 function nice_date($format_string, $iso_date) {
     global $lang;
@@ -35,7 +35,7 @@ function nice_date($format_string, $iso_date) {
     $mm    = sprintf("%02u", $m);
     $dd    = sprintf("%02u", $d);
     
-    $month = lang('month')[$m];
+    $month = lang("month_$m");
 
     eval("\$ret = \"$format_string\";");
 
@@ -413,7 +413,7 @@ function fix_fmode($file) {
 function fix_dmode($dir) {
     global $conf;
     
-    if($conf['dperm']) chmod($dir, $conf['dperm']);
+    if($conf['dmode']) chmod($dir, $conf['dmode']);
 }
 
 function generate_uuid() {

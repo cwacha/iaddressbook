@@ -12,6 +12,7 @@
     require_once(AB_BASEDIR.'/lib/php/init.php');
     require_once(AB_BASEDIR.'/lib/php/db.php');
     require_once(AB_BASEDIR.'/lib/php/module_auth.php');
+    require_once(AB_BASEDIR.'/lib/php/module_translator.php');
     require_once(AB_BASEDIR.'/lib/php/actions.php');
 
     if(!file_exists(AB_CONFDIR.'/config.php')) {
@@ -156,9 +157,12 @@
         $CAT = new Categories();
 
         //$shop->doAction($ACT, $request);
+        $translator = Translator::getInstance();
+        $translator->init();
 
         //do the work
         $securitycontroller->do_action($request, $ACT);
+        $translator->do_action($request, $ACT);
         act_dispatch($request, $ACT);
         
         renderAndRedirect($_SESSION['viewname'], $request);

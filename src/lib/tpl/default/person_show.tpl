@@ -153,13 +153,19 @@
     </div>
     <!-- End Categories -->
     <div class="row pb-4" ></div>
-
 </div>
 
-
-<small class="text-muted float-right pb-4">
-    <?php echo $contact->uid . ' &mdash; ' . lang('label_updated') . date($conf['dformat'], $contact->modification_ts); ?>
-</small>
+<div class="container pt-4">
+    <div class="row pb-4" >
+        <div class="col text-right text-muted">
+            <small>
+                <?php echo lang('label_updated') . date($conf['dformat'], $contact->modification_ts) ?>
+                <br>
+                <?php echo $contact->uid ?>
+            </small>
+        </div>
+    </div>
+</div>
 
 <!-- Begin Buttons -->
 <div class="btn-group float-right pb-4" role="group">

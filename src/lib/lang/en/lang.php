@@ -6,6 +6,11 @@
  * @author     Clemens Wacha <clemens.wacha@gmx.net>
  */
 
+$lang['lang_code']            = 'en';
+$lang['lang_name']            = 'English';
+$lang['lang_author']          = 'Clemens Wacha';
+$lang['lang_author_email']    = 'clemens.wacha@gmx.net';
+
 $lang['encoding']             = 'utf-8';
 $lang['direction']            = 'ltr';
 
@@ -60,6 +65,8 @@ $lang['role_edit']            = 'Edit Role';
 $lang['permissions']          = 'Permissions';
 
 $lang['configuration']        = 'Configuration';
+
+$lang['translator']           = 'Translator';
 
 $lang['fullname']             = 'Fullname';
 $lang['email']                = 'E-Mail';
@@ -173,18 +180,18 @@ $lang['bday_days']            = 'in $n days';
 $lang['bday_today']           = 'today!';
 
 // Date Helpers
-$lang['month'][1]             = 'January';
-$lang['month'][2]             = 'February';
-$lang['month'][3]             = 'March';
-$lang['month'][4]             = 'April';
-$lang['month'][5]             = 'May';
-$lang['month'][6]             = 'June';
-$lang['month'][7]             = 'July';
-$lang['month'][8]             = 'August';
-$lang['month'][9]             = 'September';
-$lang['month'][10]            = 'October';
-$lang['month'][11]            = 'November';
-$lang['month'][12]            = 'December';
+$lang['month_1']              = 'January';
+$lang['month_2']              = 'February';
+$lang['month_3']              = 'March';
+$lang['month_4']              = 'April';
+$lang['month_5']              = 'May';
+$lang['month_6']              = 'June';
+$lang['month_7']              = 'July';
+$lang['month_8']              = 'August';
+$lang['month_9']              = 'September';
+$lang['month_10']             = 'October';
+$lang['month_11']             = 'November';
+$lang['month_12']             = 'December';
 
 $lang['fmode']                = 'fmode';
 $lang['dmode']                = 'dmode';

@@ -10,6 +10,9 @@
         <p>
             <a href="<?php echo $webappuri ?>/admin/config"><?php echo lang('configuration'); ?></a>
         </p>
+        <p>
+            <a href="<?php echo $webappuri ?>/admin/translator"><?php echo lang('translator'); ?></a>
+        </p>
     </div>
 </div>
 <div class="row justify-content-md-center pt-4">

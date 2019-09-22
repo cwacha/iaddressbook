@@ -91,18 +91,18 @@ $lang['label_city']                     = "市区町";
 $lang['label_state']                    = "都道府県";
 $lang['label_country']                  = "国/地域";
 
-$lang['month']['1']                     = "1 月";
-$lang['month']['2']                     = "2 月";
-$lang['month']['3']                     = "3 月";
-$lang['month']['4']                     = "4 月";
-$lang['month']['5']                     = "5 月";
-$lang['month']['6']                     = "6 月";
-$lang['month']['7']                     = "7 月";
-$lang['month']['8']                     = "8 月";
-$lang['month']['9']                     = "9 月";
-$lang['month']['10']                    = "10 月";
-$lang['month']['11']                    = "11 月";
-$lang['month']['12']                    = "12 月";
+$lang['month_1']                     = "1 月";
+$lang['month_2']                     = "2 月";
+$lang['month_3']                     = "3 月";
+$lang['month_4']                     = "4 月";
+$lang['month_5']                     = "5 月";
+$lang['month_6']                     = "6 月";
+$lang['month_7']                     = "7 月";
+$lang['month_8']                     = "8 月";
+$lang['month_9']                     = "9 月";
+$lang['month_10']                    = "10 月";
+$lang['month_11']                    = "11 月";
+$lang['month_12']                    = "12 月";
 
 
 ?>

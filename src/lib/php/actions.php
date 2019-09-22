@@ -141,9 +141,10 @@ function act_dispatch($request, $action) {
         case 'select_offset':
         case 'select_letter':
         case 'show':
-        default:
             act_search();
             act_getcontact();
+            break;
+        default:
     }
     
     act_hsc_everything();

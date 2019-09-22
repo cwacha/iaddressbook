@@ -32,18 +32,18 @@ import() {
 	chmod 777 BUILD/var/state
 	chmod 777 BUILD/var/images
 	chmod 777 BUILD/var/import
-	echo "`head -1 BUILD/VERSION`-$SVN_REVISION" > BUILD/VERSION
+	echo "`head -1 BUILD/VERSION` (Rev: $SVN_REVISION)" > BUILD/VERSION
 	#touch BUILD/iaddressbook-$VERSION-$SVN_REVISION-manifest
 }
 
 pkg() {
 	echo "##### packaging"
-	VERSION=`head -1 BUILD/VERSION | sed 's/-.*//;s/[ 	]/_/g'`
+	VERSION=`head -1 BUILD/VERSION | sed 's/[ 	].*//g'`
 	
 	PKG=iaddressbook-$VERSION
 	mv BUILD $PKG
-	tar cfz $PKG-$SVN_REVISION.tar.gz $PKG
-	zip -r $PKG-$SVN_REVISION.zip $PKG >/dev/null
+	tar cfz $PKG+$SVN_REVISION.tar.gz $PKG
+	zip -r $PKG+$SVN_REVISION.zip $PKG >/dev/null
 }
 
 clean() {

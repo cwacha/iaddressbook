@@ -91,18 +91,18 @@ $lang['label_city']                     = "Urbo";
 $lang['label_state']                    = "State";
 $lang['label_country']                  = "Lando";
 
-$lang['month']['1']                     = "Januaro";
-$lang['month']['2']                     = "Februaro";
-$lang['month']['3']                     = "Marto";
-$lang['month']['4']                     = "Aprilo";
-$lang['month']['5']                     = "Majo";
-$lang['month']['6']                     = "Junio";
-$lang['month']['7']                     = "Julio";
-$lang['month']['8']                     = "Aŭgusto";
-$lang['month']['9']                     = "Septembro";
-$lang['month']['10']                    = "Oktobro";
-$lang['month']['11']                    = "Novembro";
-$lang['month']['12']                    = "Decembro";
+$lang['month_1']                     = "Januaro";
+$lang['month_2']                     = "Februaro";
+$lang['month_3']                     = "Marto";
+$lang['month_4']                     = "Aprilo";
+$lang['month_5']                     = "Majo";
+$lang['month_6']                     = "Junio";
+$lang['month_7']                     = "Julio";
+$lang['month_8']                     = "Aŭgusto";
+$lang['month_9']                     = "Septembro";
+$lang['month_10']                    = "Oktobro";
+$lang['month_11']                    = "Novembro";
+$lang['month_12']                    = "Decembro";
 
 
 ?>

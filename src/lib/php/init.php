@@ -111,6 +111,8 @@
     //load the language files
     require_once(AB_LANGDIR.'/en/lang.php');
     @include_once(AB_LANGDIR.'/'.$conf['lang'].'/lang.php');
+    @include_once(AB_CONFDIR.'/lang/'.$conf['lang'].'/lang.php');
+
     $_SESSION['lang'] = $conf['lang'];
 
     
