@@ -24,37 +24,41 @@ class Translator {
     } 
 
     public function init() {
-/*
-        global $conf;
-
-        $authenticator_plugin = array_get($conf, 'authenticator_plugin', 'authenticator_default');
-        include_once(AB_BASEDIR.'/lib/php/auth/'.$authenticator_plugin.'.php');
-        $this->authenticator = new Authenticator();
-        $this->authenticator->init();
-
-        $authorizer_plugin = array_get($conf, 'authorizer_plugin', 'authorizer_default');
-        include_once(AB_BASEDIR.'/lib/php/auth/'.$authorizer_plugin.'.php');
-        $this->authorizer = new Authorizer();
-        $this->authorizer->init();
-*/
     }
 
     public function do_action($request, $action) {
         switch($action) {
-	        case 'translator_save':
-	            $this->lang_save($request);        
-	            break;
+            case 'language_save':
+                $this->lang_save($request);        
+                break;
+            case 'language_delete':
+                $this->lang_delete($request);
+                break;
             default:
         }
     }
 
+    // TODO: function unused. translator not instantiated at time of init() /init.php
+    public function activate_language() {
+        global $conf;
+
+        //prepare language array
+        global $lang;
+        $lang = array();
+        
+        if(!empty($_SESSION['lang'])) $conf['lang'] = $_SESSION['lang'];
+        if(!empty($_REQUEST['lang']) && strlen($_REQUEST['lang']) < 6) $conf['lang'] = $_REQUEST['lang'];
+        
+        //load the language files
+        require(AB_LANGDIR.'/en/lang.php');
+        @include(AB_LANGDIR.'/'.$conf['lang'].'/lang.php');
+        @include(AB_CONFDIR.'/lang/'.$conf['lang'].'/lang.php');
+
+        $_SESSION['lang'] = $conf['lang'];
+    }
+
     private function lang_save($request) {
-    	global $conf;
-
     	$new_lang = array();
-    	$lang_code = $conf['lang'];
-    	$new_lang['lang_code'] = $lang_code;
-
     	foreach($request as $key => $value) {
     		if(strpos($key, "lang_") !== 0)
     			continue;
@@ -62,6 +66,11 @@ class Translator {
     		if(!empty($value))
     			$new_lang[$key] = $value;
     	}
+        if(!array_key_exists('lang_code', $new_lang)) {
+            msg("cannot save language: lang_code not set", -1);
+            return;
+        }
+        $lang_code = $new_lang['lang_code'];
 
     	$author = array_get($new_lang, "lang_author", "");
     	if(empty($author)) {
@@ -75,7 +84,8 @@ class Translator {
     	$this->create_config_lang_folder($lang_code);
     	$filename = AB_CONFDIR.'/lang/'.$lang_code.'/lang.php';
     	$this->write_file($filename, $new_lang);
-		$_SESSION['viewname'] = '/admin';
+        msg("translation saved to ". $filename);
+		$_SESSION['viewname'] = '/admin/translator';
     }
 
     private function create_config_lang_folder($lang_code) {
@@ -107,7 +117,7 @@ class Translator {
 
 		fwrite($fd, "<?php\n");
 		fwrite($fd, "/*\n");
-		fwrite($fd, " * " . $lang_name . " language file\n");
+		fwrite($fd, " * language file:". $lang_name . "\n");
 		fwrite($fd, " *\n");
 		fwrite($fd, " * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)\n");
 		fwrite($fd, " * @author     " . $lang_author. " " . $lang_author_email . "\n");
@@ -150,19 +160,88 @@ class Translator {
     	return $ret;
 	}
 
-	public function get_default_lang_array() {
-    	$lang = array();
-    	include(AB_LANGDIR.'/'.$this->default_langcode.'/lang.php');
-    	return $lang;
-	}
+    public function get_translation($lang_code = "") {
+        global $conf;
 
-	public function get_conf_lang_array() {
-		global $conf;
-	    $lang = array();
-	    @include(AB_LANGDIR.'/'.$conf['lang'].'/lang.php');
-  		@include(AB_CONFDIR.'/lang/'.$conf['lang'].'/lang.php');
-  		return $lang;
-	}
+        $lang_code = $this->sanitize_lang_code($lang_code);
+
+        $config = array();
+
+        // load defaults
+        $lang = array();
+        include(AB_LANGDIR.'/'.$this->default_langcode.'/lang.php');
+        $config['defaults'] = $lang;
+
+        // load specified language
+        $lang = array();
+        if(!empty($lang_code)) {
+            @include(AB_LANGDIR.'/'.$lang_code.'/lang.php');
+            @include(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
+        }
+        $lang['lang_code'] = $lang_code;
+        $config['lang'] = $lang;
+
+        return $config;
+    }
+
+    public function sanitize_lang_code($lang_code) {
+        return preg_replace("/[^A-Za-z_]+/", "", $lang_code);
+    }
+
+    public function get_all_languages() {
+        $lang_dirs = $this->get_lang_dirs(AB_BASEDIR.'/lib/lang');
+        $lang_dirs2 = $this->get_lang_dirs(AB_CONFDIR.'/lang');
+        $lang_dirs = array_unique(array_merge($lang_dirs, $lang_dirs2));
+
+        $lang = array();
+        include(AB_LANGDIR.'/'.$this->default_langcode.'/lang.php');
+        $total = count($lang);
+
+        $ret = array();
+        foreach($lang_dirs as $lang_code) {
+            $lang = array();
+            @include(AB_LANGDIR.'/'.$lang_code.'/lang.php');
+            @include(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
+
+            $count = count($lang);
+            $percent = $count/$total * 100;
+
+            $ret[] = array(
+                'lang_code' => $lang_code,
+                'lang_name' => array_get($lang, 'lang_name', ""),
+                'lang_author' => array_get($lang, 'lang_author', ""),
+                'lang_author_email' => array_get($lang, 'lang_author_email', ""),
+                'count' => $count,
+                'total' => $total,
+                'percent' => round($percent),
+                'stats' => round($percent)."% ($count/$total)"
+                );
+        }
+        return $ret;
+    }
+
+    private function get_lang_dirs($basedir = AB_BASEDIR.'/lib/lang') {
+        $ret = array();
+        $dirs = scandir($basedir);
+        foreach ($dirs as $dir) {
+            if(is_dir($basedir.'/'.$dir) && (substr($dir, 0, 1) != '.')) {
+                $ret[] = $dir;
+            }
+        }
+        return $ret;
+    }
+
+    private function lang_delete($request) {
+        $lang_code = array_get($request, 'lang_code', '');
+        if(empty($lang_code))
+            return;
+
+        @unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
+        @rmdir(AB_CONFDIR.'/lang/'.$lang_code);
+
+        $_SESSION['viewname'] = '/admin/translator';
+
+    }
 
 }
 

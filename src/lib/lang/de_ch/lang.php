@@ -1,12 +1,15 @@
 <?php
 /*
- * schwiizerdütsch language file
+ * language file:Schwiizerdütsch
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Clemens Wacha <clemens.wacha@gmx.net>
  */
 
-
+$lang['lang_code']                      = 'de_ch';
+$lang['lang_name']                      = 'Schwiizerdütsch';
+$lang['lang_author']                    = 'Clemens Wacha';
+$lang['lang_author_email']              = 'clemens.wacha@gmx.net';
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'ltr';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
@@ -35,8 +38,6 @@ $lang['action_not_allowed']             = 'Meimei! Das dörfsch aso nöd mache!!
 $lang['logged_in_as']                   = 'Aagmeldet als';
 $lang['category']                       = 'Kategorie';
 $lang['category_all']                   = 'Alli';
-$lang['cat_add_to']                     = 'hinzuefüege';
-$lang['cat_delete_from']                = 'entferne';
 $lang['cat_add']                        = 'Kategorie erstelle';
 $lang['cat_delete']                     = 'Kategorie lösche';
 $lang['cat_lastimport']                 = 'Letscht Import';
@@ -101,19 +102,6 @@ $lang['label_zip']                      = 'Poschtleitzahl';
 $lang['label_city']                     = 'Stadt';
 $lang['label_state']                    = 'Kanton';
 $lang['label_country']                  = 'Land';
-
-$lang['month_1']                     = 'Januar';
-$lang['month_2']                     = 'Februar';
-$lang['month_3']                     = 'März';
-$lang['month_4']                     = 'April';
-$lang['month_5']                     = 'Mai';
-$lang['month_6']                     = 'Juni';
-$lang['month_7']                     = 'Juli';
-$lang['month_8']                     = 'August';
-$lang['month_9']                     = 'Septämber';
-$lang['month_10']                    = 'Oktober';
-$lang['month_11']                    = 'Novämber';
-$lang['month_12']                    = 'Dezämber';
 $lang['birthdays']                      = 'Geburtstäg';
 $lang['bday_none']                      = 'keni';
 $lang['bday_month']                     = 'i $n Monet';
@@ -124,6 +112,18 @@ $lang['bday_day']                       = 'morn';
 $lang['bday_day2']                      = 'übermorn';
 $lang['bday_days']                      = 'i $n Täg';
 $lang['bday_today']                     = 'hütt!';
+$lang['month_1']                        = 'Januar';
+$lang['month_2']                        = 'Februar';
+$lang['month_3']                        = 'März';
+$lang['month_4']                        = 'April';
+$lang['month_5']                        = 'Mai';
+$lang['month_6']                        = 'Juni';
+$lang['month_7']                        = 'Juli';
+$lang['month_8']                        = 'August';
+$lang['month_9']                        = 'Septämber';
+$lang['month_10']                       = 'Oktober';
+$lang['month_11']                       = 'Novämber';
+$lang['month_12']                       = 'Dezämber';
 
 
 ?>

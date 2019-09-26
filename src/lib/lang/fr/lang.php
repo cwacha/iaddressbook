@@ -1,12 +1,14 @@
 <?php
-/**
- * french language file
+/*
+ * language file:Français
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Brice Maron bmaron@gmail.com
+ * @author     Brice Maron bmaron@gmail.com 
  */
 
-
+$lang['lang_code']                      = 'fr';
+$lang['lang_name']                      = 'Français';
+$lang['lang_author']                    = 'Brice Maron bmaron@gmail.com';
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'ltr';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
@@ -31,8 +33,6 @@ $lang['password']                       = 'Mot de passe';
 $lang['wrong_userpass']                 = 'Mot de passe erroné!';
 $lang['category']                       = 'Categorie';
 $lang['category_all']                   = 'Tout';
-$lang['cat_add_to']                     = 'Ajouter';
-$lang['cat_delete_from']                = 'Supprimer';
 $lang['cat_add']                        = 'Ajouter';
 $lang['cat_delete']                     = 'Supprimer';
 $lang['cat_lastimport']                 = 'Dernier ajout';
@@ -92,19 +92,18 @@ $lang['label_zip']                      = 'Code Postal';
 $lang['label_city']                     = 'Ville';
 $lang['label_state']                    = 'Etat';
 $lang['label_country']                  = 'Pays';
-
-$lang['month_1']                     = 'janvier';
-$lang['month_2']                     = 'février';
-$lang['month_3']                     = 'mars';
-$lang['month_4']                     = 'avril';
-$lang['month_5']                     = 'mai';
-$lang['month_6']                     = 'juin';
-$lang['month_7']                     = 'juillet';
-$lang['month_8']                     = 'août';
-$lang['month_9']                     = 'septembre';
-$lang['month_10']                    = 'octobre';
-$lang['month_11']                    = 'novembre';
-$lang['month_12']                    = 'decembre';
+$lang['month_1']                        = 'janvier';
+$lang['month_2']                        = 'février';
+$lang['month_3']                        = 'mars';
+$lang['month_4']                        = 'avril';
+$lang['month_5']                        = 'mai';
+$lang['month_6']                        = 'juin';
+$lang['month_7']                        = 'juillet';
+$lang['month_8']                        = 'août';
+$lang['month_9']                        = 'septembre';
+$lang['month_10']                       = 'octobre';
+$lang['month_11']                       = 'novembre';
+$lang['month_12']                       = 'decembre';
 
 
 ?>

@@ -7,7 +7,6 @@
  */
 if (!defined('AB_BASEDIR'))
 	define('AB_BASEDIR', realpath(dirname(__FILE__) . '/../../'));
-require_once (AB_BASEDIR . '/lib/php/include.php');
 require_once (AB_BASEDIR . '/lib/php/addressbook.php');
 require_once (AB_BASEDIR . '/lib/php/Contact_Vcard_Parse.php');
 require_once (AB_BASEDIR . '/lib/php/Contact_Vcard_Build.php');

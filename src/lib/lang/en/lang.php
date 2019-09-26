@@ -76,6 +76,7 @@ $lang['edit']                 = 'Edit';
 $lang['save']                 = 'Save';
 
 $lang['logged_out_msg']       = 'You are now logged out.';
+$lang['session_timeout']      = 'Session timed out!';
 
 
 
@@ -107,6 +108,15 @@ $lang['create_contact']       = 'New contact';
 $lang['map']                  = 'Map';
 $lang['select_action']        = 'select action...';
 $lang['installation']         = 'PHP AddressBook Installation';
+$lang['lang_add']             = 'Add new language';
+$lang['lang_author_name']     = 'Translator';
+$lang['lang_code_name']       = 'Locale';
+$lang['lang_translate_stats'] = 'Translation Status';
+$lang['language_default']     = 'Origin Language';
+$lang['language_your_translation'] = 'Your Translation';
+$lang['translate']            = 'Language Overview';
+
+
 
 // Person Labels
 $lang['no_name']              = '(No Name)';

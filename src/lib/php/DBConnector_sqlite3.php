@@ -9,8 +9,6 @@
 if (!defined('AB_BASEDIR'))
 	define('AB_BASEDIR', realpath(dirname(__FILE__) . '/../../'));
 
-require_once (AB_BASEDIR . '/lib/php/include.php');
-
 class DBConnector_sqlite3 extends DBConnector {
 	var $connection;
 	var $initialized;

@@ -7,6 +7,9 @@
      */
 
 
+function init() {
+    global $conf;
+
     /**
     * Initialize some defaults
     */
@@ -19,56 +22,55 @@
     @ini_set('display_errors', 'On');
     error_reporting(E_ALL);
 
+    // make session rewrites XHTML compliant
+    @ini_set('arg_separator.output', '&amp;');    
+    
+    // kill magic quotes
+    if (get_magic_quotes_gpc()) {
+        if (!empty($_GET))    remove_magic_quotes($_GET);
+        if (!empty($_POST))   remove_magic_quotes($_POST);
+        if (!empty($_COOKIE)) remove_magic_quotes($_COOKIE);
+        if (!empty($_REQUEST)) remove_magic_quotes($_REQUEST);
+        //if (!empty($_SESSION)) remove_magic_quotes($_SESSION);
+        @ini_set('magic_quotes_gpc', 0);
+    }
+    if(get_magic_quotes_runtime()) {
+        // Deactivate
+        set_magic_quotes_runtime(false);
+    }
+    @ini_set('magic_quotes_sybase',0);
+
     //Mapping PHP errors to exceptions
     function exception_error_handler($errno, $errstr, $errfile, $errline ) {
     	if(error_reporting() != 0)
-	    	msg("err=$errstr errno=$errno errfile=$errfile errline=$errline");
+	    	msg("$errstr (errno=$errno errfile=$errfile:$errline)", -1);
     }
     set_error_handler("exception_error_handler");
-    
-    
+        
+    load_config();
+
     // define baseURL
-    //AB_BASE = /uri
+    //AB_BASEURI = /uri
     //AB_URL  = http://www.example.com:80/uri
-    if(!defined('AB_BASE')) define('AB_BASE',getBaseURL());
+    if(!defined('AB_BASEURI'))  define('AB_BASEURI',getBaseURL());
     if(!defined('AB_URL'))  define('AB_URL',getBaseURL(true));
-    
+
+    // define Template baseURL
+    if(!defined('AB_TPL')) {
+        define('AB_TPL', AB_BASEURI.'lib/tpl/'.$conf['template'].'/');
+    }
+
     // define cookie and session id
     if (!defined('AB_COOKIE')) define('AB_COOKIE', 'AB'.md5(AB_URL));
-    
-    //prepare config array()
-    global $conf;
-    $conf = array();
-    
-    // remember defaults
-    global $defaults;
-    $defaults = array();
-
-    // load the config file(s)
-    require_once(AB_BASEDIR.'/lib/default/config.php');
-    $defaults = $conf;
-    $filename = AB_CONFDIR.'/config.php';
-    if(is_readable($filename))
-    	include_once($filename);
     
     // init session
     if(!empty($conf['session_name'])) session_name($conf['session_name']);
     else session_name('iAddressBook');
 
     if (!headers_sent()) {
-        session_set_cookie_params(0, AB_BASE);
+        session_set_cookie_params(0, AB_BASEURI);
         session_start();
     }
-
-    // invalidate session if older than timeout
-    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $conf['session_lifetime_min'] * 60)) {
-        msg("session timed out!");
-        session_unset();     // unset $_SESSION variable for the run-time 
-        session_destroy();   // destroy session data in storage
-        session_start();
-    }
-    $_SESSION['last_activity'] = time();
-
 
     // set register_globals to off
     if (ini_get('register_globals')) {
@@ -83,19 +85,8 @@
     }
     
     // we have to re-register all variables... register_globals sucks...
-    
-    //prepare config array()
-    $conf = array();
-    $defaults = array();
+    load_config();
 
-    // load the config file(s) (again...)
-    include(AB_BASEDIR.'/lib/default/config.php');
-    $defaults = $conf;
-
-    $filename = AB_CONFDIR.'/config.php';
-    if(is_readable($filename))
-    	include($filename);
-    
     // load meta information
     global $meta;
     $meta = array();
@@ -115,7 +106,6 @@
 
     $_SESSION['lang'] = $conf['lang'];
 
-    
     //configure mobile template
 	if(isset($_REQUEST['mobile']))
 		$_SESSION['mobile'] = (bool)$_REQUEST['mobile'];
@@ -135,33 +125,26 @@
     			$conf['template'] = $mobileTemplate;
     	}
     }
-    
-    // define Template baseURL
-    if(!defined('AB_TPL')) {
-    	define('AB_TPL', AB_BASE.'lib/tpl/'.$conf['template'].'/');
-    }
-    
-    // make session rewrites XHTML compliant
-    @ini_set('arg_separator.output', '&amp;');    
-    
-    // kill magic quotes
-    if (get_magic_quotes_gpc()) {
-        if (!empty($_GET))    remove_magic_quotes($_GET);
-        if (!empty($_POST))   remove_magic_quotes($_POST);
-        if (!empty($_COOKIE)) remove_magic_quotes($_COOKIE);
-        if (!empty($_REQUEST)) remove_magic_quotes($_REQUEST);
-        //if (!empty($_SESSION)) remove_magic_quotes($_SESSION);
-        @ini_set('magic_quotes_gpc', 0);
-    }
-    if(get_magic_quotes_runtime()) {
-        // Deactivate
-        set_magic_quotes_runtime(false);
-    }
-    @ini_set('magic_quotes_sybase',0);
-    
 
     init_creationmodes();
-    
+}
+
+function load_config() {
+    global $defaults;
+    global $conf;
+
+    $defaults = array();
+    $conf = array();
+
+    // load defaults
+    include(AB_BASEDIR.'/lib/default/config.php');
+    $defaults = $conf;
+
+    // load config
+    $filename = AB_CONFDIR.'/config.php';
+    @include($filename);
+}
+
 
 /**
  * Sets the internal config values fperm and dperm which, when set,
@@ -285,19 +268,8 @@ function isMobileClient() {
 
 function getWebAppURI() {
     global $webapp;
-    $baseuri = getBaseURL();
+    $baseuri = AB_BASEURI;
     $webappuri = $baseuri . $webapp;
-    /*
-    $request_uri = strtolower($_SERVER['REQUEST_URI']);
-
-    $prefix = $baseuri;
-    if (substr($request_uri, 0, strlen($prefix)) == $prefix)
-        $request_uri = substr($request_uri, strlen($prefix));
-    
-    $prefix = $webapp;
-    if (substr($request_uri, 0, strlen($prefix)) == $prefix)
-        $webappuri = $baseuri . $webapp;
-    */
 
     $webappuri = preg_replace("/\/$/", "", $webappuri);
     return $webappuri;

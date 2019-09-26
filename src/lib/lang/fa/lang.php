@@ -1,12 +1,15 @@
 <?php
-/**
- * Farsi language file (Iran)
+/*
+ * language file:فارسی
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Amirhosein Nikookar <ah_nikookar@yahoo.com>
  */
 
-
+$lang['lang_code']                      = 'fa';
+$lang['lang_name']                      = 'فارسی';
+$lang['lang_author']                    = 'Amirhosein Nikookar';
+$lang['lang_author_email']              = 'ah_nikookar@yahoo.com';
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'rtl';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
@@ -35,8 +38,6 @@ $lang['action_not_allowed']             = 'شما دسترسي لازم براي
 $lang['logged_in_as']                   = 'وارد شده با نام';
 $lang['category']                       = 'دسته';
 $lang['category_all']                   = 'همه';
-$lang['cat_add_to']                     = 'اضافه کن به';
-$lang['cat_delete_from']                = 'حذف کن از';
 $lang['cat_add']                        = 'ايجاد دسته';
 $lang['cat_delete']                     = 'حذف دسته';
 $lang['cat_lastimport']                 = 'ورودي اخير';
@@ -113,19 +114,18 @@ $lang['bday_day']                       = 'در $n روز';
 $lang['bday_day2']                      = 'در $n روزها';
 $lang['bday_days']                      = 'در $n روزها';
 $lang['bday_today']                     = 'امروز!';
-
-$lang['month_1']                     = 'ژانويه';
-$lang['month_2']                     = 'فوريه';
-$lang['month_3']                     = 'مارس';
-$lang['month_4']                     = 'آوريل';
-$lang['month_5']                     = 'مي';
-$lang['month_6']                     = 'ژوئن';
-$lang['month_7']                     = 'جولاي';
-$lang['month_8']                     = 'اگوست';
-$lang['month_9']                     = 'سپتامبر';
-$lang['month_10']                    = 'اکتبر';
-$lang['month_11']                    = 'نوامبر';
-$lang['month_12']                    = 'دسامبر';
+$lang['month_1']                        = 'ژانويه';
+$lang['month_2']                        = 'فوريه';
+$lang['month_3']                        = 'مارس';
+$lang['month_4']                        = 'آوريل';
+$lang['month_5']                        = 'مي';
+$lang['month_6']                        = 'ژوئن';
+$lang['month_7']                        = 'جولاي';
+$lang['month_8']                        = 'اگوست';
+$lang['month_9']                        = 'سپتامبر';
+$lang['month_10']                       = 'اکتبر';
+$lang['month_11']                       = 'نوامبر';
+$lang['month_12']                       = 'دسامبر';
 $lang['fmode']                          = 'fmode';
 $lang['dmode']                          = 'dmode';
 $lang['basedir']                        = 'دايرکتوري پايه';

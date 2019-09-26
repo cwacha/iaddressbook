@@ -40,6 +40,7 @@
         global $securitycontroller; // class for authentication and authorization
 
         //session_start(); // session already started in init.php
+        check_session_timeout($request);
         
         $ACT = getAction($request);
         $_SESSION['viewname'] = getViewName($request);
@@ -156,7 +157,6 @@
         $AB = new Addressbook($bookId);
         $CAT = new Categories();
 
-        //$shop->doAction($ACT, $request);
         $translator = Translator::getInstance();
         $translator->init();
 
@@ -164,7 +164,7 @@
         $securitycontroller->do_action($request, $ACT);
         $translator->do_action($request, $ACT);
         act_dispatch($request, $ACT);
-        
+
         renderAndRedirect($_SESSION['viewname'], $request);
     }
 
@@ -173,7 +173,7 @@
             render($viewname, $request);
             return;
         }
-        msg("redirect");
+        //msg("redirect");
         $webappuri = getWebAppURI();
         header("Location: {$webappuri}{$viewname}");
     }
@@ -198,13 +198,13 @@
         global $meta;
         global $webapp;
         $action = hsc(getAction($request));
-        $baseurl = getBaseURL(true);
-        $baseuri = getBaseURL();
+        $baseurl = AB_URL;
+        $baseuri = AB_BASEURI;
         $webappuri = getWebAppURI();
         $basedir = AB_BASEDIR;
         $tpldir = AB_TPLDIR.'/'.$conf['template'];
-        //msg_clear();
-        session_write_close();
+        $messages = msg_getall();
+        msg_clear();
         
         $viewdocument = getViewDocument($viewname);
         /*
@@ -220,11 +220,11 @@
 
         header('Content-Type: text/html; charset=utf-8');
         include($tpldir.'/main.tpl');
+        session_write_close();
     }
 
     // return true if login is successful, false if failed
     function login($request) {
-        global $_SESSION;
         global $conf;
         global $securitycontroller;
 
@@ -295,11 +295,24 @@
         render('/logout', $request);
     }
 
+    function check_session_timeout($request) {
+        global $conf;
+
+        // invalidate session if older than timeout
+        if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $conf['session_lifetime_min'] * 60)) {
+            session_unset();     // unset $_SESSION variable for the run-time 
+            session_destroy();   // destroy session data in storage
+            session_start();
+            msg(lang('session_timeout'));
+        }
+        $_SESSION['last_activity'] = time();
+    }
+
     function getViewName($request) {
         global $webapp;
         $request_uri = strtolower($_SERVER['REQUEST_URI']);
         $webappuri = getWebAppURI();
-        $baseuri = getBaseURL();
+        $baseuri = AB_BASEURI;
         
         if (substr($request_uri, 0, strlen($webappuri)) == $webappuri)
             $request_uri = substr($request_uri, strlen($webappuri));
@@ -334,12 +347,18 @@
     function getAction($request) {
         return array_get($request, "do", "show");
     }
+
+    init();
         
     db_init();
     if(!db_open()) {
     	msg("DB connection failed. Stop.", -1);
     	header('Content-Type: text/html; charset=utf-8');
-    	print msg_text();
+    	print "<pre>";
+        print_r(msg_getall_as_string());
+        print "</pre>";
+        msg_clear();
+        session_write_close();
     	exit();
     }
 

@@ -1,12 +1,15 @@
 <?php
 /*
- * german language file
+ * language file:Deutsch
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Clemens Wacha <clemens.wacha@gmx.net>
  */
 
-
+$lang['lang_code']                      = 'de';
+$lang['lang_name']                      = 'Deutsch';
+$lang['lang_author']                    = 'Clemens Wacha';
+$lang['lang_author_email']              = 'clemens.wacha@gmx.net';
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'ltr';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
@@ -24,6 +27,37 @@ $lang['confirm_del_contact']            = 'Wollen Sie diesen Kontakt löschen?';
 $lang['confirm_del_contacts']           = 'Wollen Sie die markierten Kontakte löschen?';
 $lang['confirm_cat_remove_contacts']    = 'Wollen Sie die markierten Kontakte aus der Kategorie entfernen?';
 $lang['confirm_cat_delete']             = 'Wollen Sie diese Kategorie löschen?';
+$lang['admin']                          = 'Einstellungen';
+$lang['profile']                        = 'Profil';
+$lang['logout']                         = 'Ausloggen';
+$lang['notifications']                  = 'Mitteilungen';
+$lang['account']                        = 'Benutzer';
+$lang['accounts']                       = 'Benutzer';
+$lang['account_id']                     = 'Benutzer ID';
+$lang['account_add']                    = 'Benutzer hinzufügen';
+$lang['account_edit']                   = 'Benutzer editieren';
+$lang['account_my']                     = 'Mein Konto';
+$lang['account_password']               = 'Passwort';
+$lang['account_password_msg']           = 'Passwort auf "!" setzen um zu deaktivieren.';
+$lang['password_change']                = 'Passwort ändern';
+$lang['password_my']                    = 'Mein Passwort';
+$lang['password_show']                  = 'Passwort anzeigen';
+$lang['password_confirm']               = 'Passwort bestätigen';
+$lang['password_very_weak']             = 'Sehr schwach';
+$lang['roles']                          = 'Rollen';
+$lang['role_id']                        = 'Rollen ID';
+$lang['role_add']                       = 'Rolle hinzufügen';
+$lang['role_edit']                      = 'Rolle editieren';
+$lang['permissions']                    = 'Berechtigungen';
+$lang['configuration']                  = 'Konfiguration';
+$lang['translator']                     = 'Übersetzer';
+$lang['fullname']                       = 'Ganzer Name';
+$lang['email']                          = 'E-Mail';
+$lang['cancel']                         = 'Abbrechen';
+$lang['edit']                           = 'Editieren';
+$lang['save']                           = 'Speichern';
+$lang['logged_out_msg']                 = 'Sie sind jetzt abgemeldet.';
+$lang['session_timeout']                = 'Sitzung abgelaufen!';
 $lang['contacts']                       = 'Kontakte';
 $lang['no_contacts']                    = 'keine Kontakte';
 $lang['login']                          = 'Anmelden';
@@ -35,8 +69,8 @@ $lang['action_not_allowed']             = 'Sie haben keine Berechtigung um diese
 $lang['logged_in_as']                   = 'Angemeldet als';
 $lang['category']                       = 'Kategorie';
 $lang['category_all']                   = 'Alle';
-$lang['cat_add_to']                     = 'hinzufügen';
-$lang['cat_delete_from']                = 'entfernen';
+$lang['cat_add_contacts']               = 'Kontakte zu Kategorie hinzufügen';
+$lang['cat_delete_contacts']            = 'Kontakte aus Kategorie löschen';
 $lang['cat_add']                        = 'Kategorie erstellen';
 $lang['cat_delete']                     = 'Kategorie löschen';
 $lang['cat_lastimport']                 = 'Letzter Import';
@@ -51,6 +85,13 @@ $lang['create_contact']                 = 'neuer Kontakt';
 $lang['map']                            = 'Karte';
 $lang['select_action']                  = 'Weitere Aktionen...';
 $lang['installation']                   = 'PHP AddressBook Installation';
+$lang['lang_add']                       = 'Neue Sprache hinzufügen';
+$lang['lang_author_name']               = 'Übersetzer';
+$lang['lang_code_name']                 = 'Regional Code';
+$lang['lang_translate_stats']           = 'Übersetzungs Status';
+$lang['language_default']               = 'Standard Sprache';
+$lang['language_your_translation']      = 'Deine Übersetzung';
+$lang['translate']                      = 'Sprachen Übersicht';
 $lang['no_name']                        = '(Ohne Namen)';
 $lang['label_custom']                   = 'Eigene...';
 $lang['label_customprompt']             = 'Neues, eigenes Etikett';
@@ -89,6 +130,7 @@ $lang['label_phoneticlastname']         = 'Nachname (Ausspracheform)';
 $lang['label_jobtitle']                 = 'Position';
 $lang['label_department']               = 'Abteilung';
 $lang['label_organization']             = 'Firma';
+$lang['label_isorganization']           = 'Zeige als Firma';
 $lang['label_photoremove']              = 'Entfernen';
 $lang['label_photochange']              = 'Ändern';
 $lang['label_phones']                   = 'Telefone';
@@ -112,19 +154,18 @@ $lang['bday_day']                       = 'morgen';
 $lang['bday_day2']                      = 'übermorgen';
 $lang['bday_days']                      = 'in $n Tagen';
 $lang['bday_today']                     = 'heute!';
-
-$lang['month_1']                     = 'Januar';
-$lang['month_2']                     = 'Februar';
-$lang['month_3']                     = 'März';
-$lang['month_4']                     = 'April';
-$lang['month_5']                     = 'Mai';
-$lang['month_6']                     = 'Juni';
-$lang['month_7']                     = 'Juli';
-$lang['month_8']                     = 'August';
-$lang['month_9']                     = 'September';
-$lang['month_10']                    = 'Oktober';
-$lang['month_11']                    = 'November';
-$lang['month_12']                    = 'Dezember';
+$lang['month_1']                        = 'Januar';
+$lang['month_2']                        = 'Februar';
+$lang['month_3']                        = 'März';
+$lang['month_4']                        = 'April';
+$lang['month_5']                        = 'Mai';
+$lang['month_6']                        = 'Juni';
+$lang['month_7']                        = 'Juli';
+$lang['month_8']                        = 'August';
+$lang['month_9']                        = 'September';
+$lang['month_10']                       = 'Oktober';
+$lang['month_11']                       = 'November';
+$lang['month_12']                       = 'Dezember';
 $lang['fmode']                          = 'fmode';
 $lang['dmode']                          = 'dmode';
 $lang['basedir']                        = 'Basis Verzeichnis';
@@ -149,6 +190,7 @@ $lang['photo_size']                     = 'Bildgrösse';
 $lang['photo_format']                   = 'Bild Format';
 $lang['map_link']                       = 'Karten Link';
 $lang['contactlist_limit']              = 'Kontaktlisten Limit';
+$lang['contactlist_abc']                = 'Kontaktlisten ABC';
 $lang['bday_advance_week']              = 'Geburtstagsvorschau';
 $lang['canonical']                      = 'Vollständige URLs';
 $lang['auth_enabled']                   = 'Authentisierung aktivieren';
@@ -156,13 +198,15 @@ $lang['auth_allow_guest']               = 'Gast Zugang erlauben';
 $lang['im_convert']                     = 'ImageMagick\'s convert';
 $lang['photo_enable']                   = 'Kontaktfotos';
 $lang['session_name']                   = 'Sessionname';
+$lang['session_lifetime_min']           = 'Session Gültigkeitsdauer';
 $lang['mark_changed']                   = 'Geänderte Kontakte merken';
 $lang['debug']                          = 'Debugging';
 $lang['debug_db']                       = 'DB Debugging';
 $lang['vcard_fb_enc']                   = 'Ausweich Codierung';
 $lang['ldif_base']                      = 'LDIF Basis dn';
 $lang['ldif_mozilla']                   = 'Mozilla LDIF';
-$lang['xmlrpc_enable']                  = 'XMLRPC api aktivieren';
+$lang['xmlrpc_enable']                  = 'XMLRPC API';
+$lang['carddav_enable']                 = 'CardDAV Server';
 $lang['fmode_help']                     = 'Berechtigungen für erstellte Dateien (chmod)';
 $lang['dmode_help']                     = 'Berechtigungen für erstellte Verzeichnisse (chmod)';
 $lang['basedir_help']                   = 'Verzeichnis relativ zum Serverroot - leer lassen für automatische Erkennung';
@@ -200,6 +244,7 @@ $lang['map_link_help']                  = 'Landkarten URL für Adressen<br>
                                     $pobox - P.O. Box<br>
                                     $ext_adr - Erweiterte Adresse<br>';
 $lang['contactlist_limit_help']         = 'Max. Anzahl Kontakte, welche in der Kontaktliste angezeigt werden';
+$lang['contactlist_abc_help']           = 'Kontaktlisten ABC Auswahl oberhalb Kontaktliste anzeigen';
 $lang['bday_advance_week_help']         = 'Geburtstagsvorschau in Wochen (max. 4)';
 $lang['canonical_help']                 = 'Vollständige URLs verwenden (http://... etc.)';
 $lang['auth_enabled_help']              = 'Authentisierung aktivieren: Loginnamen und Passworte müssen manuell in conf/auth.php konfiguriert werden';
@@ -208,13 +253,15 @@ $lang['im_convert_help']                = 'Pfad zu ImageMagick\'s convert';
 $lang['photo_enable_help']              = 'Kontaktfotos verwenden';
 $lang['session_name_help']              = 'Sessionname manuell definieren (nützlich falls mehr als eine Installation von PHP iAddressBook auf dem gleichen Server verwendet werden soll)
                                     (nur alphanumerische Zeichen verwenden (0-9, a-z, A-Z). Keine Punkte, darf nicht auschliesslich aus Zahlen bestehen!)';
+$lang['session_lifetime_min_help']      = 'Setzt die Session Gültigkeitsdauer bevor sie abläuft (in min)';
 $lang['mark_changed_help']              = 'Jeder Kontakt, welcher erstellt oder geändert wird, wird automatisch zur Kategorie "Geänderte Kontakte" hinzugefügt (nützlich für manuelle Synchronisation)';
 $lang['debug_help']                     = 'Debug Modus aktivieren: Verwenden Sie ?do=debug um Debug Informationen anzuzeigen';
 $lang['debug_db_help']                  = 'Datenbank und SQL Debugging aktivieren';
 $lang['vcard_fb_enc_help']              = 'Ausweichkodierung für vCards, falls die Kodierung nicht automatisch erkannt wird';
 $lang['ldif_base_help']                 = 'Basis dn für LDIF Export';
 $lang['ldif_mozilla_help']              = 'Mozilla LDAP Klassen in LDIF export verwenden (mozillaOrgPerson, mozillaAddressBookEntry)';
-$lang['xmlrpc_enable_help']             = 'XMLRPC API aktivieren - Ermöglicht komplette Fernsteuerung und Abfrage des Addressbuchs';
+$lang['xmlrpc_enable_help']             = 'XMLRPC API aktivieren - Ermöglicht Fernsteuerung und Abfrage des Addressbuchs über eine separate Schnittstelle';
+$lang['carddav_enable_help']            = 'CardDAV Server (iCloud/ownCloud Alternative) aktivieren';
 $lang['back']                           = 'Zurück';
 $lang['next']                           = 'Weiter';
 $lang['finish']                         = 'Beenden';
@@ -271,6 +318,7 @@ $lang['info_iconv']                     = 'iconv verfügbar (Version $1)';
 $lang['error_iconv']                    = 'iconv nicht verfügbar. vCards müssen in UTF-8 kodiert sein damit sie korrekt importiert werden können';
 $lang['info_sqlite']                    = 'SQLite2 verfügbar (Version $1)';
 $lang['info_sqlite3']                   = 'SQLite3 verfügbar (Version $1)';
+$lang['info_sqlite3_pdo']               = 'PDO SQLite3 verfügbar (Version $1)';
 $lang['error_sqlite']                   = 'SQLite 2.x/3.x nicht verfügbar';
 $lang['error_total']                    = '$1 Problem gefunden!';
 $lang['errors_total']                   = '$1 Probleme gefunden!';
@@ -294,7 +342,7 @@ $lang['finish_message']                 = '&nbsp;<p>
                                     <p>
                                     Viel Spass!
                                     <p style="text-align: right;">&#8212; Clemens Wacha</p>';
-$lang['disabled_message']           = 'PHP iAddressBook ist bereits vollständig installiert.
+$lang['disabled_message']               = 'PHP iAddressBook ist bereits vollständig installiert.
                                     <p>
                                     Falls Sie eine Neu-Installation durchführen wollen, entfernen Sie die Datenbank
                                     und löschen Sie die Konfigurationsdatei conf/config.php. Rufen Sie danach diese Seite

@@ -17,6 +17,18 @@ function lang($key) {
     global $lang;
     if(array_key_exists($key, $lang))
       return $lang[$key];
+
+    // key does not exist, this is either a typo or a brand new key
+    $filename = AB_BASEDIR.'/var/missing_language_strings.txt';
+    $missing = @file($filename);
+    if($missing === false)
+        $missing = array();
+
+    $missing[] = $key;
+    $missing = array_unique(array_map('trim', $missing));
+    sort($missing);
+    file_put_contents($filename, implode("\n", $missing));
+
     return $key;
 }
 
@@ -176,45 +188,46 @@ function map_link($address) {
 /**
  * print a message
  *
- * If HTTP headers were not sent yet the message is added
- * to the global message array else it's printed directly
- * using html_msgarea()
- *
- *
  * Levels can be:
  *
  * -1 error
  *  0 info
  *  1 success
  *
- * @author Andreas Gohr <andi@splitbrain.org>
- * @see    html_msgarea
  */
-function msg($message, $lvl=0){
-    global $MSG;
+function msg($message, $type=0){
     $errors[-1] = 'error';
     $errors[0]  = 'info';
     $errors[1]  = 'success';
 
-    if(!isset($MSG)) $MSG = array();
-    $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
-/*
-    if(!headers_sent()) {
-        if(!isset($MSG)) $MSG = array();
-        $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
-    } else {
-        $MSG = array();
-        $MSG[]=array('lvl' => $errors[$lvl], 'msg' => $message);
-        if(function_exists('html_msgarea')) {
-            html_msgarea();
-        } else {
-            print "ERROR($lvl) $message";
-        }
-    }
-*/
-    error_log("[" . $errors[$lvl] . "] " . $message);
+    if(!isset($_SESSION['msg']))
+        $_SESSION['msg'] = array();
+
+    $_SESSION['msg'][] = array('type' => $errors[$type], 'msg' => $message);
+
+    error_log("[" . $errors[$type] . "] " . $message);
 }
 
+function msg_getall() {
+    if(!isset($_SESSION['msg']))
+        $_SESSION['msg'] = array();
+    return $_SESSION['msg'];
+}
+
+function msg_getall_as_string() {
+    $messages = msg_getall();
+    $ret = "";
+    foreach($messages as $msg) {
+        $ret .= $msg['type'].": ".$msg['msg']. "\n";
+    }
+    return $ret;
+}
+
+function msg_clear() {
+    $_SESSION['msg'] = array();
+}
+
+// TODO: only used in install.php, should be migrated to msg (see above)
 function imsg($message, $lvl=0) {
     $errors[-1] = 'error';
     $errors[0]  = 'info';
@@ -229,30 +242,7 @@ function imsg($message, $lvl=0) {
     }
 }
 
-function msg_text() {
-  global $MSG;
-  if(!isset($MSG)) return '';
 
-  $ret = '';
-  foreach($MSG as $msg){
-    $ret .= $msg['lvl']. ": ".$msg['msg'] . "\n";
-  }
-  
-  return $ret;
-}
-
-function msg_json() {
-  global $MSG;
-
-  $ret = array();
-  if(isset($MSG)) {
-    foreach($MSG as $msg){
-      $ret[] = array("type" => $msg['lvl'], "msg" => $msg['msg']);
-    }    
-  }
-  
-  return json_encode($ret);
-}
 
 
 /*

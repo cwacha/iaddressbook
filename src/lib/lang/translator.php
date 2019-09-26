@@ -13,7 +13,6 @@ echo "translator disabled"; exit(0);
 
 // define the include path
 if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));
-require_once(AB_BASEDIR.'/lib/php/include.php');
 require_once(AB_BASEDIR.'/lib/php/init.php');
 require_once(AB_BASEDIR.'/lib/php/common.php');
 

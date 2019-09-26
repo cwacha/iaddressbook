@@ -134,7 +134,6 @@ function act_dispatch($request, $action) {
 
         case 'config_save':
             act_config_save($request);
-            $_SESSION['viewname'] = '/admin';
             break;
         
         case 'edit':
@@ -145,6 +144,8 @@ function act_dispatch($request, $action) {
             act_getcontact();
             break;
         default:
+            act_search();
+            act_getcontact();
     }
     
     act_hsc_everything();
@@ -564,7 +565,10 @@ function act_config_save($request) {
     $config['im_convert']        = array_get($request, 'im_convert', $defaults['im_convert']);
     $config['photo_enable']      = (int)array_get($request, 'photo_enable', 0);
     $config['session_name']      = array_get($request, 'session_name', $defaults['session_name']);
-    $config['session_lifetime_min'] = array_get($request, 'session_lifetime_min', $defaults['session_lifetime_min']);
+    $config['session_lifetime_min'] = (int)array_get($request, 'session_lifetime_min', $defaults['session_lifetime_min']);
+    if($config['session_lifetime_min'] <= 0)
+        $config['session_lifetime_min'] = $defaults['session_lifetime_min'];
+
     $config['mark_changed']      = (int)array_get($request, 'mark_changed', 0);
 
     $config['debug']             = (int)array_get($request, 'debug', 0);
@@ -614,6 +618,9 @@ function act_config_save($request) {
     fwrite($fd, "\n\n?>");
     fclose($fd);
     fix_fmode($filename);
+
+    msg("Configuration saved.");
+    $_SESSION['viewname'] = '/admin';
 
     return true;
 }

@@ -15,7 +15,7 @@ $roles['all']    = 'login,logout,reset,'.
                    'account_save,account_password,account_delete,'.
                    'role_save,role_delete,'.
                    'config_save,'.
-                   'translator_save,'.
+                   'language_save,language_delete,'.
                    'xml_version,xml_search,xml_search_email,xml_get_contact,xml_get_contacts,xml_count_contacts,'.
                    'xml_set_contact,xml_delete_contact,'.
                    'xml_import_vcard,xml_export_vcard,'.
@@ -25,7 +25,7 @@ $roles['all']    = 'login,logout,reset,'.
                    '/admin/config,'.
                    '/admin/accounts,/admin/account,/admin/account/edit,/admin/account/password,'.
                    '/admin/roles,/admin/role/edit,'.
-                   '/admin/translator';
+                   '/admin/translator,/admin/translator/edit';
 
 $roles['admin']  = 'login,logout,reset,'.
                    'show,img,search,select_letter,select_offset,'.
@@ -38,14 +38,14 @@ $roles['admin']  = 'login,logout,reset,'.
                    'account_save,account_password,account_delete,'.
                    'role_save,role_delete,'.
                    'config_save,'.
-                   'translator_save,'.
+                   'language_save,language_delete,'.
                    'debug,check,info,'.
                    '/home,/export,/profile,/profile/password,'.
                    '/admin,'.
                    '/admin/config,'.
                    '/admin/accounts,/admin/account,/admin/account/edit,/admin/account/password,'.
                    '/admin/roles,/admin/role/edit'.
-                   '/admin/translator';
+                   '/admin/translator,/admin/translator/edit';
 
 $roles['editor'] = 'login,logout,reset,'.
                    'show,img,search,select_letter,select_offset,'.

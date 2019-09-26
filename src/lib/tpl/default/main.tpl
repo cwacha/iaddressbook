@@ -162,7 +162,7 @@
 
         infobox.clear();
       
-        var messages = <?php echo msg_json(); ?>;
+        var messages = <?php echo json_encode($messages); ?>;
         //notify("error", "test error");
         //notify("warning", "test warning");
         //notify("success", "test success");
