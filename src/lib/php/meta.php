@@ -13,9 +13,7 @@
 function list_dirs($dir, $base=AB_BASEDIR) {
     return (is_dir($base.'/'.$dir) && (substr($dir, 0, 1) != '.'));
 }
-function is_lang_dir($dir) { return list_dirs($dir, AB_BASEDIR.'/lib/lang'); }
 function is_tpl_dir($dir) { return list_dirs($dir, AB_BASEDIR.'/lib/tpl'); }
-$lang_dirs = array_filter(scandir(AB_BASEDIR.'/lib/lang'), 'is_lang_dir');
 $tpl_dirs = array_filter(scandir(AB_BASEDIR.'/lib/tpl'), 'is_tpl_dir');
 
 
@@ -32,7 +30,7 @@ $meta['dbtable_abs'] = array('string');
 $meta['dbtable_ab'] = array('string');
 $meta['dbtable_cat'] = array('string');
 $meta['dbtable_catmap'] = array('string');
-$meta['lang'] = array('multichoice', '_choices' => $lang_dirs);
+$meta['lang'] = array('multichoice', '_choices' => array("_to_be_initialized_by_translator"));
 $meta['title'] = array('string');
 $meta['template'] = array('multichoice', '_choices' => $tpl_dirs);
 $meta['bdformat'] = array('string');

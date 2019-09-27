@@ -14,7 +14,7 @@
 
         <!-- Begin Buttons -->
         <button type="submit" class="btn btn-primary"><?php echo lang('btn_save');?></button>
-        <a role="button" class="btn btn-danger" href="javascript:do_action('language_delete', '<?php echo $lang_code .": " . lang('confirm_del_contact'); ?>');"><?php echo lang('btn_delete');?></a>
+        <a role="button" class="btn btn-danger" href="javascript:do_action('language_delete', '<?php echo $lang_code .": " . lang('confirm_del_lang'); ?>');"><?php echo lang('btn_delete');?></a>
         <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/translator"><?php echo lang('btn_cancel');?></a>
         <div class="pt-4" />
 
@@ -22,7 +22,7 @@
 
 	    <!-- Begin Buttons -->
         <button type="submit" class="btn btn-primary"><?php echo lang('btn_save');?></button>
-        <a role="button" class="btn btn-danger" href="javascript:do_action('language_delete', '<?php echo $lang_code .": " . lang('confirm_del_contact'); ?>');"><?php echo lang('btn_delete');?></a>
+        <a role="button" class="btn btn-danger" href="javascript:do_action('language_delete', '<?php echo $lang_code .": " . lang('confirm_del_lang'); ?>');"><?php echo lang('btn_delete');?></a>
 	    <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/translator"><?php echo lang('btn_cancel');?></a>
 	</form>
 </div>

@@ -104,6 +104,10 @@
     // set focus to the search bar
     $("input[name=q]").focus();
     $('[data-toggle="tooltip"]').tooltip();
+
+    // scroll to selected contact
+    contact_id = <?php echo $ID; ?>;
+    $('.sidebar2').scrollTop( $('#ct_'+contact_id).offset().top-100);
   });
 
   $('#select_category_modal').on('show.bs.modal', function (e) {

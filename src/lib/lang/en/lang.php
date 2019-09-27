@@ -34,7 +34,9 @@ $lang['confirm_del_contact']  = 'Do you want to delete this contact?';
 $lang['confirm_del_contacts'] = 'Do you want to delete the selected contacts?';
 $lang['confirm_cat_remove_contacts'] = 'Do you want to remove the selected contacts from this category?';
 $lang['confirm_cat_delete']   = 'Do you want to delete this category?';
-
+$lang['confirm_del_account']  = 'Do you want to delete this account?';
+$lang['confirm_del_lang']     = 'Do you want to delete the language from the ./conf folder?';
+$lang['confirm_del_role']     = 'Do you want to delete this role?';
 
 // Menus
 $lang['admin']                = 'Admin';

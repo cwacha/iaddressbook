@@ -143,8 +143,7 @@
     				block += "<option>"+options[i]+"</option>";
     			}
     		}
-    	}
-    	if(typeof options === "object") {
+    	} else if(typeof options === "object") {
     		for (var i in options) {
     			if (!options.hasOwnProperty(i))
     				continue;

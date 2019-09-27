@@ -3,7 +3,7 @@
     if($ID == $contact_entry->id)
         $selected = "_selected";
 ?>
-<div class="contactlist_item<?php echo $selected; ?>" onClick='javascript:select_contact(<?php echo $contact_entry->id; ?>);'>
+<div class="contactlist_item<?php echo $selected; ?>" id="ct_<?php echo $contact_entry->id; ?>" onClick='javascript:select_contact(<?php echo $contact_entry->id; ?>);'>
     <?php if($contact_entry->company == true) { 
         $small_image = "images/company_small.png";
     } else {

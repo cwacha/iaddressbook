@@ -82,7 +82,6 @@
           ?>
             <form class="form-inline mt-2 mt-md-0">
               <input class="form-control mr-sm-2" type="text" name="q" value="<?php echo $QUERY; ?>" placeholder="<?php echo lang('btn_search'); ?>" />
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><?php echo lang('btn_search'); ?></button>
               <input type="hidden" name="do" value="search" />
               <input type="hidden" name="id" value="<?php echo $ID; ?>" />
             </form>

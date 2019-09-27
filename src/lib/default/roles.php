@@ -44,7 +44,7 @@ $roles['admin']  = 'login,logout,reset,'.
                    '/admin,'.
                    '/admin/config,'.
                    '/admin/accounts,/admin/account,/admin/account/edit,/admin/account/password,'.
-                   '/admin/roles,/admin/role/edit'.
+                   '/admin/roles,/admin/role/edit,'.
                    '/admin/translator,/admin/translator/edit';
 
 $roles['editor'] = 'login,logout,reset,'.

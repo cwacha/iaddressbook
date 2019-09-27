@@ -64,6 +64,10 @@
     }
 
     function select_contact(id) {
+        selected_contact = <?php echo $ID; ?>;
+        if(id == selected_contact) {
+            id = 0;
+        }
         document.select_contact_form.elements['id'].value = id;
         document.select_contact_form.submit();
     }

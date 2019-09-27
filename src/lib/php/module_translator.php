@@ -24,6 +24,9 @@ class Translator {
     } 
 
     public function init() {
+        global $meta;
+
+        $meta['lang'] = array('multichoice', '_choices' => $this->get_all_lang_dirs());
     }
 
     public function do_action($request, $action) {
@@ -189,9 +192,7 @@ class Translator {
     }
 
     public function get_all_languages() {
-        $lang_dirs = $this->get_lang_dirs(AB_BASEDIR.'/lib/lang');
-        $lang_dirs2 = $this->get_lang_dirs(AB_CONFDIR.'/lang');
-        $lang_dirs = array_unique(array_merge($lang_dirs, $lang_dirs2));
+        $lang_dirs = $this->get_all_lang_dirs();
 
         $lang = array();
         include(AB_LANGDIR.'/'.$this->default_langcode.'/lang.php');
@@ -220,6 +221,12 @@ class Translator {
         return $ret;
     }
 
+    private function get_all_lang_dirs() {
+        $lang_dirs = $this->get_lang_dirs(AB_BASEDIR.'/lib/lang');
+        $lang_dirs2 = $this->get_lang_dirs(AB_CONFDIR.'/lang');
+        $lang_dirs = array_unique(array_merge($lang_dirs, $lang_dirs2));
+        return $lang_dirs;
+    }
     private function get_lang_dirs($basedir = AB_BASEDIR.'/lib/lang') {
         $ret = array();
         $dirs = scandir($basedir);
