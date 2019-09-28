@@ -70,7 +70,7 @@ class Translator {
     			$new_lang[$key] = $value;
     	}
         if(!array_key_exists('lang_code', $new_lang)) {
-            msg("cannot save language: lang_code not set", -1);
+            msg(lang("lang_error_code_missing", -1));
             return;
         }
         $lang_code = $new_lang['lang_code'];
@@ -87,7 +87,7 @@ class Translator {
     	$this->create_config_lang_folder($lang_code);
     	$filename = AB_CONFDIR.'/lang/'.$lang_code.'/lang.php';
     	$this->write_file($filename, $new_lang);
-        msg("translation saved to ". $filename);
+        msg(str_replace('$1', $filename, lang('lang_saved')), 1);
 		$_SESSION['viewname'] = '/admin/translator';
     }
 
@@ -108,7 +108,7 @@ class Translator {
     private function write_file($filename, $lang) {
 		$fd = fopen($filename, "w");
 		if(!$fd) {
-			msg("could not write lang: $filename", -1);
+            msg(str_replace('$1', $filename, lang('lang_error_cannot_write')), -1);
 			return;
 		}
 

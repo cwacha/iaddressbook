@@ -603,7 +603,9 @@ function act_config_save($request) {
 
     $fd = fopen($filename, "w");
     if(!$fd) {
-        msg("Error writing $type.php to file $filename", -1);
+        $in = array('$1', '$2');
+        $out = array("$type", "$filename");
+        msg(str_replace($in, $out, lang("config_save_error")), -1);
         return false;
     }
     fwrite($fd, "<?php\n\n");
@@ -619,7 +621,7 @@ function act_config_save($request) {
     fclose($fd);
     fix_fmode($filename);
 
-    msg("Configuration saved.");
+    msg(lang("config_saved"));
     $_SESSION['viewname'] = '/admin';
 
     return true;

@@ -78,12 +78,29 @@ var infobox = new MessageBox("infobox");
 
 var PasswordHelper = function(passwordid) {
     this.passwordid = passwordid;
-    this.goodentropy = 105;
+    this.goodentropyval = 105;
     this.percentval = 0;
     this.qualityval = "";
+    this.qualitytext = { very_weak: 'very weak',
+                         weak: 'weak',
+                         good: 'good',
+                         strong: 'strong',
+                         very_strong: 'very strong',
+                         very_strong128: 'very strong - 128bit strength',
+                         very_strong256: 'very strong - 256bit strength'
+                        };
+
     
-    this.entropy = function(entropy) {
-        this.goodentropy = entropy;
+    this.goodentropy = function(entropy) {
+        this.goodentropyval = entropy;
+    }
+
+    this.qualitytext = function(new_text) {
+        for(var key in new_text) {
+            if(!new_text.hasOwnProperty(key))
+                continue;
+            this.qualitytext[key] = new_text[key];
+        }
     }
     
     this.update = function() {
@@ -110,15 +127,15 @@ var PasswordHelper = function(passwordid) {
         var known = this.is_wellknown(word)
         if(known) { entropy = 0; }
         
-        this.qualityval = "very weak";
-        if(entropy > 36) { this.qualityval = "weak"; }          // length=6  + upper/lower
-        if(entropy > 48) { this.qualityval = "good"; }          // length=8  + upper/lower/number
-        if(entropy > 70) { this.qualityval = "strong"; }            // length=10 + upper/lower/number/special
-        if(entropy > 105) { this.qualityval = "very strong"; }      // length=15 + upper/lower/number/special
-        if(entropy > 128) { this.qualityval = "very strong - 128bit strength"; }    // length=16 + alphabet=256
-        if(entropy > 256) { this.qualityval = "very strong - 256bit strength"; }    // length=32 + alphabet=256
+        this.qualityval = this.qualitytext['very_weak'];
+        if(entropy > 36) { this.qualityval = this.qualitytext['weak']; }          // length=6  + upper/lower
+        if(entropy > 48) { this.qualityval = this.qualitytext['good']; }          // length=8  + upper/lower/number
+        if(entropy > 70) { this.qualityval = this.qualitytext['strong']; }            // length=10 + upper/lower/number/special
+        if(entropy > 105) { this.qualityval = this.qualitytext['very_strong']; }      // length=15 + upper/lower/number/special
+        if(entropy > 128) { this.qualityval = this.qualitytext['very_strong128']; }    // length=16 + alphabet=256
+        if(entropy > 256) { this.qualityval = this.qualitytext['very_strong256']; }    // length=32 + alphabet=256
         
-        this.percentval = Math.max(Math.min(entropy / this.goodentropy * 100, 100), 10);
+        this.percentval = Math.max(Math.min(entropy / this.goodentropyval * 100, 100), 10);
         
         /*
         this.log("", true);

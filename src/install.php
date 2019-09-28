@@ -12,6 +12,8 @@ require_once(AB_BASEDIR.'/lib/php/init.php');
 require_once(AB_BASEDIR.'/lib/php/db.php');
 require_once(AB_BASEDIR.'/lib/php/template.php');
 require_once(AB_BASEDIR.'/lib/php/common.php');
+require_once(AB_BASEDIR.'/lib/php/module_translator.php');
+
 
 // the state of the script
 global $state;
@@ -73,7 +75,7 @@ function html_header() {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <link rel="shortcut icon" href="<?php echo AB_TPL; ?>images/favicon.ico" />
-<link rel="stylesheet" media="screen" type="text/css" href="<?php echo AB_TPL; ?>design.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="<?php echo AB_TPL; ?>css/design.css" />
 
 <script type="text/javascript" language="JavaScript">
         <!--
@@ -280,7 +282,7 @@ function step_title($title) {
 }
 
 function step_welcome() {    
-    step_title(lang('step_welcome');
+    step_title(lang('step_welcome'));
 
     echo lang('welcome_message');
     
@@ -297,7 +299,7 @@ function step_check() {
     global $state;
     $errors = 0;
     
-    step_title(lang('step_check');
+    step_title(lang('step_check'));
 
     echo '<table border="0"><tr><td width="45%">';
     step_title(lang('step_tests'));
@@ -762,6 +764,9 @@ function post_var($value, $default) {
     return $default;
 }
 
+init();
+$translator = Translator::getInstance();
+$translator->init();
 
 init_session_defaults();
 load_session();

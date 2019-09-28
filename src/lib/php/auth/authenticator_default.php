@@ -31,12 +31,12 @@ class Authenticator {
         $auth_login = '';
         // check for basic headers
         if(isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
-            msg("php_auth found");
+            //msg("php_auth found");
             $auth_login = $_SERVER['PHP_AUTH_USER'];
             $auth_pass = $_SERVER['PHP_AUTH_PW'];
         }
         if(isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            msg("HTTP_AUTHORIZATION found");
+            //msg("HTTP_AUTHORIZATION found");
             $credentials = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)), 2);
 
             if (2 === count($credentials)) {
@@ -52,7 +52,7 @@ class Authenticator {
             $auth_login = array_get($request, 'username');
             $auth_pass  = array_get($request, 'password');
         }
-        $sticky     = array_get($request, 'rememberme', false) ? true: false;            
+        $sticky = array_get($request, 'rememberme', false) ? true: false;            
 
         // read cookie information
         if(empty($auth_login) and isset($_COOKIE[AB_COOKIE])) {
@@ -176,7 +176,7 @@ class Authenticator {
             }
         }
         if(empty($new_config)) {
-            unlink($filename);
+            @unlink($filename);
             return true;
         }
 
@@ -190,7 +190,7 @@ class Authenticator {
 
         $fd = fopen($filename, "w");
         if(!$fd) {
-            msg("Error writing accounts.php to file $filename", -1);
+            msg(str_replace('$1', $filename, lang('account_error_cannot_write')), -1);
             return false;
         }
         fwrite($fd, "<?php\n\n");

@@ -38,7 +38,7 @@
 				</div>
 				<div class="pb-4" id="quality"><?php echo lang('password_very_weak'); ?></div>
                 <input type='hidden' name='do' value='account_password' />
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary"><?php echo lang('save'); ?></button>
                 <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/accounts"><?php echo lang('cancel'); ?></a>
             </form>
         </div>
@@ -81,17 +81,28 @@
     }
 
 	var pw = new PasswordHelper("password");
+    qtext = {
+        very_weak:      "<?php echo lang('password_very_weak'); ?>",
+        weak:           "<?php echo lang('password_weak'); ?>",
+        good:           "<?php echo lang('password_good'); ?>",
+        strong:         "<?php echo lang('password_strong'); ?>",
+        very_strong:    "<?php echo lang('password_very_strong'); ?>",
+        very_strong128: "<?php echo lang('password_very_strong128'); ?>",
+        very_strong256: "<?php echo lang('password_very_strong256'); ?>"
+    }
+    pw.qualitytext(qtext);
+
 	function calc() {
 		pw.update();
 
 		var percent = pw.percent();
-		var pobj = $("#progress")
+		var pobj = $("#progress");
 		pobj.css("width", percent + "%");
 
 		pobj.removeClass("bg-success bg-warning bg-danger");
-		if(percent > 65)
+		if(percent > 67)
 			pobj.addClass("bg-success");
-		else if(percent > 50)
+		else if(percent > 45)
 			pobj.addClass("bg-warning");
 		else
 			pobj.addClass("bg-danger");

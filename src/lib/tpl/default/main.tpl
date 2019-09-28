@@ -54,21 +54,21 @@
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
             <?php
-              if($_SESSION['authorized'] && in_array('/home', $_SESSION['account']['permissions'])) {
+              if($securitycontroller->has_permission('/home')) {
             ?>
               <li class="nav-item">
                 <a class="nav-link" href="<?php echo $baseuri ?>"><?php echo lang('contacts'); ?></a>
               </li>
             <?php } ?>
             <?php
-              if($_SESSION['authorized'] && in_array('/export', $_SESSION['account']['permissions'])) {
+              if($securitycontroller->has_permission('/export')) {
             ?>
               <li class="nav-item">
                 <a class="nav-link" href="<?php echo $webappuri ?>/export"><?php echo lang('import_export'); ?></a>
               </li>
             <?php } ?>
             <?php
-              if($_SESSION['authorized'] && in_array('/admin', $_SESSION['account']['permissions'])) {
+              if($securitycontroller->has_permission('/admin')) {
             ?>
               <li class="nav-item">
                 <a class="nav-link" href="<?php echo $webappuri ?>/admin"><?php echo lang('admin'); ?></a>
@@ -78,7 +78,7 @@
 
           <!-- Search Box -->
           <?php
-            if($_SESSION['authorized'] && in_array('search', $_SESSION['account']['permissions'])) {
+            if($securitycontroller->has_permission('search')) {
           ?>
             <form class="form-inline mt-2 mt-md-0">
               <input class="form-control mr-sm-2" type="text" name="q" value="<?php echo $QUERY; ?>" placeholder="<?php echo lang('btn_search'); ?>" />
@@ -89,7 +89,7 @@
 
           <!-- User Profile -->
           <?php
-            if($_SESSION['authorized']) {
+            if(array_get($_SESSION, 'authorized')) {
           ?>
             <ul class="navbar-nav navbar-right ml-sm-2">
               <li class="dropdown">

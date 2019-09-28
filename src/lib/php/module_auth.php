@@ -47,7 +47,7 @@ class SecurityController {
         return $instance;
     } 
 
-    function init() {
+    public function init() {
         global $conf;
 
         $authenticator_plugin = array_get($conf, 'authenticator_plugin', 'authenticator_default');
@@ -61,7 +61,7 @@ class SecurityController {
         $this->authorizer->init();
     }
 
-    function authenticate($request) {
+    public function authenticate($request) {
         // authenticating
         $accountid = $this->authenticator->authenticate($request);
         if ($accountid == null) {
@@ -73,11 +73,24 @@ class SecurityController {
     }
 
     // return true if account has permission, false else
-    function authorize($accountid, $permission) {
+    public function authorize($accountid, $permission) {
         return $this->authorizer->authorize($accountid, $permission);
     }
 
-    function get_account($accountid) {
+    // return true if user is logged in and has permission, or true if authentication is disabled
+    public function has_permission($permission) {
+        global $conf;
+
+        if($conf['auth_enabled'] == true) {
+            if(!$this->authorize(array_get($_SESSION, 'accountid'), $permission)) {
+                return false;
+            }            
+        }
+
+        return true;
+    }
+
+    public function get_account($accountid) {
         $account = $this->authenticator->get_account($accountid);
         if($account == null)
             return null;
@@ -89,7 +102,7 @@ class SecurityController {
         return $account;
     }
 
-    function get_accounts() {
+    public function get_accounts() {
         $a = $this->authenticator->get_accounts();
         $accounts = array();
         foreach($a as $accountid => $dummy) {
@@ -98,11 +111,11 @@ class SecurityController {
         return $accounts;
     }
 
-    function get_roles() {
+    public function get_roles() {
         return $this->authorizer->get_roles();
     }
 
-    function do_action($request, $action) {
+    public function do_action($request, $action) {
         switch($action) {
             case 'account_save':
                 $this->account_save($request);
@@ -126,7 +139,7 @@ class SecurityController {
         }
     }
 
-    function account_save($request) {
+    public function account_save($request) {
         global $_SESSION;
 
         $accountid = $request['accountid'];
@@ -152,7 +165,7 @@ class SecurityController {
         $_SESSION['viewname'] = '/admin/accounts';
     }
 
-    function account_password($request) {
+    public function account_password($request) {
         global $_SESSION;
 
         $accountid = $request['accountid'];
@@ -173,7 +186,7 @@ class SecurityController {
         $_SESSION['viewname'] = '/admin/accounts';
     }
 
-    function account_mypassword($request) {
+    public function account_mypassword($request) {
         global $_SESSION;
 
         $accountid = $_SESSION['accountid'];
@@ -190,7 +203,7 @@ class SecurityController {
         $_SESSION['viewname'] = '/profile';        
     }
 
-    function account_delete($request) {
+    public function account_delete($request) {
         global $_SESSION;
 
         $accountid = $request['accountid'];
@@ -203,7 +216,7 @@ class SecurityController {
         $_SESSION['viewname'] = '/admin/accounts';        
     }
 
-    function role_save($request) {
+    public function role_save($request) {
         global $_SESSION;
 
         $roleid = $request['roleid'];
@@ -215,7 +228,7 @@ class SecurityController {
         $_SESSION['viewname'] = '/admin/roles';
     }
 
-    function role_delete($request) {
+    public function role_delete($request) {
         global $_SESSION;
 
         $roleid = $request['roleid'];

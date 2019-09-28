@@ -68,7 +68,7 @@
 
     	block = "";
     	block += '<div class="form-group row">';
-    	block += '  <label for="'+property+'" class="col-sm-3 col-form-label '+changed_class+'">'+hsc(property)+' <br/><small class="text-muted">'+option_name+'</small></label>';
+    	block += '  <label for="'+property+'" class="col-sm-3 col-form-label '+changed_class+'">'+hsc(option_name)+' <br/><small class="text-muted">'+property+'</small></label>';
     	switch(meta[property][0]) {
 	        case 'multichoice':
 	            block += html_select(property, conf[property], '', meta[property]['_choices'], );

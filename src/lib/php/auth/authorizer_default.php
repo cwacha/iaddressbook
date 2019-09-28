@@ -162,7 +162,7 @@ class Authorizer {
             }
         }
         if(empty($new_config)) {
-            unlink($filename);
+            @unlink($filename);
             return true;
         }
 
@@ -176,7 +176,10 @@ class Authorizer {
 
         $fd = fopen($filename, "w");
         if(!$fd) {
-            msg("Error writing $type.php to file $filename", -1);
+            $in = array('$1', '$2');
+            $out = array("$type", "$filename");
+            msg(str_replace($in, $out, lang("authorize_error_cannot_write")), -1);
+
             return false;
         }
         fwrite($fd, "<?php\n\n");

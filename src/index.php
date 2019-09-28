@@ -17,6 +17,7 @@
 
     if(!file_exists(AB_CONFDIR.'/config.php')) {
         // no config found. redirect to installer
+        define('AB_URL',getBaseURL(true));
         header('Location: '.AB_URL.'install.php?do=reset');
         exit;
     }
@@ -56,20 +57,17 @@
         if(!login($request))
             return;
         
-        // accept everything if authentication is disabled
-        if($conf['auth_enabled']) {
-            // test permission for action
-            if(!$securitycontroller->authorize($_SESSION['accountid'], $ACT)) {
+        // test permission for action
+        if(!$securitycontroller->has_permission($ACT)) {
                 msg(lang('action_not_allowed') . " ($ACT)", -1);
                 // user is not allowed to execute $ACT, change to 'show'
-                $ACT = 'show';
-            }
-            // test permission for view
-            if(!$securitycontroller->authorize($_SESSION['accountid'], $_SESSION['viewname'])) {
-                msg(lang('action_not_allowed') . " (".$_SESSION['viewname'].")", -1);
-                // user is not allowed to view $ACT, change to '/home'
-                $_SESSION['viewname'] = '/home';
-            }
+                $ACT = 'show';            
+        }
+        // test permission for view
+        if(!$securitycontroller->has_permission($_SESSION['viewname'])) {
+            msg(lang('action_not_allowed') . " (".$_SESSION['viewname'].")", -1);
+            // user is not allowed to view $ACT, change to '/home'
+            $_SESSION['viewname'] = '/home';
         }
 
         switch($ACT) {
@@ -229,8 +227,8 @@
         global $securitycontroller;
 
         if($conf['auth_enabled'] == false) {
-            $_SESSION['accountid'] = 'guest';
-            $_SESSION['account'] = $securitycontroller->get_account('guest');
+            $_SESSION['accountid'] = 'admin';
+            $_SESSION['account'] = $securitycontroller->get_account('admin');
             return true;
         }
 

@@ -62,16 +62,20 @@ function img_display() {
     global $contact;
     global $conf;
     
-    $picture_known = false;
+    $id = 0;
+    $company = false;
     $image = '';
 
     act_getcontact();
 
     $format = strtolower($conf['photo_format']);
-    $image_file = AB_IMAGEDIR.'/'.$contact->id.'.'.$format;
-    if(is_readable($image_file)) {
-        $image = file_get_contents($image_file);
+    if($contact instanceof Person) {
+        $id = $contact->id;
+        $company = $contact->company;
     }
+
+    $image_file = AB_IMAGEDIR.'/'.$id.'.'.$format;
+    $image = @file_get_contents($image_file);
 
     // now we have the image loaded in $image or no image at all
 
@@ -81,7 +85,7 @@ function img_display() {
         echo $image;
     } else {
         // display unknown image
-        if($contact->company == true) {
+        if($company == true) {
             $im_file = "images/unknown_company.png";
         } else {
             $im_file = "images/unknown_person.png";
