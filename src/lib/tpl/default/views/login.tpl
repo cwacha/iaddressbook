@@ -33,7 +33,7 @@
                 </label>
             </div>
             <input type="hidden" name="do" value="login" >
-            <button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo lang('btn_login'); ?></button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo lang('login'); ?></button>
         </form>
     </div>
 </div>

@@ -33,8 +33,8 @@
                     </select>
                 </div>
                 <input type='hidden' name='do' value='role_save' />
-                <button type="submit" class="btn btn-primary"><?php echo lang('edit') ?></button>
-				<a role="button" class="btn btn-danger" href="javascript:do_action('role_delete', '<?php echo $roleid .": " . lang('confirm_del_role'); ?>');"><?php echo lang('btn_delete');?></a>
+                <button type="submit" class="btn btn-primary"><?php echo lang('role_save') ?></button>
+				<a role="button" class="btn btn-danger" href="javascript:do_action('role_delete', '<?php echo $roleid .": " . lang('confirm_del_role'); ?>');"><?php echo lang('role_delete');?></a>
                 <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/roles"><?php echo lang('cancel'); ?></a>
             </form>
         </div>

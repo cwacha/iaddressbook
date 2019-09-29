@@ -3,7 +3,7 @@
 ?>
 <div class="row">
     <div class="col pt-4">
-        <h2 class="pt-4 pb-4"><?php echo lang('translate'); ?></h2>
+        <h2 class="pt-4 pb-4"><?php echo lang('lang_overview'); ?></h2>
         <table class="table table-hover" id="langtable">
             <thead>
                 <tr>

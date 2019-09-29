@@ -20,8 +20,8 @@
   <div class='sidebar2-footer'>
     <div class='items'>
       <div class='btn-group float-right' role='group'>
-        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_post({'do': 'new'});" data-toggle="tooltip" title="<?php echo lang('create_contact');?>"><span class='glyphicon glyphicon-plus' /></a>
-        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_delete_many('<?php echo lang('confirm_del_contacts'); ?>');" data-toggle="tooltip" title="<?php echo lang('delete_contacts');?>"><span class='glyphicon glyphicon-minus' /></a>
+        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_post({'do': 'new'});" data-toggle="tooltip" title="<?php echo lang('contact_create');?>"><span class='glyphicon glyphicon-plus' /></a>
+        <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:do_delete_many('<?php echo lang('confirm_del_contacts'); ?>');" data-toggle="tooltip" title="<?php echo lang('contacts_delete');?>"><span class='glyphicon glyphicon-minus' /></a>
       </div>
       <div class='btn-group float-right pr-2' role='group'>
           <a role='button' class='btn btn-outline-secondary btn-sm' href="javascript:$('#select_category_modal').modal('toggle');" data-toggle="tooltip" title="<?php echo lang('cat_add_contacts');?>"><span class='glyphicon glyphicon-tag' /></a>

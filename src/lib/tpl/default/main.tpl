@@ -81,7 +81,7 @@
             if($securitycontroller->has_permission('search')) {
           ?>
             <form class="form-inline mt-2 mt-md-0">
-              <input class="form-control mr-sm-2" type="text" name="q" value="<?php echo $QUERY; ?>" placeholder="<?php echo lang('btn_search'); ?>" />
+              <input class="form-control mr-sm-2" type="text" name="q" value="<?php echo $QUERY; ?>" placeholder="<?php echo lang('search'); ?>" />
               <input type="hidden" name="do" value="search" />
               <input type="hidden" name="id" value="<?php echo $ID; ?>" />
             </form>

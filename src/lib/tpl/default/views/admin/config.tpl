@@ -4,8 +4,8 @@
 		<div id="config_table"></div>
 
 	    <!-- Begin Buttons -->
-        <button type="submit" class="btn btn-primary"><?php echo lang('btn_save');?></button>
-	    <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin"><?php echo lang('btn_cancel');?></a>
+        <button type="submit" class="btn btn-primary"><?php echo lang('config_save');?></button>
+	    <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin"><?php echo lang('cancel');?></a>
 	</form>
 </div>
 
@@ -60,7 +60,7 @@
 
     	option_name = hsc(array_get(lang, property, property));
 
-    	option_help = array_get(lang, property+'_help', "no help available");
+    	option_help = hsc(array_get(lang, property+'_help', "no help available"));
     	option_default = hsc(defaults[property]);
         changed_class = ''
         if(conf[property] != defaults[property])
@@ -68,7 +68,7 @@
 
     	block = "";
     	block += '<div class="form-group row">';
-    	block += '  <label for="'+property+'" class="col-sm-3 col-form-label '+changed_class+'">'+hsc(option_name)+' <br/><small class="text-muted">'+property+'</small></label>';
+    	block += '  <label for="'+property+'" class="col-sm-3 col-form-label '+changed_class+'">'+option_name+' <br/><small class="text-muted">'+property+'</small></label>';
     	switch(meta[property][0]) {
 	        case 'multichoice':
 	            block += html_select(property, conf[property], '', meta[property]['_choices'], );

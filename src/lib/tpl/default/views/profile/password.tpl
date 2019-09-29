@@ -26,7 +26,7 @@
 				</div>
 				<div class="pb-4" id="quality"><?php echo lang('password_very_weak'); ?></div>
                 <input type='hidden' name='do' value='account_mypassword' />
-                <button type="submit" class="btn btn-primary"><?php echo lang('save'); ?></button>
+                <button type="submit" class="btn btn-primary"><?php echo lang('mypassword_save'); ?></button>
                 <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/profile"><?php echo lang('cancel'); ?></a>
             </form>
         </div>

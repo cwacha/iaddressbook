@@ -42,7 +42,7 @@
                     </select>
                 </div>
                 <input type='hidden' name='do' value='account_save' />
-                <button type="submit" class="btn btn-primary"><?php echo lang('save'); ?></button>
+                <button type="submit" class="btn btn-primary"><?php echo lang('account_save'); ?></button>
                 <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/accounts"><?php echo lang('cancel'); ?></a>
 
             </form>

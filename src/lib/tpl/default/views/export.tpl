@@ -11,7 +11,7 @@
                 <input type="file" class="form-control" id="file1" name="vcard_file" >
             </div>
             <div class="col-auto">
-                <input type="submit" class="btn btn-primary" value="<?php echo lang('btn_vcardimport'); ?>" >
+                <input type="submit" class="btn btn-primary" value="<?php echo lang('import_vcard'); ?>" >
             </div>
         </div>
     </form>

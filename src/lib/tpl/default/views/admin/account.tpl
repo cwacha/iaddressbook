@@ -34,9 +34,9 @@
 </div>
 <div class="row">
 	<div class="col">
-		<a role="button" class="btn btn-primary" href="<?php echo $webappuri ?>/admin/account/edit?accountid=<?php echo $accountid ?>"><?php echo lang('edit'); ?></a>
+		<a role="button" class="btn btn-primary" href="<?php echo $webappuri ?>/admin/account/edit?accountid=<?php echo $accountid ?>"><?php echo lang('account_edit'); ?></a>
 		<a role="button" class="btn btn-primary" href="<?php echo $webappuri ?>/admin/account/password?accountid=<?php echo $accountid ?>"><?php echo lang('password_change'); ?></a>
-		<a role="button" class="btn btn-danger" href="javascript:do_action('account_delete', '<?php echo $accountid .": " . lang('confirm_del_account'); ?>');"><?php echo lang('btn_delete');?></a>
+		<a role="button" class="btn btn-danger" href="javascript:do_action('account_delete', '<?php echo $accountid .": " . lang('confirm_del_account'); ?>');"><?php echo lang('account_delete');?></a>
 		<a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/accounts"><?php echo lang('cancel'); ?></a>
 	</div>
 </div>

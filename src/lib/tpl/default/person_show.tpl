@@ -169,9 +169,9 @@
 
 <!-- Begin Buttons -->
 <div class="btn-group float-right pb-4" role="group">
-    <button type="button" class="btn btn-outline-primary btn-sm" onclick="javascript:person_action('edit');"><?php echo lang('btn_edit');?></button>
-    <button type="button" class="btn btn-outline-primary btn-sm" onclick="javascript:person_action('export_vcard');"><?php echo lang('btn_vcardexport');?></button>
-    <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript:person_action('delete', '<?php echo $contact->name() .": " . lang('confirm_del_contact'); ?>');"><?php echo lang('btn_delete');?></button>
+    <button type="button" class="btn btn-outline-primary btn-sm" onclick="javascript:person_action('edit');"><?php echo lang('contact_edit');?></button>
+    <button type="button" class="btn btn-outline-primary btn-sm" onclick="javascript:person_action('export_vcard');"><?php echo lang('export_vcard');?></button>
+    <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript:person_action('delete', '<?php echo $contact->name() .": " . lang('confirm_del_contact'); ?>');"><?php echo lang('contact_delete');?></button>
 </div>
 
 <form method="post" action="" name="person_buttons">

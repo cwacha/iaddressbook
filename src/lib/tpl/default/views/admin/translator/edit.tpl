@@ -13,17 +13,17 @@
 		<input type="hidden" name="do" value="language_save" />
 
         <!-- Begin Buttons -->
-        <button type="submit" class="btn btn-primary"><?php echo lang('btn_save');?></button>
-        <a role="button" class="btn btn-danger" href="javascript:do_action('language_delete', '<?php echo $lang_code .": " . lang('confirm_del_lang'); ?>');"><?php echo lang('btn_delete');?></a>
-        <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/translator"><?php echo lang('btn_cancel');?></a>
+        <button type="submit" class="btn btn-primary"><?php echo lang('lang_save');?></button>
+        <a role="button" class="btn btn-danger" href="javascript:do_action('language_delete', '<?php echo $lang_code .": " . lang('confirm_del_lang'); ?>');"><?php echo lang('lang_delete');?></a>
+        <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/translator"><?php echo lang('cancel');?></a>
         <div class="pt-4" />
 
 		<div id="translator_table"></div>
 
 	    <!-- Begin Buttons -->
-        <button type="submit" class="btn btn-primary"><?php echo lang('btn_save');?></button>
-        <a role="button" class="btn btn-danger" href="javascript:do_action('language_delete', '<?php echo $lang_code .": " . lang('confirm_del_lang'); ?>');"><?php echo lang('btn_delete');?></a>
-	    <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/translator"><?php echo lang('btn_cancel');?></a>
+        <button type="submit" class="btn btn-primary"><?php echo lang('lang_save');?></button>
+        <a role="button" class="btn btn-danger" href="javascript:do_action('language_delete', '<?php echo $lang_code .": " . lang('confirm_del_lang'); ?>');"><?php echo lang('lang_delete');?></a>
+	    <a role="button" class="btn btn-outline-secondary" href="<?php echo $webappuri ?>/admin/translator"><?php echo lang('cancel');?></a>
 	</form>
 </div>
 
@@ -54,11 +54,7 @@
 
         $table.append(block);
 
-
         for (var property in defaults) {
-            if(['lang_codeee'
-                ].indexOf(property) > -1)
-                continue;
             if (!defaults.hasOwnProperty(property))
                 continue;
             create_table_line(property, config);
@@ -77,7 +73,6 @@
             changed_class = 'text-danger';
             conf_property = '';
         }
-            
 
     	block = "";
     	block += '<div class="form-group row">';

@@ -191,8 +191,8 @@
 
 <!-- Begin Buttons -->
 <div class="btn-group float-right pb-4" role="group">
-    <button type="button" class="btn btn-primary btn-sm" onclick="javascript:person_action('save');"><?php echo lang('btn_save');?></button>
-    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="javascript:person_action('show');"><?php echo lang('btn_cancel');?></button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="javascript:person_action('save');"><?php echo lang('contact_save');?></button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="javascript:person_action('show');"><?php echo lang('cancel');?></button>
 </div>
 
 <script type="text/javascript">
