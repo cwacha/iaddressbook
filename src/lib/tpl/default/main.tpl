@@ -47,7 +47,7 @@
           <img src="<?php echo AB_TPL; ?>images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
           <?php echo $conf['title']; ?>
         </a>
-        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -130,13 +130,6 @@
     </div>
 
     <!-- Notification Modal -->
-
-    <div class="invisible">
-      <div class="alert alert-danger" role="alert" id="infobox_template_error" ></div>
-      <div class="alert alert-warning" role="alert" id="infobox_template_warning"></div>
-      <div class="alert alert-info" role="alert" id="infobox_template_info"></div>
-      <div class="alert alert-success" role="alert" id="infobox_template_success"></div>
-    </div>
 
     <div class="modal fade" id="notification_modal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-lg" role="document">

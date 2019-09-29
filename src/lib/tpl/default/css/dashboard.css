@@ -23,7 +23,7 @@ h1 {
 
 .sidebar {
   position: fixed;
-  top: 51px;
+  top: 3.5rem;
   bottom: 40px;
   left: 0;
   width: 25%;
@@ -94,7 +94,7 @@ h1 {
 
 .sidebar2 {
   position: fixed;
-  top: 51px;
+  top: 3.5rem;
   bottom: 40px;
   left: 25%;
   width: 25%;
