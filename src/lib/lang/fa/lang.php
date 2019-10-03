@@ -14,21 +14,6 @@ $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'rtl';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
 $lang['sort_rules_to']                  = 'A,a,O,o,U,u,E,e,E,e,A,a';
-$lang['btn_edit']                       = 'ويرايش';
-$lang['btn_delete']                     = 'حذف تماس';
-$lang['btn_search']                     = 'جستجو';
-$lang['btn_cancel']                     = 'لغو';
-$lang['btn_save']                       = 'ذخيره';
-$lang['btn_vcardexport']                = 'خروجي بصورت وي کارت';
-$lang['btn_vcardimport']                = 'ورود وي کارت';
-$lang['btn_login']                      = 'ورود';
-$lang['btn_logout']                     = 'خروج';
-$lang['confirm_del_contact']            = 'از حذف اين تماس مطمئنيد؟';
-$lang['confirm_del_contacts']           = 'از حذف تماسهاي انتخاب شده مطمئنيد؟';
-$lang['confirm_cat_remove_contacts']    = 'آيا مطمئنيد که مي خواهيد تماسهاي انتخاب شده را از اين دسته حذف کنيد؟';
-$lang['confirm_cat_delete']             = 'از حذف اين دسته مطمئنيد؟';
-$lang['contacts']                       = 'تماسها';
-$lang['no_contacts']                    = 'هيچ تماسي';
 $lang['login']                          = 'ورود';
 $lang['username']                       = 'نام کاربري';
 $lang['password']                       = 'رمز عبور';
@@ -36,22 +21,25 @@ $lang['sticky']                         = 'مرا بخاطر بسپار';
 $lang['wrong_userpass']                 = 'نام کاربري يا رمز اشتباه است!';
 $lang['action_not_allowed']             = 'شما دسترسي لازم براي انجا چنين کاري را نداريد';
 $lang['logged_in_as']                   = 'وارد شده با نام';
+$lang['lang']                           = 'زبان';
+$lang['confirm_del_contact']            = 'از حذف اين تماس مطمئنيد؟';
+$lang['confirm_del_contacts']           = 'از حذف تماسهاي انتخاب شده مطمئنيد؟';
+$lang['confirm_cat_remove_contacts']    = 'آيا مطمئنيد که مي خواهيد تماسهاي انتخاب شده را از اين دسته حذف کنيد؟';
+$lang['confirm_cat_delete']             = 'از حذف اين دسته مطمئنيد؟';
+$lang['contacts']                       = 'تماسها';
+$lang['no_contacts']                    = 'هيچ تماسي';
 $lang['category']                       = 'دسته';
 $lang['category_all']                   = 'همه';
 $lang['cat_add']                        = 'ايجاد دسته';
 $lang['cat_delete']                     = 'حذف دسته';
 $lang['cat_lastimport']                 = 'ورودي اخير';
 $lang['cat_changed']                    = 'تماسهاي تغيير يافته';
-$lang['delete_contacts']                = 'حذف تماس (ها)';
 $lang['import_export']                  = 'ورود/خروج';
 $lang['export_vcard']                   = 'خروجي بصورت وي کارت (ها)';
 $lang['export_csv']                     = 'خروجي بصورت فايل سي اس وي';
 $lang['export_ldif']                    = 'خروجي بصورت فايل ال دي آي اف';
 $lang['import_folder']                  = 'ورود از پوشه';
-$lang['create_contact']                 = 'تماس جديد';
 $lang['map']                            = 'نقشه';
-$lang['select_action']                  = 'انتخاب فعاليت ...';
-$lang['installation']                   = 'نصب PHP AddressBook';
 $lang['no_name']                        = '(بدون نام)';
 $lang['label_custom']                   = 'سفارشي ...';
 $lang['label_customprompt']             = 'افزودن برچسب سفارشي جديد';
@@ -139,7 +127,6 @@ $lang['dbtable_abs']                    = 'جدول پايگاه داده';
 $lang['dbtable_ab']                     = 'جدول پايگاه داده';
 $lang['dbtable_cat']                    = 'جدول پايگاه داده';
 $lang['dbtable_catmap']                 = 'جدول پايگاه داده';
-$lang['lang']                           = 'زبان';
 $lang['title']                          = 'عنوان';
 $lang['template']                       = 'قالب صفحه';
 $lang['bdformat']                       = 'فرمت تاريخ تولد';
@@ -218,6 +205,7 @@ $lang['ldif_base_help']                 = 'dn اصلي براي خروجي ها�
 $lang['ldif_mozilla_help']              = 'استفاده از کلاس mozilla LDAP در خروجي LDIF (mozillaOrgPerson, mozillaAddressBookEntry)';
 $lang['xmlrpc_enable_help']             = 'فعالسازي XMLRPC api';
 $lang['carddav_enable_help']            = 'TRANSLATE:Enable CardDAV server (iCloud/ownCloud alternative)';
+$lang['installation']                   = 'نصب PHP AddressBook';
 $lang['back']                           = 'بازگشت';
 $lang['next']                           = 'بعدي';
 $lang['finish']                         = 'پايان';
