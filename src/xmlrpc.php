@@ -15,6 +15,8 @@ require_once(AB_BASEDIR.'/lib/php/module_vcard.php');
 require_once(AB_BASEDIR.'/lib/php/module_auth.php');
 require_once(AB_BASEDIR.'/lib/php/common.php');
 
+init();
+
 global $conf;
 
 global $XMLRPC_VERSION;
@@ -35,8 +37,9 @@ function xml_logmsg($message, $level=0) {
 }
 
 function xml_login($action, $params) {
+    global $securitycontroller;
 	$api_key = XML_RPC_decode($params->getParam(0));
-    if(auth_verify_action($api_key, $action)) {
+    if($securitycontroller->authorize($api_key, $action)) {
         return true;
     }
 	return false;
@@ -227,6 +230,9 @@ function export_vcard($params) {
 
 db_init();
 db_open();
+
+$securitycontroller = SecurityController::getInstance();
+$securitycontroller->init();
 
 $ABcatalog = new Addressbooks();
 $books = $ABcatalog->getAddressBooksForUser('whatever');

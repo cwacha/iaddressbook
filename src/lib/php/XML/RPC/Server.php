@@ -544,6 +544,9 @@ class XML_RPC_Server
         if ($data == '') {
             $data = $HTTP_RAW_POST_DATA;
         }
+        if(empty($data)) {
+            $data = file_get_contents("php://input");
+        }
 
         $this->encoding = XML_RPC_Message::getEncoding($data);
         $parser_resource = xml_parser_create($this->encoding);

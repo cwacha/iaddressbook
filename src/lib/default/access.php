@@ -1,6 +1,6 @@
 <?php
 
-$access['admin'] = 'all,admin';
+$access['admin'] = 'admin';
 $access['guest'] = 'guest';
 
 ?>
