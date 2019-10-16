@@ -17,8 +17,7 @@ import() {
 	cp -r ../src/* BUILD
 	find BUILD -depth -name ".DS_Store" -exec rm {} \;
 	find BUILD -depth -name ".svn" -exec rm -rf {} \;
-	rm -rf BUILD/conf/config.php
-	rm -rf BUILD/conf/auth.php
+	rm -rf BUILD/conf/*
 	rm -rf BUILD/var/state/*
 	rm -rf BUILD/var/images/*
 	rm -rf BUILD/var/import/*

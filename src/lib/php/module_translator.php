@@ -229,7 +229,9 @@ class Translator {
     }
     private function get_lang_dirs($basedir = AB_BASEDIR.'/lib/lang') {
         $ret = array();
-        $dirs = scandir($basedir);
+        $dirs = @scandir($basedir);
+        if ($dirs === false)
+            return $ret;
         foreach ($dirs as $dir) {
             if(is_dir($basedir.'/'.$dir) && (substr($dir, 0, 1) != '.')) {
                 $ret[] = $dir;

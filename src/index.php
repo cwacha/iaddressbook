@@ -201,8 +201,6 @@
         $webappuri = getWebAppURI();
         $basedir = AB_BASEDIR;
         $tpldir = AB_TPLDIR.'/'.$conf['template'];
-        $messages = msg_getall();
-        msg_clear();
         
         $viewdocument = getViewDocument($viewname);
         /*

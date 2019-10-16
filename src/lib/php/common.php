@@ -214,6 +214,14 @@ function msg_getall() {
     return $_SESSION['msg'];
 }
 
+function msg_popall() {
+    if(!isset($_SESSION['msg']))
+        $_SESSION['msg'] = array();
+    $ret = $_SESSION['msg'];
+    $_SESSION['msg'] = array();
+    return $ret;
+}
+
 function msg_getall_as_string() {
     $messages = msg_getall();
     $ret = "";

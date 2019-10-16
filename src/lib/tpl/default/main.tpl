@@ -130,6 +130,12 @@
     </div>
 
     <!-- Notification Modal -->
+    <div class="invisible">
+      <div class="alert alert-danger" role="alert" id="infobox_template_error" ></div>
+      <div class="alert alert-warning" role="alert" id="infobox_template_warning"></div>
+      <div class="alert alert-info" role="alert" id="infobox_template_info"></div>
+      <div class="alert alert-success" role="alert" id="infobox_template_success"></div>
+    </div>
 
     <div class="modal fade" id="notification_modal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-lg" role="document">
@@ -154,7 +160,7 @@
 
         infobox.clear();
       
-        var messages = <?php echo json_encode($messages); ?>;
+        var messages = <?php echo json_encode(msg_popall()); ?>;
         //notify("error", "test error");
         //notify("warning", "test warning");
         //notify("success", "test success");
