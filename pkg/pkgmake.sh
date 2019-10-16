@@ -41,8 +41,10 @@ pkg() {
 	
 	PKG=iaddressbook-$VERSION
 	mv BUILD $PKG
-	tar cfz $PKG+$SVN_REVISION.tar.gz $PKG
-	zip -r $PKG+$SVN_REVISION.zip $PKG >/dev/null
+	tar cfz $PKG-$SVN_REVISION.tar.gz $PKG
+	echo "# created $PKG-$SVN_REVISION.tar.gz"
+	zip -r $PKG-$SVN_REVISION.zip $PKG >/dev/null
+	echo "# created $PKG-$SVN_REVISION.zip"
 }
 
 clean() {
