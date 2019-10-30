@@ -24,8 +24,9 @@
                     <?php if($contact->nickname != "") echo "\"$contact->nickname\""; ?>
                 </div>
                 <div class="person_text">
-                    <?php echo $contact->organization; ?> &ndash;
-                    <?php echo $contact->jobtitle; ?><br>
+                    <?php echo $contact->organization; ?>
+                    <?php if(!empty($contact->jobtitle)) echo "&ndash; " . $contact->jobtitle; ?>
+                    <br>
                     <?php echo $contact->department; ?>
                 </div>
             <?php } else {; ?>
@@ -48,7 +49,8 @@
                     <?php if($contact->nickname != "") echo "\"$contact->nickname\"<br>"; ?>
                 </div>
                 <div class="person_text">
-                    <?php echo $contact->jobtitle; ?><br>
+                    <?php echo $contact->jobtitle; ?>
+                    <br>
                     <?php echo $contact->department; ?>
                 </div>
             <?php }; ?>
