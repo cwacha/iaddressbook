@@ -82,11 +82,6 @@ hr {
 }
 
 
-.leftalign {text-align: left;}
-.centeralign {text-align: center;}
-.rightalign {text-align: right;}
-
-
 .mainview {
     background-color: white;
 //    width: 76%;
@@ -108,116 +103,6 @@ hr {
     text-align: left;
 }
 
-.search {
-    float:right;
-}
-
-.contactlist_td {
-    vertical-align: top;
-    width: 30%;
-    min-width: 120px;
-}
-
-.contactlist {
-    vertical-align: top;
-}
-
-.contactlist_item1 {
-    background-color: #e6f1ff;
-}
-
-.contactlist_item2 {
-}
-
-.contactlist_footer {
-    text-align: right;
-}
-
-.personview {
-    vertical-align: top;
-/*    margin-top: 10px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    margin-left: 10px;*/
-
-}
-
-.person_left {
-    padding-left: 30px;
-    padding-right: 10px;
-    padding-top: 0px;
-    padding-bottom: 0em;
-    text-align: right;
-    vertical-align: top;
-    width: 25%;
-    /* min-width: 150px; */
-}
-
-.person_right {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 0px;
-    padding-bottom: 0em;
-    text-align: left;
-    width: 75%;
-    vertical-align: top;
-}
-
-.person_photo {
-	padding: 0;
-	width: 128px;
-	height: 128px;
-	/*
-	-webkit-border-radius: 100%;
-	-khtml-border-radius: 100%;
-	-moz-border-radius: 100%;
-	border-radius: 100%;
-	*/
-}
-
-.person_right .person_name {
-    font-size: 130%;
-    font-weight: bold;
-}
-
-.person_right .person_nickname {
-    font-size: 100%;
-    font-weight: bold;
-    font-style: italic;
-}
-
-.person_right .person_text {
-    font-size: 100%;
-    font-weight: normal;
-    font-style: normal;
-    text-align: left;
-}
-
-.person_left .person_labels {
-    font-size: 100%;
-    font-weight: bold;
-    font-style: normal;
-    text-align: right;
-    padding-bottom: 1px;
-}
-
-.person_empty {
-    font-size: 100%;
-    font-weight: bold;
-    font-style: normal;
-    text-align: center;
-    padding-top: 6em;
-}
-
-.person_smalltext {
-    color: #bebebe;
-    font-size: 85%;
-    font-weight: normal;
-    font-style: normal;
-    text-align: right;
-    padding: 0;
-    margin: 0;
-}
 
 .footer {
     height: 40px;
@@ -229,16 +114,6 @@ hr {
 	width: 350px;
 	font-weight: normal;
 	padding-bottom: 0em;
-	border-bottom: 1px solid #bebebe;
-}
-
-.separator100 {
-	margin: 1px auto 5px auto;
-	width: 100%;
-	font-weight: normal;
-	padding-bottom: 0;
-    padding-top: 0;
-    height: 1px;
 	border-bottom: 1px solid #bebebe;
 }
 
@@ -275,99 +150,8 @@ h1, h2, h3, h4, h5 {
     clear: left;
 }
 
-/*-------------------------------------------------
-PANELS
--------------------------------------------------*/
-.panel {
-	margin-top: 1em;
-	position: relative;
-	font-size: 93%;
-}
-	.panel .header {
-		background-color: #222;
-		width: 100%;
-	}
-
-	.header tr {
-		padding: 0;
-		margin:0;
-	}
-	.header tr td {
-		padding: 0;
-		margin: 0;
-	}
-	.header_tr {
-		margin:0;
-	}
-	.header_tr .middle {
-		padding-left: 0.4em;
-		margin: 0px;
-		background-image: url(images/split1.gif);background-repeat:
-		repeat-x;
-		color:#eee;
-		text-align: left;
-		font-weight: bold;
-	}
-	.header_tr .last {
-		text-align: right;
-		padding-right: 0.4em;
-	}
-	.middle a {
-		color: #ddd;
-		text-decoration: none;
-	}
-
-	.header .endcap {
-		width: 3px;
-	}
-	.endcap img {
-		vertical-align:top;
-	}
-
-	.panel .controls {
-		margin:auto;
-		position:absolute;
-		right:0.1em;
-		white-space: nowrap;
-		padding-right: 0.4em;
-	}
-	.panel .controls a {
-		color: #ddd;
-		text-decoration: none;
-	}
-
-
-.panel th {
-	padding: 0 .6em;
-}
-.panel td {
-	padding: 0 0.6em;
-	text-align:right;
-}
-.panel td.first {
-	text-align: left;
-}
-.panel td.sparkline {
-	height: 20px;
-}
-
-
-.panel th {
-	margin: 0;
-	padding-top: 0;
-	border-left: 1px solid #aaa;
-	border-bottom: 1px solid #aaa;
-	height: 8px;
-	text-align: right;
-	font-size:82%;
-}
-.panel th.first_th {
-	border-left: none;
-	text-align: left;
-}
 
 /* --------- buttons ------------------- */
-
 
 input.button, button.button{
   border: 1px solid #bebebe;
@@ -469,41 +253,4 @@ input.missing {
   margin: 1px;
   padding: 0.20em 0.3em;
   display: inline;
-}
-
-.login_box {
-    width: 220px;
-    padding: 0;
-    margin: 10px;
-    margin-bottom: 40px;
-    text-align: right;
-    vertical-align: top;
-}
-
-.birthday_box {
-    width: 220px;
-    padding: 0;
-    margin: 10px;
-}
-
-.birthday_title {
-    color: #bebebe;
-    font-size: 85%;
-    font-weight: normal;
-    font-style: normal;
-    text-align: right;
-    padding: 0;
-    margin: 0;
-	margin-bottom: 5px;
-	border-bottom: 1px solid #bebebe;
-}
-
-.birthday_text {
-    color: #bebebe;
-    font-size: 85%;
-    font-weight: normal;
-    font-style: normal;
-    text-align: right;
-    padding: 0;
-    margin: 0;  
 }

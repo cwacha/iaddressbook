@@ -8,41 +8,49 @@
         <div class="col person_right">
             <!-- Begin Name / Company -->
             <?php if($contact->company == false) {; ?>
-            <div class="person_name">
-                <?php echo $contact->title; ?>
-                <?php echo $contact->firstname; ?>
-                <?php echo $contact->firstname2; ?>
-                <?php echo $contact->lastname; ?>
-                <?php echo $contact->suffix; ?>
-                <br>
-            </div>
-            <div class="person_nickname">
-                <?php if($contact->nickname != "") echo "\"$contact->nickname\"<br>"; ?>
-            </div>
-            <div class="person_text">
-                <?php echo $contact->jobtitle; ?><br>
-                <?php echo $contact->department; ?><br>
-                <?php echo $contact->organization; ?><br>                
-            </div>
+                <div class="person_name">
+                    <?php echo $contact->title; ?>
+                    <?php echo $contact->firstname; ?>
+                    <?php echo $contact->firstname2; ?>
+                    <?php echo $contact->lastname; ?>
+                    <?php echo $contact->suffix; ?>
+                    <br>
+                </div>
+                <div class="person_namephonetic">
+                    <?php if(!empty($contact->phoneticfirstname)) echo $contact->phoneticfirstname; ?>
+                    <?php if(!empty($contact->phoneticlastname)) echo $contact->phoneticlastname; ?>
+                </div>
+                <div class="person_nickname">
+                    <?php if($contact->nickname != "") echo "\"$contact->nickname\""; ?>
+                </div>
+                <div class="person_text">
+                    <?php echo $contact->organization; ?> &ndash;
+                    <?php echo $contact->jobtitle; ?><br>
+                    <?php echo $contact->department; ?>
+                </div>
             <?php } else {; ?>
-            <div class="person_name">
-                <?php echo $contact->organization; ?><br>                
-            </div>
-            <div class="person_text">
-                <?php echo $contact->title; ?>
-                <?php echo $contact->firstname; ?>
-                <?php echo $contact->firstname2; ?>
-                <?php echo $contact->lastname; ?>
-                <?php echo $contact->suffix; ?>
-                <br>
-            </div>
-            <div class="person_nickname">
-                <?php if($contact->nickname != "") echo "\"$contact->nickname\"<br>"; ?>
-            </div>
-            <div class="person_text">
-                <?php echo $contact->jobtitle; ?><br>
-                <?php echo $contact->department; ?><br>
-            </div>            
+                <div class="person_name">
+                    <?php echo $contact->organization; ?>
+                </div>
+                <div class="person_text">
+                    <?php echo $contact->title; ?>
+                    <?php echo $contact->firstname; ?>
+                    <?php echo $contact->firstname2; ?>
+                    <?php echo $contact->lastname; ?>
+                    <?php echo $contact->suffix; ?>
+                    <br>
+                </div>
+                <div class="person_namephonetic">
+                    <?php if(!empty($contact->phoneticfirstname)) echo $contact->phoneticfirstname; ?>
+                    <?php if(!empty($contact->phoneticlastname)) echo $contact->phoneticlastname; ?>
+                </div>
+                <div class="person_nickname">
+                    <?php if($contact->nickname != "") echo "\"$contact->nickname\"<br>"; ?>
+                </div>
+                <div class="person_text">
+                    <?php echo $contact->jobtitle; ?><br>
+                    <?php echo $contact->department; ?>
+                </div>
             <?php }; ?>
             <!-- End Name / Company -->
         </div>

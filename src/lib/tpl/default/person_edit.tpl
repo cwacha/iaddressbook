@@ -50,7 +50,21 @@
     </div>
     <div class="row">
         <div class="col"></div>
-       <div class="col person_right">
+        <div class="col person_right">
+            <fieldset class="input-group-vertical">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="phoneticfirstname" placeholder="<?php echo lang('label_phoneticfirstname'); ?>" value="<?php echo $contact->phoneticfirstname; ?>" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="phoneticlastname" placeholder="<?php echo lang('label_phoneticlastname'); ?>" value="<?php echo $contact->phoneticlastname; ?>" />
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-1"></div>
+    </div>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col person_right">
             <div class="form-group">
                 <input type="text" class="form-control form-control-sm" name="nickname" placeholder="<?php echo lang('label_nickname'); ?>" value="<?php echo $contact->nickname; ?>" />
             </div>
