@@ -345,6 +345,7 @@ function contact2vcard($contact) {
 function array2contact($card) {
 	global $conf;
 	$contact = new Person();
+	//msg("<pre>" . print_r($card, true) ."</pre>");
 
 	if (isset($card['UID']))
 		$contact->uid = $card['UID'][0]['value'][0][0];
@@ -357,6 +358,13 @@ function array2contact($card) {
 		$contact->firstname2 = $card['N'][0]['value'][2][0];
 		$contact->title = $card['N'][0]['value'][3][0];
 		$contact->suffix = $card['N'][0]['value'][4][0];
+	}
+
+	if (isset($card['X-PHONETIC-FIRST-NAME'])) {
+		$contact->phoneticfirstname = $card['X-PHONETIC-FIRST-NAME'][0]['value'][0][0];
+	}
+	if (isset($card['X-PHONETIC-LAST-NAME'])) {
+		$contact->phoneticlastname = $card['X-PHONETIC-LAST-NAME'][0]['value'][0][0];
 	}
 	
 	if (isset($card['NICKNAME']))
