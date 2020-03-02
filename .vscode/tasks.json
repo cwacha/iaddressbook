@@ -1,0 +1,29 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "pkgmake: all",
+            "type": "shell",
+            "command": "./pkg/pkgmake.sh all",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "pkgmake: clean",
+            "type": "shell",
+            "command": "./pkg/pkgmake.sh clean",
+            "problemMatcher": []
+        },
+        {
+            "label": "pkgmake: deploy",
+            "type": "shell",
+            "command": "./pkg/pkgmake.sh deploy",
+            "problemMatcher": []
+        }
+    ]
+}
