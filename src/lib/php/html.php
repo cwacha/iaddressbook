@@ -37,7 +37,7 @@ function html_msgarea($msg_array = null) {
     if(!isset($msg_array)) return;
 
     foreach($msg_array as $msg){
-        print '<div class="'.$msg['lvl'].'" style="text-align: left;">';
+        print '<div class="'.$msg['type'].'" style="text-align: left;">';
         print $msg['msg'];
         print '</div>';
     }

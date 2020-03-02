@@ -583,6 +583,8 @@ function setup_db() {
         imsg(lang('info_db2'), 1); 
         $state['db_created'] = 1;
         $conf['debug_db'] = 0;
+    } else {
+        html_msgarea(msg_popall());
     }
     db_close();
 }

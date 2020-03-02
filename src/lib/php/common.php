@@ -236,17 +236,17 @@ function msg_clear() {
 }
 
 // TODO: only used in install.php, should be migrated to msg (see above)
-function imsg($message, $lvl=0) {
+function imsg($message, $type=0) {
     $errors[-1] = 'error';
     $errors[0]  = 'info';
     $errors[1]  = 'success';
 
     $msg = array();
-    $msg[]=array('lvl' => $errors[$lvl], 'msg' => $message);
+    $msg[]=array('type' => $errors[$type], 'msg' => $message);
     if(function_exists('html_msgarea')) {
         html_msgarea($msg);
     } else {
-        print "ERROR($lvl) $message";
+        print "ERROR($type) $message";
     }
 }
 

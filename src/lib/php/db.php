@@ -70,7 +70,7 @@ function db_open() {
 	    $db->init($db_config['dbserver'], $db_config['dbname'], $db_config['dbuser'], $db_config['dbpass']);
 	    if($db_config['dbdebug']) $db->debug = true;    
 	        
-	    if($db_config['dbtype'] == 'mysql') {
+	    if($db_config['dbtype'] == 'pdo_mysql') {
 	        @$db->execute("SET NAMES 'utf8'");
 	    }
     } catch (Exception $e) {
