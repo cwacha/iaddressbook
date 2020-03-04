@@ -13,8 +13,8 @@ Installing the address book consists of four steps:
     You will be automatically redirected to the first time installation
   - Follow the steps in the installer
   - If you want authorization support enable it during the installation.
-    You need to manually create users in conf/auth.php for now. You will
-    find instructions in conf/auth.php.
+    Or enable it later in the Admin menu. Users can be added using the
+    Admin menu as well.
 
 
 ==== Upgrade ====
@@ -26,7 +26,7 @@ vCard export preserves all fields.
 Follow these steps and you should be on the safe side:
 
   - Export all your contacts using the vCard export.
-  - Install the addressbook as described in the installation chapter.
+  - Install the addressbook as described in the installation section.
   - Import your vCard into the new addressbook. Use the "folder import" feature if you
     have multiple vCard files that you want to import all at once.
   - If everything works as expected, remove the old installation and rename/move your
