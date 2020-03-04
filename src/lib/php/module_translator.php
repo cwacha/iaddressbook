@@ -87,6 +87,7 @@ class Translator {
     	$this->create_config_lang_folder($lang_code);
     	$filename = AB_CONFDIR.'/lang/'.$lang_code.'/lang.php';
     	$this->write_file($filename, $new_lang);
+    	$this->write_file($filename.'.txt', $new_lang);
         msg(str_replace('$1', $filename, lang('lang_saved')), 1);
 		$_SESSION['viewname'] = '/admin/translator';
     }
@@ -221,6 +222,14 @@ class Translator {
         return $ret;
     }
 
+    public function get_custom_language_uri($lang_code) {
+        if(!empty($lang_code)) {
+            if(file_exists(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php'))
+                return AB_BASEURI.'conf/lang/'.$lang_code.'/lang.php.txt';
+        }
+        return null;
+    }
+
     private function get_all_lang_dirs() {
         $lang_dirs = $this->get_lang_dirs(AB_BASEDIR.'/lib/lang');
         $lang_dirs2 = $this->get_lang_dirs(AB_CONFDIR.'/lang');
@@ -246,6 +255,7 @@ class Translator {
             return;
 
         @unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
+        @unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php.txt');
         @rmdir(AB_CONFDIR.'/lang/'.$lang_code);
 
         $_SESSION['viewname'] = '/admin/translator';

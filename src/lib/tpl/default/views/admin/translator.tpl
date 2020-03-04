@@ -12,6 +12,7 @@
                 	<th><?php echo lang('lang_author_name'); ?></th>
                 	<th><?php echo lang('lang_translate_stats'); ?></th>
                 	<th></th>
+                	<th></th>
                	</tr>
             </thead>
             <tbody>
@@ -40,7 +41,13 @@
                 		echo "    <div class='progress-bar bg-success' role='progressbar' style='width: ".$percent."%' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>".$percent." %</div>";
                 		echo "  </div> ";
                 		echo "</td>";
-                		echo "<td>".$count."/".$total."</td>";
+						echo "<td>".$count."/".$total."</td>";
+						$custom_file = $translator->get_custom_language_uri($lang_code);
+						if(!empty($custom_file)) {
+							echo "<td><a href='$custom_file'><span class='glyphicon glyphicon-download'></a></td>";
+						} else {
+							echo "<td></td>";
+						}
                 		echo "</tr>";
                 	}
                 ?>
