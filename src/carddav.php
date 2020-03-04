@@ -14,6 +14,8 @@ require_once(AB_BASEDIR.'/lib/php/module_auth.php');
 
 global $conf;
 
+init();
+
 if(!$conf['carddav_enable']) {
 	echo "CardDAV server disabled.";
 	exit();
