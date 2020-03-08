@@ -2,10 +2,6 @@
 
 TMP=`pwd`; cd `dirname $0`; BASEDIR=`pwd`; cd $TMP
 
-SVNBASEDIR=..
-REV=`svn info -R $BASEDIR/$SVNBASEDIR 2>/dev/null | grep "Last Changed Rev" | awk '{print $4}' | sort -nr | head -1`
-SVN_REVISION=${SVN_REVISION:-$REV}
-
 all() {
 	echo "# building: $app_pkgname"
 	clean && import && pkg
@@ -42,13 +38,12 @@ import() {
 	chmod 777 BUILD/var/state
 	chmod 777 BUILD/var/images
 	chmod 777 BUILD/var/import
-	echo "`head -1 BUILD/VERSION` (Rev: $app_revision)" > BUILD/VERSION
+	echo "`head -1 BUILD/VERSION` (Rev: $app_revision Build: $app_build)" > BUILD/VERSION
 	#touch BUILD/iaddressbook-$app_version-$app_revision-manifest
 }
 
 pkg() {
 	echo "##### packaging"
-	VERSION=`head -1 BUILD/VERSION | sed 's/[ 	].*//g'`
 	
 	PKG=$app_pkgid-$app_version
 	mv BUILD $PKG
