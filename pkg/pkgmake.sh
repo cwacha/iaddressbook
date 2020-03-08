@@ -7,7 +7,18 @@ REV=`svn info -R $BASEDIR/$SVNBASEDIR 2>/dev/null | grep "Last Changed Rev" | aw
 SVN_REVISION=${SVN_REVISION:-$REV}
 
 all() {
+	echo "# building: $app_pkgname"
 	clean && import && pkg
+}
+
+_init() {
+	app_pkgid="iaddressbook"
+    app_displayname="Visual Studio Code Portable"
+    app_version=`head -1 $BASEDIR/../src/VERSION | sed 's/[ 	].*//g'`
+    app_revision=`git log --pretty=oneline | wc -l | xargs`
+    app_build=`git rev-parse --short HEAD`
+
+    app_pkgname="$app_pkgid-$app_version-$app_revision-$app_build"
 }
 
 import() {
@@ -31,20 +42,20 @@ import() {
 	chmod 777 BUILD/var/state
 	chmod 777 BUILD/var/images
 	chmod 777 BUILD/var/import
-	echo "`head -1 BUILD/VERSION` (Rev: $SVN_REVISION)" > BUILD/VERSION
-	#touch BUILD/iaddressbook-$VERSION-$SVN_REVISION-manifest
+	echo "`head -1 BUILD/VERSION` (Rev: $app_revision)" > BUILD/VERSION
+	#touch BUILD/iaddressbook-$app_version-$app_revision-manifest
 }
 
 pkg() {
 	echo "##### packaging"
 	VERSION=`head -1 BUILD/VERSION | sed 's/[ 	].*//g'`
 	
-	PKG=iaddressbook-$VERSION
+	PKG=$app_pkgid-$app_version
 	mv BUILD $PKG
-	tar cfz $PKG-$SVN_REVISION.tar.gz $PKG
-	echo "# created $PKG-$SVN_REVISION.tar.gz"
-	zip -r $PKG-$SVN_REVISION.zip $PKG >/dev/null
-	echo "# created $PKG-$SVN_REVISION.zip"
+	tar cfz $app_pkgname.tar.gz $PKG
+	echo "# created $app_pkgname.tar.gz"
+	zip -r $app_pkgname.zip $PKG >/dev/null
+	echo "# created $app_pkgname.zip"
 }
 
 clean() {
@@ -72,7 +83,7 @@ if [ $# -eq 0 ]; then
 	echo "Usage: $0 <action>"
 	echo
 	echo "ACTIONS:"
-	declare -F | awk '{print "   "$3}' | grep -v usage
+	declare -F | awk '{print $3}' | grep -v ^_ | awk '{print "    "$1}'
 	exit
 fi
 
@@ -83,6 +94,7 @@ declare -F "$action" >/dev/null
 [ $? -ne 0 ] && echo "no such action: $action" && exit 1
 
 cd $BASEDIR
+_init
 
 $action $*
 echo "##### done"
