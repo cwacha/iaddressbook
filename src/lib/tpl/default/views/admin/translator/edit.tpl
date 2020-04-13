@@ -48,8 +48,8 @@
 
         block = "";
         block += '<div class="form-group row">';
-        block += '  <div class="col-sm font-weight-bold"><?php echo lang("language_default") ?> ['+config.defaults.lang_code+']</div>';
-        block += '  <div class="col-sm font-weight-bold"><?php echo lang("language_your_translation") ?> ['+config.lang.lang_code+']</div>';
+        block += '  <div class="col-sm font-weight-bold"><?php echo addslashes(lang("language_default")) ?> ['+config.defaults.lang_code+']</div>';
+        block += '  <div class="col-sm font-weight-bold"><?php echo addslashes(lang("language_your_translation")) ?> ['+config.lang.lang_code+']</div>';
         block += '</div>';
 
         $table.append(block);
