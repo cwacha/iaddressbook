@@ -65,10 +65,10 @@ function collect_birthdays() {
 
 function tpl_birthday() {
     global $conf;
-    $num_bdays = 0;
     
     $people = collect_birthdays();
-        
+    $result = array();
+
     foreach($people as $contact) {
         $now = time();
         //$now = strtotime('2011-12-30');
@@ -84,6 +84,7 @@ function tpl_birthday() {
         
         if($days < 0) continue;
         
+        $trans_text = "";
         if($days > 30) {
             $n = floor($days/30);
             if($days > 60)   $trans_text = lang('bday_months');
@@ -101,19 +102,14 @@ function tpl_birthday() {
             // birthday today!
             $trans_text = lang('bday_today');
         }
-        
-        eval("\$text = \"$trans_text\";");
-        
+                
         if(!empty($contact->nickname)) $name = $contact->nickname;
         else $name = $contact->name(false);
 
-        echo "<a href='?id=$contact->id'>$name</a> ($age) $text<br/>";
-        $num_bdays++;
+        $result[] = array('href' => "?id=$contact->id", 'text' => "$name ($age) $trans_text");
     }
     
-    if($num_bdays == 0) {
-        echo lang('bday_none')."<br/>";
-    }
+    return $result;
 }
 
 

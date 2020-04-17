@@ -74,6 +74,38 @@
                 <a class="nav-link" href="<?php echo $webappuri ?>/admin"><?php echo lang('admin'); ?></a>
               </li>
             <?php } ?>
+
+            <!-- Upcoming birthdays -->
+            <?php
+              if(array_get($_SESSION, 'authorized')) {
+            ?>
+              <li class="dropdown">
+                <a class="nav-link" data-toggle="dropdown" role="button" aria-expanded="false">
+                  <span class="glyphicon glyphicon-gift" aria-hidden="true"></span><span id="bd_badge" class="invisible badge badge-danger">0</span>
+                </a>
+                <ul class="dropdown-menu" role="menu" id="bd_menu">
+                  <li><span class="dropdown-item"><?php echo lang('birthdays'); ?></span></li>
+                  <li class="dropdown-divider"></li>
+                </ul>
+              </li>
+              <script type="text/javascript">
+                $(document).ready( function () {
+                  var birthdays = <?php echo json_encode(tpl_birthday()); ?>;
+                  for(birthday in birthdays) {
+                    var o = birthdays[birthday];
+                    $("#bd_menu").append('<li><a class="dropdown-item" href="'+o.href+'">'+o.text+'</a></li>');
+                  }
+                  if(birthdays.length == 0) {
+                    $("#bd_menu").append('<li><a class="dropdown-item"><?php echo lang('bday_none'); ?></a></li>');
+                  }
+                  if(birthdays.length > 0) {
+                    $("#bd_badge").html(birthdays.length);
+                    $("#bd_badge").removeClass("invisible");
+                    
+                  }
+                } );
+              </script>
+            <?php } ?>
           </ul>
 
           <!-- Search Box -->
@@ -93,10 +125,10 @@
           ?>
             <ul class="navbar-nav navbar-right ml-sm-2">
               <li class="dropdown">
-                <a href="javascript:void(0)" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                   <span class="glyphicon glyphicon-user"></span><span class="caret"></span>
                   <?php echo $_SESSION['account']['fullname']; ?>
-              </a>
+                </a>
                 <ul class="dropdown-menu" role="menu">
                   <li><a class="dropdown-item" href="<?php echo $webappuri ?>/profile"><?php echo lang('profile');?></a></li>
                   <li class="dropdown-divider"></li>
@@ -105,11 +137,14 @@
               </li>
             </ul>
           <?php } ?>
+
+          <!-- Notification Area -->
           <ul class="navbar-nav navbar-right ml-sm-2">
             <li class="dropdown">
               <a class="nav-link" data-toggle="modal" data-target="#notification_modal">
                 <span class="glyphicon glyphicon-list"></span><span id="notification_badge" class="invisible badge badge-danger">0</span>
               </a>
+            </li>
           </ul>
 
         </div>
