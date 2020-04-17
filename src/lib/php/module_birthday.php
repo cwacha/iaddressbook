@@ -102,11 +102,14 @@ function tpl_birthday() {
             // birthday today!
             $trans_text = lang('bday_today');
         }
-                
+        
+        // required to translate $n placeholders in translated text
+        eval("\$text = \"$trans_text\";");
+
         if(!empty($contact->nickname)) $name = $contact->nickname;
         else $name = $contact->name(false);
 
-        $result[] = array('href' => "?id=$contact->id", 'text' => "$name ($age) $trans_text");
+        $result[] = array('href' => "?id=$contact->id", 'text' => "$name ($age) $text");
     }
     
     return $result;
