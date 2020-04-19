@@ -87,6 +87,7 @@
                 if(isset($request['l'])) {
                     $_SESSION['l'] = trim($request['l']);
                     $_SESSION['o'] = 0;
+                    $_SESSION['q'] = "";
                 }
                 break;
             case 'search': 
