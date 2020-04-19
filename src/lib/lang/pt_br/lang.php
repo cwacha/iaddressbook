@@ -220,8 +220,8 @@ $lang['welcome_prerequisites']          = '<p><p>
                                     <br>
                                     Você precisará:
                                     <ul>
-                                        <li>PHP versão 4.3 ou superior.</li>
-                                        <li>MySQL versão 4.0 ou superior ou SQLite versão 2.x</li>
+                                        <li>PHP versão 5.6 ou superior.</li>
+                                        <li>MySQL versão 5.5 ou superior ou SQLite versão 2.x</li>
                                         <li>(opcional) iconv (se você quiser importar vcards que não são codificados UTF-8)</li>
                                         <li>(opcional) ImageMagick\'s convert ou GD (se você quiser importar fotos)</li>
                                     </ul>

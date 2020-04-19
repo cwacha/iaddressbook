@@ -328,8 +328,8 @@ of <a href="http://iaddressbook.org/">PHP iAddressBook</a>.
 <br>
 You will need:
 <ul>
-    <li>PHP version 4.3 or higher.</li>
-    <li>MySQL version 4.1 or higher or SQLite version 2.x/3.x</li>
+    <li>PHP version 5.6 or higher (preferrably 7.x).</li>
+    <li>MySQL version 5.5 or higher or SQLite version 2.x/3.x</li>
     <li>(optional) iconv (if you want to import vcards that are not UTF-8 encoded)</li>
     <li>(optional) ImageMagick\'s convert or GD (if you want to import photos)</li>
 </ul>

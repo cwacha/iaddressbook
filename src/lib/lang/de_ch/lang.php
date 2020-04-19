@@ -305,8 +305,8 @@ $lang['welcome_prerequisites']          = '<p><p>
 Das Installationsprogramm hilft mit de erschte Installation und Konfiguration vom <a href="http://iaddressbook.org/">PHP iAddressBook</a>.<br>
 Du bruuchsch:
 <ul>
-<li>PHP version 7.0 oder höcher.</li>
-<li>MySQL version 4.1 oder höcher oder SQLite Version 2.x/3.x</li>
+<li>PHP version 5.6 oder höcher.</li>
+<li>MySQL version 5.6 oder höcher oder SQLite Version 2.x/3.x</li>
 <li>(optional) iconv (wenn du wotsch vCards importiere wo nöd UTF-8 kodiert sind)</li>
 <li>(optional) ImageMagick\'s convert oder GD (wenn du wotsch Föteli importiere)</li>
 </ul><p>';
