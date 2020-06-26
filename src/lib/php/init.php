@@ -25,21 +25,6 @@ function init() {
     // make session rewrites XHTML compliant
     @ini_set('arg_separator.output', '&amp;');    
     
-    // kill magic quotes
-    if (get_magic_quotes_gpc()) {
-        if (!empty($_GET))    remove_magic_quotes($_GET);
-        if (!empty($_POST))   remove_magic_quotes($_POST);
-        if (!empty($_COOKIE)) remove_magic_quotes($_COOKIE);
-        if (!empty($_REQUEST)) remove_magic_quotes($_REQUEST);
-        //if (!empty($_SESSION)) remove_magic_quotes($_SESSION);
-        @ini_set('magic_quotes_gpc', 0);
-    }
-    if(get_magic_quotes_runtime()) {
-        // Deactivate
-        set_magic_quotes_runtime(false);
-    }
-    @ini_set('magic_quotes_sybase',0);
-
     //Mapping PHP errors to exceptions
     function exception_error_handler($errno, $errstr, $errfile, $errline ) {
     	if(error_reporting() != 0)
@@ -172,22 +157,6 @@ function init_creationmodes() {
     // and set the dperm param if it's not what we want
     $auto_dmode = $conf['dmode'] & ~$umask;
     if($auto_dmode != $conf['dmode']) $conf['dperm'] = $conf['dmode'];
-}
-
-
-/**
- * remove magic quotes recursivly
- *
- * @author Andreas Gohr <andi@splitbrain.org>
- */
-function remove_magic_quotes(&$array) {
-  foreach (array_keys($array) as $key) {
-    if (is_array($array[$key])) {
-      remove_magic_quotes($array[$key]);
-    }else {
-      $array[$key] = stripslashes($array[$key]);
-    }
-  }
 }
 
 /**
