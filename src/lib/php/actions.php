@@ -403,7 +403,7 @@ function act_search() {
     $sort_rules_to   = explode(',', lang('sort_rules_to'));
 
     if(isset($contactlist_letter) and $contactlist_letter != 'A-Z') {
-        $contactlist_letter = strtoupper($contactlist_letter{0});
+        $contactlist_letter = strtoupper($contactlist_letter[0]);
         if($contactlist_letter == '#') {
             foreach($contactlist as $key => $value) {
                 $name = str_replace($sort_rules_from, $sort_rules_to, strtoupper(substr($value->name(), 0, 4)));

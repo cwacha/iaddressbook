@@ -73,11 +73,11 @@ function vcard_addcslashes($string, $escapes) {
 
     $len = strlen($string);
     for($i = 0; $i < $len; $i++) {
-        if( strpos($escapes, $string{$i}) === false) {
+        if( strpos($escapes, $string[$i]) === false) {
             // not found - nothing to escape
-            $out_string .= $string{$i};
+            $out_string .= $string[$i];
         } else {
-            switch ($string{$i}) {
+            switch ($string[$i]) {
                 case "\a":  $out_string .= "\\a"; break;
                 case "\b":  $out_string .= "\\b"; break;
                 case "\f":  $out_string .= "\\f"; break;
@@ -86,7 +86,7 @@ function vcard_addcslashes($string, $escapes) {
                 case "\t":  $out_string .= "\\t"; break;
                 case "\v":  $out_string .= "\\v"; break;
                 case "\0":  $out_string .= "\\0"; break;
-                default:    $out_string .= "\\" . $string{$i};
+                default:    $out_string .= "\\" . $string[$i];
             }
         }
     }

@@ -105,27 +105,27 @@ function vcard_stripcslashes($string, $escapes) {
         switch ($escape_mode) {
             case 0:
                 // normal mode
-                if( $string{$i} == '\\') {
+                if( $string[$i] == '\\') {
                     $escape_mode = 1;
                 } else {
-                    $out_string .= $string{$i};
+                    $out_string .= $string[$i];
                 }
                 break;
             case 1:
                 // escape mode
-                if( strpos($escapes, $string{$i}) === false) {
+                if( strpos($escapes, $string[$i]) === false) {
                     //not found - nothing to unescape
-                    $out_string .= '\\' . $string{$i};                    
+                    $out_string .= '\\' . $string[$i];                    
                 } else {
-                    if($string{$i} == "a") $out_string .= "\a";
-                    else if($string{$i} == "b") $out_string .= "\b";
-                    else if($string{$i} == "f") $out_string .= "\f";
-                    else if($string{$i} == "n") $out_string .= "\n";
-                    else if($string{$i} == "r") $out_string .= "\r";
-                    else if($string{$i} == "t") $out_string .= "\t";
-                    else if($string{$i} == "v") $out_string .= "\v";
-                    else if($string{$i} == "0") $out_string .= "\0";
-                    else $out_string .= $string{$i};
+                    if($string[$i] == "a") $out_string .= "\a";
+                    else if($string[$i] == "b") $out_string .= "\b";
+                    else if($string[$i] == "f") $out_string .= "\f";
+                    else if($string[$i] == "n") $out_string .= "\n";
+                    else if($string[$i] == "r") $out_string .= "\r";
+                    else if($string[$i] == "t") $out_string .= "\t";
+                    else if($string[$i] == "v") $out_string .= "\v";
+                    else if($string[$i] == "0") $out_string .= "\0";
+                    else $out_string .= $string[$i];
                 }
                 $escape_mode = 0;
                 break;
