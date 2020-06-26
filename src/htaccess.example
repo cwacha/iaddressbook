@@ -11,7 +11,12 @@ RewriteEngine on
 RewriteBase /
 #RewriteBase /~user/iab
 
+## Redirect all traffic to HTTP over to secure HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R,QSA,L]
+
 RewriteRule ^.well-known/carddav$ carddav.php [R]
+RewriteRule ^.well-known/change-password$ index.php/profile/password [R]
 
 # workaround fast_cgi HTTP Basic Auth functionality
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
