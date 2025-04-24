@@ -8,23 +8,6 @@
 
 
 
-/*
-function html_debug() {
-    global $ACT;
-    global $QUERY;
-    global $ID;
-    global $AB;
-    global $contactlist;
-
-    echo "Action: $ACT<br>\n";
-    echo "ID: $ID<br>\n";
-    echo "Query: $QUERY<br>\n";
-    echo "AB: $AB<br>\n";
-    echo "contactlist: $contactlist<br>\n";
-    
-    //print_r($_REQUEST);
-}
-*/
 /**
  * Prints the global message array
  *
@@ -66,7 +49,7 @@ function html_debug(){
     print '<html><body>';
     
     print '<p>When reporting bugs please send all the following ';
-    print 'output as a mail to clemens.wacha@gmx.net ';
+    print 'output as a mail to clemens@wacha.ch ';
     print 'The best way to do this is to save this page in your browser</p>';
     
     print '<b>Path Settings:</b><pre>';
@@ -81,7 +64,6 @@ function html_debug(){
     print '</pre>';
 
     print '<b>URL Settings:</b><pre>';
-    print('AB_BASE='.AB_BASE.'<br/>');
     print('AB_URL='.AB_URL.'<br/>');
     print('AB_COOKIE='.AB_COOKIE.'<br/>');
     print '</pre>';
