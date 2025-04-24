@@ -42,7 +42,7 @@ function template($tpl){
 
     if(substr($tpl, 0, strlen(AB_TPLDIR)) === AB_TPLDIR)
         return $tpl;
-    if(@is_readable(AB_TPLDIR.'/'.$conf['template'].'/'.$tpl))
+    if(is_readable(AB_TPLDIR.'/'.$conf['template'].'/'.$tpl))
         return AB_TPLDIR.'/'.$conf['template'].'/'.$tpl;
 
     return AB_TPLDIR.'/default/'.$tpl;

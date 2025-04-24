@@ -108,7 +108,9 @@ class Authorizer {
         // load roles (roles and permissions)
         include(AB_BASEDIR.'/lib/default/roles.php');
         $this->roles_default = $this->explode_config($roles);
-        @include(AB_CONFDIR.'/roles.php');
+        $file = AB_CONFDIR.'/roles.php';
+        if(file_exists($file))
+            include($file);
         $this->roles = $this->explode_config($roles);
 	}
 
@@ -120,7 +122,9 @@ class Authorizer {
         // load access (accountid and roles)
         include(AB_BASEDIR.'/lib/default/access.php');
         $this->access_default = $this->explode_config($access);
-        @include(AB_CONFDIR.'/access.php');
+        $file = AB_CONFDIR.'/access.php';
+        if(file_exists($file))
+            include($file);
         $this->access = $this->explode_config($access);
 	}
 
@@ -162,7 +166,7 @@ class Authorizer {
             }
         }
         if(empty($new_config)) {
-            @unlink($filename);
+            unlink($filename);
             return true;
         }
 

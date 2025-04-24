@@ -14,8 +14,13 @@
     $auth = array();
     
     // load users and permissions
-    @include_once(AB_BASEDIR.'/lib/default/auth.php');
-    @include(AB_CONFDIR.'/auth.php');
+    $file = AB_BASEDIR.'/lib/default/auth.php';
+    if(file_exists($file))
+        include_once($file);
+
+    $file = AB_CONFDIR.'/auth.php';
+    if(file_exists($file))
+        include($file);
 
     // userinfo array, contains information about logged in user (or guest)
     // logged_in is just informative (for template code). $_SESSION['authorized'] contains

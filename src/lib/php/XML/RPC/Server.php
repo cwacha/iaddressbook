@@ -511,7 +511,7 @@ class XML_RPC_Server
             }
         }
         if (isset($wanted)) {
-            return array(0, "Wanted ${wanted}, got ${got} at param ${pno}");
+            return array(0, "Wanted {$wanted}, got {$got} at param {$pno}");
         } else {
             $allowed = array();
             foreach ($sig as $val) {

@@ -88,7 +88,7 @@ function act_dispatch($request, $action) {
             break;
         
         case 'import_vcard':
-            @set_time_limit(0);
+            set_time_limit(0);
             act_importvcard_file();
             act_search();
             act_getcontact();
@@ -268,7 +268,9 @@ function act_save() {
         $contact->image = NULL;
     } else if($conf['photo_enable'] && !empty($_FILES['photo_file']['tmp_name']) ) {
         //change or add picture
-        $contact->image = @file_get_contents($_FILES['photo_file']['tmp_name']);
+        $file = $_FILES['photo_file']['tmp_name'];
+        if(file_exists($file))
+            $contact->image = file_get_contents($file);
     }
     
     $contact->addresses = array();
@@ -402,7 +404,7 @@ function act_search() {
     $sort_rules_from = explode(',', lang('sort_rules_from'));
     $sort_rules_to   = explode(',', lang('sort_rules_to'));
 
-    if(isset($contactlist_letter) and $contactlist_letter != 'A-Z') {
+    if(!empty($contactlist_letter) and $contactlist_letter != 'A-Z') {
         $contactlist_letter = strtoupper($contactlist_letter[0]);
         if($contactlist_letter == '#') {
             foreach($contactlist as $key => $value) {
@@ -604,7 +606,7 @@ function act_config_save($request) {
     $fd = fopen($filename, "w");
     if(!$fd) {
         $in = array('$1', '$2');
-        $out = array("$type", "$filename");
+        $out = array("config", "$filename");
         msg(str_replace($in, $out, lang("config_save_error")), -1);
         return false;
     }

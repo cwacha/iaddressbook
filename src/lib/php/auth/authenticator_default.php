@@ -112,7 +112,8 @@ class Authenticator {
     function cookiesalt(){
         global $conf;
         $file = AB_STATEDIR."/_htcookiesalt";
-        $salt = @file($file);
+        if(file_exists($file))
+            $salt = file($file);
         if(empty($salt)){
             $salt = uniqid(rand(), true);
             $fd = fopen($file, "w");
@@ -157,7 +158,10 @@ class Authenticator {
         // load accounts (account info and passwords)
         include(AB_BASEDIR.'/lib/default/accounts.php');
         $this->accounts_default = $accounts;
-        @include(AB_CONFDIR.'/accounts.php');
+        
+        $file = AB_CONFDIR.'/accounts.php';
+        if(file_exists($file))
+            include($file);
         $this->accounts = $accounts;
     }
 
@@ -176,7 +180,7 @@ class Authenticator {
             }
         }
         if(empty($new_config)) {
-            @unlink($filename);
+            unlink($filename);
             return true;
         }
 

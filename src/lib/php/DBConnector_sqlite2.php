@@ -46,7 +46,7 @@ class DBConnector_sqlite2 extends DBConnector {
 	function open() {
 		if(!$this->initialized) {
 			$errormsg = '';
-			@$this->connection = sqlite_open($this->dbname, 0666, $errormsg);
+			$this->connection = sqlite_open($this->dbname, 0666, $errormsg);
 			if(!is_resource($this->connection)) {
 				$this->logmsg("Failed to open DB: '" . $this->dbname . "': " . $errormsg, -1);
 				return false;

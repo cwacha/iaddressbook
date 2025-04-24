@@ -122,7 +122,7 @@ class DBConnector_sqlite3 extends DBConnector {
 			$this->logmsg("DB execute: $sql");
 		
 		try {
-			@$ret = $this->connection->exec($sql);
+			$ret = $this->connection->exec($sql);
 		} catch ( Exception $e ) {
 			if($report_errors)
 				$this->logmsg('Failed to execute SQL statement: "' . $sql . '": ' . $e->getMessage(), -1);

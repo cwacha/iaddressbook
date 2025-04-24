@@ -335,7 +335,7 @@
         global $conf;
         $viewdir = AB_TPLDIR.'/'.$conf['template'].'/views';
         $viewdocument = $viewdir . $viewname . '.tpl';
-        if(@is_readable($viewdocument)) {
+        if(is_readable($viewdocument)) {
             return $viewdocument;
         }
         return $viewdir .'/internal/notfound.tpl';

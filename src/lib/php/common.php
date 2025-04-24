@@ -20,7 +20,8 @@ function lang($key) {
 
     // key does not exist, this is either a typo or a brand new key
     $filename = AB_BASEDIR.'/var/missing_language_strings.txt';
-    $missing = @file($filename);
+    if(file_exists($filename))
+        $missing = file($filename);
     if($missing === false)
         $missing = array();
 

@@ -54,8 +54,13 @@ class Translator {
         
         //load the language files
         require(AB_LANGDIR.'/en/lang.php');
-        @include(AB_LANGDIR.'/'.$conf['lang'].'/lang.php');
-        @include(AB_CONFDIR.'/lang/'.$conf['lang'].'/lang.php');
+        $file = AB_LANGDIR.'/'.$conf['lang'].'/lang.php';
+        if(file_exists($file))
+            include($file);
+
+        $file = AB_CONFDIR.'/lang/'.$conf['lang'].'/lang.php';
+        if(file_exists($file))
+            include($file);
 
         $_SESSION['lang'] = $conf['lang'];
     }
@@ -141,7 +146,9 @@ class Translator {
     	$ret["lang_author"] = "";
     	$ret["lang_author_email"] = "";
 
-    	$file_array = @file($filename);
+        if(file_exists($filename))
+    	    $file_array = file($filename);
+        
     	if(!$file_array)
     		return $ret;
 
@@ -179,8 +186,13 @@ class Translator {
         // load specified language
         $lang = array();
         if(!empty($lang_code)) {
-            @include(AB_LANGDIR.'/'.$lang_code.'/lang.php');
-            @include(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
+            $file = AB_LANGDIR.'/'.$lang_code.'/lang.php';
+            if(file_exists($file))
+                include($file);
+
+            $file = AB_CONFDIR.'/lang/'.$lang_code.'/lang.php';
+            if(file_exists($file))
+                include($file);
         }
         $lang['lang_code'] = $lang_code;
         $config['lang'] = $lang;
@@ -202,8 +214,13 @@ class Translator {
         $ret = array();
         foreach($lang_dirs as $lang_code) {
             $lang = array();
-            @include(AB_LANGDIR.'/'.$lang_code.'/lang.php');
-            @include(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
+            $file = AB_LANGDIR.'/'.$lang_code.'/lang.php';
+            if(file_exists($file))
+                include($file);
+
+            $file = AB_CONFDIR.'/lang/'.$lang_code.'/lang.php';
+            if(file_exists($file))
+                include($file);
 
             $count = count($lang);
             $percent = $count/$total * 100;
@@ -238,7 +255,7 @@ class Translator {
     }
     private function get_lang_dirs($basedir = AB_BASEDIR.'/lib/lang') {
         $ret = array();
-        $dirs = @scandir($basedir);
+        $dirs = scandir($basedir);
         if ($dirs === false)
             return $ret;
         foreach ($dirs as $dir) {
@@ -254,9 +271,9 @@ class Translator {
         if(empty($lang_code))
             return;
 
-        @unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
-        @unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php.txt');
-        @rmdir(AB_CONFDIR.'/lang/'.$lang_code);
+        unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
+        unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php.txt');
+        rmdir(AB_CONFDIR.'/lang/'.$lang_code);
 
         $_SESSION['viewname'] = '/admin/translator';
 

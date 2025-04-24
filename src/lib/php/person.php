@@ -26,6 +26,7 @@ class Person {
     var $company;    // boolean
 
     var $birthdate;    // date as string: "YYYY-MM-DD"
+    var $birthday;     // text birthday for birthday module??
     var $image;    // picture
     var $note;
 

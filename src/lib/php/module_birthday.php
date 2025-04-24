@@ -57,7 +57,7 @@ function collect_birthdays() {
 
     // sort by actual birthday
     usort($upcoming, function($a, $b) {
-        return $a->birthday > $b->birthday;
+        return ($a->birthday > $b->birthday) ? -1 : 1;
     });
 
     return $upcoming;

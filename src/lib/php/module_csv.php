@@ -64,7 +64,11 @@ function contact2csvline($contact) {
     $line['company']            = csv_escape($contact->company);
     $line['birthdate']          = csv_escape($contact->birthdate);
     $line['note']               = csv_escape($contact->note);
-    $line['modification_ts']    = gmdate("Y-m-d\TH:i:s\Z", $contact->modification_ts);
+    if(is_int($contact->modification_ts)) {
+        $line['modification_ts']    = gmdate("Y-m-d\TH:i:s\Z", $contact->modification_ts);
+    } else {
+        $line['modification_ts']    = csv_escape($contact->modification_ts);
+    }
     $line['uid']                = csv_escape($contact->uid);
 
     $line['street1']            = csv_escape($contact->addresses[0]['street']);

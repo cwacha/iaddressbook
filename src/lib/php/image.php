@@ -20,7 +20,9 @@ function img_create($id, $image) {
     $id = (int)$id;
     $format = strtolower($conf['photo_format']);
     $image_file = AB_IMAGEDIR.'/'.$id.'.'.$format;
-    $fd = @fopen($image_file, "wb");
+    $fd = 0;
+    if(is_writable($image_file))
+        $fd = fopen($image_file, "wb");
     if(is_resource($fd)) {
         fwrite($fd, $image);
         fclose($fd);
@@ -75,7 +77,8 @@ function img_display() {
     }
 
     $image_file = AB_IMAGEDIR.'/'.$id.'.'.$format;
-    $image = @file_get_contents($image_file);
+    if(file_exists($image_file))
+        $image = file_get_contents($image_file);
 
     // now we have the image loaded in $image or no image at all
 
@@ -138,7 +141,7 @@ function img_convert($in_image, $type='png', $resize='') {
 	if(empty($out_image) or !empty($err)) {
 		// ImageMagick did not work, try with GD
 				
-		$im = @imagecreatefromstring($in_image);
+		$im = imagecreatefromstring($in_image);
 		if($im !== false) {
             // Resize if necessary
             if(!empty($resize)) {

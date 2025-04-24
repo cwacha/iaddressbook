@@ -19,11 +19,11 @@ function init() {
     $VERSION = file_get_contents(AB_BASEDIR.'/VERSION');
     
     // set up error reporting to sane values
-    @ini_set('display_errors', 'On');
+    ini_set('display_errors', 'On');
     error_reporting(E_ALL);
 
     // make session rewrites XHTML compliant
-    @ini_set('arg_separator.output', '&amp;');    
+    ini_set('arg_separator.output', '&amp;');    
     
     //Mapping PHP errors to exceptions
     function exception_error_handler($errno, $errstr, $errfile, $errline ) {
@@ -86,8 +86,13 @@ function init() {
     
     //load the language files
     require_once(AB_LANGDIR.'/en/lang.php');
-    @include_once(AB_LANGDIR.'/'.$conf['lang'].'/lang.php');
-    @include_once(AB_CONFDIR.'/lang/'.$conf['lang'].'/lang.php');
+    $file = AB_LANGDIR.'/'.$conf['lang'].'/lang.php';
+    if(file_exists($file))
+        include_once($file);
+
+    $file = AB_CONFDIR.'/lang/'.$conf['lang'].'/lang.php';
+    if(file_exists($file))
+        include_once($file);
 
     $_SESSION['lang'] = $conf['lang'];
 
@@ -127,7 +132,8 @@ function load_config() {
 
     // load config
     $filename = AB_CONFDIR.'/config.php';
-    @include($filename);
+    if(file_exists($filename))
+        include($filename);
 }
 
 
@@ -145,7 +151,7 @@ function init_creationmodes() {
     $conf['dmode'] = octdec($conf['dmode']);
     
     // get system umask, fallback to 0 if none available
-    $umask = @umask();
+    $umask = umask();
     if(!$umask) $umask = 0000;
     
     // check what is set automatically by the system on file creation

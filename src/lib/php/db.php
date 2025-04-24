@@ -71,7 +71,7 @@ function db_open() {
 	    if($db_config['dbdebug']) $db->debug = true;    
 	        
 	    if($db_config['dbtype'] == 'pdo_mysql') {
-	        @$db->execute("SET NAMES 'utf8'");
+	        $db->execute("SET NAMES 'utf8'");
 	    }
     } catch (Exception $e) {
     	msg("Cannot setup DB connection! Exception: " . $e->getMessage(), -1);
