@@ -26,7 +26,7 @@
     <title><?php echo $conf['title']; ?></title>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="<?php echo AB_TPL; ?>js/jquery-3.3.1.min.js"></script>
+    <script src="<?php echo AB_TPL; ?>js/jquery-3.7.1.min.js"></script>
     <script src="<?php echo AB_TPL; ?>js/bootstrap.bundle.min.js"></script>
     <script src="<?php echo AB_TPL; ?>js/jquery.growl.js"></script>
     <script src="<?php echo AB_TPL; ?>js/helpers.js"></script>
