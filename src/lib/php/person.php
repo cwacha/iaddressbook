@@ -17,6 +17,7 @@ class Person {
     var $lastname;
     var $suffix;
     var $nickname;
+    var $name;
     var $phoneticfirstname;
     var $phoneticlastname;
 
