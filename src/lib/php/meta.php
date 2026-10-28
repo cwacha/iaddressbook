@@ -56,7 +56,6 @@ $meta['debug_db'] = array('onoff');
 $meta['vcard_fb_enc']= array('string');
 $meta['ldif_base'] = array('textarea');
 $meta['ldif_mozilla'] = array('onoff');
-$meta['xmlrpc_enable'] = array('onoff');
 $meta['carddav_enable'] = array('onoff');
 
 

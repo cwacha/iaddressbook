@@ -146,7 +146,6 @@ function html_header() {
 		<input type="hidden" name="vcard_fb_enc" value="<?php echo $conf['vcard_fb_enc']; ?>" />
 		<input type="hidden" name="ldif_base" value="<?php echo $conf['ldif_base']; ?>" />
 		<input type="hidden" name="ldif_mozilla" value="<?php echo $conf['ldif_mozilla']; ?>" />
-		<input type="hidden" name="xmlrpc_enable" value="<?php echo $conf['xmlrpc_enable']; ?>" />
 		<input type="hidden" name="carddav_enable" value="<?php echo $conf['carddav_enable']; ?>" />
 	</form>
 
@@ -825,7 +824,6 @@ switch($state['step']) {
         $conf['vcard_fb_enc']   = post_var(array_get($_REQUEST, 'vcard_fb_enc'),   $conf['vcard_fb_enc']);
         $conf['ldif_base']   = post_var(array_get($_REQUEST, 'ldif_base'),   $conf['ldif_base']);
         $conf['ldif_mozilla']   = (int)post_var(array_get($_REQUEST, 'ldif_mozilla'),   $conf['ldif_mozilla']);
-        $conf['xmlrpc_enable']   = (int)post_var(array_get($_REQUEST, 'xmlrpc_enable'),   $conf['xmlrpc_enable']);
         $conf['carddav_enable']   = (int)post_var(array_get($_REQUEST, 'carddav_enable'),   $conf['carddav_enable']);
         break;
     default:

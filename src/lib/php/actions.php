@@ -579,7 +579,6 @@ function act_config_save($request) {
     $config['vcard_fb_enc']      = array_get($request, 'vcard_fb_enc', $defaults['vcard_fb_enc']);
     $config['ldif_base']         = array_get($request, 'ldif_base', $defaults['ldif_base']);
     $config['ldif_mozilla']      = (int)array_get($request, 'ldif_mozilla', 0);
-    $config['xmlrpc_enable']     = (int)array_get($request, 'xmlrpc_enable', 0);
     $config['carddav_enable']    = (int)array_get($request, 'carddav_enable', 0);
 
     $filename = AB_CONFDIR.'/config.php';

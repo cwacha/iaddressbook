@@ -13,7 +13,6 @@ $conf['auth_enabled'] = 0;                       // enable authentication - logi
 $conf['auth_allow_guest'] = 0;                   // allow guest access (no login required) - the permissions can be conficured in conf/auth.php
 
 // APIs
-$conf['xmlrpc_enable'] = 0;                      // Enable XMLRPC API
 $conf['carddav_enable'] = 0;                     // Enable CardDAV Server (iCloud alternative)
 
 // Display Options
