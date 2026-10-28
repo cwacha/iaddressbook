@@ -37,7 +37,7 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * @return array
 	 */
 	public function getAddressBooksForUser($principalUri) {
-		list($prefixPath, $userid) = \Sabre\HTTP\URLUtil::splitPath($principalUri);
+		list($prefixPath, $userid) = \Sabre\Uri\split($principalUri);
 		$books = $this->catalog->getAddressBooksForUser($userid);
     	$addressBooks = array();
 		foreach($books as $book) {
@@ -345,8 +345,8 @@ class IABCardDAVBackend extends AbstractBackend {
 			}
 		}
 		
-		return null;
-	}
+        return null;
+    }
 
 	/**
 	 * Deletes a card

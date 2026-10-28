@@ -53,6 +53,25 @@ $server->addPlugin(new Sabre\DAV\Browser\Plugin());
 $server->addPlugin(new Sabre\CardDAV\Plugin());
 $server->addPlugin(new Sabre\DAVACL\Plugin());
 
+// Apple may query addressbook-home-set against the endpoint root. SabreDAV's
+// CardDAV plugin normally supplies it only on an IPrincipal resource.
+$server->on('propFind', function ($propFind) use ($server) {
+    if (trim($propFind->getPath(), '/') !== '') {
+        return;
+    }
+
+    $propFind->handle('{urn:ietf:params:xml:ns:carddav}addressbook-home-set', function () use ($server) {
+        $authPlugin = $server->getPlugin('auth');
+        $principal = $authPlugin ? $authPlugin->getCurrentPrincipal() : null;
+        if (!$principal) {
+            return null;
+        }
+
+        $user = basename(trim($principal, '/'));
+        return new Sabre\DAV\Xml\Property\LocalHref('addressbooks/' . rawurlencode($user) . '/');
+    });
+}, 140);
+
 $securitycontroller = SecurityController::getInstance();
 $securitycontroller->init();
 

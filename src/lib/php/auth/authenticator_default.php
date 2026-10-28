@@ -130,7 +130,7 @@ class Authenticator {
     }
 
     function get_account($accountid) {
-        if(array_key_exists($accountid, $this->accounts))
+        if($accountid !== null && array_key_exists($accountid, $this->accounts))
             return $this->accounts[$accountid];
         return null;
     }
