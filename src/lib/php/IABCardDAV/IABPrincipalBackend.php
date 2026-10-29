@@ -14,6 +14,13 @@ class IABPrincipalBackend extends AbstractBackend {
 		$this->principalBasePath = 'principals';
         $this->sc = \SecurityController::getInstance();
 	}
+
+	private function containsIgnoreCase($haystack, $needle) {
+		if(function_exists('mb_stripos')) {
+			return mb_stripos($haystack, $needle, 0, 'UTF-8') !== false;
+		}
+		return stripos($haystack, $needle) !== false;
+	}
 	
 	
 	/**
@@ -157,19 +164,42 @@ class IABPrincipalBackend extends AbstractBackend {
      * @return array
      */
     public function searchPrincipals($prefixPath, array $searchProperties, $test = 'allof') {
-    	global $auth;
-    	
     	$principals = array();
     	 
     	if ($prefixPath !== $this->principalBasePath)
     		return $principals;
+
+		if(count($searchProperties) === 0)
+			return $principals;
+		if($test !== 'allof' && $test !== 'anyof')
+			return $principals;
     	
         $accounts = $this->sc->get_accounts();
     	foreach($accounts as $accountid => $account) {
-    		$principal = array (
-    				'uri' => $this->principalBasePath . '/' . $accountid,
-    		);
-    		$principals [] = $principal;
+			$matches = array();
+
+			foreach($searchProperties as $property => $value) {
+				switch($property) {
+					case '{DAV:}displayname':
+						$propertyValue = array_get($account, 'fullname', '');
+						break;
+					case '{http://sabredav.org/ns}email-address':
+						$propertyValue = array_get($account, 'email', '');
+						break;
+					default:
+						return array();
+				}
+
+				if(!is_string($value) || !is_string($propertyValue))
+					$matches[] = false;
+				else
+					$matches[] = $this->containsIgnoreCase($propertyValue, $value);
+			}
+
+			$matched = $test === 'anyof' ? in_array(true, $matches, true) : !in_array(false, $matches, true);
+			if($matched) {
+				$principals[] = $this->principalBasePath . '/' . $accountid;
+			}
     	}
     	return $principals;
     }

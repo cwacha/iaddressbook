@@ -30,6 +30,57 @@ class IABCardDAVBackend extends AbstractBackend {
         $this->catalog = new \Addressbooks();
     }
 
+	private function cardUriForUid($uid) {
+		$uid = $this->normalizeCardUri($uid);
+		if($uid === null) {
+			return null;
+		}
+		return $uid . '.vcf';
+	}
+
+	private function normalizeCardUri($cardUri) {
+		if(!is_string($cardUri)) {
+			return null;
+		}
+
+		$uid = basename(str_replace('\\', '/', trim($cardUri)));
+		if(preg_match('/\.vcf$/i', $uid)) {
+			$uid = substr($uid, 0, -4);
+		}
+		$uid = rawurldecode($uid);
+
+		if($uid === '' || strpos($uid, '/') !== false || strpos($uid, "\0") !== false) {
+			return null;
+		}
+
+		return $uid;
+	}
+
+	private function cardExists($uid, $addressBook, $categories) {
+		return (bool)$addressBook->get($uid) || (bool)$categories->get($uid);
+	}
+
+	private function validateCardData($cardData) {
+		if(!is_string($cardData) || trim($cardData) === '') {
+			throw new \Sabre\DAV\Exception\BadRequest('Invalid vCard data');
+		}
+
+		try {
+			$document = \Sabre\VObject\Reader::read($cardData);
+		} catch(\Throwable $error) {
+			throw new \Sabre\DAV\Exception\BadRequest('Invalid vCard data');
+		}
+
+		if(!isset($document->name) || strtoupper($document->name) !== 'VCARD') {
+			throw new \Sabre\DAV\Exception\BadRequest('The resource is not a vCard');
+		}
+
+		$warnings = $document->validate();
+		if(count($warnings) !== 0) {
+			throw new \Sabre\DAV\Exception\BadRequest('Invalid vCard data');
+		}
+	}
+
 	/**
 	 * Returns the list of addressbooks for a specific user.
 	 *
@@ -127,7 +178,10 @@ class IABCardDAVBackend extends AbstractBackend {
         $contactlist = $AB->getall();
         
         foreach ($contactlist as $contact) {
-            $results[] = $this->getCard($addressBookId, $contact->uid);
+			$cardUri = $this->cardUriForUid($contact->uid);
+			if($cardUri !== null) {
+				$results[] = $this->getCard($addressBookId, $cardUri);
+			}
         }
         
         // now repeat for all the categories
@@ -135,7 +189,10 @@ class IABCardDAVBackend extends AbstractBackend {
         foreach ($categories as $category) {
             if(strpos($category->name(), ' __') === 0)
                 continue;
-            $results[] = $this->getCard($addressBookId, $category->uid);
+			$cardUri = $this->cardUriForUid($category->uid);
+			if($cardUri !== null) {
+				$results[] = $this->getCard($addressBookId, $cardUri);
+			}
         }
         
         msg("getCards: addressBookId=$addressBookId numCards=" . count($results));
@@ -157,7 +214,10 @@ class IABCardDAVBackend extends AbstractBackend {
 		msg("getCard: addressBookId=$addressBookId cardUri=$cardUri");
 		global $AB;
 		global $CAT;
-		$uri = basename($cardUri, '.vcf');
+		$uid = $this->normalizeCardUri($cardUri);
+		if($uid === null) {
+			return false;
+		}
 		
     	$book = $this->catalog->getAddressBookForId($addressBookId);
 		$AB = new \Addressbook($book['id']);
@@ -165,13 +225,13 @@ class IABCardDAVBackend extends AbstractBackend {
 				
 		$results = array();
 		
-		$contact = $AB->get($uri, true);
+		$contact = $AB->get($uid, true);
 		
 		if (!$contact) {
 			// check if it is a group
-			$category = $CAT->get($uri);
+			$category = $CAT->get($uid);
 			if(!$category) {
-				msg("not found:     $uri");
+				msg("not found:     $uid");
 				return false;
 			}
 			$contact = new \Person();
@@ -189,7 +249,7 @@ class IABCardDAVBackend extends AbstractBackend {
 		$vcarddata = contact2vcard($contact);
 		//msg("vcard: " . print_r($vcarddata, true));
 		$item = array (
-				'uri' => $cardUri,
+				'uri' => $this->cardUriForUid($uid),
 				'lastmodified' => $contact->modification_ts,
 				'carddata' => $vcarddata,
 				'etag' => (string)$contact->etag,
@@ -218,7 +278,9 @@ class IABCardDAVBackend extends AbstractBackend {
         $results = array();
         foreach($uris as $cardUri) {
             $card = $this->getCard($addressBookId, $cardUri);
-            $results[] = $card;
+            if(is_array($card)) {
+				$results[] = $card;
+			}
         }
         return $results;
     }
@@ -266,8 +328,14 @@ class IABCardDAVBackend extends AbstractBackend {
 	 */
     public function createCard($addressBookId, $cardUri, $cardData) {
     	msg("createCard: $addressBookId, $cardUri");
+		$this->validateCardData($cardData);
     	global $AB;
 		global $CAT;
+
+		$uid = $this->normalizeCardUri($cardUri);
+		if($uid === null) {
+			throw new \Sabre\DAV\Exception\BadRequest('Invalid card resource URI');
+		}
     	
     	$book = $this->catalog->getAddressBookForId($addressBookId);
 		$AB = new \Addressbook($book['id']);
@@ -275,18 +343,32 @@ class IABCardDAVBackend extends AbstractBackend {
     	
     	//msg("createCard: $cardData");
     	$contacts = vcard2contacts($cardData);
+		if(count($contacts) !== 1) {
+			throw new \Sabre\DAV\Exception\BadRequest('A card create must contain exactly one vCard');
+		}
     	    	
     	foreach ( $contacts as $contact ) {
+			$contact->uid = $uid;
 			if ($contact->isgroup) {
 				$category = $CAT->get($contact->uid);
 				if (!$category) {
 					$category = new \Category($contact->name());
 					$category->uid = $contact->uid;
 				}
+
+				$person = $AB->get($uid);
+				if($person) {
+					$AB->delete($person->id);
+				}
+
 				$category->name = $contact->name();
 				$category->id = $CAT->set($category);
 				$CAT->setMembersForCategory($category->id, $contact->get_groupmembers());
 			} else {
+				$category = $CAT->get($uid);
+				if($category) {
+					$CAT->delete($category->id);
+				}
 	    		$person_id = $AB->set($contact);
     		}
     	}
@@ -321,26 +403,50 @@ class IABCardDAVBackend extends AbstractBackend {
      */
     public function updateCard($addressBookId, $cardUri, $cardData) {
     	msg("updateCard: $addressBookId, $cardUri");
+		$this->validateCardData($cardData);
     	global $AB;
     	global $CAT;
+
+		$uid = $this->normalizeCardUri($cardUri);
+		if($uid === null) {
+			throw new \Sabre\DAV\Exception\BadRequest('Invalid card resource URI');
+		}
     	
     	$book = $this->catalog->getAddressBookForId($addressBookId);
 		$AB = new \Addressbook($book['id']);
         $CAT = new \Categories;        
 
 		$contacts = vcard2contacts($cardData);
+		if(count($contacts) !== 1) {
+			throw new \Sabre\DAV\Exception\BadRequest('A card update must contain exactly one vCard');
+		}
+
+		if(!$this->cardExists($uid, $AB, $CAT)) {
+			throw new \Sabre\DAV\Exception\NotFound('Card not found');
+		}
 
 		foreach ( $contacts as $contact ) {
+			$contact->uid = $uid;
 			if ($contact->isgroup) {
 				$category = $CAT->get($contact->uid);
 				if (!$category) {
 					$category = new \Category($contact->name());
 					$category->uid = $contact->uid;
 				}
+
+				$person = $AB->get($uid);
+				if($person) {
+					$AB->delete($person->id);
+				}
+
 				$category->name = $contact->name();
 				$category->id = $CAT->set($category);
 				$CAT->setMembersForCategory($category->id, $contact->get_groupmembers());
 			} else {
+				$category = $CAT->get($uid);
+				if($category) {
+					$CAT->delete($category->id);
+				}
 				$person_id = $AB->set($contact);
 			}
 		}
@@ -364,18 +470,21 @@ class IABCardDAVBackend extends AbstractBackend {
 		$AB = new \Addressbook($book['id']);
 		$CAT = new \Categories;
 		
-		$uri = basename($cardUri, '.vcf');
+		$uid = $this->normalizeCardUri($cardUri);
+		if($uid === null) {
+			return false;
+		}
 				
-		$contact = $AB->get($uri);
+		$contact = $AB->get($uid);
 		if ($contact)
 			return $AB->delete($contact->id);
 			
 			// check if it is a group
-		$category = $CAT->get($uri);
+		$category = $CAT->get($uid);
 		if ($category)
 			return $CAT->delete($category->id);
 		
-		msg("not found:     $uri");
+		msg("not found:     $uid");
 		return false;
 	}
 }
