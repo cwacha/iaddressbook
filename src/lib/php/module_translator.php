@@ -146,6 +146,7 @@ class Translator {
     	$ret["lang_author"] = "";
     	$ret["lang_author_email"] = "";
 
+        $file_array = false;
         if(file_exists($filename))
     	    $file_array = file($filename);
         

@@ -180,7 +180,9 @@ class Authenticator {
             }
         }
         if(empty($new_config)) {
-            unlink($filename);
+            if(file_exists($filename)) {
+                unlink($filename);
+            }
             return true;
         }
 

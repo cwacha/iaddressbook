@@ -97,35 +97,45 @@ function get_unicode($string) {
 * 
 */
 function vcard_stripcslashes($string, $escapes) {
+    if (!is_string($string)) {
+        if (!is_scalar($string) && $string !== null) {
+            return '';
+        }
+        $string = (string) $string;
+    }
+    if (!is_string($escapes)) {
+        $escapes = (string) $escapes;
+    }
     $escape_mode = 0;
     $out_string = '';
     
     $len = strlen($string);
     for($i = 0; $i < $len; $i++) {
+        $char = substr($string, $i, 1);
         switch ($escape_mode) {
             case 0:
                 // normal mode
-                if( $string[$i] == '\\') {
+                if ($char == '\\') {
                     $escape_mode = 1;
                 } else {
-                    $out_string .= $string[$i];
+                    $out_string .= $char;
                 }
                 break;
             case 1:
                 // escape mode
-                if( strpos($escapes, $string[$i]) === false) {
+                if (strpos($escapes, $char) === false) {
                     //not found - nothing to unescape
-                    $out_string .= '\\' . $string[$i];                    
+                    $out_string .= '\\' . $char;
                 } else {
-                    if($string[$i] == "a") $out_string .= "\a";
-                    else if($string[$i] == "b") $out_string .= "\b";
-                    else if($string[$i] == "f") $out_string .= "\f";
-                    else if($string[$i] == "n") $out_string .= "\n";
-                    else if($string[$i] == "r") $out_string .= "\r";
-                    else if($string[$i] == "t") $out_string .= "\t";
-                    else if($string[$i] == "v") $out_string .= "\v";
-                    else if($string[$i] == "0") $out_string .= "\0";
-                    else $out_string .= $string[$i];
+                    if($char == "a") $out_string .= "\a";
+                    else if($char == "b") $out_string .= "\b";
+                    else if($char == "f") $out_string .= "\f";
+                    else if($char == "n") $out_string .= "\n";
+                    else if($char == "r") $out_string .= "\r";
+                    else if($char == "t") $out_string .= "\t";
+                    else if($char == "v") $out_string .= "\v";
+                    else if($char == "0") $out_string .= "\0";
+                    else $out_string .= $char;
                 }
                 $escape_mode = 0;
                 break;
@@ -177,7 +187,7 @@ class Contact_Vcard_Parse {
     * 
     * @access public
     * 
-    * @param array $filename The filename to read for vCard information.
+    * @param string $filename The filename to read for vCard information.
     * 
     * @return string|bool The contents of the file if it exists and is
     * readable, or boolean false if not.
@@ -217,7 +227,7 @@ class Contact_Vcard_Parse {
     * 
     * @access public
     * 
-    * @param array $text A block of text to read for vCard information.
+    * @param string $text A block of text to read for vCard information.
     * 
     * @return array An array of vCard information extracted from the
     * source text.
