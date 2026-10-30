@@ -6,7 +6,7 @@
  * @author     Rom Pereira <rompereira@gmail.com>
  */
 
-$lang['lang_code']                      = 'pt_br';
+$lang['lang_code']                      = 'pt-br';
 $lang['lang_name']                      = 'Português (Brasil)';
 $lang['lang_author']                    = 'Rom Pereira';
 $lang['lang_author_email']              = 'rompereira@gmail.com';

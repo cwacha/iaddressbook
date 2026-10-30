@@ -6,7 +6,7 @@
  * @author     Clemens Wacha <clemens.wacha@gmx.net>
  */
 
-$lang['lang_code']                      = 'de_ch';
+$lang['lang_code']                      = 'de-ch';
 $lang['lang_name']                      = 'Schwiizerdütsch';
 $lang['lang_author']                    = 'Clemens Wacha';
 $lang['lang_author_email']              = 'clemens.wacha@gmx.net';

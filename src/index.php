@@ -17,6 +17,7 @@
 
     if(!file_exists(AB_CONFDIR.'/config.php')) {
         // no config found. redirect to installer
+        init();
         define('AB_URL',getBaseURL(true));
         header('Location: '.AB_URL.'install.php?do=reset');
         exit;

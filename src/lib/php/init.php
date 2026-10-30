@@ -83,6 +83,7 @@ function init() {
     
     if(!empty($_SESSION['lang'])) $conf['lang'] = $_SESSION['lang'];
     if(!empty($_REQUEST['lang']) && strlen($_REQUEST['lang']) < 6) $conf['lang'] = $_REQUEST['lang'];
+    $conf['lang'] = strtolower(str_replace('_', '-', preg_replace('/[^A-Za-z0-9_-]+/', '', $conf['lang'])));
     
     //load the language files
     require_once(AB_LANGDIR.'/en/lang.php');

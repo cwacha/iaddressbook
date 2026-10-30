@@ -78,7 +78,7 @@ class Translator {
             msg(lang("lang_error_code_missing", -1));
             return;
         }
-        $lang_code = $new_lang['lang_code'];
+        $lang_code = $this->sanitize_lang_code($new_lang['lang_code']);
 
     	$author = array_get($new_lang, "lang_author", "");
     	if(empty($author)) {
@@ -201,7 +201,9 @@ class Translator {
     }
 
     public function sanitize_lang_code($lang_code) {
-        return preg_replace("/[^A-Za-z_]+/", "", $lang_code);
+        $lang_code = preg_replace("/[^A-Za-z0-9_-]+/", "", $lang_code);
+        $lang_code = str_replace('_', '-', $lang_code);
+        return strtolower($lang_code);
     }
 
     public function get_all_languages() {
@@ -255,6 +257,8 @@ class Translator {
     }
     private function get_lang_dirs($basedir = AB_BASEDIR.'/lib/lang') {
         $ret = array();
+        if (!is_dir($basedir))
+            return $ret;
         $dirs = scandir($basedir);
         if ($dirs === false)
             return $ret;
@@ -268,6 +272,7 @@ class Translator {
 
     private function lang_delete($request) {
         $lang_code = array_get($request, 'lang_code', '');
+        $lang_code = $this->sanitize_lang_code($lang_code);
         if(empty($lang_code))
             return;
 
