@@ -16,9 +16,6 @@ $roles['all']    = 'login,logout,reset,'.
                    'role_save,role_delete,'.
                    'config_save,'.
                    'language_save,language_delete,'.
-                   'xml_version,xml_search,xml_search_email,xml_get_contact,xml_get_contacts,xml_count_contacts,'.
-                   'xml_set_contact,xml_delete_contact,'.
-                   'xml_import_vcard,xml_export_vcard,'.
                    'debug,check,info,'.
                    '/home,/export,/profile,/profile/password,'.
                    '/admin,'.
@@ -62,9 +59,5 @@ $roles['guest']  = 'login,logout,reset,'.
                    'cat_select,'.
                    'export_vcard,export_vcard_cat,export_csv_cat,export_ldif_cat,'.
                    '/home,/export,/profile,/profile/password';
-
-$roles['xml_client'] = 'xml_version,xml_search,xml_search_email,xml_get_contact,xml_get_contacts,xml_count_contacts,'.
-                       'xml_set_contact,xml_delete_contact,'.
-                       'xml_import_vcard,xml_export_vcard';
 
 ?>
