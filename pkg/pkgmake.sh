@@ -64,13 +64,13 @@ deploy() {
 	
 	if [ ! -f .deploy-urls ]; then
 		echo "Creating empty file .deploy-urls ..."
-		echo "# ftp://user:pass@www.domain.com/subdomain/folder" > .deploy-urls  
+		echo "# sftp://user@www.domain.com/subdomain/folder" > .deploy-urls  
 	fi
 	
 	IFS="
 "
 	for line in `grep -v "^#" .deploy-urls`; do
-		$BASEDIR/ftp_upload.sh $line iaddressbook-*/*
+		$BASEDIR/sftp_upload.sh $line iaddressbook-*/*
 	done
 }
 
