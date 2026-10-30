@@ -224,7 +224,7 @@ $lang['welcome_message']                = 'خوش آمديد به PHP iAddressBo
                                     آدرسهاي دستي و هماهنگ سازي آنها با ساير وسايل استفاده مي شود. من صدها ساعت را صرف
                                     اين پروژه کرده ام و قصد دارم آنرا هر روز بهتر از قبل کنم. اگر شما
                                     نظر، پيشنهاد يا انتقادي داريد لطفاً آنرا براي من از طريق اين ايميل بفرستيد
-                                    <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+                                    <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
                                     <p>
                                     اگر شما اين پروژه را دوست داريد مي توانيد از اين طريق به آن کمک کنيد
                                     <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">donate</a>!
@@ -276,7 +276,7 @@ $lang['finish_message']                 = '&nbsp;<p>
                                     <p><p>
                                     شما نصب PHP iAddressBook را کامل کرديد. شما می توانید بلافاصله از آن استفاده کنید
                                     . لطفاً بازخورد و نظرتان را بفرستید به
-                                    <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+                                    <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
                                     <p>
                                     <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">
                                     اگر اين برنامه را دوست داريد کمک به آنرا فراموش نکنيد!</a>

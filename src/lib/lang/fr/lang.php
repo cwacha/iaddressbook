@@ -3,13 +3,13 @@
  * language file:Français
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
+ * @author     Clemens Wacha <clemens@wacha.ch>
  */
 
 $lang['lang_code']                      = 'fr';
 $lang['lang_name']                      = 'Français';
 $lang['lang_author']                    = 'Clemens Wacha';
-$lang['lang_author_email']              = 'clemens.wacha@gmx.net';
+$lang['lang_author_email']              = 'clemens@wacha.ch';
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'ltr';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
@@ -280,7 +280,7 @@ $lang['step_configure']                 = 'Configuration de PHP iAddressBook';
 $lang['step_finish']                    = 'Installation terminée !';
 $lang['step_disabled']                  = 'PHP iAddressBook est déjà installé !';
 $lang['step_open_ab']                   = 'Ouvrir le carnet d\'adresses';
-$lang['welcome_message']                = 'Bienvenue dans l\'installation de PHP iAddressBook ! <p><p> Ce projet est très spécial pour moi car il m\'a permis de résoudre le problème de gérer et synchroniser mes adresses avec mes autres gadgets. J\'ai mis des centaines d\'heures dans ce projet et suis prêt à l\'améliorer chaque jour. Si vous avez des commentaires, suggestions ou plaintes, envoyez-moi un courriel à <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>. <p> Si vous aimez ce programme, s\'il vous plaît <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">faite un don</a> ! <p> Appréciez et amusez-vous ! <p style="text-align: right;">&#8212; Clemens Wacha</p>';
+$lang['welcome_message']                = 'Bienvenue dans l\'installation de PHP iAddressBook ! <p><p> Ce projet est très spécial pour moi car il m\'a permis de résoudre le problème de gérer et synchroniser mes adresses avec mes autres gadgets. J\'ai mis des centaines d\'heures dans ce projet et suis prêt à l\'améliorer chaque jour. Si vous avez des commentaires, suggestions ou plaintes, envoyez-moi un courriel à <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>. <p> Si vous aimez ce programme, s\'il vous plaît <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">faite un don</a> ! <p> Appréciez et amusez-vous ! <p style="text-align: right;">&#8212; Clemens Wacha</p>';
 $lang['welcome_prerequisites']          = '<p><p> Cet installeur vous aide lors de la première installation et configuration de <a href="http://iaddressbook.org/">PHP iAddressBook</a>. <br> Vous aurez besoin de : <ul> <li>PHP version 4.3 ou plus haut.</li> <li>MySQL version 4.1 ou plus haut ou SQLite version 2.x/3.x</li> <li>(optionel) iconv (si vous importez des vcards non encodées en UTF-8)</li> <li>(optionel) convertisseur ImageMagick ou GD (si vous importez des photos)</li> </ul> <p>';
 $lang['error_statefolder']              = 'Ecriture impossible dans le dossier state: Pas de droits en écriture sur $1';
 $lang['error_imagefolder']              = 'Utilisation impossible des photos des contacts : Pas de droits en écriture sur $1';
@@ -310,7 +310,7 @@ $lang['configure_ok']                   = 'Tout est en ordre.<p>Vous pouvez cont
 $lang['install_createdb']               = 'Création de la BDD et des tables';
 $lang['info_db1']                       = 'BDD créée avec succès';
 $lang['info_db2']                       = 'Cliquez \'Suivant\' pour continuer';
-$lang['finish_message']                 = '&nbsp;<p> <b>Félicitations !</b> <p><p> Vous avez réussi l\'installation de PHP iAddressBook. Vous pouvez l\'utiliser immédiatement. S\'il vous plaît, envoyez-moi votre feedback et vos commentaires à <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>. <p> <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank"> N\'oubliez pas de faire un don si vous aimez ce programme !</a> <p> Appréciez et amusez-vous ! <p style="text-align: right;">&#8212; Clemens Wacha</p>';
+$lang['finish_message']                 = '&nbsp;<p> <b>Félicitations !</b> <p><p> Vous avez réussi l\'installation de PHP iAddressBook. Vous pouvez l\'utiliser immédiatement. S\'il vous plaît, envoyez-moi votre feedback et vos commentaires à <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>. <p> <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank"> N\'oubliez pas de faire un don si vous aimez ce programme !</a> <p> Appréciez et amusez-vous ! <p style="text-align: right;">&#8212; Clemens Wacha</p>';
 $lang['disabled_message']               = 'Vous avez déjà réalisé l\'installation de PHP iAddressBook <p> Si vous voulez refaire l\'installation, supprimez la base de données (BDD) et le fichier de configuration conf/config.php. Rappelez ensuite cette page. <p style="text-align: right;">&#8212; Clemens Wacha</p>';
 
 

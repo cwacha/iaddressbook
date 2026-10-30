@@ -4,7 +4,7 @@
  * iAddressBook database functions
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
+ * @author     Clemens Wacha <clemens@wacha.ch>
  */
 
 if(!defined('AB_BASEDIR')) define('AB_BASEDIR',realpath(dirname(__FILE__).'/../../'));

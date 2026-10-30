@@ -205,7 +205,7 @@ $lang['welcome_message']                = 'Bem vindo ao PHP iAddressBook!
 									Este projeto é muito especial para mim visto que ele solucionou um problema enorme que era
 									manter meus contatos à mão e em sincronia com os meus outros aparelhos. I trabalhei centenas de horas
 									neste projeto e eu estou dedicado em deixá-lo melhor a cada dia. se você tiver comentários, sugestões ou
-									críticas por favor as envie por e-mail <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+									críticas por favor as envie por e-mail <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
                                     <p>
 									Se você gostar desse programa, por favor
                                     <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">doe</a>!
@@ -254,7 +254,7 @@ $lang['finish_message']                 = '&nbsp;<p>
                                     <p><p>
 									Você completou a instalação do PHP iAddressBook. Você pode iniciar o uso
 									dele imediatamente. Por favor envie comentários para 
-                                    <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+                                    <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
                                     <p>
                                     <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">
                                     Não esquece de doar se você gostar deste programa!</a>

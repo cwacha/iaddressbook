@@ -67,7 +67,7 @@ define('VCARD_GEO_LON',      1);
 require_once(AB_BASEDIR.'/lib/php/PEAR.php');
 //require_once 'PEAR.php';
 
-// written by Clemens Wacha <clemens.wacha@gmx.net>
+// written by Clemens Wacha <clemens@wacha.ch>
 function vcard_addcslashes($string, $escapes) {
     $out_string = '';
 

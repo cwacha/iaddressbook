@@ -3,13 +3,13 @@
  * language file:Deutsch
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
+ * @author     Clemens Wacha <clemens@wacha.ch>
  */
 
 $lang['lang_code']                      = 'de';
 $lang['lang_name']                      = 'Deutsch';
 $lang['lang_author']                    = 'Clemens Wacha';
-$lang['lang_author_email']              = 'clemens.wacha@gmx.net';
+$lang['lang_author_email']              = 'clemens@wacha.ch';
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'ltr';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
@@ -302,7 +302,7 @@ $lang['welcome_message']                = 'Willkommen zur Installation von PHP i
                                     von Stunden in dieses Projekt investiert und möchte auch in Zukunft weiterentwickeln
                                     und optimieren.                                    
                                     Wenn Sie Anregungen, Kommentare oder Lob haben schicken Sie mir doch eine e-mail an
-                                    <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+                                    <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
                                     <p>
                                     Falls Ihnen dieses Programm gefällt, freue ich mich über Ihre 
                                     <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">Spende</a>!
@@ -353,7 +353,7 @@ $lang['finish_message']                 = '&nbsp;<p>
                                     <p><p>
                                     Sie haben die Installation von PHP iAddressBook abgeschlossen! Sie können
                                     sofort loslegen. Bitte senden Sie mir Feedback und Kommentare an
-                                    <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+                                    <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
                                     <p>
                                     <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">
                                     Vergessen Sie nicht zu spenden, falls Ihnen dieses Programm gefällt!</a>

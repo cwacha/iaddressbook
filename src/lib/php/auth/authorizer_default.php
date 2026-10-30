@@ -3,7 +3,7 @@
  * iAddressBook adressbook functions
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
+ * @author     Clemens Wacha <clemens@wacha.ch>
  */
 
 class Authorizer {

@@ -7,7 +7,7 @@
  * always be the very first line of a document.
  *
  * @link   http://iaddressbook.org
- * @author Clemens Wacha (clemens.wacha@gmx.net)
+ * @author Clemens Wacha (clemens@wacha.ch)
  */
 
 ?>

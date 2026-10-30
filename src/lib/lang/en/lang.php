@@ -3,13 +3,13 @@
  * language file:English
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
+ * @author     Clemens Wacha <clemens@wacha.ch>
  */
 
 $lang['lang_code']                      = 'en';
 $lang['lang_name']                      = 'English';
 $lang['lang_author']                    = 'Clemens Wacha';
-$lang['lang_author_email']              = 'clemens.wacha@gmx.net';
+$lang['lang_author_email']              = 'clemens@wacha.ch';
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'ltr';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
@@ -313,7 +313,7 @@ This project is very special to me as it solved one major issue in keeping all
 my addresses handy and in sync with my other gadgets. I put hundreds of hours
 into this project and I am dedicated to make it better every day. If you have
 comments, suggestions or blame please send me an e-mail to
-<a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+<a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
 <p>
 If you like this program, please 
 <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">donate</a>!
@@ -365,7 +365,7 @@ $lang['finish_message']                 = '&nbsp;<p>
                                     <p><p>
                                     You have completed the installation of PHP iAddressBook. You may start using
                                     it immediately. Please send me your feedback and comments to
-                                    <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+                                    <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
                                     <p>
                                     <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">
                                     Don\'t forget to donate if you like this program!</a>

@@ -93,7 +93,7 @@ function get_unicode($string) {
 
 /**
 * 
-* written by Clemens Wacha <clemens.wacha@gmx.net>
+* written by Clemens Wacha <clemens@wacha.ch>
 * 
 */
 function vcard_stripcslashes($string, $escapes) {

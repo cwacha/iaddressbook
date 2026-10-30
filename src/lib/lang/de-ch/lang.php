@@ -3,13 +3,13 @@
  * language file:Schwiizerdütsch
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Clemens Wacha <clemens.wacha@gmx.net>
+ * @author     Clemens Wacha <clemens@wacha.ch>
  */
 
 $lang['lang_code']                      = 'de-ch';
 $lang['lang_name']                      = 'Schwiizerdütsch';
 $lang['lang_author']                    = 'Clemens Wacha';
-$lang['lang_author_email']              = 'clemens.wacha@gmx.net';
+$lang['lang_author_email']              = 'clemens@wacha.ch';
 $lang['encoding']                       = 'utf-8';
 $lang['direction']                      = 'ltr';
 $lang['sort_rules_from']                = 'Ä,ä,Ö,ö,Ü,ü,É,é,È,è,À,à';
@@ -294,7 +294,7 @@ $lang['step_finish']                    = 'Fertig!';
 $lang['step_disabled']                  = 'PHP iAddressbuech isch scho installiert!';
 $lang['step_open_ab']                   = 'Addressbuech öffne';
 $lang['welcome_message']                = 'Wilkomme zum PHP iAddressBook<p><p>
-Das Projekt isch recht speziell für mich wills es wichtigs Problem glöst het zum alli mini Kontäkt über mehreri Grät synchron zhalte. Ich han über d Jah mehreri hundert Stund inegsteckt und has wele immer besser mache. Wenn du Kommentär oder Vorschläg zum Verbessere hesch schick mer doch es e-mail a <a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+Das Projekt isch recht speziell für mich wills es wichtigs Problem glöst het zum alli mini Kontäkt über mehreri Grät synchron zhalte. Ich han über d Jah mehreri hundert Stund inegsteckt und has wele immer besser mache. Wenn du Kommentär oder Vorschläg zum Verbessere hesch schick mer doch es e-mail a <a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
 <p>
 Wenn du das Programm cool findsch, denn bitte<a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">schick mer doch en Spend!</a>!
 <p>
@@ -338,7 +338,7 @@ $lang['info_db1']                       = 'Datebank Istellige erfolgriich';
 $lang['info_db2']                       = 'Klicke uf \'Wiiter\' zum wiitermache';
 $lang['finish_message']                 = '&nbsp;<p><b>Herzliche Gratulation!</b><p><p>
 Du hesch d Installation vom PHP iAddressBook abgschlosse. Du chasch es sofort bruuche. Bitte schick mer doch Feedback und Kommentär uf 
-<a href="mailto:clemens.wacha@gmx.net">clemens.wacha@gmx.net</a>.
+<a href="mailto:clemens@wacha.ch">clemens@wacha.ch</a>.
 <p>
 <a href="https://sourceforge.net/project/project_donations.php?group_id=199169" target="_blank">Und nöd vergässe öppis Spende wenns dir gfallt!</a>
 <p>Ich hoffe du hesch Freud demit!<p style="text-align: right;">&#8212; Clemens Wacha</p>';
