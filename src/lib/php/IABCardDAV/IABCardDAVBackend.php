@@ -101,8 +101,8 @@ class IABCardDAVBackend extends AbstractBackend {
                                 '{http://calendarserver.org/ns/}getctag' => $book['ctag'],
                                 '{http://sabredav.org/ns}sync-token' => $book['ctag'] ? $book['ctag'] : '0',
                                 );
+			msg("getAddressBooksForUser: $principalUri, " . $book['ctag']);
 		}
-    	msg("getAddressBooksForUser: $principalUri, " . $book['ctag']);
 		return $addressBooks;
     }
 

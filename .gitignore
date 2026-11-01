@@ -1,1 +1,7 @@
 .DS_Store
+
+pkg/iaddressbook-*
+pkg/BUILD
+pkg/ftp.log
+pkg/sftp.log
+pkg/.deploy-urls
