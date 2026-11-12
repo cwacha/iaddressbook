@@ -28,6 +28,7 @@ class Person {
 
     var $birthdate;    // date as string: "YYYY-MM-DD"
     var $birthday;     // text birthday for birthday module??
+    var $homepage;
     var $image;    // picture
     var $note;
 

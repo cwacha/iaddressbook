@@ -156,12 +156,17 @@ function img_convert($in_image, $type='png', $resize='') {
                 } else {
                     $height = $width/$ratio_orig;
                 }
+
+                $width = max(1, (int) round($width));
+                $height = max(1, (int) round($height));
             
                 // Resample
                 $im_p = imagecreatetruecolor($width, $height);
                 //$image = @file_get_contents($tmp_image);
                 imagecopyresampled($im_p, $im, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-                imagedestroy($im);
+                
+                # the next line is only required to maintain PHP 7.x compatibility
+                if(is_resource($im)) imagedestroy($im);
                 $im = $im_p;
         	}
 
@@ -180,7 +185,9 @@ function img_convert($in_image, $type='png', $resize='') {
                 default:
                     msg("Cannot convert image to $type: GD only supports gif, jpg and png", -1);
             }
-			imagedestroy($im);
+            
+            # the next line is only required to maintain PHP 7.x compatibility
+            if(is_resource($im)) imagedestroy($im);
 			
 			if(is_readable($tmp_file))
 				$out_image = file_get_contents($tmp_file);

@@ -22,12 +22,20 @@ use iAddressbook;
 class IABCardDAVBackend extends AbstractBackend {
     
     protected $catalog;
+	private $securitycontroller;
 
     public function __construct() {
         db_init();
         db_open();
 
         $this->catalog = new \Addressbooks();
+		$this->securitycontroller = \SecurityController::getInstance();
+    }
+
+	private function requirePermission($permission) {
+		if(!$this->securitycontroller->has_permission($permission)) {
+			throw new \Sabre\DAV\Exception\Forbidden('You do not have permission to perform this action');
+		}
     }
 
 	private function cardUriForUid($uid) {
@@ -88,6 +96,7 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * @return array
 	 */
 	public function getAddressBooksForUser($principalUri) {
+		$this->requirePermission('carddav_read');
 		list($prefixPath, $userid) = \Sabre\Uri\split($principalUri);
 		$books = $this->catalog->getAddressBooksForUser($userid);
     	$addressBooks = array();
@@ -119,6 +128,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return bool|array
      */
     public function updateAddressBook($addressBookId, \Sabre\DAV\PropPatch $propPatch) {
+		$this->requirePermission('carddav_update');
     	msg("updateAddressBook: $addressBookId");
     	return true;
     }
@@ -132,6 +142,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return void
      */
     public function createAddressBook($principalUri, $url, array $properties) {
+		$this->requirePermission('carddav_create');
     	msg("createAddressBook: $principalUri, $url");
     }
 
@@ -142,6 +153,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return void
      */
     public function deleteAddressBook($addressBookId) {
+		$this->requirePermission('carddav_delete');
     	msg("deleteAddressBook: $addressBookId");
     }
 
@@ -165,6 +177,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return array
      */
     public function getCards($addressBookId) {
+		$this->requirePermission('carddav_read');
     	msg("getCards: addressBookId=$addressBookId");
 		global $AB;
 		global $CAT;
@@ -210,6 +223,7 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * @return array
 	 */
 	public function getCard($addressBookId, $cardUri) {
+		$this->requirePermission('carddav_read');
 		$start_ts = microtime(true);
 		msg("getCard: addressBookId=$addressBookId cardUri=$cardUri");
 		global $AB;
@@ -274,6 +288,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return array
      */
     function getMultipleCards($addressBookId, array $uris) {
+		$this->requirePermission('carddav_read');
         msg("getMultipleCards: $addressBookId, uris=" . count($uris));
         $results = array();
         foreach($uris as $cardUri) {
@@ -327,6 +342,7 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * 
 	 */
     public function createCard($addressBookId, $cardUri, $cardData) {
+		$this->requirePermission('carddav_create');
     	msg("createCard: $addressBookId, $cardUri");
 		$this->validateCardData($cardData);
     	global $AB;
@@ -402,6 +418,7 @@ class IABCardDAVBackend extends AbstractBackend {
      * @return string|null
      */
     public function updateCard($addressBookId, $cardUri, $cardData) {
+		$this->requirePermission('carddav_update');
     	msg("updateCard: $addressBookId, $cardUri");
 		$this->validateCardData($cardData);
     	global $AB;
@@ -462,6 +479,7 @@ class IABCardDAVBackend extends AbstractBackend {
 	 * @return bool
 	 */
 	public function deleteCard($addressBookId, $cardUri) {
+		$this->requirePermission('carddav_delete');
 		msg("deleteCard: $addressBookId, $cardUri");
 		global $AB;
 		global $CAT;		

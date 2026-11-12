@@ -385,10 +385,12 @@ function real_addcslashes($string, $escapes) {
 
 // this function converts nl into br and not nl into br nl..!!
 function real_nl2br($string) {
+    if ($string === null) return '';
     return str_replace("\n", "<br />", $string);
 }
 
 function real_br2nl($string) {
+    if ($string === null) return '';
     return preg_replace("/\<\s*br\s*\/*\>/", "\n", $string);
 }
 
@@ -407,7 +409,7 @@ function fix_fmode($file) {
     global $conf;
     
     if($conf['fmode'])
-    	chmod($file, $conf['fmode']);
+    	@chmod($file, $conf['fmode']);
 }
 
 function fix_dmode($dir) {

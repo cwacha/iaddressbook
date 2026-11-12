@@ -16,6 +16,7 @@ $roles['all']    = 'login,logout,reset,'.
                    'role_save,role_delete,'.
                    'config_save,'.
                    'language_save,language_delete,'.
+                   'carddav_read,carddav_create,carddav_update,carddav_delete,'.
                    'debug,check,info,'.
                    '/home,/export,/profile,/profile/password,'.
                    '/admin,'.
@@ -36,6 +37,7 @@ $roles['admin']  = 'login,logout,reset,'.
                    'role_save,role_delete,'.
                    'config_save,'.
                    'language_save,language_delete,'.
+                   'carddav_read,carddav_create,carddav_update,carddav_delete,'.
                    'debug,check,info,'.
                    '/home,/export,/profile,/profile/password,'.
                    '/admin,'.
@@ -52,12 +54,14 @@ $roles['editor'] = 'login,logout,reset,'.
                    'import_vcard,import_folder,'.
                    'export_vcard,export_vcard_cat,export_csv_cat,export_ldif_cat,'.
                    'account_mypassword,'.
+                   'carddav_read,carddav_create,carddav_update,carddav_delete,'.
                    '/home,/export,/profile,/profile/password';
 
 $roles['guest']  = 'login,logout,reset,'.
                    'show,img,search,select_letter,select_offset,'.
                    'cat_select,'.
                    'export_vcard,export_vcard_cat,export_csv_cat,export_ldif_cat,'.
+                   'carddav_read,'.
                    '/home,/export,/profile,/profile/password';
 
 ?>
