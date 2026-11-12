@@ -20,6 +20,7 @@ function lang($key) {
 
     // key does not exist, this is either a typo or a brand new key
     $filename = AB_BASEDIR.'/var/missing_language_strings.txt';
+    $missing = false;
     if(file_exists($filename))
         $missing = file($filename);
     if($missing === false)
@@ -94,8 +95,8 @@ function datediff($interval, $datefrom, $dateto, $using_timestamps = false) {
     case "q": // Number of full quarters
 
       $quarters_difference = floor($difference / 8035200);
-      while (mktime(date("H", $datefrom), date("i", $datefrom), date("s", $datefrom), date("n", $datefrom)+($quarters_difference*3), date("j", $dateto), date("Y", $datefrom)) < $dateto) {
-        $months_difference++;
+      while (mktime(date("H", $datefrom), date("i", $datefrom), date("s", $datefrom), date("n", $datefrom)+($quarters_difference*3), date("j", $datefrom), date("Y", $datefrom)) < $dateto) {
+        $quarters_difference++;
       }
       $quarters_difference--;
       $datediff = $quarters_difference;
@@ -104,7 +105,7 @@ function datediff($interval, $datefrom, $dateto, $using_timestamps = false) {
     case "m": // Number of full months
 
       $months_difference = floor($difference / 2678400);
-      while (mktime(date("H", $datefrom), date("i", $datefrom), date("s", $datefrom), date("n", $datefrom)+($months_difference), date("j", $dateto), date("Y", $datefrom)) < $dateto) {
+      while (mktime(date("H", $datefrom), date("i", $datefrom), date("s", $datefrom), date("n", $datefrom)+($months_difference), date("j", $datefrom), date("Y", $datefrom)) < $dateto) {
         $months_difference++;
       }
       $months_difference--;
@@ -412,7 +413,7 @@ function fix_fmode($file) {
 function fix_dmode($dir) {
     global $conf;
     
-    if($conf['dmode']) chmod($dir, $conf['dmode']);
+    if($conf['dmode']) @chmod($dir, $conf['dmode']);
 }
 
 function generate_uuid() {

@@ -20,15 +20,19 @@ function init() {
     
     // set up error reporting to sane values
     ini_set('display_errors', 'On');
-    error_reporting(E_ALL);
+    #error_reporting(E_ALL);
 
     // make session rewrites XHTML compliant
     ini_set('arg_separator.output', '&amp;');    
     
     //Mapping PHP errors to exceptions
     function exception_error_handler($errno, $errstr, $errfile, $errline ) {
-    	if(error_reporting() != 0)
-	    	msg("$errstr (errno=$errno errfile=$errfile:$errline)", -1);
+        if (!(error_reporting() & $errno)) {
+            return false;
+        }
+
+        msg("$errstr (errno=$errno errfile=$errfile:$errline)", -1);
+        return true;
     }
     set_error_handler("exception_error_handler");
         

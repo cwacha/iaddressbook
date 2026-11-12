@@ -91,9 +91,11 @@ class Translator {
 
     	$this->create_config_lang_folder($lang_code);
     	$filename = AB_CONFDIR.'/lang/'.$lang_code.'/lang.php';
-    	$this->write_file($filename, $new_lang);
-    	$this->write_file($filename.'.txt', $new_lang);
-        msg(str_replace('$1', $filename, lang('lang_saved')), 1);
+    	$ok1 = $this->write_file($filename, $new_lang);
+    	$ok2 = $this->write_file($filename.'.txt', $new_lang);
+        if($ok1 and $ok2) {
+            msg(str_replace('$1', $filename, lang('lang_saved')), 1);
+        }
 		$_SESSION['viewname'] = '/admin/translator';
     }
 
@@ -102,20 +104,24 @@ class Translator {
     	$conf_langcodedir = $conf_langdir . '/'.$lang_code;
 
     	if(!is_dir($conf_langdir)) {
-    		mkdir($conf_langdir);
+    		if(!@mkdir($conf_langdir)) {
+                msg(str_replace('$1', $conf_langdir, lang('lang_error_no_permission')), -1);
+            }
     	}
     	if(!is_dir($conf_langcodedir)) {
-    		mkdir($conf_langcodedir);
+    		if(!@mkdir($conf_langcodedir)) {
+                msg(str_replace('$1', $conf_langcodedir, lang('lang_error_no_permission')), -1);
+            }
     	}
     	fix_dmode($conf_langdir);
 		fix_dmode($conf_langcodedir);
     }
 
     private function write_file($filename, $lang) {
-		$fd = fopen($filename, "w");
+		$fd = @fopen($filename, "w");
 		if(!$fd) {
             msg(str_replace('$1', $filename, lang('lang_error_cannot_write')), -1);
-			return;
+			return false;
 		}
 
 		$lang_name = array_get($lang, "lang_name", array_get($lang, "lang_code", ""));
@@ -138,6 +144,7 @@ class Translator {
 
 		fclose($fd);
 		fix_fmode($filename);
+        return true;
     }
 
     // returns array with author name and author email
@@ -277,12 +284,23 @@ class Translator {
         if(empty($lang_code))
             return;
 
-        unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php');
-        unlink(AB_CONFDIR.'/lang/'.$lang_code.'/lang.php.txt');
-        rmdir(AB_CONFDIR.'/lang/'.$lang_code);
+        $ok = true;
+        $file = AB_CONFDIR . '/lang/' . $lang_code . '/lang.php';
+        if(!@unlink($file)) $ok = false;
+
+        $file = AB_CONFDIR . '/lang/' . $lang_code . '/lang.php.txt';
+        if(!@unlink($file)) $ok = false;
+
+        $file = AB_CONFDIR . '/lang/' . $lang_code;
+        if(!@rmdir($file)) $ok = false;
+
+        if($ok) {
+            msg(str_replace('$1', $lang_code, lang('lang_deleted')), 1);
+        } else {
+            msg(str_replace('$1', $file, lang('lang_error_no_permission')), -1);
+        }
 
         $_SESSION['viewname'] = '/admin/translator';
-
     }
 
 }

@@ -78,6 +78,7 @@ $lang['lang_add']                       = 'Add new language';
 $lang['lang_save']                      = 'Save';
 $lang['lang_saved']                     = 'Translation saved to $1';
 $lang['lang_delete']                    = 'Delete';
+$lang['lang_deleted']                   = 'Translation $1 deleted.';
 $lang['lang_author_name']               = 'Translator';
 $lang['lang_code_name']                 = 'Locale';
 $lang['lang_translate_stats']           = 'Translation Status';
@@ -86,6 +87,7 @@ $lang['language_your_translation']      = 'Your Translation';
 $lang['lang_overview']                  = 'Language Overview';
 $lang['lang_error_code_missing']        = 'Cannot save translation: lang_code not set.';
 $lang['lang_error_cannot_write']        = 'Could not write translation to $1';
+$lang['lang_error_no_permission']       = 'No permission to write to $1';
 
 $lang['confirm_del_contact']            = 'Do you want to delete this contact?';
 $lang['confirm_del_contacts']           = 'Do you want to delete the selected contacts?';
