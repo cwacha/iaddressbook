@@ -308,7 +308,7 @@
 
     function getViewName($request) {
         global $webapp;
-        $request_uri = strtolower($_SERVER['REQUEST_URI']);
+        $request_uri = $_SERVER['REQUEST_URI'];
         $webappuri = getWebAppURI();
         $baseuri = AB_BASEURI;
         
@@ -320,6 +320,7 @@
         
         list($view, $dummy) = explode("?", $request_uri . '?');
         
+        $view = strtolower($view);
         $view = preg_replace("/^([^\/])/", "/\$1", $view);
         $view = preg_replace("/\/$/", "", $view);
         $validchars = "/[^a-zA-Z0-9\/_-]/";
